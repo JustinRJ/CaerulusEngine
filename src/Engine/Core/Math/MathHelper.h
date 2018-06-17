@@ -1,15 +1,11 @@
 #pragma once
 
+#define CORE_MATH __declspec(dllexport)
+
 #include <glm.hpp>
 #include <gtc/matrix_transform.hpp>
 #include <gtx/quaternion.hpp>
 #include <gtc/type_ptr.hpp>
-
-#ifdef CORE_MATH_EXPORTS
-    #define CORE_MATH __declspec(dllexport)
-#else
-    #define CORE_MATH __declspec(dllimport)
-#endif
 
 namespace Core
 {

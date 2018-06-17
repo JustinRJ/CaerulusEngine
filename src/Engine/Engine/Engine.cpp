@@ -1,3 +1,5 @@
+#include "stdafx.h"
+
 #include "Engine.h"
 
 namespace Engine
@@ -15,7 +17,7 @@ namespace Engine
         try
         {
         }
-        catch (...)
+        catch(...)
         {
         }
     }
