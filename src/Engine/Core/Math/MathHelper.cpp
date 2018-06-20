@@ -133,9 +133,9 @@ namespace Core
             outTransform = translateM * rotateM * scaleM;
         }
 
-        void MathHelper::TransformVector(vec3& outVector, const mat4& transform)
+        vec3 MathHelper::TransformVector(const vec3& vector, const mat4& transform)
         {
-            outVector = vec4(outVector.x, outVector.y, outVector.z, 1.0f) * transpose(transform);
+            return vec4(vector.x, vector.y, vector.z, 1.0f) * transpose(transform);
         }
 
         void MathHelper::SetAxis(mat4& outTransform, const vec3& axis, Index axisIndex)
