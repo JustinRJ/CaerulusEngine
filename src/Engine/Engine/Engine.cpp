@@ -16,8 +16,13 @@ namespace Engine
     {
     }
 
+
+
     void Engine::Start()
     {
+        auto timer = Core::Timer::Timer(false);
+        timer.Start();
+
         try
         {
         }

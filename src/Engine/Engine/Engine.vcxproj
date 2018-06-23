@@ -130,7 +130,7 @@
       </Inputs>
     </CustomBuildStep>
     <PostBuildEvent>
-      <Command>echo D | xcopy /E "$(SolutionDir)$(MSBuildProjectName)\bin" "$(SolutionDir)..\..\bin"</Command>
+      <Command>echo DA | xcopy /E "$(SolutionDir)$(MSBuildProjectName)\bin" "$(SolutionDir)..\..\bin"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -157,7 +157,7 @@
       </Inputs>
     </CustomBuildStep>
     <PostBuildEvent>
-      <Command>echo D | xcopy /E "$(SolutionDir)$(MSBuildProjectName)\bin" "$(SolutionDir)..\..\bin"</Command>
+      <Command>echo DA | xcopy /E "$(SolutionDir)$(MSBuildProjectName)\bin" "$(SolutionDir)..\..\bin"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -188,7 +188,7 @@
       </Inputs>
     </CustomBuildStep>
     <PostBuildEvent>
-      <Command>echo D | xcopy /E "$(SolutionDir)$(MSBuildProjectName)\bin" "$(SolutionDir)..\..\bin"</Command>
+      <Command>echo DA | xcopy /E "$(SolutionDir)$(MSBuildProjectName)\bin" "$(SolutionDir)..\..\bin"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -219,7 +219,7 @@
       </Inputs>
     </CustomBuildStep>
     <PostBuildEvent>
-      <Command>echo D | xcopy /E "$(SolutionDir)$(MSBuildProjectName)\bin" "$(SolutionDir)..\..\bin"</Command>
+      <Command>echo DA | xcopy /E "$(SolutionDir)$(MSBuildProjectName)\bin" "$(SolutionDir)..\..\bin"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
