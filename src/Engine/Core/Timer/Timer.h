@@ -22,11 +22,11 @@ namespace Core
         {
         public:
 
-            CAERULUS_CORE explicit TimeValue(bool update = true);
+            CAERULUS_CORE TimeValue(bool update = true);
 
             CAERULUS_CORE virtual ~TimeValue();
 
-            virtual void Update();
+            CAERULUS_CORE virtual void Update();
 
             CAERULUS_CORE virtual std::string Format(const char* format = "%H:%M:%S", size_t extralength = 50) const;
 
@@ -44,8 +44,8 @@ namespace Core
             CAERULUS_CORE virtual ~Timer();
             CAERULUS_CORE virtual Time Total();
             CAERULUS_CORE virtual Time Delta();
-            virtual void Start();
-            virtual void Stop();
+            CAERULUS_CORE virtual void Start();
+            CAERULUS_CORE virtual void Stop();
 
             TimeValue StartTime;
             TimeValue EndTime;
