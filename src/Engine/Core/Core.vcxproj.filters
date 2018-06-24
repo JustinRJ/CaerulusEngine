@@ -23,6 +23,9 @@
     <ClCompile Include="Timer\FPSLimiter.cpp">
       <Filter>Timer</Filter>
     </ClCompile>
+    <ClCompile Include="Timer\Time.cpp">
+      <Filter>Timer</Filter>
+    </ClCompile>
     <ClCompile Include="Timer\Timer.cpp">
       <Filter>Timer</Filter>
     </ClCompile>
@@ -33,6 +36,9 @@
     </ClInclude>
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="Timer\FPSLimiter.h">
+      <Filter>Timer</Filter>
+    </ClInclude>
+    <ClInclude Include="Timer\Time.h">
       <Filter>Timer</Filter>
     </ClInclude>
     <ClInclude Include="Timer\Timer.h">

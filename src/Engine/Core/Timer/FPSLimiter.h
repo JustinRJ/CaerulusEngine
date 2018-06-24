@@ -13,17 +13,15 @@ namespace Core
         public:
 
             CAERULUS_CORE FPSLimiter();
+            CAERULUS_CORE ~FPSLimiter();
 
-            CAERULUS_CORE virtual ~FPSLimiter();
-
-            CAERULUS_CORE virtual Time Delta();
-
-            CAERULUS_CORE virtual Time Delta(const Time frameLimit);
+            CAERULUS_CORE virtual float Delta();
+            CAERULUS_CORE virtual float Delta(const float frameLimit);
 
         private:
 
-            Time m_FrameTime;
-            Time m_PreviousFrameTime;
+            float m_FrameTime;
+            float m_PreviousFrameTime;
         };
     }
 }

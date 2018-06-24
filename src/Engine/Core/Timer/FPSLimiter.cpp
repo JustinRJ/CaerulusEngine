@@ -1,14 +1,13 @@
 #include "stdafx.h"
-
 #include "FPSLimiter.h"
-
 
 namespace Core
 {
     namespace Timer
     {
         FPSLimiter::FPSLimiter() :
-            m_FrameTime(0.0f)
+            m_FrameTime(0.0f),
+            m_PreviousFrameTime(0.0f)
         {
         }
 
@@ -16,19 +15,23 @@ namespace Core
         { 
         }
 
-        Time FPSLimiter::Delta()
+        float FPSLimiter::Delta()
         {
             return Timer::Delta();
         }
 
-        Time FPSLimiter::Delta(const Time frameLimit)
+        float FPSLimiter::Delta(const float frameLimit)
         {
             m_FrameTime = Delta();
 
-            if (frameLimit > 0.0f && m_FrameTime > 0.0f && m_FrameTime < frameLimit)
+            if (frameLimit > 0.0f &&
+                m_FrameTime > 0.0f &&
+                m_FrameTime < frameLimit)
             {
-                Sleep(frameLimit - m_FrameTime); // Sleep for time left for frame
-                m_FrameTime += Delta(); // Get time taken when sleeping
+                // Sleep for time left for frame
+                Sleep(static_cast<time_t>(frameLimit - m_FrameTime));
+                // Get time taken when sleeping
+                m_FrameTime += Delta();
             }
             return m_FrameTime;
         }

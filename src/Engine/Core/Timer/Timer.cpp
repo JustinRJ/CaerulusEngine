@@ -1,98 +1,30 @@
 #include "stdafx.h"
-
 #include "Timer.h"
-#include <windows.h>
 
 namespace Core
 {
     namespace Timer
     {
-        void SleepMilli(const TimeUnits milli)
+        extern tm InternalTime;
+
+        void SleepMilli(time_t milli)
         {
-            ::Sleep((DWORD)milli);
+            ::Sleep(static_cast<DWORD>(milli));
         }
-        void Sleep(const TimeUnits sec)
+        void Sleep(time_t sec)
         {
-            ::Sleep((DWORD)sec * 1000);
+            ::Sleep(static_cast<DWORD>(sec * 1000.0));
         }
-        void Sleep(const Time sec)
+        void Sleep(Time sec)
         {
-            SleepMilli((TimeUnits)(sec * 1000));
-        }
-
-        std::string CurrentTime(const char* format/* = "%H:%M:%S"*/)
-        {
-            time_t rawtime;
-            time(&rawtime);
-
-            struct tm timeinfo;
-            localtime_s(&timeinfo, &rawtime);
-
-            char buf[200];
-            strftime(buf, 200, format, &timeinfo);
-
-            return std::string(buf);
-        }
-
-        std::string CurrentDate()
-        {
-            return CurrentTime("%Y-%m-%d");
-        }
-
-        std::string CurrentDateTime()
-        {
-            return CurrentTime("%Y-%m-%d_%H-%M-%S");
-        }
-
-        TimeValue::TimeValue(bool update)
-        {
-            if (update)
-            {
-                Update();
-            }
-        }
-
-        TimeValue::~TimeValue()
-        {
-        }
-
-        void TimeValue::Update()
-        {
-            time(&m_Time);
-        }
-
-        std::string TimeValue::Format(const char* format, size_t extralength) const
-        {
-            size_t len = strlen(format) + extralength;
-
-            char* buf = new char[len];
-
-            strftime(buf, len, format, &m_TimeLocal);
-
-            std::string ret(buf);
-
-            delete[] buf;
-
-            return ret;
-        }
-
-        TimeUnits Timer::NanoTime()
-        {
-            LARGE_INTEGER time;
-            QueryPerformanceCounter(&time);
-            return (TimeUnits)time.QuadPart;
-        }
-
-        TimeUnits Timer::Frequency()
-        {
-            LARGE_INTEGER frequency;
-            QueryPerformanceFrequency(&frequency);
-            return (TimeUnits)frequency.QuadPart;
+            SleepMilli(static_cast<time_t>(sec.GetTime() * 1000.0));
         }
 
         Timer::Timer(bool start) :
             m_Running(false),
             m_DeltaTime(0.0f),
+            m_Multiplier(0.0f),
+            m_Frequency(0),
             m_TimeLastFrame(0),
             StartTime(false),
             EndTime(false)
@@ -111,16 +43,16 @@ namespace Core
         {
             if (m_Running == false)
             {
-                m_Frequency = Frequency();
-                m_Multiplier = 1 / (Time)m_Frequency;
+                m_Running = true;
                 m_DeltaTime = 0.0f;
+                m_Frequency = Frequency();
+                m_Multiplier = (1.0f / m_Frequency);
                 m_TimeLastFrame = NanoTime();
                 StartTime.Update();
-                m_Running = true;
             }
         }
 
-        Time Timer::Total()
+        float Timer::Total()
         {
             if (m_Running)
             {
@@ -134,12 +66,12 @@ namespace Core
             return m_DeltaTime;
         }
 
-        Time Timer::Delta()
+        float Timer::Delta()
         {
             if (m_Running)
             {
-                TimeUnits currentTime = NanoTime();
-                TimeUnits diffTime = currentTime - m_TimeLastFrame;
+                time_t currentTime = NanoTime();
+                time_t diffTime = currentTime - m_TimeLastFrame;
                 m_TimeLastFrame = currentTime;
 
                 m_DeltaTime = diffTime * m_Multiplier;
@@ -159,6 +91,20 @@ namespace Core
                 EndTime.Update();
                 m_Running = false;
             }
+        }
+
+        time_t Timer::NanoTime()
+        {
+            LARGE_INTEGER time;
+            QueryPerformanceCounter(&time);
+            return static_cast<time_t>(time.QuadPart);
+        }
+
+        time_t Timer::Frequency()
+        {
+            LARGE_INTEGER frequency;
+            QueryPerformanceFrequency(&frequency);
+            return static_cast<time_t>(frequency.QuadPart);
         }
     }
 }
