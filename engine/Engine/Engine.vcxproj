@@ -20,33 +20,33 @@
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
-    <ProjectGuid>{8DB407DD-297E-43A8-8E82-B0BED40438B4}</ProjectGuid>
+    <ProjectGuid>{166DAD1B-9BB1-4C46-BA4E-74FCB180A1FB}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>Core</RootNamespace>
+    <RootNamespace>Engine</RootNamespace>
     <WindowsTargetPlatformVersion>10.0.17134.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
-    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v141</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
-    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v141</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
-    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v141</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
-    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v141</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
@@ -74,29 +74,37 @@
     <LinkIncremental>true</LinkIncremental>
     <OutDir>$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(Platform)\</OutDir>
     <IntDir>$(SolutionDir)$(MSBuildProjectName)\temp\$(Configuration)\$(Platform)\</IntDir>
-    <IncludePath>$(SolutionDir)\..\..\dependencies\OIS-1-4\include;$(SolutionDir)\..\..\dependencies\glm-0.9.9.0\glm;$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)..\..\dependencies\OIS-1-4\lib\$(Configuration)\$(Platform);$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)..\dependencies\glm-0.9.9.0\glm;$(SolutionDir)..\dependencies\OIS-1-4\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)..\dependencies\OIS-1-4\lib\$(Configuration)\$(Platform);$(LibraryPath)</LibraryPath>
+    <CustomBuildAfterTargets>
+    </CustomBuildAfterTargets>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
     <OutDir>$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(Platform)\</OutDir>
     <IntDir>$(SolutionDir)$(MSBuildProjectName)\temp\$(Configuration)\$(Platform)\</IntDir>
-    <IncludePath>$(SolutionDir)\..\..\dependencies\OIS-1-4\include;$(SolutionDir)\..\..\dependencies\glm-0.9.9.0\glm;$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)..\..\dependencies\OIS-1-4\lib\$(Configuration)\$(Platform);$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)..\dependencies\glm-0.9.9.0\glm;$(SolutionDir)..\dependencies\OIS-1-4\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)..\dependencies\OIS-1-4\lib\$(Configuration)\$(Platform);$(LibraryPath)</LibraryPath>
+    <CustomBuildAfterTargets>
+    </CustomBuildAfterTargets>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(Platform)\</OutDir>
     <IntDir>$(SolutionDir)$(MSBuildProjectName)\temp\$(Configuration)\$(Platform)\</IntDir>
-    <IncludePath>$(SolutionDir)\..\..\dependencies\OIS-1-4\include;$(SolutionDir)\..\..\dependencies\glm-0.9.9.0\glm;$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)..\..\dependencies\OIS-1-4\lib\$(Configuration)\$(Platform);$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)..\dependencies\glm-0.9.9.0\glm;$(SolutionDir)..\dependencies\OIS-1-4\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)..\dependencies\OIS-1-4\lib\$(Configuration)\$(Platform);$(LibraryPath)</LibraryPath>
+    <CustomBuildAfterTargets>
+    </CustomBuildAfterTargets>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(Platform)\</OutDir>
     <IntDir>$(SolutionDir)$(MSBuildProjectName)\temp\$(Configuration)\$(Platform)\</IntDir>
-    <IncludePath>$(SolutionDir)\..\..\dependencies\OIS-1-4\include;$(SolutionDir)\..\..\dependencies\glm-0.9.9.0\glm;$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)..\..\dependencies\OIS-1-4\lib\$(Configuration)\$(Platform);$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)..\dependencies\glm-0.9.9.0\glm;$(SolutionDir)..\dependencies\OIS-1-4\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)..\dependencies\OIS-1-4\lib\$(Configuration)\$(Platform);$(LibraryPath)</LibraryPath>
+    <CustomBuildAfterTargets>
+    </CustomBuildAfterTargets>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -104,17 +112,25 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;_DEBUG;CORE_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
-      <SubSystem>Windows</SubSystem>
+      <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>OIS.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
-    <PostBuildEvent>
+    <CustomBuildStep>
       <Command>
       </Command>
+      <Outputs>
+      </Outputs>
+      <Inputs>
+      </Inputs>
+    </CustomBuildStep>
+    <PostBuildEvent>
+      <Command>call "$(SolutionDir)..\build.bat"</Command>
       <Message>
       </Message>
     </PostBuildEvent>
@@ -125,17 +141,25 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;CORE_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
-      <SubSystem>Windows</SubSystem>
+      <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>OIS.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
-    <PostBuildEvent>
+    <CustomBuildStep>
       <Command>
       </Command>
+      <Outputs>
+      </Outputs>
+      <Inputs>
+      </Inputs>
+    </CustomBuildStep>
+    <PostBuildEvent>
+      <Command>call "$(SolutionDir)..\build.bat"</Command>
       <Message>
       </Message>
     </PostBuildEvent>
@@ -148,19 +172,27 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;NDEBUG;CORE_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
-      <SubSystem>Windows</SubSystem>
+      <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>OIS.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
-    <PostBuildEvent>
+    <CustomBuildStep>
       <Command>
       </Command>
+      <Outputs>
+      </Outputs>
+      <Inputs>
+      </Inputs>
+    </CustomBuildStep>
+    <PostBuildEvent>
+      <Command>call "$(SolutionDir)..\build.bat"</Command>
       <Message>
       </Message>
     </PostBuildEvent>
@@ -173,54 +205,49 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;CORE_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
-      <SubSystem>Windows</SubSystem>
+      <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>OIS.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
-    <PostBuildEvent>
+    <CustomBuildStep>
       <Command>
       </Command>
+      <Outputs>
+      </Outputs>
+      <Inputs>
+      </Inputs>
+    </CustomBuildStep>
+    <PostBuildEvent>
+      <Command>call "$(SolutionDir)..\build.bat"</Command>
       <Message>
       </Message>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="Input\Bindings.h" />
-    <ClInclude Include="Input\InputDefines.h" />
-    <ClInclude Include="Input\InputDevice.hpp" />
-    <ClInclude Include="Input\OISController.hpp" />
-    <ClInclude Include="Input\OISInputDevice.hpp" />
-    <ClInclude Include="Input\OISKeyboard.hpp" />
-    <ClInclude Include="Input\OISMouse.hpp" />
-    <ClInclude Include="Math\MathHelper.h" />
-    <ClInclude Include="Parser\StringHelper.h" />
-    <ClInclude Include="Parser\Tokenizer.h" />
+    <ClInclude Include="Engine.h" />
     <ClInclude Include="stdafx.h" />
-    <ClInclude Include="Time\FPSLimiter.h" />
-    <ClInclude Include="Time\Time.h" />
-    <ClInclude Include="Time\Timer.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="dllmain.cpp" />
-    <ClCompile Include="Input\Bindings.cpp" />
-    <ClCompile Include="Math\MathHelper.cpp" />
-    <ClCompile Include="Parser\StringHelper.cpp" />
-    <ClCompile Include="Parser\Tokenizer.cpp" />
+    <ClCompile Include="Engine.cpp" />
+    <ClCompile Include="Main.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="Time\FPSLimiter.cpp" />
-    <ClCompile Include="Time\Time.cpp" />
-    <ClCompile Include="Time\Timer.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Core\Core.vcxproj">
+      <Project>{8db407dd-297e-43a8-8e82-b0bed40438b4}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
