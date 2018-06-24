@@ -134,7 +134,7 @@ namespace Core
 
         vec3 MathHelper::TransformVector(const vec3& vector, const mat4& transform)
         {
-            return vec4(vector.x, vector.y, vector.z, 1.0f) * transpose(transform);
+            return vec3(vec4(vector.x, vector.y, vector.z, 1.0f) * transpose(transform));
         }
 
         void MathHelper::SetAxis(mat4& outTransform, const vec3& axis, Index axisIndex)

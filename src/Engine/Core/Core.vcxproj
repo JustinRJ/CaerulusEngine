@@ -176,6 +176,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Math\MathHelper.h" />
+    <ClInclude Include="Parser\StringHelper.h" />
+    <ClInclude Include="Parser\Tokenizer.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="Time\FPSLimiter.h" />
     <ClInclude Include="Time\Time.h" />
@@ -184,6 +186,8 @@
   <ItemGroup>
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="Math\MathHelper.cpp" />
+    <ClCompile Include="Parser\StringHelper.cpp" />
+    <ClCompile Include="Parser\Tokenizer.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>

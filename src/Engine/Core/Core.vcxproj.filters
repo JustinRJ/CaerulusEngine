@@ -13,6 +13,9 @@
     <Filter Include="Time">
       <UniqueIdentifier>{b239773a-3c68-4dcc-b557-c23f31324b2b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Input">
+      <UniqueIdentifier>{733ec090-5332-4aa4-9937-8780053c0ddc}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Math\MathHelper.cpp">
@@ -29,6 +32,12 @@
     <ClCompile Include="Time\Timer.cpp">
       <Filter>Time</Filter>
     </ClCompile>
+    <ClCompile Include="Parser\StringHelper.cpp">
+      <Filter>Parser</Filter>
+    </ClCompile>
+    <ClCompile Include="Parser\Tokenizer.cpp">
+      <Filter>Parser</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Math\MathHelper.h">
@@ -43,6 +52,12 @@
     </ClInclude>
     <ClInclude Include="Time\Timer.h">
       <Filter>Time</Filter>
+    </ClInclude>
+    <ClInclude Include="Parser\StringHelper.h">
+      <Filter>Parser</Filter>
+    </ClInclude>
+    <ClInclude Include="Parser\Tokenizer.h">
+      <Filter>Parser</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
