@@ -74,7 +74,7 @@
     <LinkIncremental>true</LinkIncremental>
     <OutDir>$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(Platform)\</OutDir>
     <IntDir>$(SolutionDir)$(MSBuildProjectName)\temp\$(Configuration)\$(Platform)\</IntDir>
-    <IncludePath>$(SolutionDir)\..\..\Dependencies\glm-0.9.8.4\glm;$(SolutionDir)\..\..\dependencies\OIS-1-3\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)\..\..\Dependencies\glm-0.9.9.0\glm;$(SolutionDir)\..\..\dependencies\OIS-1-3\include;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)\..\..\dependencies\OIS-1-3\lib\x86;$(LibraryPath)</LibraryPath>
     <CustomBuildAfterTargets>
     </CustomBuildAfterTargets>
@@ -83,7 +83,7 @@
     <LinkIncremental>true</LinkIncremental>
     <OutDir>$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(Platform)\</OutDir>
     <IntDir>$(SolutionDir)$(MSBuildProjectName)\temp\$(Configuration)\$(Platform)\</IntDir>
-    <IncludePath>$(SolutionDir)\..\..\Dependencies\glm-0.9.8.4\glm;$(SolutionDir)\..\..\dependencies\OIS-1-3\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)\..\..\Dependencies\glm-0.9.9.0\glm;$(SolutionDir)\..\..\dependencies\OIS-1-3\include;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)\..\..\dependencies\OIS-1-3\lib\x64;$(LibraryPath)</LibraryPath>
     <CustomBuildAfterTargets>
     </CustomBuildAfterTargets>
@@ -92,7 +92,7 @@
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(Platform)\</OutDir>
     <IntDir>$(SolutionDir)$(MSBuildProjectName)\temp\$(Configuration)\$(Platform)\</IntDir>
-    <IncludePath>$(SolutionDir)\..\..\Dependencies\glm-0.9.8.4\glm;$(SolutionDir)\..\..\dependencies\OIS-1-3\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)\..\..\Dependencies\glm-0.9.9.0\glm;$(SolutionDir)\..\..\dependencies\OIS-1-3\include;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)\..\..\dependencies\OIS-1-3\lib\x86;$(LibraryPath)</LibraryPath>
     <CustomBuildAfterTargets>
     </CustomBuildAfterTargets>
@@ -101,7 +101,7 @@
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(Platform)\</OutDir>
     <IntDir>$(SolutionDir)$(MSBuildProjectName)\temp\$(Configuration)\$(Platform)\</IntDir>
-    <IncludePath>$(SolutionDir)\..\..\Dependencies\glm-0.9.8.4\glm;$(SolutionDir)\..\..\dependencies\OIS-1-3\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)\..\..\Dependencies\glm-0.9.9.0\glm;$(SolutionDir)\..\..\dependencies\OIS-1-3\include;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)\..\..\dependencies\OIS-1-3\lib\x64;$(LibraryPath)</LibraryPath>
     <CustomBuildAfterTargets>
     </CustomBuildAfterTargets>
