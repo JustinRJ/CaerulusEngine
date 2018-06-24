@@ -3,9 +3,20 @@
 
 namespace Core
 {
-    namespace Timer 
+    namespace Time
     {
         tm InternalTime;
+
+        std::string GetTime(const std::string& format, size_t extralength)
+        {
+            size_t length = strlen(format.c_str()) + extralength;
+            char* buffer = new char[length];
+            strftime(buffer, length, format.c_str(), &InternalTime);
+            std::string outFormat(buffer);
+            delete[] buffer;
+
+            return outFormat;
+        }
 
         std::string GetLocalTime(const std::string& format)
         {
@@ -35,17 +46,6 @@ namespace Core
         void Time::Update()
         {
             time(&m_Time);
-        }
-
-        std::string Time::GetFormat(const std::string& format, size_t extralength) const
-        {
-            size_t length = strlen(format.c_str()) + extralength;
-            char* buffer = new char[length];
-            strftime(buffer, length, format.c_str(), &InternalTime);
-            std::string outFormat(buffer);
-            delete[] buffer;
-
-            return outFormat;
         }
 
         time_t Time::GetTime() const

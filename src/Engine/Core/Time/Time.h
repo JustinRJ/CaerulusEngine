@@ -7,11 +7,12 @@
 
 namespace Core
 {
-    namespace Timer
+    namespace Time
     {
         const double MILLISECOND = 1.0 / 1000000.0;
 
         CAERULUS_CORE std::string GetLocalTime(const std::string& format);
+        CAERULUS_CORE std::string GetTime(const std::string&, size_t extralength = 20);
 
         class Time
         {
@@ -23,7 +24,7 @@ namespace Core
             CAERULUS_CORE virtual void Update();
             CAERULUS_CORE virtual void Increment(time_t time);
             CAERULUS_CORE virtual time_t GetTime() const;
-            CAERULUS_CORE std::string GetFormat(const std::string&, size_t extralength = 0) const;
+            //CAERULUS_CORE std::string GetTime(const std::string&, size_t extralength = 20) const;
 
         protected:
             time_t m_Time;

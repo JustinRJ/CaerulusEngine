@@ -3,11 +3,10 @@
 
 namespace Core
 {
-    namespace Timer
+    namespace Time
     {
         FPSLimiter::FPSLimiter() :
-            m_FrameTime(0.0f),
-            m_PreviousFrameTime(0.0f)
+            m_FrameTime(0.0f)
         {
         }
 

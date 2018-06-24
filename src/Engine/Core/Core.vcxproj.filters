@@ -10,7 +10,7 @@
     <Filter Include="Parser">
       <UniqueIdentifier>{f3c833a2-6182-42c4-a5ae-60d4fe7df5e4}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Timer">
+    <Filter Include="Time">
       <UniqueIdentifier>{b239773a-3c68-4dcc-b557-c23f31324b2b}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -20,14 +20,14 @@
     </ClCompile>
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="stdafx.cpp" />
-    <ClCompile Include="Timer\FPSLimiter.cpp">
-      <Filter>Timer</Filter>
+    <ClCompile Include="Time\FPSLimiter.cpp">
+      <Filter>Time</Filter>
     </ClCompile>
-    <ClCompile Include="Timer\Time.cpp">
-      <Filter>Timer</Filter>
+    <ClCompile Include="Time\Time.cpp">
+      <Filter>Time</Filter>
     </ClCompile>
-    <ClCompile Include="Timer\Timer.cpp">
-      <Filter>Timer</Filter>
+    <ClCompile Include="Time\Timer.cpp">
+      <Filter>Time</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -35,14 +35,14 @@
       <Filter>Math</Filter>
     </ClInclude>
     <ClInclude Include="stdafx.h" />
-    <ClInclude Include="Timer\FPSLimiter.h">
-      <Filter>Timer</Filter>
+    <ClInclude Include="Time\FPSLimiter.h">
+      <Filter>Time</Filter>
     </ClInclude>
-    <ClInclude Include="Timer\Time.h">
-      <Filter>Timer</Filter>
+    <ClInclude Include="Time\Time.h">
+      <Filter>Time</Filter>
     </ClInclude>
-    <ClInclude Include="Timer\Timer.h">
-      <Filter>Timer</Filter>
+    <ClInclude Include="Time\Timer.h">
+      <Filter>Time</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

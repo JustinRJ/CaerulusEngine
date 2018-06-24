@@ -3,7 +3,7 @@
 
 namespace Core
 {
-    namespace Timer
+    namespace Time
     {
         extern tm InternalTime;
 

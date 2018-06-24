@@ -6,7 +6,7 @@
 
 namespace Core
 {
-    namespace Timer
+    namespace Time
     {
         class FPSLimiter : public Timer
         {
@@ -15,13 +15,12 @@ namespace Core
             CAERULUS_CORE FPSLimiter();
             CAERULUS_CORE ~FPSLimiter();
 
-            CAERULUS_CORE virtual float Delta();
+            CAERULUS_CORE virtual float Delta() override;
             CAERULUS_CORE virtual float Delta(const float frameLimit);
 
         private:
 
             float m_FrameTime;
-            float m_PreviousFrameTime;
         };
     }
 }

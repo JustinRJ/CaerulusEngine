@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../Core/Timer/FPSLimiter.h"
+#include "../Core/Time/FPSLimiter.h"
 
 namespace Engine
 {
@@ -17,6 +17,6 @@ namespace Engine
         float m_DeltaTime;
         float m_FPSLimit;
 
-        Core::Timer::FPSLimiter m_FPSLimiter;
+        Core::Time::FPSLimiter m_FPSLimiter;
     };
 }

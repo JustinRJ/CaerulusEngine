@@ -6,7 +6,7 @@
 
 namespace Core
 {
-    namespace Timer
+    namespace Time
     {
         CAERULUS_CORE void Sleep(Time sec);
         CAERULUS_CORE void Sleep(time_t sec);
