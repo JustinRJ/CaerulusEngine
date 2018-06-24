@@ -24,7 +24,6 @@ namespace Core
             CAERULUS_CORE virtual void Update();
             CAERULUS_CORE virtual void Increment(time_t time);
             CAERULUS_CORE virtual time_t GetTime() const;
-            //CAERULUS_CORE std::string GetTime(const std::string&, size_t extralength = 20) const;
 
         protected:
             time_t m_Time;

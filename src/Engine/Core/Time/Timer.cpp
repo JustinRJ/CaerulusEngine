@@ -5,8 +5,6 @@ namespace Core
 {
     namespace Time
     {
-        extern tm InternalTime;
-
         void SleepMilli(time_t milli)
         {
             ::Sleep(static_cast<DWORD>(milli));
