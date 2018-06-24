@@ -74,29 +74,29 @@
     <LinkIncremental>true</LinkIncremental>
     <OutDir>$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(Platform)\</OutDir>
     <IntDir>$(SolutionDir)$(MSBuildProjectName)\temp\$(Configuration)\$(Platform)\</IntDir>
-    <IncludePath>$(SolutionDir)\..\..\dependencies\OIS-1-3\include;$(SolutionDir)\..\..\dependencies\glm-0.9.9.0\glm;$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)\..\..\dependencies\OIS-1-3\lib\x86;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)\..\..\dependencies\OIS-1-4\include;$(SolutionDir)\..\..\dependencies\glm-0.9.9.0\glm;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)..\..\dependencies\OIS-1-4\lib\$(Configuration)\$(Platform);$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
     <OutDir>$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(Platform)\</OutDir>
     <IntDir>$(SolutionDir)$(MSBuildProjectName)\temp\$(Configuration)\$(Platform)\</IntDir>
-    <IncludePath>$(SolutionDir)\..\..\dependencies\OIS-1-3\include;$(SolutionDir)\..\..\dependencies\glm-0.9.9.0\glm;$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)\..\..\dependencies\OIS-1-3\lib\x64;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)\..\..\dependencies\OIS-1-4\include;$(SolutionDir)\..\..\dependencies\glm-0.9.9.0\glm;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)..\..\dependencies\OIS-1-4\lib\$(Configuration)\$(Platform);$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(Platform)\</OutDir>
     <IntDir>$(SolutionDir)$(MSBuildProjectName)\temp\$(Configuration)\$(Platform)\</IntDir>
-    <IncludePath>$(SolutionDir)\..\..\dependencies\OIS-1-3\include;$(SolutionDir)\..\..\dependencies\glm-0.9.9.0\glm;$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)\..\..\dependencies\OIS-1-3\lib\x86;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)\..\..\dependencies\OIS-1-4\include;$(SolutionDir)\..\..\dependencies\glm-0.9.9.0\glm;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)..\..\dependencies\OIS-1-4\lib\$(Configuration)\$(Platform);$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(Platform)\</OutDir>
     <IntDir>$(SolutionDir)$(MSBuildProjectName)\temp\$(Configuration)\$(Platform)\</IntDir>
-    <IncludePath>$(SolutionDir)\..\..\dependencies\OIS-1-3\include;$(SolutionDir)\..\..\dependencies\glm-0.9.9.0\glm;$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)\..\..\dependencies\OIS-1-3\lib\x64;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)\..\..\dependencies\OIS-1-4\include;$(SolutionDir)\..\..\dependencies\glm-0.9.9.0\glm;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)..\..\dependencies\OIS-1-4\lib\$(Configuration)\$(Platform);$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -110,7 +110,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>OIS_static_d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>OIS.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>echo DA | xcopy /E "$(SolutionDir)$(MSBuildProjectName)\bin" "$(SolutionDir)..\..\bin"</Command>
@@ -129,7 +129,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>OIS_static_d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>OIS.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>echo DA | xcopy /E "$(SolutionDir)$(MSBuildProjectName)\bin" "$(SolutionDir)..\..\bin"</Command>
@@ -152,7 +152,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>OIS_static.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>OIS.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>echo DA | xcopy /E "$(SolutionDir)$(MSBuildProjectName)\bin" "$(SolutionDir)..\..\bin"</Command>
@@ -175,7 +175,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>OIS_static.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>OIS.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>echo DA | xcopy /E "$(SolutionDir)$(MSBuildProjectName)\bin" "$(SolutionDir)..\..\bin"</Command>
