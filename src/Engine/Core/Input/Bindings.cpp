@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include "Bindings.h"
 #include "../Parser/StringHelper.h"
 #include <stdarg.h>

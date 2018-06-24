@@ -63,7 +63,7 @@ namespace Core
             template<typename T>
             void SetControl(MouseButton key)
             {
-                Controller::SetControl<T>(static_cast<int>(key), Enum::Convert(key));
+                Controller::SetControl<T>(static_cast<int>(key), Bindings::Convert(key));
             }
         };
     }

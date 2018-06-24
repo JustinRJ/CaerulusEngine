@@ -52,17 +52,17 @@ namespace Core
 
         protected:
 
-            static std::map<size_t, BindingMap> s_Data;
+            CAERULUS_CORE static std::map<size_t, BindingMap> s_Data;
 
             template <typename T>
-            static inline const BindingMap& LookUp()
+            CAERULUS_CORE static inline const BindingMap& LookUp()
             {
                 static const BindingMap& lookup = BindingMap();
                 return lookup;
             }
 
-            static bool Convert(const BindingMap& lookup, long& dest, const std::string& src);
-            static bool Convert(const BindingMap& lookup, std::string& dest, const long& src);
+            CAERULUS_CORE static bool Convert(const BindingMap& lookup, long& dest, const std::string& src);
+            CAERULUS_CORE static bool Convert(const BindingMap& lookup, std::string& dest, const long& src);
         };
     }
 }

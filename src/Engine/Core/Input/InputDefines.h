@@ -9,7 +9,7 @@ namespace Core
         /**
         *   An enum of keyboard input values.
         */
-        CAERULUS_CORE enum KeyCode
+        enum KeyCode
         {
             KEY_UNASSIGNED = 0x00,
             KEY_ESCAPE = 0x01,
@@ -162,7 +162,7 @@ namespace Core
         /**
         * \brief An enum of mouse input values.
         */
-        CAERULUS_CORE enum MouseButton
+        enum MouseButton
         {
             MOUSE_LEFT = 0,
             MOUSE_RIGHT = 1,
@@ -189,7 +189,7 @@ namespace Core
         /**
         * \brief An enum of available controller types.
         */
-        CAERULUS_CORE enum Controllers
+        enum Controllers
         {
             MOUSE,
             KEYBOARD,
@@ -200,7 +200,7 @@ namespace Core
         /**
         * \brief An enum of button press states.
         */
-        CAERULUS_CORE enum State
+        enum State
         {
             STATE_NONE = 0,
             STATE_PRESS = 1,

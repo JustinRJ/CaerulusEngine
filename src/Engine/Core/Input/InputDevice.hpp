@@ -252,8 +252,8 @@ namespace Core
                 BindingT<bool>* m_Binding = new BindingT<bool>();
                 if (state == State::STATE_HOLD)
                 {
-                    m_Binding->Set(static_cast<int>(State::STATE_PRESS, func));
-                    m_Binding->Set(static_cast<int>(State::STATE_RELEASE, func));
+                    m_Binding->Set((int)State::STATE_PRESS, func);
+                    m_Binding->Set((int)State::STATE_RELEASE, func);
                 }
                 m_Binding->Set((int)state, func);
                 return m_Binding;
