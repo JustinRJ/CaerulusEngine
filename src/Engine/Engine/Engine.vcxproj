@@ -130,7 +130,7 @@
       </Inputs>
     </CustomBuildStep>
     <PostBuildEvent>
-      <Command>echo DA | xcopy /E "$(SolutionDir)$(MSBuildProjectName)\bin" "$(SolutionDir)..\..\bin"</Command>
+      <Command>call "$(SolutionDir)..\..\build.bat"</Command>
       <Message>Copying $(MSBuildProjectName)'s bin directory:</Message>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -158,7 +158,7 @@
       </Inputs>
     </CustomBuildStep>
     <PostBuildEvent>
-      <Command>echo DA | xcopy /E "$(SolutionDir)$(MSBuildProjectName)\bin" "$(SolutionDir)..\..\bin"</Command>
+      <Command>call "$(SolutionDir)..\..\build.bat"</Command>
       <Message>Copying $(MSBuildProjectName)'s bin directory:</Message>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -190,7 +190,7 @@
       </Inputs>
     </CustomBuildStep>
     <PostBuildEvent>
-      <Command>echo DA | xcopy /E "$(SolutionDir)$(MSBuildProjectName)\bin" "$(SolutionDir)..\..\bin"</Command>
+      <Command>call "$(SolutionDir)..\..\build.bat"</Command>
       <Message>Copying $(MSBuildProjectName)'s bin directory:</Message>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -222,7 +222,7 @@
       </Inputs>
     </CustomBuildStep>
     <PostBuildEvent>
-      <Command>echo DA | xcopy /E "$(SolutionDir)$(MSBuildProjectName)\bin" "$(SolutionDir)..\..\bin"</Command>
+      <Command>call "$(SolutionDir)..\..\build.bat"</Command>
       <Message>Copying $(MSBuildProjectName)'s bin directory:</Message>
     </PostBuildEvent>
   </ItemDefinitionGroup>

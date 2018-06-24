@@ -113,8 +113,10 @@
       <AdditionalDependencies>OIS.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>echo DA | xcopy /E "$(SolutionDir)$(MSBuildProjectName)\bin" "$(SolutionDir)..\..\bin"</Command>
-      <Message>Copying $(MSBuildProjectName)'s bin directory:</Message>
+      <Command>
+      </Command>
+      <Message>
+      </Message>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -132,8 +134,10 @@
       <AdditionalDependencies>OIS.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>echo DA | xcopy /E "$(SolutionDir)$(MSBuildProjectName)\bin" "$(SolutionDir)..\..\bin"</Command>
-      <Message>Copying $(MSBuildProjectName)'s bin directory:</Message>
+      <Command>
+      </Command>
+      <Message>
+      </Message>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -155,8 +159,10 @@
       <AdditionalDependencies>OIS.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>echo DA | xcopy /E "$(SolutionDir)$(MSBuildProjectName)\bin" "$(SolutionDir)..\..\bin"</Command>
-      <Message>Copying $(MSBuildProjectName)'s bin directory:</Message>
+      <Command>
+      </Command>
+      <Message>
+      </Message>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -178,8 +184,10 @@
       <AdditionalDependencies>OIS.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>echo DA | xcopy /E "$(SolutionDir)$(MSBuildProjectName)\bin" "$(SolutionDir)..\..\bin"</Command>
-      <Message>Copying $(MSBuildProjectName)'s bin directory:</Message>
+      <Command>
+      </Command>
+      <Message>
+      </Message>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
