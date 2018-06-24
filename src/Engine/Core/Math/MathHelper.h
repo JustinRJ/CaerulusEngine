@@ -21,9 +21,9 @@ namespace Core
             W = 3
         };
 
-        const vec3 UnitUp      (0.0f, 1.0f, 0.0f);
-        const vec3 UnitRight   (1.0f, 0.0f, 0.0f);
-        const vec3 UnitForward (0.0f, 0.0f, -1.0f);
+        CAERULUS_CORE const vec3 UnitUp      (0.0f, 1.0f, 0.0f);
+        CAERULUS_CORE const vec3 UnitRight   (1.0f, 0.0f, 0.0f);
+        CAERULUS_CORE const vec3 UnitForward (0.0f, 0.0f, -1.0f);
 
         class MathHelper
         {

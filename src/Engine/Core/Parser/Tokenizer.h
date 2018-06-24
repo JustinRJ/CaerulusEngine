@@ -14,10 +14,10 @@ namespace Core
             CAERULUS_CORE ~Tokenizer();
 
             CAERULUS_CORE const char* Start();
-            CAERULUS_CORE const char* Start(const char* delims);
+            CAERULUS_CORE const char* Start(const std::string& delims);
             
             CAERULUS_CORE const char* Next();
-            CAERULUS_CORE const char* Next(const char* delims);
+            CAERULUS_CORE const char* Next(const std::string& delims);
 
             CAERULUS_CORE const char* Get();
             CAERULUS_CORE void Reset();

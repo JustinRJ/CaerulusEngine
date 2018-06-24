@@ -175,6 +175,13 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Input\Bindings.h" />
+    <ClInclude Include="Input\InputDefines.h" />
+    <ClInclude Include="Input\InputDevice.hpp" />
+    <ClInclude Include="Input\OISController.hpp" />
+    <ClInclude Include="Input\OISInputDevice.hpp" />
+    <ClInclude Include="Input\OISKeyboard.hpp" />
+    <ClInclude Include="Input\OISMouse.hpp" />
     <ClInclude Include="Math\MathHelper.h" />
     <ClInclude Include="Parser\StringHelper.h" />
     <ClInclude Include="Parser\Tokenizer.h" />
@@ -185,6 +192,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp" />
+    <ClCompile Include="Input\Bindings.cpp" />
     <ClCompile Include="Math\MathHelper.cpp" />
     <ClCompile Include="Parser\StringHelper.cpp" />
     <ClCompile Include="Parser\Tokenizer.cpp" />

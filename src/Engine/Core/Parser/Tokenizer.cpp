@@ -12,7 +12,6 @@ namespace Core
             m_Context(NULL),
             m_Original(str.c_str()),
             m_Delims(delim.c_str())
-
         {
         }
 
@@ -31,11 +30,11 @@ namespace Core
             m_Context = NULL;
         }
 
-        const char* Tokenizer::Start(const char* delims)
+        const char* Tokenizer::Start(const std::string& delims)
         {
             Reset();
             m_String = _strdup(m_Original);
-            return strtok_s(m_String, delims, &m_Context);
+            return strtok_s(m_String, delims.c_str(), &m_Context);
         }
 
         const char* Tokenizer::Start()
@@ -43,9 +42,9 @@ namespace Core
             return Start(m_Delims);
         }
 
-        const char* Tokenizer::Next(const char* delims)
+        const char* Tokenizer::Next(const std::string& delims)
         {
-            return strtok_s(NULL, delims, &m_Context);
+            return strtok_s(NULL, delims.c_str(), &m_Context);
         }
 
         const char* Tokenizer::Next()
