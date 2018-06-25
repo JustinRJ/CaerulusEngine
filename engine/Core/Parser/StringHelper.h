@@ -2,7 +2,6 @@
 
 #define CAERULUS_CORE __declspec(dllexport)
 
-#include "Tokenizer.h"
 #include <string>
 #include <vector>
 

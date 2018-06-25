@@ -3,8 +3,6 @@
 #include "../Core/Time/FPSLimiter.h"
 #include "../Core/Input/OISInputDevice.hpp"
 
-#include <memory>
-
 namespace Engine
 {
     using namespace Core;

@@ -1,7 +1,5 @@
 #include "stdafx.h"
 #include "Tokenizer.h"
-#include <stdlib.h>
-#include <string.h>
 
 namespace Core
 {

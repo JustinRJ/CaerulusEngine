@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "Engine.h"
-#include <iostream>
 
 namespace Engine
 {

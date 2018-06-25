@@ -2,8 +2,6 @@
 #include "StringHelper.h"
 #include <algorithm>
 #include <cstdarg>
-#include <cstring>
-#include <cctype>
 
 namespace Core
 {
