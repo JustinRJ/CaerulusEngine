@@ -1,7 +1,5 @@
 #pragma once
 
-#define CAERULUS_CORE __declspec(dllexport)
-
 namespace Core
 {
     namespace Input

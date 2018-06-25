@@ -1,7 +1,5 @@
 #pragma once
 
-#define CAERULUS_CORE __declspec(dllexport)
-
 #include "OIS.h"
 #include "InputDevice.hpp"
 #include "OISMouse.hpp"

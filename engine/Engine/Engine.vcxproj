@@ -74,8 +74,8 @@
     <LinkIncremental>true</LinkIncremental>
     <OutDir>$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(Platform)\</OutDir>
     <IntDir>$(SolutionDir)$(MSBuildProjectName)\temp\$(Configuration)\$(Platform)\</IntDir>
-    <IncludePath>$(SolutionDir)..\dependencies\OIS-1-4\include;$(SolutionDir)..\dependencies\glm-0.9.9.0\include;$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)..\dependencies\OIS-1-4\lib\$(Configuration)\$(Platform);$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)..\dependencies\OIS-1-4\include;$(SolutionDir)..\dependencies\glm-0.9.9.0\include;$(SolutionDir)..\dependencies\Vulkan-1.1.73.0\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)..\dependencies\OIS-1-4\lib\$(Configuration)\$(Platform);$(SolutionDir)..\dependencies\Vulkan-1.1.73.0\lib\$(Platform);$(LibraryPath)</LibraryPath>
     <CustomBuildAfterTargets>
     </CustomBuildAfterTargets>
   </PropertyGroup>
@@ -83,8 +83,8 @@
     <LinkIncremental>true</LinkIncremental>
     <OutDir>$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(Platform)\</OutDir>
     <IntDir>$(SolutionDir)$(MSBuildProjectName)\temp\$(Configuration)\$(Platform)\</IntDir>
-    <IncludePath>$(SolutionDir)..\dependencies\OIS-1-4\include;$(SolutionDir)..\dependencies\glm-0.9.9.0\include;$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)..\dependencies\OIS-1-4\lib\$(Configuration)\$(Platform);$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)..\dependencies\OIS-1-4\include;$(SolutionDir)..\dependencies\glm-0.9.9.0\include;$(SolutionDir)..\dependencies\Vulkan-1.1.73.0\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)..\dependencies\OIS-1-4\lib\$(Configuration)\$(Platform);$(SolutionDir)..\dependencies\Vulkan-1.1.73.0\lib\$(Platform);$(LibraryPath)</LibraryPath>
     <CustomBuildAfterTargets>
     </CustomBuildAfterTargets>
   </PropertyGroup>
@@ -92,8 +92,8 @@
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(Platform)\</OutDir>
     <IntDir>$(SolutionDir)$(MSBuildProjectName)\temp\$(Configuration)\$(Platform)\</IntDir>
-    <IncludePath>$(SolutionDir)..\dependencies\OIS-1-4\include;$(SolutionDir)..\dependencies\glm-0.9.9.0\include;$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)..\dependencies\OIS-1-4\lib\$(Configuration)\$(Platform);$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)..\dependencies\OIS-1-4\include;$(SolutionDir)..\dependencies\glm-0.9.9.0\include;$(SolutionDir)..\dependencies\Vulkan-1.1.73.0\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)..\dependencies\OIS-1-4\lib\$(Configuration)\$(Platform);$(SolutionDir)..\dependencies\Vulkan-1.1.73.0\lib\$(Platform);$(LibraryPath)</LibraryPath>
     <CustomBuildAfterTargets>
     </CustomBuildAfterTargets>
   </PropertyGroup>
@@ -101,8 +101,8 @@
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(Platform)\</OutDir>
     <IntDir>$(SolutionDir)$(MSBuildProjectName)\temp\$(Configuration)\$(Platform)\</IntDir>
-    <IncludePath>$(SolutionDir)..\dependencies\OIS-1-4\include;$(SolutionDir)..\dependencies\glm-0.9.9.0\include;$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)..\dependencies\OIS-1-4\lib\$(Configuration)\$(Platform);$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)..\dependencies\OIS-1-4\include;$(SolutionDir)..\dependencies\glm-0.9.9.0\include;$(SolutionDir)..\dependencies\Vulkan-1.1.73.0\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)..\dependencies\OIS-1-4\lib\$(Configuration)\$(Platform);$(SolutionDir)..\dependencies\Vulkan-1.1.73.0\lib\$(Platform);$(LibraryPath)</LibraryPath>
     <CustomBuildAfterTargets>
     </CustomBuildAfterTargets>
   </PropertyGroup>
