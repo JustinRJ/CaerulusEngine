@@ -15,7 +15,6 @@ namespace Engine
         m_InputDevice.reset(std::make_unique<Input::OISInputDevice>().release());
         //m_InputDevice->Initialize(/*m_Window*/);
         //m_InputDevice->Command("quit").Set([&]() { m_Running = false; }).Bind(Core::Input::KeyCode::KEY_ESCAPE);
-
     }
 
     Engine::~Engine()

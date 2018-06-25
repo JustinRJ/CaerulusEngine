@@ -30,8 +30,8 @@ namespace Core
 
             virtual void Initialize(/*Graphics::Window::IWindow* window*/)
             {
-                //void* handle = window->Handle();
-                //m_Input = InputManager::createInputSystem((size_t)handle);
+                //void* hwnd = window->Handle();
+                //m_Input = InputManager::createInputSystem((size_t)hwnd);
 
                 m_Controllers[Controllers::KEYBOARD] = new Input::OISKeyboard(m_Input);
                 m_Controllers[Controllers::MOUSE] = new Input::OISMouse(m_Input);
