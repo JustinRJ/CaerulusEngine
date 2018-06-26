@@ -372,7 +372,7 @@ namespace Core
                 m_Controls.clear();
             }
 
-            virtual void Update(float dt) = 0;
+            virtual void Update() = 0;
 
             virtual Control* GetControl(int key)
             {
@@ -512,7 +512,7 @@ namespace Core
             {
             }
 
-            virtual void Initialize(/*Graphics::IWindow& window*/)
+            virtual void Initialize(void * hwnd)
             {
             }
 
@@ -531,11 +531,11 @@ namespace Core
                 m_Controllers.clear();
             }
 
-            virtual void Update(float dt)
+            virtual void Update()
             {
                 for (std::map<Controllers, Controller*>::iterator it = m_Controllers.begin(); it != m_Controllers.cend(); it++)
                 {
-                    it->second->Update(dt);
+                    it->second->Update();
                 }
                 for (std::map<std::string, Mapping*>::iterator it = m_Mappings.begin(); it != m_Mappings.cend(); it++)
                 {

@@ -6,6 +6,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
+    <ClInclude Include="Graphics.h">
+      <Filter>Vulkan</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Vulkan">

@@ -26,7 +26,7 @@ namespace Core
                 }
             }
 
-            virtual void Update(float /*dt*/)
+            virtual void Update()
             {
                 m_Device->capture();
             }

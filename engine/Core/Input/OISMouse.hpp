@@ -28,12 +28,12 @@ namespace Core
             {
             }
 
-            virtual void Update(float dt)
+            virtual void Update()
             {
                 // Required as mouseMoved doesn't trigger every frame
                 SetControlValue(static_cast<int>(MouseButton::MOUSE_XY_DELTA), glm::vec2(0.0f));
                 SetControlValue(static_cast<int>(MouseButton::MOUSE_SCROLL_DELTA), 0.0f);
-                OISController::Update(dt);
+                OISController::Update();
             }
 
         protected:

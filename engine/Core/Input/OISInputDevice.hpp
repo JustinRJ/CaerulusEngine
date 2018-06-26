@@ -26,21 +26,17 @@ namespace Core
                 Uninitialize();
             }
 
-            virtual void Initialize(/*Graphics::Window::IWindow* window*/)
+            virtual void Initialize(void* hwnd)
             {
-                //void* hwnd = window->Handle();
-                //m_Input = InputManager::createInputSystem((size_t)hwnd);
-
+                m_Input = InputManager::createInputSystem((size_t)hwnd);
                 m_Controllers[Controllers::KEYBOARD] = new Input::OISKeyboard(m_Input);
                 m_Controllers[Controllers::MOUSE] = new Input::OISMouse(m_Input);
-
-                InputDevice::Initialize(/*window*/);
+                InputDevice::Initialize(hwnd);
             }
 
             virtual void Uninitialize()
             {
                 InputDevice::Uninitialize();
-
                 if (m_Input)
                 {
                     InputManager::destroyInputSystem(m_Input);
