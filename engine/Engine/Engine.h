@@ -5,7 +5,8 @@
 
 namespace Engine
 {
-    using namespace Core;
+    using namespace Core::Time;
+    using namespace Core::Input;
 
     class Engine
     {
@@ -19,11 +20,12 @@ namespace Engine
     private:
         int m_ArgCount;
         char** m_ArgValue;
+
         bool m_Running;
         float m_DeltaTime;
         float m_FPSLimit;
 
-        std::unique_ptr<Time::FPSLimiter> m_FPSLimiter;
-        std::unique_ptr<Input::InputDevice> m_InputDevice;
+        std::unique_ptr<FPSLimiter> m_FPSLimiter;
+        std::unique_ptr<InputDevice> m_InputDevice;
     };
 }

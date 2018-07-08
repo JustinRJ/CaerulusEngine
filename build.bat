@@ -1,6 +1,4 @@
-echo DA | xcopy /E "%~dp0dependencies\SDL2-2.0.8\bin"   "%~dp0\bin"
-echo DA | xcopy /E "%~dp0dependencies\OIS-1-4\bin"      "%~dp0\bin"
-
-echo DA | xcopy /E "%~dp0engine\Engine\bin\*.exe"       "%~dp0\bin"
-echo DA | xcopy /E "%~dp0engine\Core\bin\*dll"          "%~dp0\bin"
-echo DA | xcopy /E "%~dp0engine\Graphics\bin\*dll"      "%~dp0\bin"
+echo DA | xcopy /E "%~dp0dependencies\OIS-1-4\bin\%1\%2\OIS.dll"      "%~dp0\bin\%1\%2"
+echo DA | xcopy /E "%~dp0engine\Engine\bin\%1\%2\Engine.exe"          "%~dp0\bin\%1\%2"
+echo DA | xcopy /E "%~dp0engine\Core\bin\%1\%2\Core.dll"              "%~dp0\bin\%1\%2"
+echo DA | xcopy /E "%~dp0engine\Graphics\bin\%1\%2\Graphics.dll"      "%~dp0\bin\%1\%2"

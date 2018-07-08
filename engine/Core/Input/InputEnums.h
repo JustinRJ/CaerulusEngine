@@ -4,10 +4,7 @@ namespace Core
 {
     namespace Input
     {
-        /**
-        *   An enum of keyboard input values.
-        */
-        enum KeyCode
+        enum Key
         {
             KEY_UNASSIGNED = 0x00,
             KEY_ESCAPE = 0x01,
@@ -156,10 +153,6 @@ namespace Core
             KEY_MEDIASELECT = 0xED  // Media Select
         };
 
-
-        /**
-        * \brief An enum of mouse input values.
-        */
         enum MouseButton
         {
             MOUSE_LEFT = 0,
@@ -184,9 +177,6 @@ namespace Core
             MOUSE_SCROLL_DELTA = 11
         };
 
-        /**
-        * \brief An enum of available controller types.
-        */
         enum Controllers
         {
             MOUSE,
@@ -195,15 +185,12 @@ namespace Core
             SENSORS
         };
 
-        /**
-        * \brief An enum of button press states.
-        */
         enum State
         {
-            STATE_NONE = 0,
-            STATE_PRESS = 1,
-            STATE_RELEASE = 2,
-            STATE_HOLD = 3
+            STATE_NONE,
+            STATE_PRESS,
+            STATE_RELEASE,
+            STATE_HOLD
         };
     }
 }

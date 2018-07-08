@@ -62,9 +62,6 @@
     <ClInclude Include="Parser\Tokenizer.h">
       <Filter>Parser</Filter>
     </ClInclude>
-    <ClInclude Include="Input\InputDefines.h">
-      <Filter>Input</Filter>
-    </ClInclude>
     <ClInclude Include="Input\InputDevice.hpp">
       <Filter>Input</Filter>
     </ClInclude>
@@ -81,6 +78,9 @@
       <Filter>Input</Filter>
     </ClInclude>
     <ClInclude Include="Input\Bindings.h">
+      <Filter>Input</Filter>
+    </ClInclude>
+    <ClInclude Include="Input\InputEnums.h">
       <Filter>Input</Filter>
     </ClInclude>
   </ItemGroup>

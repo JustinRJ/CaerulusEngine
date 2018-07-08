@@ -11,7 +11,7 @@ namespace Core
     {
         std::map<size_t, Bindings::BindingMap> Bindings::s_Data;
 
-        const Bindings::BindingMap& Bindings::Add(size_t type, const char* str, long arg, ...)
+        const Bindings::BindingMap& Bindings::Add(size_t type, const std::string& str, long arg, ...)
         {
             BindingMap& lookup = s_Data[type];
 
@@ -21,7 +21,7 @@ namespace Core
                 va_start(arguments, arg);
 
                 long val = -1LL;
-                std::vector<std::string> vars = Parser::StringHelper::Tokenize(str, ",");
+                std::vector<std::string> vars = Parser::StringHelper::Tokenize(str.c_str(), ",");
                 for (size_t i = 0; i < vars.size(); ++i)
                 {
                     const char* var = vars[i].c_str();
@@ -40,7 +40,7 @@ namespace Core
             return lookup;
         }
 
-        bool Bindings::Convert(const BindingMap& lookup, long& dest, const std::string& src)
+        void Bindings::Convert(const BindingMap& lookup, long& dest, const std::string& src)
         {
             // Find number from string
             BindingMap::const_iterator var = lookup.find(src);
@@ -50,10 +50,9 @@ namespace Core
             }
             // Try to convert from number
             std::stringstream(src) >> dest;
-            return true;
         }
 
-        bool Bindings::Convert(const BindingMap& lookup, std::string& dest, const long& src)
+        void Bindings::Convert(const BindingMap& lookup, std::string& dest, const long& src)
         {
             // Find string from number
             for (BindingMap::const_iterator it = lookup.cbegin(); it != lookup.cend(); ++it)
@@ -61,14 +60,13 @@ namespace Core
                 if (it->second == src)
                 {
                     dest = it->first;
-                    return true;
+                    return;
                 }
             }
             // Convert to decimal
             std::stringstream str("");
             str << src;
             dest = str.str();
-            return true;
         }
     }
 }

@@ -12,10 +12,11 @@ namespace Engine
         m_DeltaTime(0.0f),
         m_FPSLimit(1.0f / 60.0f)
     {
-        m_FPSLimiter.reset(std::make_unique<Time::FPSLimiter>().release());
-        m_InputDevice.reset(std::make_unique<Input::OISInputDevice>().release());
+        m_FPSLimiter.reset(std::make_unique<FPSLimiter>().release());
+        m_InputDevice.reset(std::make_unique<OISInputDevice>().release());
         m_InputDevice->Initialize(Hwnd());
-        m_InputDevice->Command("quit").Set([&]() { m_Running = false; }).Bind(Input::KeyCode::KEY_ESCAPE);
+        m_InputDevice->Command("quit").Set([&]() { m_Running = false; }).Bind(Key::KEY_ESCAPE);
+        m_InputDevice->Command("Test").Set([&]() { std::cout << "Test" << std::endl; }, State::STATE_HOLD).Bind(Key::KEY_T);
         m_InputDevice->PrintCommands();
     }
 
@@ -36,7 +37,7 @@ namespace Engine
             }
 
         }
-        catch(...)
+        catch (...)
         {
             std::cerr << "Error in Engine solution!"  << std::endl;
         }

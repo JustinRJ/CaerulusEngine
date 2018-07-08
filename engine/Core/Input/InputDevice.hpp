@@ -1,6 +1,6 @@
 #pragma once
 
-#include "InputDefines.h"
+#include "InputEnums.h"
 #include "../Parser/StringHelper.h"
 #include <map>
 #include <glm.hpp>
@@ -15,7 +15,7 @@ namespace Core
         {
             std::string Name;
 
-            Control(const std::string& name) : 
+            Control(const std::string& name) :
                 Name(name)
             {
             }
@@ -30,7 +30,7 @@ namespace Core
         {
             T Value;
 
-            ControlT(const std::string& name) : 
+            ControlT(const std::string& name) :
                 Control(name),
                 Value()
             {
@@ -48,10 +48,10 @@ namespace Core
 
             static float AsFloat(float val) { return val; }
             static float AsFloat(bool val) { return val ? 1.0f : 0.0f; }
-            static float AsFloat(glm::vec2 val) { return (float)val.length(); }
+            static float AsFloat(glm::vec2 val) { return static_cast<float>(val.length()); }
 
             static glm::vec2 AsVec2(glm::vec2 val) { return val; }
-            static glm::vec2 AsVec2(bool val) { return glm::vec2((float)val, (float)val); }
+            static glm::vec2 AsVec2(bool val) { return glm::vec2(static_cast<float>(val), static_cast<float>(val)); }
             static glm::vec2 AsVec2(float val) { return glm::vec2(val, val); }
         };
 
@@ -59,7 +59,7 @@ namespace Core
         {
             int State;
 
-            IBoxed() : 
+            IBoxed() :
                 State(0)
             {
             }
@@ -107,7 +107,7 @@ namespace Core
             {
                 for (size_t i = 0; i < list.size(); ++i)
                 {
-                    if ((bool)*list[i])
+                    if (static_cast<bool>(*list[i]))
                     {
                         Value = true;
                         return Value;
@@ -124,7 +124,7 @@ namespace Core
 
                 for (size_t i = 0; i < list.size(); ++i)
                 {
-                    Value += (float)*list[i];
+                    Value += static_cast<float>(*list[i]);
                 }
 
                 return (Value < 0 ? -Value : Value) > DeadZone;
@@ -252,10 +252,10 @@ namespace Core
                 BindingT<bool>* m_Binding = new BindingT<bool>();
                 if (state == State::STATE_HOLD)
                 {
-                    m_Binding->Set((int)State::STATE_PRESS, func);
-                    m_Binding->Set((int)State::STATE_RELEASE, func);
+                    m_Binding->Set(static_cast<int>(State::STATE_PRESS), func);
+                    m_Binding->Set(static_cast<int>(State::STATE_RELEASE), func);
                 }
-                m_Binding->Set((int)state, func);
+                m_Binding->Set(static_cast<int>(state), func);
                 return m_Binding;
             }
         };
@@ -286,14 +286,15 @@ namespace Core
             {
                 if (control == nullptr)
                 {
-                    std::cerr << "[ERROR] Failed to add control" << std::endl;
+                    std::cerr << "Failed to add control!" << std::endl;
                     return;
                 }
                 for (auto c : m_Controls)
                 {
                     if (c == control)
                     {
-                        return;	// Already Added
+                        // Already added
+                        return;
                     }
                 }
                 m_Controls.push_back(control);
@@ -309,7 +310,7 @@ namespace Core
                         return;
                     }
                 }
-                std::cerr << "[ERROR] Failed to remove control" << std::endl;
+                std::cerr << "Failed to remove control!" << std::endl;
             }
 
             void SetBinding(Binding* binding)
@@ -329,10 +330,10 @@ namespace Core
 
             std::string ToString()
             {
-                std::string str = Parser::StringHelper::Format("[%-20s]", m_ID.c_str());
+                std::string str = Parser::StringHelper::Format("[%-0s]", m_ID.c_str());
                 for (Control* control : m_Controls)
                 {
-                    Parser::StringHelper::FormatAppend(str, " %-20s", control->Name.c_str());
+                    Parser::StringHelper::FormatAppend(str, " %-0s", control->Name.c_str());
                 }
                 return str;
             }
@@ -358,7 +359,7 @@ namespace Core
 
         public:
 
-            Controller(int controls) : 
+            Controller(int controls) :
                 m_Controls(controls)
             {
             }
@@ -399,17 +400,17 @@ namespace Core
             std::map<Controllers, Controller*> m_Controllers;
             std::map<std::string, Mapping*> m_Mappings;
 
-            Controller* GetKeyboard(const int /*id*/ = 0)
+            Controller* GetKeyboard(const int id = 0)
             {
                 return m_Controllers[Controllers::KEYBOARD];
             }
 
-            Controller* GetMouse(const int /*id*/ = 0)
+            Controller* GetMouse(const int id = 0)
             {
                 return m_Controllers[Controllers::MOUSE];
             }
 
-            Control* GetControl(const KeyCode key)
+            Control* GetControl(const Key key)
             {
                 return GetKeyboard()->GetControl(key);
             }
@@ -450,7 +451,7 @@ namespace Core
 
             public:
 
-                InputCommand(InputDevice* input, const std::string& id) : 
+                InputCommand(InputDevice* input, const std::string& id) :
                     m_Input(input),
                     m_ID(id)
                 {
@@ -479,7 +480,7 @@ namespace Core
                     return *this;
                 }
 
-                InputCommand& Unbind(const KeyCode key)
+                InputCommand& Unbind(const Key key)
                 {
                     m_Input->RemoveControl(m_ID, key);
                     return *this;
@@ -490,7 +491,7 @@ namespace Core
                     return *this;
                 }
 
-                InputCommand& Bind(const KeyCode key)
+                InputCommand& Bind(const Key key)
                 {
                     m_Input->AddControl(m_ID, key);
                     return *this;
@@ -520,7 +521,7 @@ namespace Core
             {
                 for (std::map<std::string, Mapping*>::iterator it = m_Mappings.begin(); it != m_Mappings.cend(); it++)
                 {
-                    std::cerr << "[ERROR] Mapping not removed: " << it->first;
+                    std::cerr << "Mapping not removed: " << it->first;
                     delete it->second;
                 }
                 m_Mappings.clear();
@@ -563,7 +564,7 @@ namespace Core
             {
                 GetMapping(mapping)->SetBinding(m_Binding);
             }
-            virtual void SetBinding(const std::string& mapping, Binding* m_Binding, const KeyCode key)
+            virtual void SetBinding(const std::string& mapping, Binding* m_Binding, const Key key)
             {
                 SetBinding(mapping, m_Binding);
                 AddControl(mapping, key);
@@ -574,7 +575,7 @@ namespace Core
                 AddControl(mapping, key);
             }
 
-            virtual void RemoveControl(const std::string& mapping, const KeyCode key)
+            virtual void RemoveControl(const std::string& mapping, const Key key)
             {
                 Control* control = GetControl(key);
                 GetMapping(mapping)->RemoveControl(control);
@@ -585,7 +586,7 @@ namespace Core
                 GetMapping(mapping)->RemoveControl(control);
             }
 
-            virtual void AddControl(const std::string& mapping, const KeyCode key)
+            virtual void AddControl(const std::string& mapping, const Key key)
             {
                 Control* control = GetControl(key);
                 GetMapping(mapping)->AddControl(control);
@@ -601,38 +602,37 @@ namespace Core
                 return InputCommand(this, mapping);
             }
 
-            virtual bool Key(const KeyCode key)
+            virtual bool Key(const Key key)
             {
-                return GetKeyboard()->GetControlValue<bool>((int)key);
+                return GetKeyboard()->GetControlValue<bool>(static_cast<int>(key));
             }
 
             virtual bool MouseButton(const MouseButton button)
             {
-                return GetMouse()->GetControlValue<bool>((int)button);
+                return GetMouse()->GetControlValue<bool>(static_cast<int>(button));
             }
 
             virtual void MouseMovement(int& x, int& y)
             {
-                glm::vec2 xy = GetMouse()->GetControlValue<glm::vec2>((int)MouseButton::MOUSE_XY_DELTA);
-                x = (int)xy.x;
-                y = (int)xy.y;
+                glm::vec2 xy = GetMouse()->GetControlValue<glm::vec2>(static_cast<int>(MouseButton::MOUSE_XY_DELTA));
+                x = static_cast<int>(xy.x);
+                y = static_cast<int>(xy.y);
             }
 
             virtual void MousePosition(int& x, int& y)
             {
-                glm::vec2 xy = GetMouse()->GetControlValue<glm::vec2>((int)MouseButton::MOUSE_XY);
-                x = (int)xy.x;
-                y = (int)xy.y;
+                glm::vec2 xy = GetMouse()->GetControlValue<glm::vec2>(static_cast<int>(MouseButton::MOUSE_XY));
+                x = static_cast<int>(xy.x);
+                y = static_cast<int>(xy.y);
             }
 
             virtual void PrintCommands()
             {
-                std::cout << "====== INPUT MAPPINGS ======" << std::endl;
+                std::cout << "Input Mappings:" << std::endl;
                 for (std::map<std::string, Mapping*>::iterator it = m_Mappings.begin(); it != m_Mappings.cend(); it++)
                 {
                     std::cout << it->second->ToString() << std::endl;
                 }
-                std::cout << "====== INPUT MAPPINGS ======" << std::endl << std::endl;
             }
         };
     }
