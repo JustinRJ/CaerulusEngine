@@ -78,6 +78,7 @@
     <LibraryPath>$(SolutionDir)..\dependencies\Vulkan-1.1.73.0\lib\$(Platform);$(SolutionDir)..\dependencies\glfw-3.2.1\lib\$(Configuration)\$(Platform);$(SolutionDir)..\dependencies\OIS-1-4\lib\$(Configuration)\$(Platform);$(LibraryPath)</LibraryPath>
     <CustomBuildAfterTargets>
     </CustomBuildAfterTargets>
+    <TargetName>Caerulus_$(ProjectName)</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
@@ -87,6 +88,7 @@
     <LibraryPath>$(SolutionDir)..\dependencies\Vulkan-1.1.73.0\lib\$(Platform);$(SolutionDir)..\dependencies\glfw-3.2.1\lib\$(Configuration)\$(Platform);$(SolutionDir)..\dependencies\OIS-1-4\lib\$(Configuration)\$(Platform);$(LibraryPath)</LibraryPath>
     <CustomBuildAfterTargets>
     </CustomBuildAfterTargets>
+    <TargetName>Caerulus_$(ProjectName)</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -96,6 +98,7 @@
     <LibraryPath>$(SolutionDir)..\dependencies\Vulkan-1.1.73.0\lib\$(Platform);$(SolutionDir)..\dependencies\glfw-3.2.1\lib\$(Configuration)\$(Platform);$(SolutionDir)..\dependencies\OIS-1-4\lib\$(Configuration)\$(Platform);$(LibraryPath)</LibraryPath>
     <CustomBuildAfterTargets>
     </CustomBuildAfterTargets>
+    <TargetName>Caerulus_$(ProjectName)</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
@@ -105,6 +108,7 @@
     <LibraryPath>$(SolutionDir)..\dependencies\Vulkan-1.1.73.0\lib\$(Platform);$(SolutionDir)..\dependencies\glfw-3.2.1\lib\$(Configuration)\$(Platform);$(SolutionDir)..\dependencies\OIS-1-4\lib\$(Configuration)\$(Platform);$(LibraryPath)</LibraryPath>
     <CustomBuildAfterTargets>
     </CustomBuildAfterTargets>
+    <TargetName>Caerulus_$(ProjectName)</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>

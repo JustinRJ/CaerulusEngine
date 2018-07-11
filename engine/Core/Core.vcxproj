@@ -76,6 +76,7 @@
     <IntDir>$(SolutionDir)$(MSBuildProjectName)\temp\$(Configuration)\$(Platform)\</IntDir>
     <IncludePath>$(SolutionDir)..\dependencies\OIS-1-4\include;$(SolutionDir)..\dependencies\glm-0.9.9.0\include;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)..\dependencies\OIS-1-4\lib\$(Configuration)\$(Platform);$(LibraryPath)</LibraryPath>
+    <TargetName>Caerulus_$(ProjectName)</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
@@ -83,6 +84,7 @@
     <IntDir>$(SolutionDir)$(MSBuildProjectName)\temp\$(Configuration)\$(Platform)\</IntDir>
     <IncludePath>$(SolutionDir)..\dependencies\OIS-1-4\include;$(SolutionDir)..\dependencies\glm-0.9.9.0\include;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)..\dependencies\OIS-1-4\lib\$(Configuration)\$(Platform);$(LibraryPath)</LibraryPath>
+    <TargetName>Caerulus_$(ProjectName)</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -90,6 +92,7 @@
     <IntDir>$(SolutionDir)$(MSBuildProjectName)\temp\$(Configuration)\$(Platform)\</IntDir>
     <IncludePath>$(SolutionDir)..\dependencies\OIS-1-4\include;$(SolutionDir)..\dependencies\glm-0.9.9.0\include;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)..\dependencies\OIS-1-4\lib\$(Configuration)\$(Platform);$(LibraryPath)</LibraryPath>
+    <TargetName>Caerulus_$(ProjectName)</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
@@ -97,6 +100,7 @@
     <IntDir>$(SolutionDir)$(MSBuildProjectName)\temp\$(Configuration)\$(Platform)\</IntDir>
     <IncludePath>$(SolutionDir)..\dependencies\OIS-1-4\include;$(SolutionDir)..\dependencies\glm-0.9.9.0\include;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)..\dependencies\OIS-1-4\lib\$(Configuration)\$(Platform);$(LibraryPath)</LibraryPath>
+    <TargetName>Caerulus_$(ProjectName)</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
