@@ -41,6 +41,15 @@
     <ClCompile Include="Input\Bindings.cpp">
       <Filter>Input</Filter>
     </ClCompile>
+    <ClCompile Include="Input\OISMouse.cpp">
+      <Filter>Input</Filter>
+    </ClCompile>
+    <ClCompile Include="Input\OISKeyboard.cpp">
+      <Filter>Input</Filter>
+    </ClCompile>
+    <ClCompile Include="Input\OISInputDevice.cpp">
+      <Filter>Input</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Math\MathHelper.h">
@@ -65,22 +74,22 @@
     <ClInclude Include="Input\InputDevice.hpp">
       <Filter>Input</Filter>
     </ClInclude>
-    <ClInclude Include="Input\OISController.hpp">
-      <Filter>Input</Filter>
-    </ClInclude>
-    <ClInclude Include="Input\OISInputDevice.hpp">
-      <Filter>Input</Filter>
-    </ClInclude>
-    <ClInclude Include="Input\OISKeyboard.hpp">
-      <Filter>Input</Filter>
-    </ClInclude>
-    <ClInclude Include="Input\OISMouse.hpp">
-      <Filter>Input</Filter>
-    </ClInclude>
     <ClInclude Include="Input\Bindings.h">
       <Filter>Input</Filter>
     </ClInclude>
     <ClInclude Include="Input\InputEnums.h">
+      <Filter>Input</Filter>
+    </ClInclude>
+    <ClInclude Include="Input\OISMouse.h">
+      <Filter>Input</Filter>
+    </ClInclude>
+    <ClInclude Include="Input\OISKeyboard.h">
+      <Filter>Input</Filter>
+    </ClInclude>
+    <ClInclude Include="Input\OISInputDevice.h">
+      <Filter>Input</Filter>
+    </ClInclude>
+    <ClInclude Include="Input\OISController.hpp">
       <Filter>Input</Filter>
     </ClInclude>
   </ItemGroup>

@@ -13,7 +13,7 @@ namespace Core
         public:
 
             CAERULUS_CORE FPSLimiter();
-            CAERULUS_CORE ~FPSLimiter();
+            CAERULUS_CORE virtual ~FPSLimiter();
 
             CAERULUS_CORE virtual float Delta() override;
             CAERULUS_CORE virtual float Delta(const float frameLimit);

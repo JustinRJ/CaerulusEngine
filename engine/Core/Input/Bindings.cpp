@@ -63,6 +63,7 @@ namespace Core
                     return;
                 }
             }
+
             // Convert to decimal
             std::stringstream str("");
             str << src;

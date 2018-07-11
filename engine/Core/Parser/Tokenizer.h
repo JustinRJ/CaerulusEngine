@@ -8,8 +8,9 @@ namespace Core
 {
     namespace Parser
     {
-        struct Tokenizer
+        class Tokenizer
         {
+        public:
             CAERULUS_CORE Tokenizer(const std::string&, const std::string& = " ");
             CAERULUS_CORE ~Tokenizer();
 

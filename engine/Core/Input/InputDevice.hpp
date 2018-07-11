@@ -2,8 +2,9 @@
 
 #include "InputEnums.h"
 #include "../Parser/StringHelper.h"
+#include "../Math/MathHelper.h"
+
 #include <map>
-#include <glm.hpp>
 #include <iostream>
 #include <functional>
 
@@ -341,22 +342,6 @@ namespace Core
 
         class Controller
         {
-        protected:
-
-            std::vector<Control*> m_Controls;
-
-            template<typename T>
-            void SetControl(int key, const std::string& name)
-            {
-                m_Controls[key] = new ControlT<T>(name);
-            }
-
-            template<typename T>
-            ControlT<T>* GetControl(int key)
-            {
-                return static_cast<ControlT<T>*>(m_Controls[key]);
-            }
-
         public:
 
             Controller(int controls) :
@@ -390,6 +375,22 @@ namespace Core
             void SetControlValue(int key, T value)
             {
                 GetControl<T>(key)->Value = value;
+            }
+
+        protected:
+
+            std::vector<Control*> m_Controls;
+
+            template<typename T>
+            void SetControl(int key, const std::string& name)
+            {
+                m_Controls[key] = new ControlT<T>(name);
+            }
+
+            template<typename T>
+            ControlT<T>* GetControl(int key)
+            {
+                return static_cast<ControlT<T>*>(m_Controls[key]);
             }
         };
 
@@ -513,7 +514,7 @@ namespace Core
             {
             }
 
-            virtual void Initialize(void * hwnd)
+            virtual void Initialize(void* hwnd)
             {
             }
 
@@ -521,7 +522,6 @@ namespace Core
             {
                 for (std::map<std::string, Mapping*>::iterator it = m_Mappings.begin(); it != m_Mappings.cend(); it++)
                 {
-                    std::cerr << "Mapping not removed: " << it->first;
                     delete it->second;
                 }
                 m_Mappings.clear();
@@ -597,7 +597,7 @@ namespace Core
                 GetMapping(mapping)->AddControl(control);
             }
 
-            inline InputCommand Command(const std::string& mapping)
+            InputCommand Command(const std::string& mapping)
             {
                 return InputCommand(this, mapping);
             }

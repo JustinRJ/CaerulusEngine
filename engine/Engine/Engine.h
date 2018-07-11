@@ -1,7 +1,7 @@
 #pragma once
 
 #include "../Core/Time/FPSLimiter.h"
-#include "../Core/Input/OISInputDevice.hpp"
+#include "../Core/Input/OISInputDevice.h"
 
 namespace Engine
 {

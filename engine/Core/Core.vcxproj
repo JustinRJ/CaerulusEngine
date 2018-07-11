@@ -195,9 +195,9 @@
     <ClInclude Include="Input\InputEnums.h" />
     <ClInclude Include="Input\InputDevice.hpp" />
     <ClInclude Include="Input\OISController.hpp" />
-    <ClInclude Include="Input\OISInputDevice.hpp" />
-    <ClInclude Include="Input\OISKeyboard.hpp" />
-    <ClInclude Include="Input\OISMouse.hpp" />
+    <ClInclude Include="Input\OISInputDevice.h" />
+    <ClInclude Include="Input\OISKeyboard.h" />
+    <ClInclude Include="Input\OISMouse.h" />
     <ClInclude Include="Math\MathHelper.h" />
     <ClInclude Include="Parser\StringHelper.h" />
     <ClInclude Include="Parser\Tokenizer.h" />
@@ -209,6 +209,9 @@
   <ItemGroup>
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="Input\Bindings.cpp" />
+    <ClCompile Include="Input\OISInputDevice.cpp" />
+    <ClCompile Include="Input\OISKeyboard.cpp" />
+    <ClCompile Include="Input\OISMouse.cpp" />
     <ClCompile Include="Math\MathHelper.cpp" />
     <ClCompile Include="Parser\StringHelper.cpp" />
     <ClCompile Include="Parser\Tokenizer.cpp" />

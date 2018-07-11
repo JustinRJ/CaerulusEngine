@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Bindings.h"
+#include "InputDevice.hpp"
 
 namespace Core
 {
@@ -10,7 +11,7 @@ namespace Core
         class OISController : public Controller, public L
         {
         public:
-            OISController(OIS::InputManager* m_Input, int controls, OIS::Type device, bool buffered = true) : 
+            OISController(OIS::InputManager* m_Input, int controls, OIS::Type device, bool buffered = true) :
                 Controller(controls),
                 m_Input(m_Input),
                 m_Device(nullptr)
@@ -26,21 +27,21 @@ namespace Core
                 }
             }
 
-            virtual void Update()
+            virtual void Update() override
             {
                 m_Device->capture();
             }
 
-            protected:
+        protected:
 
-                OIS::InputManager* m_Input;
-                T* m_Device;
+            OIS::InputManager* m_Input;
+            T* m_Device;
 
-                virtual void CreateDevice(OIS::Type key, bool buffered)
-                {
-                    m_Device = static_cast<T*>(m_Input->createInputObject(key, buffered));
-                    m_Device->setEventCallback(this);
-                }
+            void CreateDevice(OIS::Type key, bool buffered)
+            {
+                m_Device = static_cast<T*>(m_Input->createInputObject(key, buffered));
+                m_Device->setEventCallback(this);
+            }
         };
     }
 }

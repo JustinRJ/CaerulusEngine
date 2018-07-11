@@ -48,17 +48,17 @@ namespace Core
 
         protected:
 
-            CAERULUS_CORE static std::map<size_t, BindingMap> s_Data;
+            static std::map<size_t, BindingMap> s_Data;
 
             template <typename T>
-            CAERULUS_CORE static const BindingMap& LookUp()
+            static const BindingMap& LookUp()
             {
                 static const BindingMap& lookup = BindingMap();
                 return lookup;
             }
 
-            CAERULUS_CORE static void Convert(const BindingMap& lookup, long& dest, const std::string& src);
-            CAERULUS_CORE static void Convert(const BindingMap& lookup, std::string& dest, const long& src);
+            static void Convert(const BindingMap& lookup, long& dest, const std::string& src);
+            static void Convert(const BindingMap& lookup, std::string& dest, const long& src);
         };
     }
 }

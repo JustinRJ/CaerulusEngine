@@ -30,8 +30,8 @@ namespace Core
 
         protected:
 
-            CAERULUS_CORE time_t NanoTime();
-            CAERULUS_CORE time_t Frequency();
+            time_t NanoTime();
+            time_t Frequency();
 
             bool m_Running;
             float m_DeltaTime;

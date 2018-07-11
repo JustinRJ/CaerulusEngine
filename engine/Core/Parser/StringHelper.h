@@ -9,8 +9,10 @@ namespace Core
 {
     namespace Parser
     {
-        struct StringHelper
+        class StringHelper
         {
+        public:
+
             CAERULUS_CORE static bool IsValid(const char* str);
             CAERULUS_CORE static bool Compare(const char* str1, const char* str2, bool ignore_case = true);
             CAERULUS_CORE static bool EndsWith(const char* str1, const char* str2, bool ignore_case = true);
