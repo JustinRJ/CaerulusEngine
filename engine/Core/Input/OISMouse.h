@@ -1,9 +1,9 @@
 #pragma once
 
-#define CAERULUS_CORE __declspec(dllexport)
-
 #include "OIS.h"
 #include "OISController.hpp"
+#include "Bindings.h"
+#include "InputEnums.h"
 
 namespace Core
 {
@@ -13,12 +13,12 @@ namespace Core
         {
         public:
 
-            CAERULUS_CORE OISMouse(OIS::InputManager* m_Input = nullptr);
-            CAERULUS_CORE virtual ~OISMouse();
+            OISMouse(OIS::InputManager* m_Input = nullptr);
+            virtual ~OISMouse();
 
-            CAERULUS_CORE virtual void Update() override;
+            virtual void Update() override;
 
-        protected:
+        private:
 
             virtual bool mouseMoved(const OIS::MouseEvent& arg) override;
             virtual bool mousePressed(const OIS::MouseEvent& arg, OIS::MouseButtonID id) override;

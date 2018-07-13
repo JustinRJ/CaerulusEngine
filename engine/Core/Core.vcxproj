@@ -195,9 +195,14 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Input\Binding.hpp" />
     <ClInclude Include="Input\Bindings.h" />
+    <ClInclude Include="Input\Boxed.hpp" />
+    <ClInclude Include="Input\Control.hpp" />
+    <ClInclude Include="Input\Controller.hpp" />
     <ClInclude Include="Input\InputEnums.h" />
     <ClInclude Include="Input\InputDevice.hpp" />
+    <ClInclude Include="Input\Mapping.h" />
     <ClInclude Include="Input\OISController.hpp" />
     <ClInclude Include="Input\OISInputDevice.h" />
     <ClInclude Include="Input\OISKeyboard.h" />
@@ -213,6 +218,7 @@
   <ItemGroup>
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="Input\Bindings.cpp" />
+    <ClCompile Include="Input\Mapping.cpp" />
     <ClCompile Include="Input\OISInputDevice.cpp" />
     <ClCompile Include="Input\OISKeyboard.cpp" />
     <ClCompile Include="Input\OISMouse.cpp" />

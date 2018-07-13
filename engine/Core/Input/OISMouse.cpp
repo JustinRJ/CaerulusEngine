@@ -1,7 +1,6 @@
 #include "stdafx.h"
 
 #include "OISMouse.h"
-#include "../Math/MathHelper.h"
 
 namespace Core
 {
@@ -14,7 +13,7 @@ namespace Core
         {
             for (int i = 0; i <= static_cast<int>(MouseButton::MOUSE_BUTTON7); ++i)
             {
-                SetControl<bool>((MouseButton)i);
+                SetControl<bool>(static_cast<MouseButton>(i));
             }
             SetControl<glm::vec2>(MouseButton::MOUSE_XY);
             SetControl<glm::vec2>(MouseButton::MOUSE_XY_DELTA);

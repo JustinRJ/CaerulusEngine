@@ -50,6 +50,9 @@
     <ClCompile Include="Input\OISInputDevice.cpp">
       <Filter>Input</Filter>
     </ClCompile>
+    <ClCompile Include="Input\Mapping.cpp">
+      <Filter>Input</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Math\MathHelper.h">
@@ -90,6 +93,21 @@
       <Filter>Input</Filter>
     </ClInclude>
     <ClInclude Include="Input\OISController.hpp">
+      <Filter>Input</Filter>
+    </ClInclude>
+    <ClInclude Include="Input\Boxed.hpp">
+      <Filter>Input</Filter>
+    </ClInclude>
+    <ClInclude Include="Input\Control.hpp">
+      <Filter>Input</Filter>
+    </ClInclude>
+    <ClInclude Include="Input\Binding.hpp">
+      <Filter>Input</Filter>
+    </ClInclude>
+    <ClInclude Include="Input\Mapping.h">
+      <Filter>Input</Filter>
+    </ClInclude>
+    <ClInclude Include="Input\Controller.hpp">
       <Filter>Input</Filter>
     </ClInclude>
   </ItemGroup>

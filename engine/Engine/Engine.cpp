@@ -14,13 +14,13 @@ namespace Engine
     {
         m_FPSLimiter.reset(std::make_unique<FPSLimiter>().release());
         m_InputDevice.reset(std::make_unique<OISInputDevice>().release());
+
         m_InputDevice->Initialize(Hwnd());
         m_InputDevice->Command("Quit").Set([&]() { m_Running = false; }).Bind(Key::KEY_ESCAPE);
-        m_InputDevice->Command("Hold").Set([&]() { std::cout << "Hold" << std::endl; }, State::STATE_HOLD).Bind(Key::KEY_H);
         m_InputDevice->Command("Press1").Set([&]() { std::cout << "Press1" << std::endl; }, State::STATE_PRESS).Bind(Key::KEY_P);
-        m_InputDevice->Command("Press2").Set([&]() { std::cout << "Press2" << std::endl; }, State::STATE_PRESS).Bind(Key::KEY_P);
+        m_InputDevice->Command("Press2").Set([&]() { std::cout << "Press2" << std::endl; }, State::STATE_HOLD).Bind(Key::KEY_P);
         m_InputDevice->Command("Release1").Set([&]() { std::cout << "Release1" << std::endl; }, State::STATE_RELEASE).Bind(Key::KEY_R);
-        m_InputDevice->Command("Release2").Set([&]() { std::cout << "Release2" << std::endl; }, State::STATE_RELEASE).Bind(Key::KEY_R);
+        m_InputDevice->Command("Release2").Set([&]() { std::cout << "Release2" << std::endl; }, State::STATE_HOLD).Bind(Key::KEY_R);
         m_InputDevice->PrintCommands();
     }
 
@@ -42,7 +42,7 @@ namespace Engine
         }
         catch (...)
         {
-            std::cerr << "Error in Engine solution!"  << std::endl;
+            std::cerr << "Error in Caerulus Engine!"  << std::endl;
         }
     }
 }

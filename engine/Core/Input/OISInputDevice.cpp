@@ -1,6 +1,8 @@
 #include "stdafx.h"
 
 #include "OISInputDevice.h"
+#include "OISMouse.h"
+#include "OISKeyboard.h"
 
 namespace Core
 {

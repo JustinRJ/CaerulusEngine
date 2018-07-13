@@ -1,7 +1,5 @@
 #pragma once
 
-#define CAERULUS_CORE __declspec(dllexport)
-
 #include <map>
 
 namespace Core
@@ -14,7 +12,7 @@ namespace Core
 
         public:
             template <typename T>
-            CAERULUS_CORE static std::string Convert(const T& src)
+            static std::string Convert(const T& src)
             {
                 std::string dest;
                 Convert<T>(dest, src);
@@ -22,14 +20,14 @@ namespace Core
             }
 
             template <typename T>
-            CAERULUS_CORE static void Convert(std::string& dest, const T& src)
+            static void Convert(std::string& dest, const T& src)
             {
                 long bit = static_cast<long>(src);
                 Convert(LookUp<T>(), dest, bit);
             }
 
             template <typename T>
-            CAERULUS_CORE static T Convert(const std::string& src)
+            static T Convert(const std::string& src)
             {
                 T dest;
                 Convert<T>(dest, src);
@@ -37,16 +35,16 @@ namespace Core
             }
 
             template <typename T>
-            CAERULUS_CORE static void Convert(T& dest, const std::string& src)
+            static void Convert(T& dest, const std::string& src)
             {
                 long bit;
                 Convert(LookUp<T>(), bit, src);
                 dest = static_cast<T>(bit);
             }
 
-            CAERULUS_CORE static const BindingMap& Add(size_t type, const std::string& str, long arg, ...);
+            static const BindingMap& Add(size_t type, const std::string& str, long arg, ...);
 
-        protected:
+        private:
 
             static std::map<size_t, BindingMap> s_Data;
 

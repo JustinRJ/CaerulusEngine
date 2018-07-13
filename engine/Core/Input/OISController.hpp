@@ -1,7 +1,6 @@
 #pragma once
 
-#include "Bindings.h"
-#include "InputDevice.hpp"
+#include "Controller.hpp"
 
 namespace Core
 {
@@ -32,16 +31,16 @@ namespace Core
                 m_Device->capture();
             }
 
-        protected:
-
-            OIS::InputManager* m_Input;
-            T* m_Device;
+        private:
 
             void CreateDevice(OIS::Type key, bool buffered)
             {
                 m_Device = static_cast<T*>(m_Input->createInputObject(key, buffered));
                 m_Device->setEventCallback(this);
             }
+
+            OIS::InputManager* m_Input;
+            T* m_Device;
         };
     }
 }

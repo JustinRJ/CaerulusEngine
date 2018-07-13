@@ -1,9 +1,8 @@
 #pragma once
 
-#define CAERULUS_CORE __declspec(dllexport)
-
 #include "OIS.h"
 #include "OISController.hpp"
+#include "Bindings.h"
 
 namespace Core
 {
@@ -13,10 +12,10 @@ namespace Core
         {
         public:
 
-            CAERULUS_CORE OISKeyboard(OIS::InputManager* m_Input = nullptr);
-            CAERULUS_CORE virtual ~OISKeyboard();
+            OISKeyboard(OIS::InputManager* m_Input = nullptr);
+            virtual ~OISKeyboard();
 
-        protected:
+        private:
 
             virtual bool keyPressed(const OIS::KeyEvent& arg) override;
             virtual bool keyReleased(const OIS::KeyEvent& arg) override;

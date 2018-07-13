@@ -3,8 +3,6 @@
 #define CAERULUS_CORE __declspec(dllexport)
 
 #include "OIS.h"
-#include "OISMouse.h"
-#include "OISKeyboard.h"
 #include "InputDevice.hpp"
 
 namespace Core
@@ -16,12 +14,13 @@ namespace Core
         public:
 
             CAERULUS_CORE OISInputDevice();
-            CAERULUS_CORE virtual ~OISInputDevice();
+            virtual ~OISInputDevice();
 
-            CAERULUS_CORE virtual void Initialize(void* hwnd) override;
-            CAERULUS_CORE virtual void Uninitialize() override;
+            virtual void Initialize(void* hwnd) override;
+            virtual void Uninitialize() override;
 
-        protected:
+        private:
+
             OIS::InputManager* m_Input;
         };
     }
