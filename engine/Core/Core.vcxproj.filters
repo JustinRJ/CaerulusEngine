@@ -95,9 +95,6 @@
     <ClInclude Include="Input\OISController.hpp">
       <Filter>Input</Filter>
     </ClInclude>
-    <ClInclude Include="Input\Boxed.hpp">
-      <Filter>Input</Filter>
-    </ClInclude>
     <ClInclude Include="Input\Control.hpp">
       <Filter>Input</Filter>
     </ClInclude>
@@ -108,6 +105,9 @@
       <Filter>Input</Filter>
     </ClInclude>
     <ClInclude Include="Input\Controller.hpp">
+      <Filter>Input</Filter>
+    </ClInclude>
+    <ClInclude Include="Input\Scaled.hpp">
       <Filter>Input</Filter>
     </ClInclude>
   </ItemGroup>

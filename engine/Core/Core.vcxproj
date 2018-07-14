@@ -197,7 +197,7 @@
   <ItemGroup>
     <ClInclude Include="Input\Binding.hpp" />
     <ClInclude Include="Input\Bindings.h" />
-    <ClInclude Include="Input\Boxed.hpp" />
+    <ClInclude Include="Input\Scaled.hpp" />
     <ClInclude Include="Input\Control.hpp" />
     <ClInclude Include="Input\Controller.hpp" />
     <ClInclude Include="Input\InputEnums.h" />

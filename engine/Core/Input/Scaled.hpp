@@ -8,14 +8,14 @@ namespace Core
 {
     namespace Input
     {
-        struct Boxed
+        struct Scaled
         {
-            Boxed() :
+            Scaled() :
                 State(0)
             {
             }
 
-            virtual ~Boxed()
+            virtual ~Scaled()
             {
             }
 
@@ -25,17 +25,17 @@ namespace Core
         };
 
         template <typename T>
-        class BoxedT : public Boxed
+        class ScaledT : public Scaled
         {
         public:
 
-            BoxedT(T val = T()) :
+            ScaledT(T val = T()) :
                 DeadZone(0.0f),
                 Value(val)
             {
             }
 
-            virtual ~BoxedT()
+            virtual ~ScaledT()
             {
             }
 

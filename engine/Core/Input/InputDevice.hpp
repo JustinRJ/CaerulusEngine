@@ -3,6 +3,7 @@
 #include "Mapping.h"
 #include "Controller.hpp"
 
+#include <map>
 #include <iostream>
 
 namespace Core
@@ -11,115 +12,7 @@ namespace Core
     {
         class InputDevice
         {
-        protected:
-
-            std::map<Controllers, Controller*> m_Controllers;
-            std::map<std::string, Mapping*> m_Mappings;
-
-            Controller* GetKeyboard(const int id = 0)
-            {
-                return m_Controllers[Controllers::KEYBOARD];
-            }
-
-            Controller* GetMouse(const int id = 0)
-            {
-                return m_Controllers[Controllers::MOUSE];
-            }
-
-            Control* GetControl(const Key key)
-            {
-                return GetKeyboard()->GetControl(key);
-            }
-
-            Control* GetControl(const MouseButton key)
-            {
-                return GetMouse()->GetControl(key);
-            }
-
-            Mapping* GetMapping(const std::string& mapping, bool create = true)
-            {
-                if (create)
-                {
-                    Mapping*& m = m_Mappings[mapping];
-                    return (m == nullptr) ? (m = new Mapping(mapping)) : m;
-                }
-                else
-                {
-                    std::map<std::string, Mapping*>::const_iterator it = m_Mappings.find(mapping);
-                    return (it != m_Mappings.cend()) ? it->second : nullptr;
-                }
-            }
-
-            void RemoveMapping(const std::string& mapping)
-            {
-                delete m_Mappings[mapping];
-                m_Mappings.erase(mapping);
-            }
-
         public:
-
-            class InputCommand
-            {
-            public:
-
-                InputCommand(InputDevice* input, const std::string& id) :
-                    m_Input(input),
-                    m_ID(id)
-                {
-                }
-
-                InputCommand& Set(const std::function<void()>& func, State state = State::STATE_PRESS)
-                {
-                    return Set<bool>([func](bool) { func(); }, state);
-                }
-
-                template <typename T>
-                InputCommand& Set(const std::function<void(T)>& func, State state = State::STATE_PRESS)
-                {
-                    return Set(BindingT<T>::Create(func, state));
-                }
-
-                InputCommand& Unset(bool complete = false)
-                {
-                    m_Input->RemoveBinding(m_ID, complete);
-                    return *this;
-                }
-
-                InputCommand& Set(Binding* m_Binding)
-                {
-                    m_Input->SetBinding(m_ID, m_Binding);
-                    return *this;
-                }
-
-                InputCommand& Unbind(const Key key)
-                {
-                    m_Input->RemoveControl(m_ID, key);
-                    return *this;
-                }
-                InputCommand& Unbind(const MouseButton key)
-                {
-                    m_Input->RemoveControl(m_ID, key);
-                    return *this;
-                }
-
-                InputCommand& Bind(const Key key)
-                {
-                    m_Input->AddControl(m_ID, key);
-                    return *this;
-                }
-                InputCommand& Bind(const MouseButton key)
-                {
-                    m_Input->AddControl(m_ID, key);
-                    return *this;
-                }
-
-            private:
-
-                InputDevice* m_Input;
-                std::string m_ID;
-            };
-
-            friend class InputCommand;
 
             InputDevice()
             {
@@ -212,33 +105,37 @@ namespace Core
                 GetMapping(mapping)->AddControl(control);
             }
 
-            InputCommand Command(const std::string& mapping)
-            {
-                return InputCommand(this, mapping);
-            }
-
-            virtual bool Key(const Key key)
+            virtual bool GetKey(const Key key)
             {
                 return GetKeyboard()->GetControlValue<bool>(static_cast<int>(key));
             }
 
-            virtual bool MouseButton(const MouseButton button)
+            virtual bool GetMouseButton(const MouseButton button)
             {
                 return GetMouse()->GetControlValue<bool>(static_cast<int>(button));
             }
 
-            virtual void MouseMovement(int& x, int& y)
+            virtual void GetMouseMovement(int& x, int& y)
             {
                 glm::vec2 xy = GetMouse()->GetControlValue<glm::vec2>(static_cast<int>(MouseButton::MOUSE_XY_DELTA));
                 x = static_cast<int>(xy.x);
                 y = static_cast<int>(xy.y);
             }
 
-            virtual void MousePosition(int& x, int& y)
+            virtual void GetMousePosition(int& x, int& y)
             {
                 glm::vec2 xy = GetMouse()->GetControlValue<glm::vec2>(static_cast<int>(MouseButton::MOUSE_XY));
                 x = static_cast<int>(xy.x);
                 y = static_cast<int>(xy.y);
+            }
+
+            virtual bool Invoke(const std::string& name)
+            {
+                if (m_Mappings.at(name))
+                {
+                    return m_Mappings.at(name)->Invoke();
+                }
+                return false;
             }
 
             virtual void PrintCommands()
@@ -249,6 +146,122 @@ namespace Core
                     std::cout << it->second->ToString() << std::endl;
                 }
             }
+
+        protected:
+
+            std::map<Controllers, Controller*> m_Controllers;
+
+        private:
+
+            Controller * GetKeyboard(const int id = 0)
+            {
+                return m_Controllers[Controllers::KEYBOARD];
+            }
+
+            Controller* GetMouse(const int id = 0)
+            {
+                return m_Controllers[Controllers::MOUSE];
+            }
+
+            Control* GetControl(const Key key)
+            {
+                return GetKeyboard()->GetControl(key);
+            }
+
+            Control* GetControl(const MouseButton key)
+            {
+                return GetMouse()->GetControl(key);
+            }
+
+            Mapping* GetMapping(const std::string& mapping, bool create = true)
+            {
+                if (create)
+                {
+                    Mapping*& m = m_Mappings[mapping];
+                    return (m == nullptr) ? (m = new Mapping(mapping)) : m;
+                }
+                else
+                {
+                    std::map<std::string, Mapping*>::const_iterator it = m_Mappings.find(mapping);
+                    return (it != m_Mappings.cend()) ? it->second : nullptr;
+                }
+            }
+
+            void RemoveMapping(const std::string& mapping)
+            {
+                delete m_Mappings[mapping];
+                m_Mappings.erase(mapping);
+            }
+
+            std::map<std::string, Mapping*> m_Mappings;
+
+            class InputCommand
+            {
+            public:
+
+                InputCommand(InputDevice* input, const std::string& id) :
+                    m_Input(input),
+                    m_ID(id)
+                {
+                }
+
+                InputCommand& Set(const std::function<void()>& func, State state = State::STATE_PRESS)
+                {
+                    return Set<bool>([func](bool) { func(); }, state);
+                }
+
+                template <typename T>
+                InputCommand& Set(const std::function<void(T)>& func, State state = State::STATE_PRESS)
+                {
+                    return Set(BindingT<T>::Create(func, state));
+                }
+
+                InputCommand& Unset(bool complete = false)
+                {
+                    m_Input->RemoveBinding(m_ID, complete);
+                    return *this;
+                }
+
+                InputCommand& Set(Binding* m_Binding)
+                {
+                    m_Input->SetBinding(m_ID, m_Binding);
+                    return *this;
+                }
+
+                InputCommand& Unbind(const Key key)
+                {
+                    m_Input->RemoveControl(m_ID, key);
+                    return *this;
+                }
+                InputCommand& Unbind(const MouseButton key)
+                {
+                    m_Input->RemoveControl(m_ID, key);
+                    return *this;
+                }
+
+                InputCommand& Bind(const Key key)
+                {
+                    m_Input->AddControl(m_ID, key);
+                    return *this;
+                }
+                InputCommand& Bind(const MouseButton key)
+                {
+                    m_Input->AddControl(m_ID, key);
+                    return *this;
+                }
+
+            private:
+
+                InputDevice * m_Input;
+                std::string m_ID;
+            };
+
+            public:
+
+                InputCommand Command(const std::string& mapping)
+                {
+                    return InputCommand(this, mapping);
+                }
         };
     }
 }

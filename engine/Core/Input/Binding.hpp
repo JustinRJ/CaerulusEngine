@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Boxed.hpp"
+#include "Scaled.hpp"
 #include "InputEnums.h"
 
 #include <functional>
@@ -19,6 +19,8 @@ namespace Core
 
             virtual void Invoke() = 0;
 
+            virtual void InvokeAll() = 0;
+
             virtual void Update(std::vector<Control*>& list)
             {
                 m_ValueBase->Update(list);
@@ -26,14 +28,14 @@ namespace Core
 
         protected:
 
-            Binding(Boxed& val) :
+            Binding(Scaled& val) :
                 m_ValueBase(&val)
             {
             }
 
         private:
 
-            Boxed* m_ValueBase;
+            Scaled* m_ValueBase;
         };
 
         template <typename T>
@@ -55,6 +57,11 @@ namespace Core
                 m_Callback(m_Value);
             }
 
+            virtual void InvokeAll() override
+            {
+                m_Callback(m_Value);
+            }
+
             template<typename FT>
             void Set(const FT& func)
             {
@@ -71,7 +78,7 @@ namespace Core
 
         private:
 
-            BoxedT<T> m_Value;
+            ScaledT<T> m_Value;
             std::function<void(T)> m_Callback;
         };
 
@@ -101,6 +108,18 @@ namespace Core
                 }
             }
 
+            virtual void InvokeAll() override
+            {
+                for (unsigned int i = 0; i < m_Callbacks.size(); ++i)
+                {
+                    const std::function<void(bool)>& func = m_Callbacks[i];
+                    if (func)
+                    {
+                        func(m_Value);
+                    }
+                }
+            }
+
             template<typename FT>
             void Set(int state, const FT& func)
             {
@@ -122,7 +141,7 @@ namespace Core
 
         private:
 
-            BoxedT<bool> m_Value;
+            ScaledT<bool> m_Value;
             typedef std::vector<std::function<void(bool)>> CallbackMap;
             CallbackMap m_Callbacks;
         };

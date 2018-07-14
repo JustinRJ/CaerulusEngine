@@ -14,12 +14,12 @@ namespace Core
             virtual ~Mapping();
 
             void AddControl(Control* control);
-
             void RemoveControl(Control* control);
 
             void SetBinding(Binding* binding);
 
             void Update();
+            bool Invoke();
 
             std::string ToString();
 

@@ -42,6 +42,7 @@ namespace Engine
         }
         catch (...)
         {
+            m_Running = false;
             std::cerr << "Error in Caerulus Engine!"  << std::endl;
         }
     }

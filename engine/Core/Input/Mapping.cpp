@@ -60,11 +60,21 @@ namespace Core
 
         void Mapping::Update()
         {
-            if (m_Binding != nullptr)
+            if (m_Binding)
             {
                 m_Binding->Update(m_Controls);
                 m_Binding->Invoke();
             }
+        }
+
+        bool Mapping::Invoke()
+        {
+            if (m_Binding)
+            {
+                m_Binding->InvokeAll();
+                return true;
+            }
+            return false;
         }
 
         std::string Mapping::ToString()
