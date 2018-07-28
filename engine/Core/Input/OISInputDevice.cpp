@@ -23,8 +23,8 @@ namespace Core
         void OISInputDevice::Initialize(void* hwnd)
         {
             m_Input = InputManager::createInputSystem((size_t)hwnd);
-            m_Controllers[Controllers::KEYBOARD] = new Input::OISKeyboard(m_Input);
-            m_Controllers[Controllers::MOUSE] = new Input::OISMouse(m_Input);
+            m_Controllers[Controllers::KEYBOARD] = std::make_shared<Input::OISKeyboard>(m_Input);
+            m_Controllers[Controllers::MOUSE] = std::make_shared<Input::OISMouse>(m_Input);
             InputDevice::Initialize(hwnd);
         }
 
@@ -36,6 +36,5 @@ namespace Core
                 InputManager::destroyInputSystem(m_Input);
             }
         }
-
     }
 }

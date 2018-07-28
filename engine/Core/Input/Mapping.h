@@ -13,10 +13,10 @@ namespace Core
             Mapping(const std::string& id);
             virtual ~Mapping();
 
-            void AddControl(Control* control);
-            void RemoveControl(Control* control);
+            void AddControl(std::shared_ptr<Control> control);
+            void RemoveControl(std::shared_ptr<Control> control);
 
-            void SetBinding(Binding* binding);
+            void SetBinding(std::unique_ptr<Binding> binding);
 
             void Update();
             bool Invoke();
@@ -26,8 +26,8 @@ namespace Core
         private:
 
             std::string m_ID;
-            std::vector<Control*> m_Controls;
-            Binding* m_Binding;
+            std::vector<std::shared_ptr<Control>> m_Controls;
+            std::unique_ptr<Binding> m_Binding;
         };
     }
 }

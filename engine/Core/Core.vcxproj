@@ -218,6 +218,7 @@
   <ItemGroup>
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="Input\Bindings.cpp" />
+    <ClCompile Include="Input\InputDevice.cpp" />
     <ClCompile Include="Input\Mapping.cpp" />
     <ClCompile Include="Input\OISInputDevice.cpp" />
     <ClCompile Include="Input\OISKeyboard.cpp" />

@@ -3,6 +3,7 @@
 #include "Scaled.hpp"
 #include "InputEnums.h"
 
+#include <memory>
 #include <functional>
 
 namespace Core
@@ -15,13 +16,14 @@ namespace Core
 
             virtual ~Binding()
             {
+                m_ValueBase.release();
             }
 
             virtual void Invoke() = 0;
 
             virtual void InvokeAll() = 0;
 
-            virtual void Update(std::vector<Control*>& list)
+            virtual void Update(std::vector<std::shared_ptr<Control>>& list)
             {
                 m_ValueBase->Update(list);
             }
@@ -35,7 +37,7 @@ namespace Core
 
         private:
 
-            Scaled* m_ValueBase;
+            std::unique_ptr<Scaled> m_ValueBase;
         };
 
         template <typename T>
@@ -69,11 +71,11 @@ namespace Core
             }
 
             template<typename FT>
-            static Binding* Create(const FT& func, State state = State::STATE_NONE)
+            static std::unique_ptr<Binding> Create(const FT& func, State state = State::STATE_NONE)
             {
-                BindingT<T>* m_Binding = new BindingT<T>();
-                m_Binding->Set(func);
-                return m_Binding;
+                std::unique_ptr<BindingT<T>> binding = std::make_unique<BindingT<T>>();
+                binding->Set(func);
+                return binding;
             }
 
         private:
@@ -127,16 +129,16 @@ namespace Core
             }
 
             template<typename FT>
-            static Binding* Create(const FT& func, State state = State::STATE_PRESS)
+            static std::unique_ptr<Binding> Create(const FT& func, State state = State::STATE_PRESS)
             {
-                BindingT<bool>* m_Binding = new BindingT<bool>();
+                std::unique_ptr<BindingT<bool>> binding = std::make_unique<BindingT<bool>>();
                 if (state == State::STATE_HOLD)
                 {
-                    m_Binding->Set(static_cast<int>(State::STATE_PRESS), func);
-                    m_Binding->Set(static_cast<int>(State::STATE_RELEASE), func);
+                    binding->Set(static_cast<int>(State::STATE_PRESS), func);
+                    binding->Set(static_cast<int>(State::STATE_RELEASE), func);
                 }
-                m_Binding->Set(static_cast<int>(state), func);
-                return m_Binding;
+                binding->Set(static_cast<int>(state), func);
+                return binding;
             }
 
         private:

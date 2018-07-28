@@ -39,8 +39,8 @@ namespace Core
                 m_Device->setEventCallback(this);
             }
 
-            OIS::InputManager* m_Input;
             T* m_Device;
+            OIS::InputManager* m_Input;
         };
     }
 }

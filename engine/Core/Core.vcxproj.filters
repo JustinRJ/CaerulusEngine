@@ -53,6 +53,9 @@
     <ClCompile Include="Input\Mapping.cpp">
       <Filter>Input</Filter>
     </ClCompile>
+    <ClCompile Include="Input\InputDevice.cpp">
+      <Filter>Input</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Math\MathHelper.h">

@@ -12,7 +12,7 @@ namespace Core
         {
         public:
             CAERULUS_CORE Tokenizer(const std::string&, const std::string& = " ");
-            CAERULUS_CORE ~Tokenizer();
+            CAERULUS_CORE virtual ~Tokenizer();
 
             CAERULUS_CORE const char* Start();
             CAERULUS_CORE const char* Start(const std::string& delims);
@@ -23,7 +23,7 @@ namespace Core
             CAERULUS_CORE const char* Get();
             CAERULUS_CORE void Reset();
 
-        protected:
+        private:
 
             char* m_String;
             char* m_Context;

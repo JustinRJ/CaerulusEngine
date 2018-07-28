@@ -31,6 +31,9 @@ namespace Core
         {
         public:
 
+            MathHelper() = delete;
+            ~MathHelper() = delete;
+
             static CAERULUS_CORE vec3 UpVector(const quat& q)
             {
                 return normalize(rotate(q, UnitUp));

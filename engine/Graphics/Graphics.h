@@ -2,6 +2,7 @@
 
 #define GLFW_EXPOSE_NATIVE_WIN32
 #define GLFW_INCLUDE_VULKAN
+
 #include "Vulkan/vulkan.h"
 #include <glfw3.h>
 #include <glfw3native.h>

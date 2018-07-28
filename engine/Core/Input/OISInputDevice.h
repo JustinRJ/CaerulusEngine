@@ -14,10 +14,10 @@ namespace Core
         public:
 
             CAERULUS_CORE OISInputDevice();
-            virtual ~OISInputDevice();
+            CAERULUS_CORE virtual ~OISInputDevice();
 
-            virtual void Initialize(void* hwnd) override;
-            virtual void Uninitialize() override;
+            CAERULUS_CORE virtual void Initialize(void* hwnd) override;
+            CAERULUS_CORE virtual void Uninitialize() override;
 
         private:
 

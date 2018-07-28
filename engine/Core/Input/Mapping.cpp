@@ -10,18 +10,17 @@ namespace Core
     namespace Input
     {
         Mapping::Mapping(const std::string& id) :
-            m_ID(id),
-            m_Binding(nullptr)
+            m_ID(id)
         {
         }
 
         Mapping::~Mapping()
         {
             m_Controls.clear();
-            delete m_Binding;
+            m_Binding.release();
         }
 
-        void Mapping::AddControl(Control* control)
+        void Mapping::AddControl(std::shared_ptr<Control> control)
         {
             if (control == nullptr)
             {
@@ -39,9 +38,9 @@ namespace Core
             m_Controls.push_back(control);
         }
 
-        void Mapping::RemoveControl(Control* control)
+        void Mapping::RemoveControl(std::shared_ptr<Control> control)
         {
-            for (std::vector<Control*>::const_iterator it = m_Controls.cbegin(); it < m_Controls.cend(); ++it)
+            for (std::vector<std::shared_ptr<Control>>::const_iterator it = m_Controls.cbegin(); it < m_Controls.cend(); ++it)
             {
                 if (*it == control)
                 {
@@ -52,10 +51,9 @@ namespace Core
             std::cerr << "Failed to remove control!" << std::endl;
         }
 
-        void Mapping::SetBinding(Binding* binding)
+        void Mapping::SetBinding(std::unique_ptr<Binding> binding)
         {
-            delete m_Binding;
-            m_Binding = binding;
+            m_Binding.reset(binding.release());
         }
 
         void Mapping::Update()
@@ -80,7 +78,7 @@ namespace Core
         std::string Mapping::ToString()
         {
             std::string str = Parser::StringHelper::Format("[%-0s]", m_ID.c_str());
-            for (Control* control : m_Controls)
+            for (std::shared_ptr<Control> control : m_Controls)
             {
                 Parser::StringHelper::FormatAppend(str, " %-0s", control->Name.c_str());
             }

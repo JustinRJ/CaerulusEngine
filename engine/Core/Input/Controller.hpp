@@ -19,22 +19,18 @@ namespace Core
 
             virtual ~Controller()
             {
-                for (size_t i = 0; i < m_Controls.size(); ++i)
-                {
-                    delete m_Controls[i];
-                }
                 m_Controls.clear();
             }
 
             virtual void Update() = 0;
 
-            virtual Control* GetControl(int key)
+            virtual std::shared_ptr<Control> GetControl(int key) const
             {
-                return m_Controls[key];
+                return m_Controls.at(key);
             }
 
             template<typename T>
-            T GetControlValue(int key)
+            T GetControlValue(int key) const
             {
                 return GetControl<T>(key)->Value;
             }
@@ -47,18 +43,18 @@ namespace Core
 
         protected:
 
-            std::vector<Control*> m_Controls;
+            std::vector<std::shared_ptr<Control>> m_Controls;
 
             template<typename T>
             void SetControl(int key, const std::string& name)
             {
-                m_Controls[key] = new ControlT<T>(name);
+                m_Controls[key] = std::make_shared<ControlT<T>>(name);
             }
 
             template<typename T>
-            ControlT<T>* GetControl(int key)
+            std::shared_ptr<ControlT<T>> GetControl(int key) const
             {
-                return static_cast<ControlT<T>*>(m_Controls[key]);
+                return std::dynamic_pointer_cast<ControlT<T>>(m_Controls.at(key));
             }
         };
     }

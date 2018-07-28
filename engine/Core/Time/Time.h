@@ -19,13 +19,13 @@ namespace Core
         public:
 
             CAERULUS_CORE Time(bool update = true);
-            CAERULUS_CORE ~Time();
+            CAERULUS_CORE virtual ~Time();
 
             CAERULUS_CORE virtual void Update();
             CAERULUS_CORE virtual void Increment(time_t time);
             CAERULUS_CORE virtual time_t GetTime() const;
 
-        protected:
+        private:
             time_t m_Time;
         };
     }

@@ -19,7 +19,7 @@ namespace Core
             {
             }
 
-            virtual void Update(std::vector<Control*>& list) = 0;
+            virtual void Update(std::vector<std::shared_ptr<Control>>& list) = 0;
 
             int State;
         };
@@ -39,7 +39,7 @@ namespace Core
             {
             }
 
-            virtual void Update(std::vector<Control*>& list) override
+            virtual void Update(std::vector<std::shared_ptr<Control>>& list) override
             {
                 Pressed(SetT<T>(list));
             }
@@ -60,13 +60,13 @@ namespace Core
             }
 
             template <typename U>
-            bool SetT(std::vector<Control*>& list)
+            bool SetT(std::vector<std::shared_ptr<Control>>& list)
             {
                 return false;
             }
 
             template <>
-            bool SetT<bool>(std::vector<Control*>& list)
+            bool SetT<bool>(std::vector<std::shared_ptr<Control>>& list)
             {
                 for (size_t i = 0; i < list.size(); ++i)
                 {
@@ -81,7 +81,7 @@ namespace Core
             }
 
             template <>
-            bool SetT<float>(std::vector<Control*>& list)
+            bool SetT<float>(std::vector<std::shared_ptr<Control>>& list)
             {
                 Value = 0.0f;
                 for (size_t i = 0; i < list.size(); ++i)
@@ -92,7 +92,7 @@ namespace Core
             }
 
             template <>
-            bool SetT<glm::vec2>(std::vector<Control*>& list)
+            bool SetT<glm::vec2>(std::vector<std::shared_ptr<Control>>& list)
             {
                 Value = glm::vec2(0, 0);
                 for (size_t i = 0; i < list.size(); ++i)

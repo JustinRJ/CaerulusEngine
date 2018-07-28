@@ -28,7 +28,7 @@ namespace Core
             Time StartTime;
             Time EndTime;
 
-        protected:
+        private:
 
             time_t NanoTime();
             time_t Frequency();
