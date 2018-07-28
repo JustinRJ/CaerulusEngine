@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../Math/MathHelper.h"
+#include "../../Core/Math/MathHelper.h"
 
 #include <string>
 

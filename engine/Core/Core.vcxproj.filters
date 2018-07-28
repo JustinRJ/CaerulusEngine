@@ -13,9 +13,6 @@
     <Filter Include="Time">
       <UniqueIdentifier>{b239773a-3c68-4dcc-b557-c23f31324b2b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Input">
-      <UniqueIdentifier>{733ec090-5332-4aa4-9937-8780053c0ddc}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Math\MathHelper.cpp">
@@ -38,24 +35,6 @@
     <ClCompile Include="Parser\Tokenizer.cpp">
       <Filter>Parser</Filter>
     </ClCompile>
-    <ClCompile Include="Input\Bindings.cpp">
-      <Filter>Input</Filter>
-    </ClCompile>
-    <ClCompile Include="Input\OISMouse.cpp">
-      <Filter>Input</Filter>
-    </ClCompile>
-    <ClCompile Include="Input\OISKeyboard.cpp">
-      <Filter>Input</Filter>
-    </ClCompile>
-    <ClCompile Include="Input\OISInputDevice.cpp">
-      <Filter>Input</Filter>
-    </ClCompile>
-    <ClCompile Include="Input\Mapping.cpp">
-      <Filter>Input</Filter>
-    </ClCompile>
-    <ClCompile Include="Input\InputDevice.cpp">
-      <Filter>Input</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Math\MathHelper.h">
@@ -76,42 +55,6 @@
     </ClInclude>
     <ClInclude Include="Parser\Tokenizer.h">
       <Filter>Parser</Filter>
-    </ClInclude>
-    <ClInclude Include="Input\InputDevice.hpp">
-      <Filter>Input</Filter>
-    </ClInclude>
-    <ClInclude Include="Input\Bindings.h">
-      <Filter>Input</Filter>
-    </ClInclude>
-    <ClInclude Include="Input\InputEnums.h">
-      <Filter>Input</Filter>
-    </ClInclude>
-    <ClInclude Include="Input\OISMouse.h">
-      <Filter>Input</Filter>
-    </ClInclude>
-    <ClInclude Include="Input\OISKeyboard.h">
-      <Filter>Input</Filter>
-    </ClInclude>
-    <ClInclude Include="Input\OISInputDevice.h">
-      <Filter>Input</Filter>
-    </ClInclude>
-    <ClInclude Include="Input\OISController.hpp">
-      <Filter>Input</Filter>
-    </ClInclude>
-    <ClInclude Include="Input\Control.hpp">
-      <Filter>Input</Filter>
-    </ClInclude>
-    <ClInclude Include="Input\Binding.hpp">
-      <Filter>Input</Filter>
-    </ClInclude>
-    <ClInclude Include="Input\Mapping.h">
-      <Filter>Input</Filter>
-    </ClInclude>
-    <ClInclude Include="Input\Controller.hpp">
-      <Filter>Input</Filter>
-    </ClInclude>
-    <ClInclude Include="Input\Scaled.hpp">
-      <Filter>Input</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

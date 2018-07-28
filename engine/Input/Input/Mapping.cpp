@@ -1,7 +1,7 @@
 #include "stdafx.h"
 
 #include "Mapping.h"
-#include "../Parser/StringHelper.h"
+#include "../../Core/Parser/StringHelper.h"
 
 #include <iostream>
 
