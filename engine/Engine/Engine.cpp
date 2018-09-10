@@ -17,10 +17,10 @@ namespace Engine
 
         m_InputDevice->Initialize(Hwnd());
         m_InputDevice->Command("Quit").Set([&]() { m_Running = false; }).Bind(Key::KEY_ESCAPE);
-        m_InputDevice->Command("Press1").Set([&]() { std::cout << "Press1" << std::endl; }, State::STATE_PRESS).Bind(Key::KEY_P);
-        m_InputDevice->Command("Press2").Set([&]() { std::cout << "Press2" << std::endl; }, State::STATE_HOLD).Bind(Key::KEY_P);
-        m_InputDevice->Command("Release1").Set([&]() { std::cout << "Release1" << std::endl; }, State::STATE_RELEASE).Bind(Key::KEY_R);
-        m_InputDevice->Command("Release2").Set([&]() { std::cout << "Release2" << std::endl; }, State::STATE_HOLD).Bind(Key::KEY_R);
+        m_InputDevice->Command("P-Press").Set([&]() { std::cout << "P-Press" << std::endl; }, State::STATE_PRESS).Bind(Key::KEY_P);
+        m_InputDevice->Command("P-Hold").Set([&]() { std::cout << "P-Hold" << std::endl; }, State::STATE_HOLD).Bind(Key::KEY_P);
+        m_InputDevice->Command("R-Release").Set([&]() { std::cout << "R-Release" << std::endl; }, State::STATE_RELEASE).Bind(Key::KEY_R);
+        m_InputDevice->Command("R-Hold").Set([&]() { std::cout << "R-Hold" << std::endl; }, State::STATE_HOLD).Bind(Key::KEY_R);
         m_InputDevice->PrintCommands();
     }
 

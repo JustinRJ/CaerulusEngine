@@ -179,10 +179,10 @@ namespace Core
 
         InputDevice::InputCommand InputDevice::Command(const std::string& mapping)
         {
-            return InputCommand(this, mapping);
+            return InputCommand(*this, mapping);
         }
 
-        InputDevice::InputCommand::InputCommand(InputDevice* input, const std::string& id) :
+        InputDevice::InputCommand::InputCommand(InputDevice& input, const std::string& id) :
             m_Input(input),
             m_ID(id)
         {
@@ -199,37 +199,37 @@ namespace Core
 
         InputDevice::InputCommand& InputDevice::InputCommand::Set(std::unique_ptr<Binding> binding)
         {
-            m_Input->SetBinding(m_ID, std::move(binding));
+            m_Input.SetBinding(m_ID, std::move(binding));
             return *this;
         }
 
         InputDevice::InputCommand& InputDevice::InputCommand::Unset(bool complete)
         {
-            m_Input->RemoveBinding(m_ID, complete);
+            m_Input.RemoveBinding(m_ID, complete);
             return *this;
         }
 
         InputDevice::InputCommand& InputDevice::InputCommand::Bind(const Key key)
         {
-            m_Input->AddControl(m_ID, key);
+            m_Input.AddControl(m_ID, key);
             return *this;
         }
 
         InputDevice::InputCommand& InputDevice::InputCommand::Bind(const MouseButton key)
         {
-            m_Input->AddControl(m_ID, key);
+            m_Input.AddControl(m_ID, key);
             return *this;
         }
 
         InputDevice::InputCommand& InputDevice::InputCommand::Unbind(const Key key)
         {
-            m_Input->RemoveControl(m_ID, key);
+            m_Input.RemoveControl(m_ID, key);
             return *this;
         }
 
         InputDevice::InputCommand& InputDevice::InputCommand::Unbind(const MouseButton key)
         {
-            m_Input->RemoveControl(m_ID, key);
+            m_Input.RemoveControl(m_ID, key);
             return *this;
         }
     }

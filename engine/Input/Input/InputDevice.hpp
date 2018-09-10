@@ -20,7 +20,7 @@ namespace Core
             {
             public:
 
-                CAERULUS_INPUT InputCommand(InputDevice* input, const std::string& id);
+                CAERULUS_INPUT InputCommand(InputDevice& input, const std::string& id);
                 CAERULUS_INPUT virtual ~InputCommand();
 
                 template <typename T>
@@ -41,7 +41,7 @@ namespace Core
 
             private:
 
-                InputDevice* m_Input;
+                InputDevice& m_Input;
                 std::string m_ID;
             };
 
