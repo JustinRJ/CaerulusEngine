@@ -15,14 +15,9 @@ namespace Core
         { 
         }
 
-        float FPSLimiter::Delta()
+        float FPSLimiter::Delta(float frameLimit)
         {
-            return Timer::Delta();
-        }
-
-        float FPSLimiter::Delta(const float frameLimit)
-        {
-            m_FrameTime = Delta();
+            m_FrameTime = Timer::Delta();
 
             if (frameLimit > 0.0f &&
                 m_FrameTime > 0.0f &&
@@ -31,7 +26,7 @@ namespace Core
                 // Sleep for time left for frame
                 Sleep(static_cast<time_t>(frameLimit - m_FrameTime));
                 // Get time taken when sleeping
-                m_FrameTime += Delta();
+                m_FrameTime += Timer::Delta();
             }
             return m_FrameTime;
         }

@@ -13,6 +13,9 @@
     <Filter Include="Time">
       <UniqueIdentifier>{b239773a-3c68-4dcc-b557-c23f31324b2b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Interface">
+      <UniqueIdentifier>{002dbe01-4b59-46db-9625-8a7b98485a59}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Math\MathHelper.cpp">
@@ -35,6 +38,9 @@
     <ClCompile Include="Parser\Tokenizer.cpp">
       <Filter>Parser</Filter>
     </ClCompile>
+    <ClCompile Include="Time\FixedLimiter.cpp">
+      <Filter>Time</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Math\MathHelper.h">
@@ -55,6 +61,18 @@
     </ClInclude>
     <ClInclude Include="Parser\Tokenizer.h">
       <Filter>Parser</Filter>
+    </ClInclude>
+    <ClInclude Include="Interface\ISerializable.h">
+      <Filter>Interface</Filter>
+    </ClInclude>
+    <ClInclude Include="Interface\IResetable.h">
+      <Filter>Interface</Filter>
+    </ClInclude>
+    <ClInclude Include="Time\FixedLimiter.h">
+      <Filter>Time</Filter>
+    </ClInclude>
+    <ClInclude Include="Interface\ITickable.h">
+      <Filter>Interface</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

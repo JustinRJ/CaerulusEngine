@@ -5,23 +5,20 @@
 #include "OIS.h"
 #include "InputDevice.hpp"
 
-namespace Core
+namespace Input
 {
-    namespace Input
+    class OISInputDevice : public InputDevice
     {
-        class OISInputDevice : public InputDevice
-        {
-        public:
+    public:
 
-            CAERULUS_INPUT OISInputDevice();
-            CAERULUS_INPUT virtual ~OISInputDevice();
+        CAERULUS_INPUT OISInputDevice();
+        CAERULUS_INPUT virtual ~OISInputDevice();
 
-            CAERULUS_INPUT virtual void Initialize(void* hwnd) override;
-            CAERULUS_INPUT virtual void Uninitialize() override;
+        CAERULUS_INPUT virtual void Initialize(void* hwnd) override;
+        CAERULUS_INPUT virtual void Uninitialize() override;
 
-        private:
+    private:
 
-            OIS::InputManager* m_Input;
-        };
-    }
+        OIS::InputManager* m_Input;
+    };
 }

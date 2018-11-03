@@ -4,37 +4,34 @@
 #include "OISMouse.h"
 #include "OISKeyboard.h"
 
-namespace Core
+namespace Input
 {
-    namespace Input
+    using namespace OIS;
+
+    OISInputDevice::OISInputDevice() :
+        m_Input(nullptr)
     {
-        using namespace OIS;
+    }
 
-        OISInputDevice::OISInputDevice() :
-            m_Input(nullptr)
-        {
-        }
+    OISInputDevice::~OISInputDevice()
+    {
+        Uninitialize();
+    }
 
-        OISInputDevice::~OISInputDevice()
-        {
-            Uninitialize();
-        }
+    void OISInputDevice::Initialize(void* hwnd)
+    {
+        InputDevice::Initialize(hwnd);
+        m_Input = InputManager::createInputSystem((size_t)hwnd);
+        m_Controllers[Controllers::KEYBOARD] = std::make_shared<Input::OISKeyboard>(m_Input);
+        m_Controllers[Controllers::MOUSE] = std::make_shared<Input::OISMouse>(m_Input);
+    }
 
-        void OISInputDevice::Initialize(void* hwnd)
+    void OISInputDevice::Uninitialize()
+    {
+        InputDevice::Uninitialize();
+        if (m_Input)
         {
-            m_Input = InputManager::createInputSystem((size_t)hwnd);
-            m_Controllers[Controllers::KEYBOARD] = std::make_shared<Input::OISKeyboard>(m_Input);
-            m_Controllers[Controllers::MOUSE] = std::make_shared<Input::OISMouse>(m_Input);
-            InputDevice::Initialize(hwnd);
-        }
-
-        void OISInputDevice::Uninitialize()
-        {
-            InputDevice::Uninitialize();
-            if (m_Input)
-            {
-                InputManager::destroyInputSystem(m_Input);
-            }
+            InputManager::destroyInputSystem(m_Input);
         }
     }
 }

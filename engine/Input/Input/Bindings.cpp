@@ -5,69 +5,66 @@
 #include <stdarg.h>
 #include <sstream>
 
-namespace Core
+namespace Input
 {
-    namespace Input
+    std::map<size_t, Bindings::BindingMap> Bindings::s_Data;
+
+    const Bindings::BindingMap& Bindings::Add(size_t type, const std::string& str, long arg, ...)
     {
-        std::map<size_t, Bindings::BindingMap> Bindings::s_Data;
+        BindingMap& lookup = s_Data[type];
 
-        const Bindings::BindingMap& Bindings::Add(size_t type, const std::string& str, long arg, ...)
+        if (lookup.empty())
         {
-            BindingMap& lookup = s_Data[type];
+            va_list arguments;
+            va_start(arguments, arg);
 
-            if (lookup.empty())
+            long val = -1LL;
+            std::vector<std::string> vars = Core::Parser::StringHelper::Tokenize(str.c_str(), ",");
+            for (size_t i = 0; i < vars.size(); ++i)
             {
-                va_list arguments;
-                va_start(arguments, arg);
+                const char* var = vars[i].c_str();
 
-                long val = -1LL;
-                std::vector<std::string> vars = Parser::StringHelper::Tokenize(str.c_str(), ",");
-                for (size_t i = 0; i < vars.size(); ++i)
-                {
-                    const char* var = vars[i].c_str();
+                size_t start = strspn(var, " \t\r\n");
+                size_t end = strcspn(&var[start], " \t\r\n");
+                std::string name(&var[start], &var[start + end]);
 
-                    size_t start = strspn(var, " \t\r\n");
-                    size_t end = strcspn(&var[start], " \t\r\n");
-                    std::string name(&var[start], &var[start + end]);
+                strchr(var, '=') ? val = arg : ++val;
 
-                    strchr(var, '=') ? val = arg : ++val;
-
-                    lookup[name] = val;
-                    arg = va_arg(arguments, long);
-                }
-                va_end(arguments);
+                lookup[name] = val;
+                arg = va_arg(arguments, long);
             }
-            return lookup;
+            va_end(arguments);
+        }
+        return lookup;
+    }
+
+    void Bindings::Convert(const BindingMap& lookup, long& dest, const std::string& src)
+    {
+        // Find number from string
+        BindingMap::const_iterator var = lookup.find(src);
+        if (var != lookup.cend())
+        {
+            dest = var->second;
+        }
+        // Try to convert from number
+        std::stringstream(src) >> dest;
+    }
+
+    void Bindings::Convert(const BindingMap& lookup, std::string& dest, const long& src)
+    {
+        // Find string from number
+        for (BindingMap::const_iterator it = lookup.cbegin(); it != lookup.cend(); ++it)
+        {
+            if (it->second == src)
+            {
+                dest = it->first;
+                return;
+            }
         }
 
-        void Bindings::Convert(const BindingMap& lookup, long& dest, const std::string& src)
-        {
-            // Find number from string
-            BindingMap::const_iterator var = lookup.find(src);
-            if (var != lookup.cend())
-            {
-                dest = var->second;
-            }
-            // Try to convert from number
-            std::stringstream(src) >> dest;
-        }
-
-        void Bindings::Convert(const BindingMap& lookup, std::string& dest, const long& src)
-        {
-            // Find string from number
-            for (BindingMap::const_iterator it = lookup.cbegin(); it != lookup.cend(); ++it)
-            {
-                if (it->second == src)
-                {
-                    dest = it->first;
-                    return;
-                }
-            }
-
-            // Convert to decimal
-            std::stringstream str("");
-            str << src;
-            dest = str.str();
-        }
+        // Convert to decimal
+        std::stringstream str("");
+        str << src;
+        dest = str.str();
     }
 }

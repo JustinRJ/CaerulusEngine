@@ -5,84 +5,81 @@
 
 #include <iostream>
 
-namespace Core
+namespace Input
 {
-    namespace Input
+    Mapping::Mapping(const std::string& id) :
+        m_ID(id)
     {
-        Mapping::Mapping(const std::string& id) :
-            m_ID(id)
-        {
-        }
+    }
 
-        Mapping::~Mapping()
-        {
-            m_Controls.clear();
-            m_Binding.release();
-        }
+    Mapping::~Mapping()
+    {
+        m_Controls.clear();
+        m_Binding.release();
+    }
 
-        void Mapping::AddControl(std::shared_ptr<Control> control)
+    void Mapping::AddControl(std::shared_ptr<Control> control)
+    {
+        if (control == nullptr)
         {
-            if (control == nullptr)
+            std::cerr << "Failed to add control!" << std::endl;
+            return;
+        }
+        for (auto c : m_Controls)
+        {
+            if (c == control)
             {
-                std::cerr << "Failed to add control!" << std::endl;
+                // Already added
                 return;
             }
-            for (auto c : m_Controls)
-            {
-                if (c == control)
-                {
-                    // Already added
-                    return;
-                }
-            }
-            m_Controls.push_back(control);
         }
+        m_Controls.push_back(control);
+    }
 
-        void Mapping::RemoveControl(std::shared_ptr<Control> control)
+    void Mapping::RemoveControl(std::shared_ptr<Control> control)
+    {
+        for (std::vector<std::shared_ptr<Control>>::const_iterator it = m_Controls.cbegin(); it < m_Controls.cend(); ++it)
         {
-            for (std::vector<std::shared_ptr<Control>>::const_iterator it = m_Controls.cbegin(); it < m_Controls.cend(); ++it)
+            if (*it == control)
             {
-                if (*it == control)
-                {
-                    m_Controls.erase(it);
-                    return;
-                }
-            }
-            std::cerr << "Failed to remove control!" << std::endl;
-        }
-
-        void Mapping::SetBinding(std::unique_ptr<Binding> binding)
-        {
-            m_Binding.reset(binding.release());
-        }
-
-        void Mapping::Update()
-        {
-            if (m_Binding)
-            {
-                m_Binding->Update(m_Controls);
-                m_Binding->Invoke();
+                m_Controls.erase(it);
+                return;
             }
         }
+        std::cerr << "Failed to remove control!" << std::endl;
+    }
 
-        bool Mapping::Invoke()
-        {
-            if (m_Binding)
-            {
-                m_Binding->InvokeAll();
-                return true;
-            }
-            return false;
-        }
+    void Mapping::SetBinding(std::unique_ptr<Binding> binding)
+    {
+        m_Binding.reset(binding.release());
+    }
 
-        std::string Mapping::ToString()
+    void Mapping::Update()
+    {
+        if (m_Binding)
         {
-            std::string str = Parser::StringHelper::Format("[%-0s]", m_ID.c_str());
-            for (std::shared_ptr<Control> control : m_Controls)
-            {
-                Parser::StringHelper::FormatAppend(str, " %-0s", control->Name.c_str());
-            }
-            return str;
+            m_Binding->Update(m_Controls);
+            m_Binding->Invoke();
         }
+    }
+
+    bool Mapping::Invoke()
+    {
+        if (m_Binding)
+        {
+            m_Binding->InvokeAll();
+            return true;
+        }
+        return false;
+    }
+
+    std::string Mapping::ToString()
+    {
+        std::string str = Core::Parser::StringHelper::Format("[%-0s]", m_ID.c_str());
+        for (std::shared_ptr<Control> control : m_Controls)
+        {
+            Core::Parser::StringHelper::FormatAppend(str, " %-0s", control->Name.c_str());
+        }
+        return str;
     }
 }

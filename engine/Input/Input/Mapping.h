@@ -2,32 +2,29 @@
 
 #include "Binding.hpp"
 
-namespace Core
+namespace Input
 {
-    namespace Input
+    class Mapping
     {
-        class Mapping
-        {
-        public:
+    public:
 
-            Mapping(const std::string& id);
-            virtual ~Mapping();
+        Mapping(const std::string& id);
+        virtual ~Mapping();
 
-            void AddControl(std::shared_ptr<Control> control);
-            void RemoveControl(std::shared_ptr<Control> control);
+        void AddControl(std::shared_ptr<Control> control);
+        void RemoveControl(std::shared_ptr<Control> control);
 
-            void SetBinding(std::unique_ptr<Binding> binding);
+        void SetBinding(std::unique_ptr<Binding> binding);
 
-            void Update();
-            bool Invoke();
+        void Update();
+        bool Invoke();
 
-            std::string ToString();
+        std::string ToString();
 
-        private:
+    private:
 
-            std::string m_ID;
-            std::vector<std::shared_ptr<Control>> m_Controls;
-            std::unique_ptr<Binding> m_Binding;
-        };
-    }
+        std::string m_ID;
+        std::vector<std::shared_ptr<Control>> m_Controls;
+        std::unique_ptr<Binding> m_Binding;
+    };
 }

@@ -10,10 +10,14 @@ namespace Engine
         m_ArgValue(argv),
         m_Running(false),
         m_DeltaTime(0.0f),
+        m_FixedTime(0.0f),
         m_FPSLimit(1.0f / 60.0f)
     {
-        m_FPSLimiter.reset(std::make_unique<FPSLimiter>().release());
+        m_FPSLimiter.reset(std::make_unique<Time::FPSLimiter>().release());
+        m_FixedLimiter.reset(std::make_unique<Time::FixedLimiter>().release());
+
         m_InputDevice.reset(std::make_unique<OISInputDevice>().release());
+        m_Updatable.push_back(m_InputDevice);
 
         m_InputDevice->Initialize(Hwnd());
         m_InputDevice->Command("Quit").Set([&]() { m_Running = false; }).Bind(Key::KEY_ESCAPE);
@@ -36,14 +40,36 @@ namespace Engine
             while (m_Running)
             {
                 m_DeltaTime = m_FPSLimiter->Delta(m_FPSLimit);
-                //std::cout << "DeltaTime : " << m_DeltaTime << std::endl;
-                m_InputDevice->Update();
+                std::cout << "DeltaTime : " << m_DeltaTime << std::endl;
+                m_FixedTime = m_FixedLimiter->Fixed(m_FPSLimit);
+                std::cout << "FixedTime : " << m_FixedTime << std::endl;
+                Tick();
             }
         }
         catch (...)
         {
             m_Running = false;
             std::cerr << "Error in Caerulus Engine!"  << std::endl;
+        }
+    }
+
+    void Engine::Tick()
+    {
+        for (auto updatable : m_Updatable)
+        {
+            updatable->PreUpdate();
+        }
+        for (auto updatable : m_Updatable)
+        {
+            updatable->Update(m_DeltaTime);
+        }
+        for (auto updatable : m_Updatable)
+        {
+            updatable->FixedUpdate(m_FixedTime);
+        }
+        for (auto updatable : m_Updatable)
+        {
+            updatable->PostUpdate();
         }
     }
 }
