@@ -1,39 +1,30 @@
 #pragma once
 
-#include <GL/glew.h>
+#include <glew.h>
 #include "../../Core/Math/MathHelper.h"
 
-namespace Caerulus
+namespace Graphics
 {
-    namespace Render
+    namespace Geometry
     {
-        namespace Geometry
+        class Geometry
         {
-            class Geometry
-            {
-            protected:
+        protected:
 
-                GLuint m_VAO = NULL;
-                GLuint m_VBO = NULL;
-                glm::mat4& m_Model;
+            GLuint m_VAO = NULL;
+            GLuint m_VBO = NULL;
+            glm::mat4& m_Transform;
 
-                Geometry(const glm::vec3& scale, const glm::vec3& rot, const glm::vec3& translation);
-                Geometry(glm::mat4& transform);
-                virtual ~Geometry();
+            Geometry(const glm::mat4& transform);
+            virtual ~Geometry();
 
-            public:
-                virtual void Draw() const = 0;
-                GLuint GetVAO() const;
-                GLuint GetVBO() const;
+        public:
+            virtual void Draw() const = 0;
+            GLuint GetVAO() const;
+            GLuint GetVBO() const;
 
-                glm::vec3 GetPosition() const;
-                glm::quat GetRotation() const;
-                glm::vec3 GetScale() const;
-
-                void SetPosition(const glm::vec3& position);
-                void SetRotation(const glm::quat& rotationAxis);
-                void Scale(const glm::vec3& scale);
-            };
-        }
+            void SetTransform(glm::mat4& transform);
+            glm::mat4& GetTransform() const;
+        };
     }
 }

@@ -2,22 +2,19 @@
 
 #include "Geometry.h"
 
-namespace Caerulus
+namespace Graphics
 {
-    namespace Render
+    namespace Geometry
     {
-        namespace Geometry
+        class PlaneGeometry : public Geometry
         {
-            class PlaneGeometry : public Geometry
-            {
-            public:
-                static const GLfloat sm_PlaneVertices[];
+        public:
+            static const GLfloat s_PlaneVertices[];
 
-                PlaneGeometry(const glm::vec3& scale, const glm::vec3& rot, const glm::vec3& translation);
-                virtual ~PlaneGeometry();
+            PlaneGeometry(const glm::mat4& transform);
+            virtual ~PlaneGeometry();
 
-                void Draw() const override;
-            };
-        }
+            void Draw() const override;
+        };
     }
 }

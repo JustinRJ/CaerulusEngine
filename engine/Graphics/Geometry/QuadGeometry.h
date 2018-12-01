@@ -2,22 +2,19 @@
 
 #include "Geometry.h"
 
-namespace Caerulus
+namespace Graphics
 {
-    namespace Render
+    namespace Geometry
     {
-        namespace Geometry
+        class QuadGeometry : public Geometry
         {
-            class QuadGeometry : public Geometry
-            {
-            public:
-                static const GLfloat sm_QuadVertices[];
+        public:
+            static const GLfloat s_QuadVertices[];
 
-                QuadGeometry(const glm::vec3& scale, const glm::vec3& rot, const glm::vec3& translation);
-                virtual ~QuadGeometry();
+            QuadGeometry(const glm::mat4& transform);
+            virtual ~QuadGeometry();
 
-                void Draw() const override;
-            };
-        }
+            void Draw() const override;
+        };
     }
 }

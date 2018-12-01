@@ -50,5 +50,10 @@ namespace Graphics
         {
             glfwSwapBuffers(m_Window);
         }
+
+        GLFWwindow* GLWindow::GetWindow() const
+        {
+            return m_Window;
+        }
     }
 }

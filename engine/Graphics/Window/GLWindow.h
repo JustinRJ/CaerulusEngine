@@ -22,6 +22,7 @@ namespace Graphics
             CAERULUS_GRAPHICS virtual void SwapBuffer() const override;
             CAERULUS_GRAPHICS virtual void* GetHandle() const override;
 
+            CAERULUS_GRAPHICS virtual GLFWwindow* GetWindow() const;
         private:
 
             GLFWwindow* m_Window;

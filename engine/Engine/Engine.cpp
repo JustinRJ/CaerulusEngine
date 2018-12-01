@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include "Engine.h"
 
 namespace Engine
@@ -22,8 +23,8 @@ namespace Engine
         m_InputDevice->Command("Quit").Set([&]() { m_Running = false; }).Bind(Key::KEY_ESCAPE);
         m_InputDevice->Command("P-Press").Set([&]() { std::cout << "P-Press" << std::endl; }, State::STATE_PRESS).Bind(Key::KEY_P);
         m_InputDevice->Command("P-Hold").Set([&]() { std::cout << "P-Hold" << std::endl; }, State::STATE_HOLD).Bind(Key::KEY_P);
-        m_InputDevice->Command("R-Release").Set([&]() { std::cout << "R-Release" << std::endl; }, State::STATE_RELEASE).Bind(Key::KEY_R);
-        m_InputDevice->Command("R-Hold").Set([&]() { std::cout << "R-Hold" << std::endl; }, State::STATE_HOLD).Bind(Key::KEY_R);
+        m_InputDevice->Command("P-Release").Set([&]() { std::cout << "R-Release" << std::endl; }, State::STATE_RELEASE).Bind(Key::KEY_P);
+        //m_InputDevice->Command("R-Hold").Set([&]() { std::cout << "R-Hold" << std::endl; }, State::STATE_HOLD).Bind(Key::KEY_R);
         m_InputDevice->Command("Focus").Set([&]() { window.Focus(); }, State::STATE_HOLD).Bind(Key::KEY_TAB);
         m_InputDevice->PrintCommands();
     }
