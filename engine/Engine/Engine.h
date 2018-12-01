@@ -4,11 +4,13 @@
 #include "../Core/Time/FPSLimiter.h"
 #include "../Core/Time/FixedLimiter.h"
 #include "../Input/Input/OISInputDevice.h"
+#include "../Graphics/Window/GLWindow.h"
 
 namespace Engine
 {
     using namespace Core;
     using namespace Input;
+    using namespace Graphics;
 
     class Engine
     {
@@ -37,5 +39,8 @@ namespace Engine
         std::shared_ptr<InputDevice> m_InputDevice;
 
         std::vector<std::shared_ptr<Interface::ITickable>> m_Updatable;
+
+        //Remove
+        Graphics::Window::GLWindow window;
     };
 }
