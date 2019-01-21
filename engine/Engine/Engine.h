@@ -3,14 +3,19 @@
 #include "../Core/Interface/ITickable.h"
 #include "../Core/Time/FPSLimiter.h"
 #include "../Core/Time/FixedLimiter.h"
-#include "../Input/Input/OISInputDevice.h"
+#include "../Core/Input/InputManager.hpp"
 #include "../Graphics/Window/GLWindow.h"
+
+
+#include <vector>
 
 namespace Engine
 {
     using namespace Core;
+    using namespace Time;
     using namespace Input;
     using namespace Graphics;
+    using namespace Interface;
 
     class Engine
     {
@@ -29,18 +34,20 @@ namespace Engine
         char** m_ArgValue;
 
         bool m_Running;
+
         float m_DeltaTime;
         float m_FixedTime;
         float m_FPSLimit;
 
-        std::unique_ptr<Time::FPSLimiter> m_FPSLimiter;
-        std::unique_ptr<Time::FixedLimiter> m_FixedLimiter;
+        std::unique_ptr<FPSLimiter> m_FPSLimiter;
+        std::unique_ptr<FixedLimiter> m_FixedLimiter;
 
-        std::shared_ptr<InputDevice> m_InputDevice;
+        std::shared_ptr<InputManager> m_InputManager;
 
-        std::vector<std::shared_ptr<Interface::ITickable>> m_Updatable;
+        std::vector<std::shared_ptr<ITickable>> m_Tickable;
 
         //Remove
         Graphics::Window::GLWindow window;
+        bool focused;
     };
 }

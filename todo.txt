@@ -1,0 +1,5 @@
+Change third party dep to static libs
+
+Add colour class
+
+Set m_UniformLocations in ShaderSource via reading file

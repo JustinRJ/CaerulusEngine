@@ -51,7 +51,7 @@ namespace Graphics
             glfwSwapBuffers(m_Window);
         }
 
-        GLFWwindow* GLWindow::GetWindow() const
+        GLFWwindow* GLWindow::GetGLFWWindow() const
         {
             return m_Window;
         }

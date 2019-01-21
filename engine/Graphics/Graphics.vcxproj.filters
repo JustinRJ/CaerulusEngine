@@ -6,9 +6,6 @@
     <ClCompile Include="Window\Window.cpp">
       <Filter>Window</Filter>
     </ClCompile>
-    <ClCompile Include="Window\GLWindow.cpp">
-      <Filter>Window</Filter>
-    </ClCompile>
     <ClCompile Include="Geometry\CubeGeometry.cpp">
       <Filter>Geometry</Filter>
     </ClCompile>
@@ -39,13 +36,13 @@
     <ClCompile Include="Resource\Camera.cpp">
       <Filter>Resource</Filter>
     </ClCompile>
+    <ClCompile Include="Window\GLWindow.cpp">
+      <Filter>Window</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="Window\Window.h">
-      <Filter>Window</Filter>
-    </ClInclude>
-    <ClInclude Include="Window\GLWindow.h">
       <Filter>Window</Filter>
     </ClInclude>
     <ClInclude Include="Geometry\CubeGeometry.h">
@@ -77,6 +74,9 @@
     </ClInclude>
     <ClInclude Include="Resource\Camera.h">
       <Filter>Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="Window\GLWindow.h">
+      <Filter>Window</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

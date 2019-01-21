@@ -94,12 +94,12 @@ namespace Graphics
 
         glm::vec3 Camera::GetForward() const
         {
-            return glm::vec3(MathHelper::GetColumn(m_View, Index::Z));
+            return MathHelper::GetColumn(m_View, Index::Z);
         }
 
         glm::vec3 Camera::GetUp() const
         {
-            return glm::vec3(MathHelper::GetColumn(m_View, Index::Y));
+            return MathHelper::GetColumn(m_View, Index::Y);
         }
 
         float Camera::GetFOV() const
