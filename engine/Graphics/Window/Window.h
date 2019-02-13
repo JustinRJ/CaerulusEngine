@@ -16,7 +16,7 @@ namespace Graphics
             int Bits;
             bool Fullscreen;
 
-            State(std::string title = "", int x = 800, int y = 600, int b = 32, bool f = false) :
+            CAERULUS_GRAPHICS State(std::string title = "", int x = 800, int y = 600, int b = 32, bool f = false) :
                 Title(title),
                 Width(x),
                 Height(y),
@@ -25,7 +25,7 @@ namespace Graphics
             {
             }
 
-            State& operator= (const State& state)
+            CAERULUS_GRAPHICS State& operator= (const State& state)
             {
                 Title = state.Title;
                 Width = state.Width;
@@ -35,7 +35,7 @@ namespace Graphics
                 return *this;
             }
 
-            bool Compare(const State& state) const
+            CAERULUS_GRAPHICS bool Compare(const State& state) const
             {
                 return
                     Title == state.Title &&
@@ -61,7 +61,7 @@ namespace Graphics
             CAERULUS_GRAPHICS virtual void* GetHandle() const = 0;
 
         protected:
-            virtual bool Compare(const State& state) const;
+            CAERULUS_GRAPHICS virtual bool Compare(const State& state) const;
 
             State m_ActiveState;
             State m_NewState;

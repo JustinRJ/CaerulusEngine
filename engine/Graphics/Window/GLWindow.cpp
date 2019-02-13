@@ -1,7 +1,7 @@
 #include "stdafx.h"
 
 #include "GLWindow.h"
-
+#include <glew.h>
 #define GLFW_EXPOSE_NATIVE_WIN32
 #include <glfw3native.h>
 
@@ -10,14 +10,9 @@ namespace Graphics
     namespace Window
     {
         GLWindow::GLWindow(const std::string& title, int x, int y, int bits, bool fullscreen) :
-            m_Window(nullptr)
+            m_Window(nullptr),
+            m_LockedCursor(false)
         {
-            //Move to graphics system constructor
-            glfwInit();
-
-            glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
-            glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
-
             Window::Set(title, x, y, bits, fullscreen);
             Apply();
         }
@@ -38,6 +33,7 @@ namespace Graphics
             {
                 m_ActiveState = m_NewState;
                 m_Window = glfwCreateWindow(m_ActiveState.Width, m_ActiveState.Height, m_ActiveState.Title.c_str(), nullptr, nullptr);
+                glfwMakeContextCurrent(m_Window);
             }
         }
 
@@ -54,6 +50,25 @@ namespace Graphics
         GLFWwindow* GLWindow::GetGLFWWindow() const
         {
             return m_Window;
+        }
+
+        void GLWindow::CenterCursor() const
+        {
+            glfwSetCursorPos(m_Window, m_ActiveState.Width / 2, m_ActiveState.Height / 2);
+        }
+
+        void GLWindow::ToggleLockedCursor()
+        {
+            if (m_LockedCursor)
+            {
+                glfwSetInputMode(m_Window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+            }
+            else
+            {
+                glfwSetInputMode(m_Window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+                CenterCursor();
+            }
+            m_LockedCursor = !m_LockedCursor;
         }
     }
 }

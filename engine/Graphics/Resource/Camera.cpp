@@ -11,8 +11,8 @@ namespace Graphics
         using namespace Core::Math;
 
         Camera::Camera() :
-            m_View(*new glm::mat4()),
-            m_Proj(*new glm::mat4())
+            m_View(mat4()),
+            m_Proj(mat4())
         {
         }
 
@@ -20,86 +20,86 @@ namespace Graphics
         {
         }
 
-        void Camera::TranslateXZ(const glm::vec3& translation)
+        void Camera::TranslateXZ(const vec3& translation)
         {
-            glm::vec3 tempPos(m_View[X][W], m_View[Y][W], m_View[Z][W]);
-            tempPos += normalize(glm::vec3(m_View[X][X], 0.0f, m_View[Z][X])) * translation.x;
-            tempPos += normalize(glm::vec3(m_View[X][Z], 0.0f, m_View[Z][Z])) * translation.z;
-            m_View *= translate(glm::mat4(1.0f), -tempPos);
+            vec3 tempPos(m_View[X][W], m_View[Y][W], m_View[Z][W]);
+            tempPos += normalize(vec3(m_View[X][X], 0.0f, m_View[Z][X])) * translation.x;
+            tempPos += normalize(vec3(m_View[X][Z], 0.0f, m_View[Z][Z])) * translation.z;
+            m_View *= translate(mat4(1.0f), -tempPos);
         }
 
-        void Camera::Translate(const glm::vec3& translation)
+        void Camera::Translate(const vec3& translation)
         {
-            glm::vec3 tempPos(m_View[X][W], m_View[Y][W], m_View[Z][W]);
-            tempPos = tempPos + normalize(glm::vec3(m_View[X][X], m_View[X][Z], m_View[Z][X])) * translation.x;
-            tempPos = tempPos + normalize(glm::vec3(m_View[X][Y], m_View[Y][Y], m_View[Z][Y])) * translation.y;
-            tempPos = tempPos + normalize(glm::vec3(m_View[X][Z], m_View[Y][Z], m_View[Z][Z])) * translation.z;
-            m_View *= translate(glm::mat4(1.0f), -tempPos);
+            vec3 tempPos(m_View[X][W], m_View[Y][W], m_View[Z][W]);
+            tempPos = tempPos + normalize(vec3(m_View[X][X], m_View[X][Z], m_View[Z][X])) * translation.x;
+            tempPos = tempPos + normalize(vec3(m_View[X][Y], m_View[Y][Y], m_View[Z][Y])) * translation.y;
+            tempPos = tempPos + normalize(vec3(m_View[X][Z], m_View[Y][Z], m_View[Z][Z])) * translation.z;
+            m_View *= translate(mat4(1.0f), -tempPos);
         }
 
-        void Camera::Rotate(const glm::vec3& eulerDelta, const glm::vec3& forcedUp)
+        void Camera::Rotate(const vec3& eulerDelta, const vec3& forcedUp)
         {
-            glm::mat4 model = glm::inverse(m_View);
-            glm::quat orig_rot = glm::normalize(glm::quat_cast(model));
+            mat4 model = inverse(m_View);
+            quat orig_rot = normalize(quat_cast(model));
 
-            bool force = glm::l1Norm(forcedUp) > 0.0f;
+            bool force = l1Norm(forcedUp) > 0.0f;
 
-            glm::quat yaw = glm::angleAxis(glm::radians(-eulerDelta.x), force ? forcedUp : MathHelper::UpVector(orig_rot));
-            glm::quat pitch = glm::angleAxis(glm::radians(-eulerDelta.y), MathHelper::RightVector(orig_rot));
-            glm::quat roll = glm::angleAxis(glm::radians(eulerDelta.z), MathHelper::ForwardVector(orig_rot));
-            glm::quat rotation = yaw * pitch * roll * orig_rot;
+            quat yaw = angleAxis(radians(-eulerDelta.x), force ? forcedUp : UpVector(orig_rot));
+            quat pitch = angleAxis(radians(-eulerDelta.y), RightVector(orig_rot));
+            quat roll = angleAxis(radians(eulerDelta.z), ForwardVector(orig_rot));
+            quat rotation = yaw * pitch * roll * orig_rot;
 
             if (force)
             {
-                float dot = glm::dot(MathHelper::UpVector(glm::normalize(rotation)), forcedUp) - CAMERA_CORRECTION;
+                float dot = Dot(UpVector(normalize(rotation)), forcedUp) - CAMERA_CORRECTION;
                 if (dot < 0.0f)
                 {
-                    float adjustment = (acosf(dot) - glm::half_pi<float>())
-                        * (glm::dot(forcedUp, MathHelper::ForwardVector(rotation)) < 0.0f ? 1.0f : -1.0f);
+                    float adjustment = (acosf(dot) - half_pi<float>())
+                        * (Dot(forcedUp, ForwardVector(rotation)) < 0.0f ? 1.0f : -1.0f);
 
-                    rotation = glm::angleAxis(adjustment, MathHelper::RightVector(rotation)) * rotation;
+                    rotation = angleAxis(adjustment, RightVector(rotation)) * rotation;
                 }
             }
 
-            glm::mat4 temp = glm::mat4_cast(rotation);
+            mat4 temp = mat4_cast(rotation);
 
-            MathHelper::SetAxis(temp, MathHelper::GetAxis(model, Index::W), Index::W);
+            SetAxis(temp, GetAxis(model, Index::W), Index::W);
 
-            m_View = glm::inverse(temp);
+            m_View = inverse(temp);
         }
 
-        const glm::mat4& Camera::GetViewMatrix() const
+        const mat4& Camera::GetViewMatrix() const
         {
             return m_View;
         }
 
-        const glm::mat4& Camera::GetProjMatrix() const
+        const mat4& Camera::GetProjMatrix() const
         {
             return m_Proj;
         }
 
-        glm::vec3 Camera::GetPosition() const
+        vec3 Camera::GetPosition() const
         {
-            return glm::vec3(MathHelper::GetTranslation(m_View));
+            return vec3(GetTranslation(m_View));
         }
 
-        void Camera::SetViewMatrix(const glm::mat4& view)
+        void Camera::SetViewMatrix(const mat4& view)
         {
             m_View = view;
         }
-        void Camera::SetProjMatrix(const glm::mat4& proj)
+        void Camera::SetProjMatrix(const mat4& proj)
         {
             m_Proj = proj;
         }
 
-        glm::vec3 Camera::GetForward() const
+        vec3 Camera::GetForward() const
         {
-            return MathHelper::GetColumn(m_View, Index::Z);
+            return GetColumn(m_View, Index::Z);
         }
 
-        glm::vec3 Camera::GetUp() const
+        vec3 Camera::GetUp() const
         {
-            return MathHelper::GetColumn(m_View, Index::Y);
+            return GetColumn(m_View, Index::Y);
         }
 
         float Camera::GetFOV() const
@@ -122,43 +122,43 @@ namespace Graphics
             return m_Far;
         }
 
-        void Camera::SetPosition(const glm::vec3& position)
+        void Camera::SetPosition(const vec3& position)
         {
-            MathHelper::SetTranslation(m_View, position);
+            SetTranslation(m_View, position);
         }
 
-        void Camera::SetForward(const glm::vec3& forward)
+        void Camera::SetForward(const vec3& forward)
         {
-            MathHelper::SetColumn(m_View, forward, Index::Z);
+            SetColumn(m_View, forward, Index::Z);
         }
 
-        void Camera::SetUp(const glm::vec3& up)
+        void Camera::SetUp(const vec3& up)
         {
-            MathHelper::SetColumn(m_View, up, Index::Y);
+            SetColumn(m_View, up, Index::Y);
         }
 
         void Camera::SetFOV(float fov)
         {
             m_DegFOV = fov;
-            m_Proj = glm::perspective(m_DegFOV, m_Aspect, m_Near, m_Far);
+            m_Proj = perspective(m_DegFOV, m_Aspect, m_Near, m_Far);
         }
 
         void Camera::SetAspect(float aspect)
         {
             m_Aspect = aspect;
-            m_Proj = glm::perspective(m_DegFOV, m_Aspect, m_Near, m_Far);
+            m_Proj = perspective(m_DegFOV, m_Aspect, m_Near, m_Far);
         }
 
         void Camera::SetNear(float nearP)
         {
             m_Near = nearP;
-            m_Proj = glm::perspective(m_DegFOV, m_Aspect, m_Near, m_Far);
+            m_Proj = perspective(m_DegFOV, m_Aspect, m_Near, m_Far);
         }
 
         void Camera::SetFar(float farP)
         {
             m_Far = farP;
-            m_Proj = glm::perspective(m_DegFOV, m_Aspect, m_Near, m_Far);
+            m_Proj = perspective(m_DegFOV, m_Aspect, m_Near, m_Far);
         }
 
         float Camera::GetAperture() const

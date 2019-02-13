@@ -6,7 +6,7 @@ namespace Graphics
 {
     namespace Light
     {
-        Light::Light(const glm::vec4& colour) :
+        Light::Light(const vec4& colour) :
             m_Colour(colour)
         {
         }
@@ -15,12 +15,12 @@ namespace Graphics
         {
         }
 
-        const glm::vec4& Light::GetColour() const
+        const vec4& Light::GetColour() const
         {
             return m_Colour;
         }
 
-        void Light::SetColour(const glm::vec4& colour)
+        void Light::SetColour(const vec4& colour)
         {
             m_Colour = colour;
         }

@@ -3,7 +3,7 @@
 #define CAERULUS_GRAPHICS __declspec(dllexport)
 
 #include "Window.h"
-
+#include <glew.h>
 #include <glfw3.h>
 
 namespace Graphics
@@ -23,9 +23,13 @@ namespace Graphics
             CAERULUS_GRAPHICS virtual void* GetHandle() const override;
 
             CAERULUS_GRAPHICS virtual GLFWwindow* GetGLFWWindow() const;
+
+            CAERULUS_GRAPHICS virtual void CenterCursor() const;
+            CAERULUS_GRAPHICS virtual void ToggleLockedCursor();
         private:
 
             GLFWwindow* m_Window;
+            bool m_LockedCursor;
         };
     }
 }

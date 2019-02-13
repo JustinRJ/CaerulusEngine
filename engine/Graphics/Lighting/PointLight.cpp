@@ -7,7 +7,7 @@ namespace Graphics
 {
     namespace Light
     {
-        PointLight::PointLight(const glm::vec4& colour, const glm::vec3& position, float radius) :
+        PointLight::PointLight(const vec4& colour, const vec3& position, float radius) :
             Light(colour) ,
             m_Position(position),
             m_Radius(radius)
@@ -18,7 +18,7 @@ namespace Graphics
         {
         }
 
-        const glm::vec3& PointLight::GetPosition() const
+        const vec3& PointLight::GetPosition() const
         {
             return m_Position;
         }
@@ -28,7 +28,7 @@ namespace Graphics
             return m_Radius;
         }
 
-        void PointLight::SetPosition(const glm::vec3& pos)
+        void PointLight::SetPosition(const vec3& pos)
         {
             m_Position = pos;
         }
@@ -38,9 +38,9 @@ namespace Graphics
             m_Radius = radius;
         }
 
-        void PointLight::RenderToShader(unsigned int ID, const Shaders::Shader& shader, const glm::mat4& view) const
+        void PointLight::RenderToShader(unsigned int ID, const Shaders::Shader& shader, const mat4& view) const
         {
-            glm::vec3 lightPositionViewSpace = glm::vec3(view * glm::vec4(m_Position, 1.0f));
+            vec3 lightPositionViewSpace = vec3(view * vec4(m_Position, 1.0f));
 
             glUniform3f(glGetUniformLocation(shader.GetHandle(), ("lightPointArray[" + std::to_string(ID) + "].position").c_str()),
                 lightPositionViewSpace.x,

@@ -11,10 +11,14 @@ namespace Graphics
         public:
             static const GLfloat s_QuadVertices[];
 
-            QuadGeometry(const glm::mat4& transform);
+            QuadGeometry();
+            QuadGeometry(const mat4& transform);
             virtual ~QuadGeometry();
 
             void Draw() const override;
+
+        private:
+            virtual void GenerateBuffer() override;
         };
     }
 }

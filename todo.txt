@@ -3,3 +3,7 @@ Change third party dep to static libs
 Add colour class
 
 Set m_UniformLocations in ShaderSource via reading file
+
+Rename glsl (shader files) "color" -> "colour"! (and code)
+
+Remove all uses of 'new' and replace to unique/shared_ptr

@@ -9,16 +9,16 @@ namespace Graphics
         class DirectionalLight : public Light
         {
         public:
-            DirectionalLight(const glm::vec4& colour, const glm::vec3& direction);
+            DirectionalLight(const vec4& colour, const vec3& direction);
             virtual ~DirectionalLight();
 
-            const glm::vec3& GetDirection() const;
-            void SetDirection(const glm::vec3& direction);
+            const vec3& GetDirection() const;
+            void SetDirection(const vec3& direction);
 
-            void RenderToShader(unsigned int ID, const Shaders::Shader& shader, const glm::mat4& view) const override;
+            void RenderToShader(unsigned int ID, const Shaders::Shader& shader, const mat4& view) const override;
 
         protected:
-            glm::vec3 m_Direction;
+            vec3 m_Direction;
         };
     }
 }

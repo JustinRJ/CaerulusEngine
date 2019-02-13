@@ -39,6 +39,16 @@
     <ClCompile Include="Window\GLWindow.cpp">
       <Filter>Window</Filter>
     </ClCompile>
+    <ClCompile Include="RenderSystem.cpp" />
+    <ClCompile Include="Resource\Material.cpp">
+      <Filter>Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="Resource\Model.cpp">
+      <Filter>Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="Resource\Texture.cpp">
+      <Filter>Resource</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -77,6 +87,16 @@
     </ClInclude>
     <ClInclude Include="Window\GLWindow.h">
       <Filter>Window</Filter>
+    </ClInclude>
+    <ClInclude Include="RenderSystem.h" />
+    <ClInclude Include="Resource\Material.h">
+      <Filter>Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource\Model.h">
+      <Filter>Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource\Texture.h">
+      <Filter>Resource</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

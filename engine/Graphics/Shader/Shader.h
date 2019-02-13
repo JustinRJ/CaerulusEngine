@@ -1,5 +1,7 @@
 #pragma once
 
+#define CAERULUS_GRAPHICS __declspec(dllexport)
+
 #include "ShaderSource.h"
 
 namespace Graphics
@@ -9,15 +11,15 @@ namespace Graphics
         class Shader
         {
         public:
-            Shader();
-            ~Shader();
+            CAERULUS_GRAPHICS Shader();
+            CAERULUS_GRAPHICS ~Shader();
 
-            bool IsLoaded() const;
-            void Load(const GLchar* vertexPath, const GLchar* fragmentPath);
-            bool Compile(const ShaderSource& vertex, const ShaderSource& fragment);
-            void Use() const;
+            CAERULUS_GRAPHICS bool IsLoaded() const;
+            CAERULUS_GRAPHICS void Load(const GLchar* vertexPath, const GLchar* fragmentPath);
+            CAERULUS_GRAPHICS bool Compile(const ShaderSource& vertex, const ShaderSource& fragment);
+            CAERULUS_GRAPHICS void Use() const;
 
-            GLuint GetHandle() const;
+            CAERULUS_GRAPHICS GLuint GetHandle() const;
 
         private:
             GLuint m_ShaderProgram;

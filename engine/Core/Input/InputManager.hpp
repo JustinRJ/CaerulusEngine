@@ -1,6 +1,7 @@
 #pragma once
 
 #include <glfw3.h>
+
 #include <functional>
 #include <iostream>
 #include <map>
@@ -42,8 +43,8 @@ namespace Core
                 glfwSetWindowUserPointer(window, this);
                 glfwSetKeyCallback(window, [](GLFWwindow* windowI, int keyI, int scancodeI, int actionI, int modeI)
                 {
-                    auto& self = *static_cast<InputManager*>(glfwGetWindowUserPointer(windowI));
-                    KeyInputCallbackMap keyInputCallMap = self.GetWindowKeyCallbacks();
+                    auto self = static_cast<InputManager*>(glfwGetWindowUserPointer(windowI));
+                    KeyInputCallbackMap keyInputCallMap = self->GetWindowKeyCallbacks();
                     try
                     {
                         if (keyInputCallMap.find(windowI) != keyInputCallMap.end() &&

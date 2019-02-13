@@ -1,21 +1,25 @@
 #pragma once
 
+#include "../Graphics/RenderSystem.h"
+#include "../Graphics/Window/GLWindow.h"
+
+#include "../Core/Input/InputManager.hpp"
 #include "../Core/Interface/ITickable.h"
 #include "../Core/Time/FPSLimiter.h"
 #include "../Core/Time/FixedLimiter.h"
-#include "../Core/Input/InputManager.hpp"
-#include "../Graphics/Window/GLWindow.h"
-
-
-#include <vector>
+#include "../Core/Parser/Tokenizer.h"
+#include "../Core/Parser/StringHelper.h"
 
 namespace Engine
 {
-    using namespace Core;
-    using namespace Time;
-    using namespace Input;
-    using namespace Graphics;
-    using namespace Interface;
+    using namespace Core::Time;
+    using namespace Core::Input;
+    using namespace Core::Interface;
+    using namespace Core::Parser;
+
+    using namespace Graphics::Render;
+    using namespace Graphics::Window;
+
 
     class Engine
     {
@@ -43,11 +47,8 @@ namespace Engine
         std::unique_ptr<FixedLimiter> m_FixedLimiter;
 
         std::shared_ptr<InputManager> m_InputManager;
+        std::shared_ptr<RenderSystem> m_RenderSystem;
 
         std::vector<std::shared_ptr<ITickable>> m_Tickable;
-
-        //Remove
-        Graphics::Window::GLWindow window;
-        bool focused;
     };
 }

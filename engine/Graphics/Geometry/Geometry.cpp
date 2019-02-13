@@ -6,17 +6,27 @@ namespace Graphics
 {
     namespace Geometry
     {
-        using namespace Core::Math;
-        Geometry::Geometry(const glm::mat4& transform)
-            : m_Transform(*new glm::mat4(transform))
+        Geometry::Geometry() :
+            m_Transform(mat4())
         {
-            glGenVertexArrays(1, &m_VAO);
-            glGenBuffers(1, &m_VBO);
-            glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
+            GenerateBuffer();
+        }
+
+        Geometry::Geometry(const mat4& transform) :
+            m_Transform(mat4(transform))
+        {
+            GenerateBuffer();
         }
 
         Geometry::~Geometry()
         {
+        }
+
+        void Geometry::GenerateBuffer()
+        {
+            glGenVertexArrays(1, &m_VAO);
+            glGenBuffers(1, &m_VBO);
+            glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
         }
 
         GLuint Geometry::GetVAO() const
@@ -29,14 +39,14 @@ namespace Graphics
             return m_VBO;
         }
 
-        void Geometry::SetTransform(glm::mat4& transform)
+        void Geometry::SetTransform(const mat4& transform)
         {
             m_Transform = transform;
         }
 
-        glm::mat4& Geometry::GetTransform() const
+        const mat4& Geometry::GetTransform() const
         {
             return m_Transform;
         }
-        }
+    }
 }

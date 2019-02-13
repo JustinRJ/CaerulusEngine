@@ -11,10 +11,14 @@ namespace Graphics
         public:
             static const GLfloat s_PlaneVertices[];
 
-            PlaneGeometry(const glm::mat4& transform);
+            PlaneGeometry();
+            PlaneGeometry(const mat4& transform);
             virtual ~PlaneGeometry();
 
             void Draw() const override;
+
+        private:
+            virtual void GenerateBuffer() override;
         };
     }
 }

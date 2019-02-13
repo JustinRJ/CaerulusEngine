@@ -7,7 +7,7 @@ namespace Graphics
 {
     namespace Light
     {
-        DirectionalLight::DirectionalLight(const glm::vec4& colour, const glm::vec3& direction) :
+        DirectionalLight::DirectionalLight(const vec4& colour, const vec3& direction) :
             Light(colour),
             m_Direction(direction)
         {
@@ -16,19 +16,19 @@ namespace Graphics
         DirectionalLight::~DirectionalLight()
         {}
 
-        const glm::vec3& DirectionalLight::GetDirection() const
+        const vec3& DirectionalLight::GetDirection() const
         {
             return m_Direction;
         }
 
-        void DirectionalLight::SetDirection(const glm::vec3& direction)
+        void DirectionalLight::SetDirection(const vec3& direction)
         {
             m_Direction = direction;
         }
 
-        void DirectionalLight::RenderToShader(unsigned int ID, const Shaders::Shader& shader, const glm::mat4& view) const
+        void DirectionalLight::RenderToShader(unsigned int ID, const Shaders::Shader& shader, const mat4& view) const
         {
-            glm::vec3 lightDirectionViewSpace = glm::vec3(view * glm::vec4(m_Direction, 0.0f));
+            vec3 lightDirectionViewSpace = vec3(view * vec4(m_Direction, 0.0f));
 
             glUniform3f(glGetUniformLocation(shader.GetHandle(),
                 ("lightDirectionalArray[" + std::to_string(ID) + "].direction").c_str()),

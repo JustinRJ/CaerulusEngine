@@ -74,32 +74,32 @@
     <LinkIncremental>true</LinkIncremental>
     <OutDir>$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(Platform)\</OutDir>
     <IntDir>$(SolutionDir)$(MSBuildProjectName)\temp\$(Configuration)\$(Platform)\</IntDir>
-    <IncludePath>$(SolutionDir)..\dependencies\glm-0.9.9.0\include;$(SolutionDir)..\dependencies\glfw-3.2.1\include;$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)..\dependencies\glfw-3.2.1\lib\$(Configuration)\$(Platform);$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)..\dependencies\glm-0.9.9.0\include\;$(SolutionDir)..\dependencies\glfw-3.2.1\include\;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)..\dependencies\glfw-3.2.1\lib\$(Configuration)\$(Platform)\;$(LibraryPath)</LibraryPath>
     <TargetName>Caerulus_$(ProjectName)</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
     <OutDir>$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(Platform)\</OutDir>
     <IntDir>$(SolutionDir)$(MSBuildProjectName)\temp\$(Configuration)\$(Platform)\</IntDir>
-    <IncludePath>$(SolutionDir)..\dependencies\glm-0.9.9.0\include;$(SolutionDir)..\dependencies\glfw-3.2.1\include;$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)..\dependencies\glfw-3.2.1\lib\$(Configuration)\$(Platform);$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)..\dependencies\glm-0.9.9.0\include\;$(SolutionDir)..\dependencies\glfw-3.2.1\include\;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)..\dependencies\glfw-3.2.1\lib\$(Configuration)\$(Platform)\;$(LibraryPath)</LibraryPath>
     <TargetName>Caerulus_$(ProjectName)</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(Platform)\</OutDir>
     <IntDir>$(SolutionDir)$(MSBuildProjectName)\temp\$(Configuration)\$(Platform)\</IntDir>
-    <IncludePath>$(SolutionDir)..\dependencies\glm-0.9.9.0\include;$(SolutionDir)..\dependencies\glfw-3.2.1\include;$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)..\dependencies\glfw-3.2.1\lib\$(Configuration)\$(Platform);$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)..\dependencies\glm-0.9.9.0\include\;$(SolutionDir)..\dependencies\glfw-3.2.1\include\;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)..\dependencies\glfw-3.2.1\lib\$(Configuration)\$(Platform)\;$(LibraryPath)</LibraryPath>
     <TargetName>Caerulus_$(ProjectName)</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(Platform)\</OutDir>
     <IntDir>$(SolutionDir)$(MSBuildProjectName)\temp\$(Configuration)\$(Platform)\</IntDir>
-    <IncludePath>$(SolutionDir)..\dependencies\glm-0.9.9.0\include;$(SolutionDir)..\dependencies\glfw-3.2.1\include;$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)..\dependencies\glfw-3.2.1\lib\$(Configuration)\$(Platform);$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)..\dependencies\glm-0.9.9.0\include\;$(SolutionDir)..\dependencies\glfw-3.2.1\include\;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)..\dependencies\glfw-3.2.1\lib\$(Configuration)\$(Platform)\;$(LibraryPath)</LibraryPath>
     <TargetName>Caerulus_$(ProjectName)</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -211,7 +211,7 @@
     <ClInclude Include="Interface\IResetable.h" />
     <ClInclude Include="Interface\ISerializable.h" />
     <ClInclude Include="Interface\ITickable.h" />
-    <ClInclude Include="Math\MathHelper.h" />
+    <ClInclude Include="Math\MathFacade.h" />
     <ClInclude Include="Parser\StringHelper.h" />
     <ClInclude Include="Parser\Tokenizer.h" />
     <ClInclude Include="stdafx.h" />
@@ -222,7 +222,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp" />
-    <ClCompile Include="Math\MathHelper.cpp" />
+    <ClCompile Include="Math\MathFacade.cpp" />
     <ClCompile Include="Parser\StringHelper.cpp" />
     <ClCompile Include="Parser\Tokenizer.cpp" />
     <ClCompile Include="stdafx.cpp">
