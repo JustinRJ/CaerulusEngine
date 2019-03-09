@@ -117,8 +117,7 @@
       <AdditionalDependencies>glfw3dll.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>
-      </Command>
+      <Command>call "$(SolutionDir)..\build.bat" $(Configuration) $(Platform)</Command>
       <Message>
       </Message>
     </PostBuildEvent>
@@ -141,8 +140,7 @@
       <AdditionalDependencies>glfw3dll.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>
-      </Command>
+      <Command>call "$(SolutionDir)..\build.bat" $(Configuration) $(Platform)</Command>
       <Message>
       </Message>
     </PostBuildEvent>
@@ -169,8 +167,7 @@
       <AdditionalDependencies>glfw3dll.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>
-      </Command>
+      <Command>call "$(SolutionDir)..\build.bat" $(Configuration) $(Platform)</Command>
       <Message>
       </Message>
     </PostBuildEvent>
@@ -197,8 +194,7 @@
       <AdditionalDependencies>glfw3dll.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>
-      </Command>
+      <Command>call "$(SolutionDir)..\build.bat" $(Configuration) $(Platform)</Command>
       <Message>
       </Message>
     </PostBuildEvent>

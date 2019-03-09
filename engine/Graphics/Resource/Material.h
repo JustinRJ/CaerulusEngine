@@ -16,20 +16,20 @@ namespace Graphics
             AO = 4
         };
 
-        //TODO expand this class, look at what tinyobj has to offer
         class Material
         {
 
         public:
-            Material(const std::string& path);
+            Material(const std::string& name);
             ~Material();
-            void RenderToShader(const Texture& defaultAO) const;
+            void RenderToShader() const;
 
             Texture* GetTexture(MaterialType materialType) const;
             void SetTexture(Texture* texture, MaterialType materialType);
 
         private:
-            const std::string& m_Path;
+            const std::string& m_Name;
+
             std::vector<Texture*>& m_Textures;
         };
     }

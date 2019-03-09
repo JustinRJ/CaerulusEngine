@@ -97,6 +97,9 @@ namespace Graphics
 
             CAERULUS_GRAPHICS void Update(float deltaTime);
 
+            CAERULUS_GRAPHICS void SetCamera(Camera& camera);
+            CAERULUS_GRAPHICS Camera& GetCamera() const;
+
             CAERULUS_GRAPHICS void SetSkyBox(Texture& skyBox);
             CAERULUS_GRAPHICS Texture& GetSkyBox() const;
 
@@ -115,8 +118,11 @@ namespace Graphics
             CAERULUS_GRAPHICS void SetDirectionalLightMap(std::map<unsigned int, Graphics::Light::DirectionalLight*> idDirectionalMap);
             CAERULUS_GRAPHICS const std::map<unsigned int, Graphics::Light::DirectionalLight*>& GetDirectionalLightMap() const;
 
-            CAERULUS_GRAPHICS void SetTransformModelMap(const std::map<unsigned int, std::tuple<mat4*, Model*>>& transformModelMap);
-            CAERULUS_GRAPHICS const std::map<unsigned int, std::tuple<mat4*, Model*>>& GetTransformModelMap() const;
+            CAERULUS_GRAPHICS void SetModelMap(const std::map<unsigned int, Model*>& modelMap);
+            CAERULUS_GRAPHICS const std::map<unsigned int, Model*>& GetModelMap() const;
+
+            CAERULUS_GRAPHICS void SetTransformMap(const std::map<unsigned int, mat4*>& modelMap);
+            CAERULUS_GRAPHICS const std::map<unsigned int, mat4*>& GetTransformMap() const;
 
 
             CAERULUS_GRAPHICS IBL& GetIBL() const;
@@ -179,8 +185,13 @@ namespace Graphics
             Texture*            m_DefualtAO;
             // Default Material
             Material*           m_DefaultMaterial;
-            // Map of ID to absolute transform + model
-            std::map<unsigned int, std::tuple<mat4*, Model*>> m_TransformModelMap;
+
+            // Map of ID to absolute transform
+            std::map<unsigned int, Model*> m_ModelMap;
+            // Map of ID to  model
+            std::map<unsigned int, mat4*> m_TransformMap;
+            // Map of ID to material
+            std::map<unsigned int, Material*> m_MaterialMap;
             // Map of ID to point light
             std::map<unsigned int, Graphics::Light::PointLight*> m_PointLightMap;
             // Map of ID to directional light

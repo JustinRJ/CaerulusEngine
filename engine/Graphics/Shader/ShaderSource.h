@@ -1,5 +1,7 @@
 #pragma once
 
+#define CAERULUS_GRAPHICS __declspec(dllexport)
+
 #include <glew.h>
 #include <vector>
 
@@ -19,12 +21,12 @@ namespace Graphics
         class ShaderSource
         {
         public:
-            ShaderSource(ShaderType type, const std::string& path);
-            ~ShaderSource();
+            CAERULUS_GRAPHICS ShaderSource(ShaderType type, const std::string& path);
+            CAERULUS_GRAPHICS ~ShaderSource();
 
-            bool IsLoaded() const;
-            void Load();
-            GLuint GetHandle() const;
+            CAERULUS_GRAPHICS bool IsLoaded() const;
+            CAERULUS_GRAPHICS void Load();
+            CAERULUS_GRAPHICS GLuint GetHandle() const;
 
         private:
             GLuint m_Handle;

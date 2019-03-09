@@ -9,6 +9,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Engine", "Engine\Engine.vcx
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Graphics", "Graphics\Graphics.vcxproj", "{BB3C7E92-761A-495A-B792-A9F0C5AE0C1A}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Managers", "Managers\Managers.vcxproj", "{4E00BE06-E30E-4085-A099-08CA81FF44BD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -41,6 +43,14 @@ Global
 		{BB3C7E92-761A-495A-B792-A9F0C5AE0C1A}.Release|Win32.Build.0 = Release|Win32
 		{BB3C7E92-761A-495A-B792-A9F0C5AE0C1A}.Release|x64.ActiveCfg = Release|x64
 		{BB3C7E92-761A-495A-B792-A9F0C5AE0C1A}.Release|x64.Build.0 = Release|x64
+		{4E00BE06-E30E-4085-A099-08CA81FF44BD}.Debug|Win32.ActiveCfg = Debug|Win32
+		{4E00BE06-E30E-4085-A099-08CA81FF44BD}.Debug|Win32.Build.0 = Debug|Win32
+		{4E00BE06-E30E-4085-A099-08CA81FF44BD}.Debug|x64.ActiveCfg = Debug|x64
+		{4E00BE06-E30E-4085-A099-08CA81FF44BD}.Debug|x64.Build.0 = Debug|x64
+		{4E00BE06-E30E-4085-A099-08CA81FF44BD}.Release|Win32.ActiveCfg = Release|Win32
+		{4E00BE06-E30E-4085-A099-08CA81FF44BD}.Release|Win32.Build.0 = Release|Win32
+		{4E00BE06-E30E-4085-A099-08CA81FF44BD}.Release|x64.ActiveCfg = Release|x64
+		{4E00BE06-E30E-4085-A099-08CA81FF44BD}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

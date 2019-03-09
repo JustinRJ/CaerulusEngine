@@ -7,8 +7,8 @@ namespace Graphics
 {
     namespace Resource
     {
-        Material::Material(const std::string& path) :
-            m_Path(path),
+        Material::Material(const std::string& name) :
+            m_Name(name),
             m_Textures(*new std::vector<Texture*>(5))
         {
             m_Textures[Albedo] = nullptr;
@@ -39,7 +39,7 @@ namespace Graphics
             }
         }
 
-        void Material::RenderToShader(const Texture& defaultAO) const
+        void Material::RenderToShader() const
         {
             glActiveTexture(GL_TEXTURE0);
             m_Textures.at(Albedo) != nullptr ? m_Textures.at(Albedo)->UseTexture() : glBindTexture(GL_TEXTURE_2D, 0);
@@ -50,15 +50,8 @@ namespace Graphics
             glActiveTexture(GL_TEXTURE3);
             m_Textures.at(Metallic) != nullptr ? m_Textures.at(Metallic)->UseTexture() : glBindTexture(GL_TEXTURE_2D, 0);
             glActiveTexture(GL_TEXTURE4);
-
-            if (m_Textures.at(AO) != nullptr)
-            {
-                m_Textures.at(AO)->UseTexture();
-            }
-            else
-            {
-                defaultAO.UseTexture();
-            }
+            m_Textures.at(Metallic) != nullptr ? m_Textures.at(AO)->UseTexture() : glBindTexture(GL_TEXTURE_2D, 0);
+            glActiveTexture(GL_TEXTURE5);
             glBindTexture(GL_TEXTURE_2D, 0);
         }
     }

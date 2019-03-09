@@ -496,20 +496,24 @@ namespace Graphics
             //Time taken to render geometry
             glQueryCounter(m_Profiler->QueryIDGeometry[GPUProfiler::Start], GL_TIMESTAMP);
 
-            mat4 view = m_Camera->GetViewMatrix() /* * m_TransformCM->GetTransform(cameraEntity)*/;
+            mat4 view = m_Camera->GetViewMatrix() /** this by transform of camera*/;
             mat4 proj = m_Camera->GetProjMatrix();
 
             // geo rendering
             m_Shaders->GBuffer.Use();
             SetCameraUniforms(view, proj, m_Camera->GetNear(), m_Camera->GetFar());
 
-            for (auto entity : m_TransformModelMap)
+            for (auto model : m_ModelMap)
             {
-                //Todo add material rendering
-                mat4 model = *std::get<0>(entity.second);
-                m_ProjViewModel = proj * view * model;
-                SetModelUniforms(model);
-                std::get<1>(entity.second)->Draw(m_WireframeMode);
+                if (model.second)
+                {
+                    //Todo add material rendering
+                    mat4 transform = *m_TransformMap.at(model.first);
+
+                    m_ProjViewModel = proj * view * transform;
+                    SetModelUniforms(transform);
+                    model.second->Draw(m_WireframeMode);
+                }
             }
 
             glQueryCounter(m_Profiler->QueryIDGeometry[GPUProfiler::Stop], GL_TIMESTAMP);
@@ -536,6 +540,16 @@ namespace Graphics
             Clear();
             DrawAll();
             SwapBuffer(deltaTime);
+        }
+
+        void RenderSystem::SetCamera(Camera& camera)
+        {
+            *m_Camera = camera;
+        }
+
+        Camera& RenderSystem::GetCamera() const
+        {
+            return *m_Camera;
         }
 
         void RenderSystem::Clear() const
@@ -929,14 +943,24 @@ namespace Graphics
             return *m_Window;
         }
 
-        void RenderSystem::SetTransformModelMap(const std::map<unsigned int, std::tuple<mat4*, Model*>>& transformModelMap)
+        void RenderSystem::SetModelMap(const std::map<unsigned int, Model*>& modelMap)
         {
-            m_TransformModelMap = transformModelMap;
+            m_ModelMap = modelMap;
         }
 
-        const std::map<unsigned int, std::tuple<mat4*, Model*>>& RenderSystem::GetTransformModelMap() const
+        const std::map<unsigned int, Model*>& RenderSystem::GetModelMap() const
         {
-            return m_TransformModelMap;
+            return m_ModelMap;
+        }
+
+        void RenderSystem::SetTransformMap(const std::map<unsigned int, mat4*>& transformMap)
+        {
+            m_TransformMap = transformMap;
+        }
+
+        const std::map<unsigned int, mat4*>& RenderSystem::GetTransformMap() const
+        {
+            return m_TransformMap;
         }
     }
 }

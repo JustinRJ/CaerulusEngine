@@ -12,7 +12,8 @@ namespace Graphics
             m_IsLoaded(false),
             m_Path(*new std::string(path)),
             m_Meshes(*new std::vector<Mesh>()),
-            m_MeshMaterials(*new std::vector<std::string>())
+            m_MeshMaterials(*new std::vector<std::string>()),
+            m_Materials()
         {
             Assimp::Importer importer;
             const aiScene* scene = importer.ReadFile(m_Path,
@@ -45,6 +46,10 @@ namespace Graphics
         {
             for (GLuint i = 0; i < m_Meshes.size(); i++)
             {
+                if (m_Materials.size() > i && m_Materials.at(i))
+                {
+                    m_Materials.at(i)->RenderToShader();
+                }
                 DrawMesh(wireframe, i);
             }
         }
@@ -142,6 +147,17 @@ namespace Graphics
         bool Model::IsLoaded() const
         {
             return m_IsLoaded;
+        }
+
+
+        const std::vector<Material*>& Model::GetMaterials() const
+        {
+            return m_Materials;
+        }
+
+        void Model::SetMaterials(const std::vector<Material*>& materials)
+        {
+            m_Materials = materials;
         }
     }
 }

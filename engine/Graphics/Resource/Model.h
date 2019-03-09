@@ -8,6 +8,7 @@
 #include <glew.h>
 #include <vector>
 #include "../../Core/Math/MathFacade.h"
+#include "../Resource/Material.h"
 
 namespace Graphics
 {
@@ -91,11 +92,16 @@ namespace Graphics
             CAERULUS_GRAPHICS const std::vector<Mesh>& GetMeshes() const;
             CAERULUS_GRAPHICS const std::vector<std::string>& GetMeshMaterials() const;
 
+            CAERULUS_GRAPHICS const std::vector<Material*>& GetMaterials() const;
+            CAERULUS_GRAPHICS void SetMaterials(const std::vector<Material*>& materials);
+
+
         private:
             bool m_IsLoaded;
             std::string& m_Path;
             std::vector<Mesh>& m_Meshes;
             std::vector<std::string>& m_MeshMaterials;
+            std::vector<Material*> m_Materials;
 
             void ProcessNode(const aiNode* node, const aiScene* scene);
             const Mesh& ProcessMesh(const aiMesh& mesh) const;
