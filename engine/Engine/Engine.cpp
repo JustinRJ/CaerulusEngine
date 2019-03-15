@@ -3,7 +3,6 @@
 #include "Engine.h"
 #include <iostream>
 
-
 namespace Engine
 {
     Engine::Engine(int argc, char** argv) :
@@ -12,7 +11,10 @@ namespace Engine
         m_Running(false),
         m_DeltaTime(0.0f),
         m_FixedTime(0.0f),
-        m_FPSLimit(1.0f / 60.0f)
+        m_FPSLimit(1.0f / 60.0f),
+        m_ModelManager(),
+        m_TextureManager(),
+        m_MaterialManager(m_TextureManager)
     {
         m_FPSLimiter = std::make_unique<FPSLimiter>();
         m_FixedLimiter = std::make_unique<FixedLimiter>();
@@ -54,6 +56,27 @@ namespace Engine
             m_RenderSystem->GetGLWindow().GetGLFWWindow(), GLFW_KEY_D, GLFW_REPEAT, NULL,
             [&]() -> void { m_RenderSystem->GetCamera().Translate(vec3(10 * m_DeltaTime, 0, 0)); });
 
+        m_TextureManager.LoadHDR("skyBox", "assets/textures/hdr/pisa.hdr");
+        m_RenderSystem->SetSkyBox(*m_TextureManager.Get("skyBox"));
+
+        m_ModelManager.Load("shaderBall", "assets/models/shaderBall.obj");
+
+        //gold textures
+        m_TextureManager.Load("goldAlbedo",     "assets/textures/pbr/gold/gold_albedo.png");
+        m_TextureManager.Load("goldNormal",     "assets/textures/pbr/gold/gold_normal.png");
+        m_TextureManager.Load("goldRoughness",  "assets/textures/pbr/gold/gold_roughness.png");
+        m_TextureManager.Load("goldMetallic",   "assets/textures/pbr/gold/gold_metallic.png");
+        m_TextureManager.Load("goldAO",         "assets/textures/pbr/gold/gold_ao.png");
+
+        //gold Materials
+        std::vector<Texture*> gold = std::vector<Texture*>(5);
+        gold[Albedo] = m_TextureManager.Get("goldAlbedo");
+        gold[Normal] = m_TextureManager.Get("goldNormal");
+        gold[Roughness] = m_TextureManager.Get("goldRoughness");
+        gold[Metallic] = m_TextureManager.Get("goldMetallic");
+        gold[AO] = m_TextureManager.Get("goldAO");
+        m_MaterialManager.Create("gold", gold);
+
         unsigned int shaderball = 0;
 
         mat4* position = new mat4();
@@ -62,7 +85,9 @@ namespace Engine
         transformMap->insert(std::make_pair(shaderball, position));
         m_RenderSystem->SetTransformMap(*transformMap);
 
-        Model* model = new Model("assets/models/shaderball.obj");
+        Model* model = m_ModelManager.Get("shaderBall");
+        model->SetMaterials(std::vector<Material*>({ m_MaterialManager.Get("gold") }));
+
         auto modelMap = new std::map<unsigned int, Model*>();
         modelMap->insert(std::make_pair(shaderball, model));
         m_RenderSystem->SetModelMap(*modelMap);

@@ -13,6 +13,7 @@ namespace Managers
         {
         public:
             ShaderSourceManager();
+            virtual ~ShaderSourceManager() {}
 
             virtual ShaderSource* Get(const std::string& name) const;
 

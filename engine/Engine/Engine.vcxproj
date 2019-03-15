@@ -134,7 +134,8 @@
       </Inputs>
     </CustomBuildStep>
     <PostBuildEvent>
-      <Command>call "$(SolutionDir)..\build.bat" $(Configuration) $(Platform)</Command>
+      <Command>echo DA | xcopy /E "$(SolutionDir)..\assets" "$(SolutionDir)..\bin\$(Configuration)\$(Platform)\assets"
+echo DA | xcopy /E "$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(Platform)\*.exe" "$(SolutionDir)..\bin\$(Configuration)\$(Platform)"</Command>
       <Message>
       </Message>
     </PostBuildEvent>
@@ -167,7 +168,8 @@
       </Inputs>
     </CustomBuildStep>
     <PostBuildEvent>
-      <Command>call "$(SolutionDir)..\build.bat" $(Configuration) $(Platform)</Command>
+      <Command>echo DA | xcopy /E "$(SolutionDir)..\assets" "$(SolutionDir)..\bin\$(Configuration)\$(Platform)\assets"
+echo DA | xcopy /E "$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(Platform)\*.exe" "$(SolutionDir)..\bin\$(Configuration)\$(Platform)"</Command>
       <Message>
       </Message>
     </PostBuildEvent>
@@ -204,7 +206,8 @@
       </Inputs>
     </CustomBuildStep>
     <PostBuildEvent>
-      <Command>call "$(SolutionDir)..\build.bat" $(Configuration) $(Platform)</Command>
+      <Command>echo DA | xcopy /E "$(SolutionDir)..\assets" "$(SolutionDir)..\bin\$(Configuration)\$(Platform)\assets"
+echo DA | xcopy /E "$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(Platform)\*.exe" "$(SolutionDir)..\bin\$(Configuration)\$(Platform)"</Command>
       <Message>
       </Message>
     </PostBuildEvent>
@@ -241,7 +244,8 @@
       </Inputs>
     </CustomBuildStep>
     <PostBuildEvent>
-      <Command>call "$(SolutionDir)..\build.bat" $(Configuration) $(Platform)</Command>
+      <Command>echo DA | xcopy /E "$(SolutionDir)..\assets" "$(SolutionDir)..\bin\$(Configuration)\$(Platform)\assets"
+echo DA | xcopy /E "$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(Platform)\*.exe" "$(SolutionDir)..\bin\$(Configuration)\$(Platform)"</Command>
       <Message>
       </Message>
     </PostBuildEvent>
@@ -270,6 +274,9 @@
     </ProjectReference>
     <ProjectReference Include="..\Graphics\Graphics.vcxproj">
       <Project>{bb3c7e92-761a-495a-b792-a9f0c5ae0c1a}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\Managers\Managers.vcxproj">
+      <Project>{4e00be06-e30e-4085-a099-08ca81ff44bd}</Project>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

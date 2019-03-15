@@ -5,7 +5,7 @@
 #include "../Core/Math/MathFacade.h"
 #include <iostream>
 
-namespace Graphics
+namespace
 {
     const glm::vec3 CAMERA_INIT_POSITION = glm::vec3(0.0f, 0.0f, 0.0f);
     const glm::vec3 CAMERA_INIT_FORWARD = glm::vec3(0.0f, 0.0f, -1.0f);
@@ -13,14 +13,13 @@ namespace Graphics
 
     const float CAMERA_INIT_ASPECT = (16.0f / 9.0f);
     const float CAMERA_INIT_FOV = 54.0f;
-    const float CAMERA_INIT_NEAR = 1.0f;                //THIS IS SET IN SHADER G-BUFFER.FRAG
-    const float CAMERA_INIT_FAR = 1000.0f;              //THIS IS SET IN SHADER G-BUFFER.FRAG
+    const float CAMERA_INIT_NEAR = 1.0f;    //THIS IS SET IN SHADER G-BUFFER.FRAG
+    const float CAMERA_INIT_FAR = 1000.0f;  //THIS IS SET IN SHADER G-BUFFER.FRAG
 
     float CAMERA_INIT_APETURE = 16.0f;
     float CAMERA_INIT_SHUTTER_SPEED = 0.5f;
     float CAMERA_INIT_ISO = 1000.0f;
 }
-
 
 namespace Graphics
 {

@@ -1,5 +1,7 @@
 #pragma once
 
+#define CAERULUS_GRAPHICS __declspec(dllexport)
+
 #include "Texture.h"
 #include <vector>
 
@@ -20,12 +22,12 @@ namespace Graphics
         {
 
         public:
-            Material(const std::string& name);
-            ~Material();
-            void RenderToShader() const;
+            CAERULUS_GRAPHICS Material(const std::string& name);
+            CAERULUS_GRAPHICS ~Material();
+            CAERULUS_GRAPHICS void RenderToShader() const;
 
-            Texture* GetTexture(MaterialType materialType) const;
-            void SetTexture(Texture* texture, MaterialType materialType);
+            CAERULUS_GRAPHICS Texture* GetTexture(MaterialType materialType) const;
+            CAERULUS_GRAPHICS void SetTexture(Texture* texture, MaterialType materialType);
 
         private:
             const std::string& m_Name;

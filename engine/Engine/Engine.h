@@ -10,6 +10,11 @@
 #include "../Core/Parser/Tokenizer.h"
 #include "../Core/Parser/StringHelper.h"
 
+#include "../Managers/Model/ModelManager.h"
+#include "../Managers/Shader/ShaderManager.h"
+#include "../Managers/Texture/TextureManager.h"
+#include "../Managers/Material/MaterialManager.h"
+
 namespace Engine
 {
     using namespace Core::Time;
@@ -20,6 +25,10 @@ namespace Engine
     using namespace Graphics::Render;
     using namespace Graphics::Window;
 
+    using namespace Managers::Model;
+    using namespace Managers::Shader;
+    using namespace Managers::Texture;
+    using namespace Managers::Material;
 
     class Engine
     {
@@ -50,5 +59,9 @@ namespace Engine
         std::shared_ptr<RenderSystem> m_RenderSystem;
 
         std::vector<std::shared_ptr<ITickable>> m_Tickable;
+
+        ModelManager m_ModelManager;
+        TextureManager m_TextureManager;
+        MaterialManager m_MaterialManager;
     };
 }

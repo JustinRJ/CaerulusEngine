@@ -1,3 +1,5 @@
+Add glew-2.1.0 dependency debug files
+
 Change third party dep to static libs
 
 Add colour class

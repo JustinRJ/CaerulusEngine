@@ -126,7 +126,7 @@ echo DA | xcopy /E "$(SolutionDir)..\dependencies\glfw-3.2.1\bin\$(Configuration
 echo DA | xcopy /E "$(SolutionDir)..\dependencies\assimp-4.1.0\bin\$(Configuration)\$(Platform)\assimp-vc140-mt.dll" "$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(Platform)\"</Command>
     </PreBuildEvent>
     <PostBuildEvent>
-      <Command>call "$(SolutionDir)..\build.bat" $(Configuration) $(Platform)</Command>
+      <Command>echo DA | xcopy /E "$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(Platform)\*.dll" "$(SolutionDir)..\bin\$(Configuration)\$(Platform)"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -149,7 +149,7 @@ echo DA | xcopy /E "$(SolutionDir)..\dependencies\glfw-3.2.1\bin\$(Configuration
 echo DA | xcopy /E "$(SolutionDir)..\dependencies\assimp-4.1.0\bin\$(Configuration)\$(Platform)\assimp-vc140-mt.dll" "$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(Platform)\"</Command>
     </PreBuildEvent>
     <PostBuildEvent>
-      <Command>call "$(SolutionDir)..\build.bat" $(Configuration) $(Platform)</Command>
+      <Command>echo DA | xcopy /E "$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(Platform)\*.dll" "$(SolutionDir)..\bin\$(Configuration)\$(Platform)"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -172,7 +172,7 @@ echo DA | xcopy /E "$(SolutionDir)..\dependencies\glfw-3.2.1\bin\$(Configuration
 echo DA | xcopy /E "$(SolutionDir)..\dependencies\assimp-4.1.0\bin\$(Configuration)\$(Platform)\assimp-vc140-mt.dll" "$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(Platform)\"</Command>
     </PreBuildEvent>
     <PostBuildEvent>
-      <Command>call "$(SolutionDir)..\build.bat" $(Configuration) $(Platform)</Command>
+      <Command>echo DA | xcopy /E "$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(Platform)\*.dll" "$(SolutionDir)..\bin\$(Configuration)\$(Platform)"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -199,7 +199,7 @@ echo DA | xcopy /E "$(SolutionDir)..\dependencies\glfw-3.2.1\bin\$(Configuration
 echo DA | xcopy /E "$(SolutionDir)..\dependencies\assimp-4.1.0\bin\$(Configuration)\$(Platform)\assimp-vc140-mt.dll" "$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(Platform)\"</Command>
     </PreBuildEvent>
     <PostBuildEvent>
-      <Command>call "$(SolutionDir)..\build.bat" $(Configuration) $(Platform)</Command>
+      <Command>echo DA | xcopy /E "$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(Platform)\*.dll" "$(SolutionDir)..\bin\$(Configuration)\$(Platform)"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
