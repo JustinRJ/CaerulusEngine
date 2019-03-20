@@ -49,7 +49,7 @@ namespace Graphics
 
             CAERULUS_GRAPHICS void TranslateXZ(const vec3& translation);
             CAERULUS_GRAPHICS void Translate(const vec3& translation);
-            CAERULUS_GRAPHICS void Rotate(const vec3& eulerDelta, const vec3& forcedUp = Core::Math::UnitUp);
+            CAERULUS_GRAPHICS void Rotate(const vec3& eulerDelta, const vec3& forcedUp = Core::Math::UnitUp());
 
         private:
             float m_DegFOV;

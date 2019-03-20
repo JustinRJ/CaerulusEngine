@@ -1,9 +1,10 @@
 #pragma once
 
+#include "../Input/Input/OISInputDevice.h"
+
 #include "../Graphics/RenderSystem.h"
 #include "../Graphics/Window/GLWindow.h"
 
-#include "../Core/Input/InputManager.hpp"
 #include "../Core/Interface/ITickable.h"
 #include "../Core/Time/FPSLimiter.h"
 #include "../Core/Time/FixedLimiter.h"
@@ -17,13 +18,14 @@
 
 namespace Engine
 {
-    using namespace Core::Time;
-    using namespace Core::Input;
-    using namespace Core::Interface;
-    using namespace Core::Parser;
+    using namespace Input;
 
     using namespace Graphics::Render;
     using namespace Graphics::Window;
+
+    using namespace Core::Time;
+    using namespace Core::Interface;
+    using namespace Core::Parser;
 
     using namespace Managers::Model;
     using namespace Managers::Shader;
@@ -55,7 +57,7 @@ namespace Engine
         std::unique_ptr<FPSLimiter> m_FPSLimiter;
         std::unique_ptr<FixedLimiter> m_FixedLimiter;
 
-        std::shared_ptr<InputManager> m_InputManager;
+        std::shared_ptr<InputDevice> m_InputDevice;
         std::shared_ptr<RenderSystem> m_RenderSystem;
 
         std::vector<std::shared_ptr<ITickable>> m_Tickable;

@@ -23,9 +23,9 @@ namespace Core
             W = 3
         };
 
-        extern const vec3 UnitUp;
-        extern const vec3 UnitRight;
-        extern const vec3 UnitForward;
+        CAERULUS_CORE vec3 UnitUp();
+        CAERULUS_CORE vec3 UnitRight();
+        CAERULUS_CORE vec3 UnitForward();
 
         CAERULUS_CORE vec3 UpVector(const quat& q);
         CAERULUS_CORE vec3 RightVector(const quat& q);

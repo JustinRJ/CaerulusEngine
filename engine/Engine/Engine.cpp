@@ -19,42 +19,11 @@ namespace Engine
         m_FPSLimiter = std::make_unique<FPSLimiter>();
         m_FixedLimiter = std::make_unique<FixedLimiter>();
 
-        m_InputManager = std::make_shared<InputManager>();
-        m_Tickable.push_back(m_InputManager);
-
         m_RenderSystem = std::make_shared<RenderSystem>();
 
-        m_InputManager->AddWindowKeyCallback(
-            m_RenderSystem->GetGLWindow().GetGLFWWindow(), GLFW_KEY_ESCAPE, GLFW_PRESS, NULL,
-            [&]() -> void { m_Running = false; });
-
-        m_InputManager->AddWindowKeyCallback(
-            m_RenderSystem->GetGLWindow().GetGLFWWindow(), GLFW_KEY_T, GLFW_PRESS, NULL,
-            [&]() -> void { std::cout << "T Pressed" << std::endl; });
-
-        m_InputManager->AddWindowKeyCallback(
-            m_RenderSystem->GetGLWindow().GetGLFWWindow(), GLFW_KEY_T, GLFW_RELEASE, NULL,
-            [&]() -> void { std::cout << "T Released" << std::endl; });
-
-        m_InputManager->AddWindowKeyCallback(
-            m_RenderSystem->GetGLWindow().GetGLFWWindow(), GLFW_KEY_TAB, GLFW_PRESS, NULL,
-            [&]() -> void { m_RenderSystem->ToggleWireframe(); });
-
-        m_InputManager->AddWindowKeyCallback(
-            m_RenderSystem->GetGLWindow().GetGLFWWindow(), GLFW_KEY_W, GLFW_REPEAT, NULL,
-            [&]() -> void { m_RenderSystem->GetCamera().Translate(vec3(0, 0, -10 * m_DeltaTime)); });
-
-        m_InputManager->AddWindowKeyCallback(
-            m_RenderSystem->GetGLWindow().GetGLFWWindow(), GLFW_KEY_S, GLFW_REPEAT, NULL,
-            [&]() -> void { m_RenderSystem->GetCamera().Translate(vec3(0, 0, 10 * m_DeltaTime)); });
-
-        m_InputManager->AddWindowKeyCallback(
-            m_RenderSystem->GetGLWindow().GetGLFWWindow(), GLFW_KEY_A, GLFW_REPEAT, NULL,
-            [&]() -> void { m_RenderSystem->GetCamera().Translate(vec3(-10 * m_DeltaTime, 0, 0)); });
-
-        m_InputManager->AddWindowKeyCallback(
-            m_RenderSystem->GetGLWindow().GetGLFWWindow(), GLFW_KEY_D, GLFW_REPEAT, NULL,
-            [&]() -> void { m_RenderSystem->GetCamera().Translate(vec3(10 * m_DeltaTime, 0, 0)); });
+        m_InputDevice = std::make_shared<OISInputDevice>();
+        m_InputDevice->Initialize(m_RenderSystem->GetGLWindow().GetHandle());
+        m_Tickable.push_back(m_InputDevice);
 
         m_TextureManager.LoadHDR("skyBox", "assets/textures/hdr/pisa.hdr");
         m_RenderSystem->SetSkyBox(*m_TextureManager.Get("skyBox"));
@@ -77,20 +46,41 @@ namespace Engine
         gold[AO] = m_TextureManager.Get("goldAO");
         m_MaterialManager.Create("gold", gold);
 
-        unsigned int shaderball = 0;
-
+        //shaderBall
+        unsigned int shaderBall = 0;
         mat4* position = new mat4();
         Core::Math::CreateTansform(*position, glm::vec3(0, 0, -20.0f), glm::quat(), glm::vec3(1.0f));
         auto transformMap = new std::map<unsigned int, mat4*>();
-        transformMap->insert(std::make_pair(shaderball, position));
+        transformMap->insert(std::make_pair(shaderBall, position));
         m_RenderSystem->SetTransformMap(*transformMap);
 
         Model* model = m_ModelManager.Get("shaderBall");
         model->SetMaterials(std::vector<Material*>({ m_MaterialManager.Get("gold") }));
 
         auto modelMap = new std::map<unsigned int, Model*>();
-        modelMap->insert(std::make_pair(shaderball, model));
+        modelMap->insert(std::make_pair(shaderBall, model));
         m_RenderSystem->SetModelMap(*modelMap);
+
+        using namespace Input;
+        m_InputDevice->Command("quit").Set([&]() { m_Running = false; }).Bind(Key::KEY_ESCAPE);
+        m_InputDevice->Command("wireframe").Set([&]() { m_RenderSystem->ToggleWireframe(); }).Bind(Key::KEY_X);
+        m_InputDevice->Command("sao").Set([&]() { m_RenderSystem->ToggleSAO(); }).Bind(Key::KEY_J);
+        m_InputDevice->Command("fxaa").Set([&]() { m_RenderSystem->ToggleFXAA(); }).Bind(Key::KEY_K);
+        m_InputDevice->Command("motion_blur").Set([&]() { m_RenderSystem->ToggleMotionBlur(); }).Bind(Key::KEY_L);
+        m_InputDevice->Command("point_render").Set([&]() { m_RenderSystem->TogglePointLightRender(); }).Bind(Key::KEY_I);
+        m_InputDevice->Command("directional_render").Set([&]() { m_RenderSystem->ToggleDirectionalLightRender(); }).Bind(Key::KEY_O);
+        m_InputDevice->Command("enviroment_render").Set([&]() { m_RenderSystem->ToggleEnviromentLightRender(); }).Bind(Key::KEY_P);
+        m_InputDevice->Command("tone1_render").Set([&]() { m_RenderSystem->ToggleToneMapping(1); }).Bind(Key::KEY_T);
+        m_InputDevice->Command("tone2_render").Set([&]() { m_RenderSystem->ToggleToneMapping(2); }).Bind(Key::KEY_Y);
+        m_InputDevice->Command("tone3_render").Set([&]() { m_RenderSystem->ToggleToneMapping(3); }).Bind(Key::KEY_U);
+
+        m_InputDevice->Command("move_forward").Set([&]() { m_RenderSystem->GetCamera().Translate(UnitForward()); }, Input::State::STATE_HOLD).Bind(Key::KEY_W).Bind(Key::KEY_UP);
+        m_InputDevice->Command("move_backward").Set([&]() { m_RenderSystem->GetCamera().Translate(-UnitForward()); }, Input::State::STATE_HOLD).Bind(Key::KEY_S).Bind(Key::KEY_DOWN);
+        m_InputDevice->Command("move_right").Set([&]() { m_RenderSystem->GetCamera().Translate(UnitRight()); }, Input::State::STATE_HOLD).Bind(Key::KEY_D).Bind(Key::KEY_RIGHT);
+        m_InputDevice->Command("move_left").Set([&]() { m_RenderSystem->GetCamera().Translate(-UnitRight()); }, Input::State::STATE_HOLD).Bind(Key::KEY_A).Bind(Key::KEY_LEFT);
+        m_InputDevice->Command("move_up").Set([&]() { m_RenderSystem->GetCamera().Translate(UnitUp()); }, Input::State::STATE_HOLD).Bind(Key::KEY_E);
+        m_InputDevice->Command("move_down").Set([&]() { m_RenderSystem->GetCamera().Translate(-UnitUp()); }, Input::State::STATE_HOLD).Bind(Key::KEY_Q);
+        m_InputDevice->Command("look").Set<glm::vec2>([&](glm::vec2 xy) { m_RenderSystem->GetCamera().Rotate(glm::vec3(xy.x, xy.y, 0.0f)); }).Bind(MouseButton::MOUSE_XY_DELTA);
     }
 
     Engine::~Engine()
@@ -118,7 +108,6 @@ namespace Engine
 
     void Engine::Tick()
     {
-        m_InputManager->PreUpdate();
         for (auto updatable : m_Tickable)
         {
             updatable->PreUpdate();

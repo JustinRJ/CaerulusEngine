@@ -6,23 +6,34 @@ namespace Core
 {
     namespace Math
     {
-        const vec3 UnitUp(0.0f, 1.0f, 0.0f);
-        const vec3 UnitRight(1.0f, 0.0f, 0.0f);
-        const vec3 UnitForward(0.0f, 0.0f, -1.0f);
+        vec3 UnitUp()
+        {
+            return vec3(0.0f, 1.0f, 0.0f);
+        }
+
+        vec3 UnitRight()
+        {
+            return vec3(1.0f, 0.0f, 0.0f);
+        }
+
+        vec3 UnitForward()
+        {
+            return vec3(0.0f, 0.0f, -1.0f);
+        }
 
         vec3 UpVector(const quat& q)
         {
-            return normalize(rotate(q, UnitUp));
+            return normalize(rotate(q, UnitUp()));
         }
 
         vec3 RightVector(const quat& q)
         {
-            return normalize(rotate(q, UnitRight));
+            return normalize(rotate(q, UnitRight()));
         }
 
         vec3 ForwardVector(const quat& q)
         {
-            return normalize(rotate(q, UnitForward));
+            return normalize(rotate(q, UnitForward()));
         }
 
         vec3 GetTranslation(const mat4& transform)
@@ -109,15 +120,15 @@ namespace Core
         {
             if (rotation.y != 0.0f)
             {
-                outTransform = rotate(outTransform, radians(rotation.y), UnitRight);
+                outTransform = rotate(outTransform, radians(rotation.y), UnitRight());
             }
             if (rotation.x != 0.0f)
             {
-                outTransform = rotate(outTransform, radians(rotation.x), UnitUp);
+                outTransform = rotate(outTransform, radians(rotation.x), UnitUp());
             }
             if (rotation.z != 0.0f)
             {
-                outTransform = rotate(outTransform, radians(rotation.z), UnitForward);
+                outTransform = rotate(outTransform, radians(rotation.z), UnitForward());
             }
         }
 

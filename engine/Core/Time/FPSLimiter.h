@@ -8,14 +8,14 @@ namespace Core
 {
     namespace Time
     {
-        class FPSLimiter : public Timer
+        class CAERULUS_CORE FPSLimiter : public Timer
         {
         public:
 
-            CAERULUS_CORE FPSLimiter();
-            CAERULUS_CORE virtual ~FPSLimiter();
+            FPSLimiter();
+            virtual ~FPSLimiter();
 
-            CAERULUS_CORE virtual float Delta(float frameLimit);
+            virtual float Delta(float frameLimit);
 
         private:
 

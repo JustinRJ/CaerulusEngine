@@ -8,20 +8,20 @@ namespace Core
 {
     namespace Parser
     {
-        class Tokenizer
+        class CAERULUS_CORE Tokenizer
         {
         public:
-            CAERULUS_CORE Tokenizer(const std::string&, const std::string& = " ");
-            CAERULUS_CORE virtual ~Tokenizer();
+            Tokenizer(const std::string&, const std::string& = " ");
+            virtual ~Tokenizer();
 
-            CAERULUS_CORE const char* Start();
-            CAERULUS_CORE const char* Start(const std::string& delims);
+            const char* Start();
+            const char* Start(const std::string& delims);
             
-            CAERULUS_CORE const char* Next();
-            CAERULUS_CORE const char* Next(const std::string& delims);
+            const char* Next();
+            const char* Next(const std::string& delims);
 
-            CAERULUS_CORE const char* Get();
-            CAERULUS_CORE void Reset();
+            const char* Get();
+            void Reset();
 
         private:
 

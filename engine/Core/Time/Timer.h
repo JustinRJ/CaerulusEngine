@@ -12,18 +12,18 @@ namespace Core
         CAERULUS_CORE void Sleep(time_t sec);
         CAERULUS_CORE void SleepMilli(time_t milli);
 
-        class Timer
+        class CAERULUS_CORE Timer
         {
         public:
 
-            CAERULUS_CORE Timer(bool start = false);
-            CAERULUS_CORE virtual ~Timer();
+            Timer(bool start = false);
+            virtual ~Timer();
 
-            CAERULUS_CORE virtual void Start();
-            CAERULUS_CORE virtual void Stop();
+            virtual void Start();
+            virtual void Stop();
 
-            CAERULUS_CORE virtual float Total();
-            CAERULUS_CORE virtual float Delta();
+            virtual float Total();
+            virtual float Delta();
 
             Time StartTime;
             Time EndTime;

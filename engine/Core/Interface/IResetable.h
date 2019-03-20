@@ -6,11 +6,11 @@ namespace Core
 {
     namespace Interface
     {
-        class IResetable
+        class CAERULUS_CORE IResetable
         {
         public:
 
-            CAERULUS_CORE virtual void Reset() = 0;
+            virtual void Reset() = 0;
         };
     }
 }

@@ -16,9 +16,6 @@
     <Filter Include="Interface">
       <UniqueIdentifier>{002dbe01-4b59-46db-9625-8a7b98485a59}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Input">
-      <UniqueIdentifier>{c199d5b3-d2c6-4ed0-9620-f1bbf3b05679}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp" />
@@ -73,9 +70,6 @@
     </ClInclude>
     <ClInclude Include="Interface\ITickable.h">
       <Filter>Interface</Filter>
-    </ClInclude>
-    <ClInclude Include="Input\InputManager.hpp">
-      <Filter>Input</Filter>
     </ClInclude>
     <ClInclude Include="Math\MathFacade.h">
       <Filter>Math</Filter>

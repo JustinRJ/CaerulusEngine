@@ -1,0 +1,37 @@
+#include "stdafx.h"
+
+#include "OISInputDevice.h"
+#include "OISMouse.h"
+#include "OISKeyboard.h"
+
+namespace Input
+{
+    using namespace OIS;
+
+    OISInputDevice::OISInputDevice() :
+        m_Input(nullptr)
+    {
+    }
+
+    OISInputDevice::~OISInputDevice()
+    {
+        Uninitialize();
+    }
+
+    void OISInputDevice::Initialize(void* hwnd)
+    {
+        InputDevice::Initialize(hwnd);
+        m_Input = InputManager::createInputSystem((size_t)hwnd);
+        m_Controllers[Controllers::KEYBOARD] = std::make_shared<Input::OISKeyboard>(m_Input);
+        m_Controllers[Controllers::MOUSE] = std::make_shared<Input::OISMouse>(m_Input);
+    }
+
+    void OISInputDevice::Uninitialize()
+    {
+        InputDevice::Uninitialize();
+        if (m_Input)
+        {
+            InputManager::destroyInputSystem(m_Input);
+        }
+    }
+}

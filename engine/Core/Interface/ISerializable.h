@@ -6,13 +6,13 @@ namespace Core
 {
     namespace Interface
     {
-        class ISerializable
+        class CAERULUS_CORE ISerializable
         {
         public:
 
-            CAERULUS_CORE virtual void Serialize() = 0;
+            virtual void Serialize() = 0;
 
-            CAERULUS_CORE virtual void Deserialize() = 0;
+            virtual void Deserialize() = 0;
         };
     }
 }
