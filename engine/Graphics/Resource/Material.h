@@ -18,16 +18,16 @@ namespace Graphics
             AO = 4
         };
 
-        class Material
+        class CAERULUS_GRAPHICS Material
         {
 
         public:
-            CAERULUS_GRAPHICS Material(const std::string& name);
-            CAERULUS_GRAPHICS ~Material();
-            CAERULUS_GRAPHICS void RenderToShader() const;
+            Material(const std::string& name);
+            ~Material();
+            void RenderToShader() const;
 
-            CAERULUS_GRAPHICS Texture* GetTexture(MaterialType materialType) const;
-            CAERULUS_GRAPHICS void SetTexture(Texture* texture, MaterialType materialType);
+            Texture* GetTexture(MaterialType materialType) const;
+            void SetTexture(Texture* texture, MaterialType materialType);
 
         private:
             const std::string& m_Name;

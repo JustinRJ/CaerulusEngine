@@ -17,25 +17,25 @@ namespace Graphics
             Cube = 3,
         };
 
-        class Texture
+        class CAERULUS_GRAPHICS Texture
         {
         public:
-            CAERULUS_GRAPHICS Texture();
-            CAERULUS_GRAPHICS ~Texture();
+            Texture();
+            ~Texture();
 
-            CAERULUS_GRAPHICS GLint GetID();
+            GLint GetID();
 
-            CAERULUS_GRAPHICS bool Load(const char* texPath, bool texFlip);
-            CAERULUS_GRAPHICS bool LoadHDR(const char* texPath, bool texFlip);
-            CAERULUS_GRAPHICS void CreateHDR(GLuint width, GLuint height, GLenum format, GLenum internalFormat, GLenum type, GLenum minFilter);
-            CAERULUS_GRAPHICS void CreateCube(GLuint width, GLenum format, GLenum internalFormat, GLenum type, GLenum minFilter);
+            bool Load(const char* texPath, bool texFlip);
+            bool LoadHDR(const char* texPath, bool texFlip);
+            void CreateHDR(GLuint width, GLuint height, GLenum format, GLenum internalFormat, GLenum type, GLenum minFilter);
+            void CreateCube(GLuint width, GLenum format, GLenum internalFormat, GLenum type, GLenum minFilter);
 
-            CAERULUS_GRAPHICS GLuint GetWidth() const;
-            CAERULUS_GRAPHICS GLuint GetHeight() const;
+            GLuint GetWidth() const;
+            GLuint GetHeight() const;
 
-            CAERULUS_GRAPHICS const std::string& GetPath() const;
-            CAERULUS_GRAPHICS void UseTexture() const;
-            CAERULUS_GRAPHICS void ComputeMipmap();
+            const std::string& GetPath() const;
+            void UseTexture() const;
+           void ComputeMipmap();
 
         private:
             std::string& m_Path;

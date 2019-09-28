@@ -10,22 +10,22 @@ namespace Graphics
 {
     namespace Window
     {
-        class GLWindow : public Window
+        class CAERULUS_GRAPHICS GLWindow : public Window
         {
         public:
 
-            CAERULUS_GRAPHICS GLWindow(const std::string& title, int x, int y, int bits, bool fullscreen = false);
-            CAERULUS_GRAPHICS virtual ~GLWindow();
+            GLWindow(const std::string& title, int x, int y, int bits, bool fullscreen = false);
+            virtual ~GLWindow();
 
-            CAERULUS_GRAPHICS virtual void Apply() override;
-            CAERULUS_GRAPHICS virtual void Focus() override;
-            CAERULUS_GRAPHICS virtual void SwapBuffer() const override;
-            CAERULUS_GRAPHICS virtual void* GetHandle() const override;
+            virtual void Apply() override;
+            virtual void Focus() override;
+            virtual void SwapBuffer() const override;
+            virtual void* GetHandle() const override;
 
-            CAERULUS_GRAPHICS virtual GLFWwindow* GetGLFWWindow() const;
+            virtual GLFWwindow* GetGLFWWindow() const;
 
-            CAERULUS_GRAPHICS virtual void CenterCursor() const;
-            CAERULUS_GRAPHICS virtual void ToggleLockedCursor();
+            virtual void CenterCursor() const;
+            virtual void ToggleLockedCursor();
         private:
 
             GLFWwindow* m_Window;

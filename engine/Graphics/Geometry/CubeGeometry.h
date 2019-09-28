@@ -1,7 +1,5 @@
 #pragma once
 
-#define CAERULUS_GRAPHICS __declspec(dllexport) 
-
 #include "Geometry.h"
 
 namespace Graphics
@@ -13,11 +11,11 @@ namespace Graphics
         public:
             static const GLfloat s_CubeVertices[];
 
-            CAERULUS_GRAPHICS CubeGeometry();
-            CAERULUS_GRAPHICS CubeGeometry(const mat4& transform);
-            CAERULUS_GRAPHICS virtual ~CubeGeometry();
+            CubeGeometry();
+            CubeGeometry(const mat4& transform);
+            virtual ~CubeGeometry();
 
-            CAERULUS_GRAPHICS void Draw() const override;
+            void Draw() const override;
 
         private:
             virtual void GenerateBuffer() override;

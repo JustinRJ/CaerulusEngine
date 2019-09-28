@@ -72,32 +72,24 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>$(SolutionDir)..\dependencies\glew-2.1.0\include\;$(SolutionDir)..\dependencies\assimp-4.1.0\include\;$(SolutionDir)..\dependencies\glm-0.9.9.0\include\;$(SolutionDir)..\dependencies\tinyobjloader-1.0.0\include\;$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)..\dependencies\glew-2.1.0\lib\$(Configuration)\$(Platform)\;$(SolutionDir)..\dependencies\assimp-4.1.0\lib\$(Configuration)\$(Platform)\;$(SolutionDir)..\dependencies\tinyobjloader-1.0.0\lib\$(Configuration)\$(Platform)\;$(LibraryPath)</LibraryPath>
     <OutDir>$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(Platform)\</OutDir>
     <IntDir>$(SolutionDir)$(MSBuildProjectName)\temp\$(Configuration)\$(Platform)\</IntDir>
     <TargetName>Caerulus_$(ProjectName)</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(SolutionDir)..\dependencies\glew-2.1.0\include\;$(SolutionDir)..\dependencies\assimp-4.1.0\include\;$(SolutionDir)..\dependencies\glm-0.9.9.0\include\;$(SolutionDir)..\dependencies\tinyobjloader-1.0.0\include\;$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)..\dependencies\glew-2.1.0\lib\$(Configuration)\$(Platform)\;$(SolutionDir)..\dependencies\assimp-4.1.0\lib\$(Configuration)\$(Platform)\;$(SolutionDir)..\dependencies\tinyobjloader-1.0.0\lib\$(Configuration)\$(Platform)\;$(LibraryPath)</LibraryPath>
     <OutDir>$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(Platform)\</OutDir>
     <IntDir>$(SolutionDir)$(MSBuildProjectName)\temp\$(Configuration)\$(Platform)\</IntDir>
     <TargetName>Caerulus_$(ProjectName)</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(SolutionDir)..\dependencies\glew-2.1.0\include\;$(SolutionDir)..\dependencies\assimp-4.1.0\include\;$(SolutionDir)..\dependencies\glm-0.9.9.0\include\;$(SolutionDir)..\dependencies\tinyobjloader-1.0.0\include\;$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)..\dependencies\glew-2.1.0\lib\$(Configuration)\$(Platform)\;$(SolutionDir)..\dependencies\assimp-4.1.0\lib\$(Configuration)\$(Platform)\;$(SolutionDir)..\dependencies\tinyobjloader-1.0.0\lib\$(Configuration)\$(Platform)\;$(LibraryPath)</LibraryPath>
     <OutDir>$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(Platform)\</OutDir>
     <IntDir>$(SolutionDir)$(MSBuildProjectName)\temp\$(Configuration)\$(Platform)\</IntDir>
     <TargetName>Caerulus_$(ProjectName)</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>$(SolutionDir)..\dependencies\glew-2.1.0\include\;$(SolutionDir)..\dependencies\assimp-4.1.0\include\;$(SolutionDir)..\dependencies\glm-0.9.9.0\include\;$(SolutionDir)..\dependencies\tinyobjloader-1.0.0\include\;$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)..\dependencies\glew-2.1.0\lib\$(Configuration)\$(Platform)\;$(SolutionDir)..\dependencies\assimp-4.1.0\lib\$(Configuration)\$(Platform)\;$(SolutionDir)..\dependencies\tinyobjloader-1.0.0\lib\$(Configuration)\$(Platform)\;$(LibraryPath)</LibraryPath>
     <OutDir>$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(Platform)\</OutDir>
     <IntDir>$(SolutionDir)$(MSBuildProjectName)\temp\$(Configuration)\$(Platform)\</IntDir>
     <TargetName>Caerulus_$(ProjectName)</TargetName>
@@ -112,6 +104,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;MANAGERS_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\dependencies\glew-2.1.0\include\;$(SolutionDir)..\dependencies\assimp-4.1.0\include\;$(SolutionDir)..\dependencies\glm-0.9.9.0\include\;$(SolutionDir)..\dependencies\tinyobjloader-1.0.0\include\;</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -119,6 +112,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>opengl32.lib;glew32.lib;assimp-vc140-mt.lib;tinyobjloader.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)..\dependencies\glew-2.1.0\lib\$(Configuration)\$(Platform)\;$(SolutionDir)..\dependencies\assimp-4.1.0\lib\$(Configuration)\$(Platform)\;$(SolutionDir)..\dependencies\tinyobjloader-1.0.0\lib\$(Configuration)\$(Platform)\;</AdditionalLibraryDirectories>
     </Link>
     <PreBuildEvent>
       <Command>echo DA | xcopy /E "$(SolutionDir)..\dependencies\glew-2.1.0\bin\$(Configuration)\$(Platform)\glew32.dll" "$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(Platform)\"
@@ -136,11 +130,13 @@ echo DA | xcopy /E "$(SolutionDir)..\dependencies\assimp-4.1.0\bin\$(Configurati
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;MANAGERS_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\dependencies\glew-2.1.0\include\;$(SolutionDir)..\dependencies\assimp-4.1.0\include\;$(SolutionDir)..\dependencies\glm-0.9.9.0\include\;$(SolutionDir)..\dependencies\tinyobjloader-1.0.0\include\;</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>opengl32.lib;glew32.lib;assimp-vc140-mt.lib;tinyobjloader.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)..\dependencies\glew-2.1.0\lib\$(Configuration)\$(Platform)\;$(SolutionDir)..\dependencies\assimp-4.1.0\lib\$(Configuration)\$(Platform)\;$(SolutionDir)..\dependencies\tinyobjloader-1.0.0\lib\$(Configuration)\$(Platform)\;</AdditionalLibraryDirectories>
     </Link>
     <PreBuildEvent>
       <Command>echo DA | xcopy /E "$(SolutionDir)..\dependencies\glew-2.1.0\bin\$(Configuration)\$(Platform)\glew32.dll" "$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(Platform)\"
@@ -158,11 +154,13 @@ echo DA | xcopy /E "$(SolutionDir)..\dependencies\assimp-4.1.0\bin\$(Configurati
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;MANAGERS_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\dependencies\glew-2.1.0\include\;$(SolutionDir)..\dependencies\assimp-4.1.0\include\;$(SolutionDir)..\dependencies\glm-0.9.9.0\include\;$(SolutionDir)..\dependencies\tinyobjloader-1.0.0\include\;</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>opengl32.lib;glew32.lib;assimp-vc140-mt.lib;tinyobjloader.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)..\dependencies\glew-2.1.0\lib\$(Configuration)\$(Platform)\;$(SolutionDir)..\dependencies\assimp-4.1.0\lib\$(Configuration)\$(Platform)\;$(SolutionDir)..\dependencies\tinyobjloader-1.0.0\lib\$(Configuration)\$(Platform)\;</AdditionalLibraryDirectories>
     </Link>
     <PreBuildEvent>
       <Command>echo DA | xcopy /E "$(SolutionDir)..\dependencies\glew-2.1.0\bin\$(Configuration)\$(Platform)\glew32.dll" "$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(Platform)\"
@@ -182,6 +180,7 @@ echo DA | xcopy /E "$(SolutionDir)..\dependencies\assimp-4.1.0\bin\$(Configurati
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;MANAGERS_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\dependencies\glew-2.1.0\include\;$(SolutionDir)..\dependencies\assimp-4.1.0\include\;$(SolutionDir)..\dependencies\glm-0.9.9.0\include\;$(SolutionDir)..\dependencies\tinyobjloader-1.0.0\include\;</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -189,6 +188,7 @@ echo DA | xcopy /E "$(SolutionDir)..\dependencies\assimp-4.1.0\bin\$(Configurati
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>opengl32.lib;glew32.lib;assimp-vc140-mt.lib;tinyobjloader.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)..\dependencies\glew-2.1.0\lib\$(Configuration)\$(Platform)\;$(SolutionDir)..\dependencies\assimp-4.1.0\lib\$(Configuration)\$(Platform)\;$(SolutionDir)..\dependencies\tinyobjloader-1.0.0\lib\$(Configuration)\$(Platform)\;</AdditionalLibraryDirectories>
     </Link>
     <PreBuildEvent>
       <Command>echo DA | xcopy /E "$(SolutionDir)..\dependencies\glew-2.1.0\bin\$(Configuration)\$(Platform)\glew32.dll" "$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(Platform)\"

@@ -2,7 +2,7 @@
 
 #include "RenderSystem.h"
 #include "../Core/Time/Timer.h"
-#include "../Core/Math/MathFacade.h"
+#include "../Core/Math/MathHelper.h"
 #include <iostream>
 
 namespace
@@ -93,7 +93,7 @@ namespace Graphics
             m_ProjViewModelPrev = m_ProjViewModel;
 
             mat4 quadTransform;
-            Core::Math::CreateTansform(quadTransform, vec3(1.0f), vec3(0.0f), vec3(0.0f));
+            MathHelper::CreateTansform(quadTransform, vec3(1.0f), vec3(0.0f), vec3(0.0f));
             m_WindowQuad        = new QuadGeometry(quadTransform);
 
             // Temp lights
@@ -129,7 +129,7 @@ namespace Graphics
             m_IBL->MapPrefilter.ComputeMipmap();
 
             mat4 sceneCubeTransform;
-            Core::Math::CreateTansform(sceneCubeTransform, vec3(1.0f), vec3(0.0f), vec3(0.0f));
+            MathHelper::CreateTansform(sceneCubeTransform, vec3(1.0f), vec3(0.0f), vec3(0.0f));
             m_IBL->SceneCube = CubeGeometry(sceneCubeTransform);
 
             m_IBL->MapProjection = perspective(radians(90.0f), 1.0f, 0.1f, 10.0f);

@@ -9,21 +9,21 @@ namespace Managers
 {
     namespace Model
     {
-        class ModelManager : Manager<Graphics::Resource::Model>
+        class CAERULUS_MANAGERS ModelManager : Manager<Graphics::Resource::Model>
         {
         public:
-            CAERULUS_MANAGERS ModelManager();
-            CAERULUS_MANAGERS virtual ~ModelManager() {}
+            ModelManager();
+            virtual ~ModelManager() {}
 
-            CAERULUS_MANAGERS virtual Graphics::Resource::Model* Get(const std::string& name) const;
+            virtual Graphics::Resource::Model* Get(const std::string& name) const;
 
-            CAERULUS_MANAGERS virtual std::vector<Graphics::Resource::Model*> GetAll(const std::vector<std::string>& names) const;
+            virtual std::vector<Graphics::Resource::Model*> GetAll(const std::vector<std::string>& names) const;
 
-            CAERULUS_MANAGERS virtual bool IsLoaded(const std::string& name) const;
+            virtual bool IsLoaded(const std::string& name) const;
 
-            CAERULUS_MANAGERS virtual bool Remove(const std::string& name);
+            virtual bool Remove(const std::string& name);
 
-            CAERULUS_MANAGERS bool Load(const std::string& name, const std::string& path);
+            bool Load(const std::string& name, const std::string& path);
         };
     }
 }

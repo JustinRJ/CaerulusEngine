@@ -31,11 +31,10 @@ namespace Managers
             std::cout << "Creating material " + name << std::endl;
             Graphics::Resource::Material *m = new Graphics::Resource::Material("");
 
-            m->SetTexture(material.at(Albedo),       Albedo);
-            m->SetTexture(material.at(Normal),       Normal);
-            m->SetTexture(material.at(Roughness),    Roughness);
-            m->SetTexture(material.at(Metallic),      Metallic);
-            m->SetTexture(material.at(AO),           AO);
+            for (int i = 0; i <= AO; ++i)
+            {
+                m->SetTexture(material.at(i), static_cast<MaterialType>(i));
+            }
 
             Manager::Insert(name, m);
             return true;

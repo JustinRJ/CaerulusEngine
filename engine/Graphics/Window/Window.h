@@ -8,15 +8,18 @@ namespace Graphics
 {
     namespace Window
     {
-        struct State
+        struct CAERULUS_GRAPHICS State
         {
+#pragma warning(push)
+#pragma warning( disable : 4251)
             std::string Title;
+#pragma warning(pop)
             int Width;
             int Height;
             int Bits;
             bool Fullscreen;
 
-            CAERULUS_GRAPHICS State(std::string title = "", int x = 800, int y = 600, int b = 32, bool f = false) :
+            State(std::string title = "", int x = 800, int y = 600, int b = 32, bool f = false) :
                 Title(title),
                 Width(x),
                 Height(y),
@@ -25,7 +28,7 @@ namespace Graphics
             {
             }
 
-            CAERULUS_GRAPHICS State& operator= (const State& state)
+            State& operator= (const State& state)
             {
                 Title = state.Title;
                 Width = state.Width;
@@ -35,7 +38,7 @@ namespace Graphics
                 return *this;
             }
 
-            CAERULUS_GRAPHICS bool Compare(const State& state) const
+            bool Compare(const State& state) const
             {
                 return
                     Title == state.Title &&
@@ -46,22 +49,22 @@ namespace Graphics
             }
         };
 
-        class Window
+        class CAERULUS_GRAPHICS Window
         {
         public:
-            CAERULUS_GRAPHICS Window();
-            CAERULUS_GRAPHICS virtual ~Window();
+            Window();
+            virtual ~Window();
 
-            CAERULUS_GRAPHICS virtual const State& GetActiveState() const;
-            CAERULUS_GRAPHICS virtual void Set(const std::string& title, int x, int y, int bits, bool fullscreen = false);
+            virtual const State& GetActiveState() const;
+            virtual void Set(const std::string& title, int x, int y, int bits, bool fullscreen = false);
 
-            CAERULUS_GRAPHICS virtual void Apply() = 0;
-            CAERULUS_GRAPHICS virtual void Focus() = 0;
-            CAERULUS_GRAPHICS virtual void SwapBuffer() const = 0;
-            CAERULUS_GRAPHICS virtual void* GetHandle() const = 0;
+            virtual void Apply() = 0;
+            virtual void Focus() = 0;
+            virtual void SwapBuffer() const = 0;
+            virtual void* GetHandle() const = 0;
 
         protected:
-            CAERULUS_GRAPHICS virtual bool Compare(const State& state) const;
+            virtual bool Compare(const State& state) const;
 
             State m_ActiveState;
             State m_NewState;

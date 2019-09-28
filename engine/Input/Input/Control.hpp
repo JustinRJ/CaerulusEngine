@@ -1,7 +1,7 @@
 #pragma once
 
 #include <string>
-#include "../../Core/Math/MathFacade.h"
+#include "../../Core/Math/MathHelper.h"
 
 namespace Input
 {

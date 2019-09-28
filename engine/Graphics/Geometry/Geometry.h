@@ -1,7 +1,7 @@
 #pragma once
 
 #include <glew.h>
-#include "../../Core/Math/MathFacade.h"
+#include "../../Core/Math/MathHelper.h"
 
 namespace Graphics
 {
@@ -27,8 +27,8 @@ namespace Graphics
 
             virtual void GenerateBuffer() = 0;
 
-            GLuint m_VAO = NULL;
-            GLuint m_VBO = NULL;
+            GLuint m_VAO = 0;
+            GLuint m_VBO = 0;
             mat4 m_Transform;
         };
     }

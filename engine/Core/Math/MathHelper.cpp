@@ -1,42 +1,42 @@
 #include "stdafx.h"
 
-#include "MathFacade.h"
+#include "MathHelper.h"
 
 namespace Core
 {
     namespace Math
     {
-        vec3 UnitUp()
+        vec3 MathHelper::UnitUp()
         {
             return vec3(0.0f, 1.0f, 0.0f);
         }
 
-        vec3 UnitRight()
+        vec3 MathHelper::UnitRight()
         {
             return vec3(1.0f, 0.0f, 0.0f);
         }
 
-        vec3 UnitForward()
+        vec3 MathHelper::UnitForward()
         {
             return vec3(0.0f, 0.0f, -1.0f);
         }
 
-        vec3 UpVector(const quat& q)
+        vec3 MathHelper::UpVector(const quat& q)
         {
             return normalize(rotate(q, UnitUp()));
         }
 
-        vec3 RightVector(const quat& q)
+        vec3 MathHelper::RightVector(const quat& q)
         {
             return normalize(rotate(q, UnitRight()));
         }
 
-        vec3 ForwardVector(const quat& q)
+        vec3 MathHelper::ForwardVector(const quat& q)
         {
             return normalize(rotate(q, UnitForward()));
         }
 
-        vec3 GetTranslation(const mat4& transform)
+        vec3 MathHelper::GetTranslation(const mat4& transform)
         {
             return vec3(
                 transform[W][X],
@@ -44,21 +44,21 @@ namespace Core
                 transform[W][Z]);
         }
 
-        void SetTranslation(mat4& outTransform, const vec3& translation)
+        void MathHelper::SetTranslation(mat4& outTransform, const vec3& translation)
         {
             outTransform[W][X] = translation.x;
             outTransform[W][Y] = translation.y;
             outTransform[W][Z] = translation.z;
         }
 
-        void Translate(mat4& outTransform, const vec3& translation)
+        void MathHelper::Translate(mat4& outTransform, const vec3& translation)
         {
             outTransform[W][X] += translation.x;
             outTransform[W][Y] += translation.y;
             outTransform[W][Z] += translation.z;
         }
 
-        vec3 GetScale(const mat4& transform)
+        vec3 MathHelper::GetScale(const mat4& transform)
         {
             return vec3(
                 length(GetAxis(transform, X)),
@@ -66,14 +66,14 @@ namespace Core
                 length(GetAxis(transform, Z)));
         }
 
-        void Scale(mat4& outTransform, const vec3& scale)
+        void MathHelper::Scale(mat4& outTransform, const vec3& scale)
         {
             outTransform[X][X] *= scale.x;
             outTransform[Y][Y] *= scale.y;
             outTransform[Z][Z] *= scale.z;
         }
 
-        quat GetRotation(const mat4& transform)
+        quat MathHelper::GetRotation(const mat4& transform)
         {
             vec3 scale = GetScale(transform);
             vec3 column[] =
@@ -102,7 +102,7 @@ namespace Core
                 column[X][Z], column[Y][Z], column[Z][Z]));
         }
 
-        void SetRotation(mat4& outTransform, const quat& rotation)
+        void MathHelper::SetRotation(mat4& outTransform, const quat& rotation)
         {
             mat4 scaleM = scale(mat4(1.0f), GetScale(outTransform));
             mat4 rotateM = mat4_cast(normalize(rotation));
@@ -116,7 +116,7 @@ namespace Core
             }
         }
 
-        void Rotate(mat4& outTransform, const vec3& rotation)
+        void MathHelper::Rotate(mat4& outTransform, const vec3& rotation)
         {
             if (rotation.y != 0.0f)
             {
@@ -132,7 +132,7 @@ namespace Core
             }
         }
 
-        vec3 GetAxis(const mat4& transform, Index axisIndex)
+        vec3 MathHelper::GetAxis(const mat4& transform, Index axisIndex)
         {
             return vec3(
                 transform[axisIndex][X],
@@ -140,7 +140,7 @@ namespace Core
                 transform[axisIndex][Z]);
         }
 
-        vec3 GetColumn(const mat4& transform, Index columnIndex)
+        vec3 MathHelper::GetColumn(const mat4& transform, Index columnIndex)
         {
             return vec3(
                 transform[X][columnIndex],
@@ -148,14 +148,14 @@ namespace Core
                 transform[Z][columnIndex]);
         }
 
-        void Decompose(const mat4& transform, vec3& outTranlastion, quat& outRotation, vec3& outScale)
+        void MathHelper::Decompose(const mat4& transform, vec3& outTranlastion, quat& outRotation, vec3& outScale)
         {
             outScale = GetScale(transform);
             outRotation = GetRotation(transform);
             outTranlastion = GetTranslation(transform);
         }
 
-        void CreateTansform(mat4& outTransform, const vec3& translation, const quat& rotation, const vec3& scale)
+        void MathHelper::CreateTansform(mat4& outTransform, const vec3& translation, const quat& rotation, const vec3& scale)
         {
             mat4 translateM = translate(mat4(1.0f), translation);
             mat4 rotateM = mat4_cast(normalize(rotation));
@@ -163,34 +163,23 @@ namespace Core
             outTransform = translateM * rotateM * scaleM;
         }
 
-        vec3 TransformVector(const vec3& vector, const mat4& transform)
+        vec3 MathHelper::TransformVector(const vec3& vector, const mat4& transform)
         {
             return vec3(vec4(vector.x, vector.y, vector.z, 1.0f) * transpose(transform));
         }
 
-        void SetAxis(mat4& outTransform, const vec3& axis, Index axisIndex)
+        void MathHelper::SetAxis(mat4& outTransform, const vec3& axis, Index axisIndex)
         {
             outTransform[axisIndex][X] = axis.x;
             outTransform[axisIndex][Y] = axis.y;
             outTransform[axisIndex][Z] = axis.z;
         }
 
-        void SetColumn(mat4& outTransform, const vec3& column, Index columnIndex)
+        void MathHelper::SetColumn(mat4& outTransform, const vec3& column, Index columnIndex)
         {
             outTransform[X][columnIndex] = column.x;
             outTransform[Y][columnIndex] = column.y;
             outTransform[Z][columnIndex] = column.z;
         }
-
-        float Dot(const vec3& left, const vec3& right)
-        {
-            return glm::dot(left, right);
-        }
-
-        vec3 Cross(const vec3& left, const vec3& right)
-        {
-            return glm::cross(left, right);
-        }
-
     }
 }

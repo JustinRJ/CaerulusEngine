@@ -10,15 +10,14 @@
 namespace Managers
 {
     template <class T>
-    class Manager
+    class CAERULUS_MANAGERS Manager
     {
     public:
 
-        CAERULUS_MANAGERS Manager() {}
+        Manager() {}
+        virtual ~Manager() {}
 
-        CAERULUS_MANAGERS virtual ~Manager() {}
-
-        CAERULUS_MANAGERS virtual T* Get(const std::string& key) const
+        virtual T* Get(const std::string& key) const
         {
             if (IsLoaded(key))
             {
@@ -28,7 +27,7 @@ namespace Managers
             return nullptr;
         }
 
-        CAERULUS_MANAGERS virtual std::vector<T*> GetAll(const std::vector<std::string>& keys) const
+        virtual std::vector<T*> GetAll(const std::vector<std::string>& keys) const
         {
             std::vector<T*> values = std::vector<T*>();
             for (unsigned int i = 0; i < keys.size(); i++)
@@ -38,13 +37,13 @@ namespace Managers
             return values;
         }
 
-        CAERULUS_MANAGERS virtual bool Remove(const std::string& key)
+        virtual bool Remove(const std::string& key)
         {
             delete m_ManagedMap.at(key);
             return m_ManagedMap.erase(key) > 0;
         }
 
-        CAERULUS_MANAGERS virtual bool IsLoaded(const std::string& key) const
+        virtual bool IsLoaded(const std::string& key) const
         {
             if (m_ManagedMap.find(key) != m_ManagedMap.end())
             {
@@ -55,14 +54,16 @@ namespace Managers
 
     protected:
 
-        CAERULUS_MANAGERS virtual void Insert(const std::string& key, T* value)
+        virtual void Insert(const std::string& key, T* value)
         {
             if (value)
             {
                 m_ManagedMap.insert(std::make_pair(key, value));
             }
         }
-
+#pragma warning(push)
+#pragma warning( disable : 4251)
         std::map<const std::string, T*> m_ManagedMap;
+#pragma warning(pop)
     };
 }

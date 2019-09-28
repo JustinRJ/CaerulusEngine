@@ -75,32 +75,24 @@
     <OutDir>$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(Platform)\</OutDir>
     <IntDir>$(SolutionDir)$(MSBuildProjectName)\temp\$(Configuration)\$(Platform)\</IntDir>
     <TargetName>Caerulus_$(ProjectName)</TargetName>
-    <IncludePath>$(SolutionDir)..\dependencies\OIS-1-4\include;$(SolutionDir)..\dependencies\glm-0.9.9.0\include;$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)..\dependencies\OIS-1-4\lib\$(Configuration)\$(Platform);$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
     <OutDir>$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(Platform)\</OutDir>
     <IntDir>$(SolutionDir)$(MSBuildProjectName)\temp\$(Configuration)\$(Platform)\</IntDir>
     <TargetName>Caerulus_$(ProjectName)</TargetName>
-    <IncludePath>$(SolutionDir)..\dependencies\OIS-1-4\include;$(SolutionDir)..\dependencies\glm-0.9.9.0\include;$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)..\dependencies\OIS-1-4\lib\$(Configuration)\$(Platform);$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(Platform)\</OutDir>
     <IntDir>$(SolutionDir)$(MSBuildProjectName)\temp\$(Configuration)\$(Platform)\</IntDir>
     <TargetName>Caerulus_$(ProjectName)</TargetName>
-    <IncludePath>$(SolutionDir)..\dependencies\OIS-1-4\include;$(SolutionDir)..\dependencies\glm-0.9.9.0\include;$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)..\dependencies\OIS-1-4\lib\$(Configuration)\$(Platform);$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(Platform)\</OutDir>
     <IntDir>$(SolutionDir)$(MSBuildProjectName)\temp\$(Configuration)\$(Platform)\</IntDir>
     <TargetName>Caerulus_$(ProjectName)</TargetName>
-    <IncludePath>$(SolutionDir)..\dependencies\OIS-1-4\include;$(SolutionDir)..\dependencies\glm-0.9.9.0\include;$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)..\dependencies\OIS-1-4\lib\$(Configuration)\$(Platform);$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -110,11 +102,13 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;INPUT_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\dependencies\OIS-1-4\include;$(SolutionDir)..\dependencies\glm-0.9.9.0\include\;</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>OIS.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)..\dependencies\OIS-1-4\lib\$(Configuration)\$(Platform)\;</AdditionalLibraryDirectories>
     </Link>
     <PreBuildEvent>
       <Command>echo DA | xcopy /E "$(SolutionDir)..\dependencies\OIS-1-4\bin\$(Configuration)\$(Platform)\OIS.dll" "$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(Platform)\"</Command>
@@ -131,11 +125,13 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;INPUT_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\dependencies\OIS-1-4\include;$(SolutionDir)..\dependencies\glm-0.9.9.0\include\;</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>OIS.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)..\dependencies\OIS-1-4\lib\$(Configuration)\$(Platform)\;</AdditionalLibraryDirectories>
     </Link>
     <PreBuildEvent>
       <Command>echo DA | xcopy /E "$(SolutionDir)..\dependencies\OIS-1-4\bin\$(Configuration)\$(Platform)\OIS.dll" "$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(Platform)\"</Command>
@@ -154,6 +150,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;INPUT_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\dependencies\OIS-1-4\include;$(SolutionDir)..\dependencies\glm-0.9.9.0\include\;</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -161,6 +158,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>OIS.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)..\dependencies\OIS-1-4\lib\$(Configuration)\$(Platform)\;</AdditionalLibraryDirectories>
     </Link>
     <PreBuildEvent>
       <Command>echo DA | xcopy /E "$(SolutionDir)..\dependencies\OIS-1-4\bin\$(Configuration)\$(Platform)\OIS.dll" "$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(Platform)\"</Command>
@@ -179,6 +177,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;INPUT_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\dependencies\OIS-1-4\include;$(SolutionDir)..\dependencies\glm-0.9.9.0\include\;</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -186,6 +185,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>OIS.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)..\dependencies\OIS-1-4\lib\$(Configuration)\$(Platform)\;</AdditionalLibraryDirectories>
     </Link>
     <PreBuildEvent>
       <Command>echo DA | xcopy /E "$(SolutionDir)..\dependencies\OIS-1-4\bin\$(Configuration)\$(Platform)\OIS.dll" "$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(Platform)\"</Command>

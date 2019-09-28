@@ -89,55 +89,57 @@ namespace Graphics
             Shader SAOBlur;
         };
 
-        class RenderSystem
+        class CAERULUS_GRAPHICS RenderSystem : public Core::Interface::ITickable
         {
         public:
 
-            CAERULUS_GRAPHICS RenderSystem();
+            RenderSystem();
 
-            CAERULUS_GRAPHICS void Update(float deltaTime);
+            virtual void Update(float deltaTime) override;
+            virtual void FixedUpdate(float fixedTime) override {};
+            virtual void LateUpdate(float deltaTime) override {};
+            virtual void Reset() override {};
 
-            CAERULUS_GRAPHICS void SetCamera(Camera& camera);
-            CAERULUS_GRAPHICS Camera& GetCamera() const;
+            void SetCamera(Camera& camera);
+            Camera& GetCamera() const;
 
-            CAERULUS_GRAPHICS void SetSkyBox(Texture& skyBox);
-            CAERULUS_GRAPHICS Texture& GetSkyBox() const;
+            void SetSkyBox(Texture& skyBox);
+            Texture& GetSkyBox() const;
 
-            CAERULUS_GRAPHICS void SetDefaultAO(Texture& ao);
-            CAERULUS_GRAPHICS Texture& GetDefaultAO() const;
+            void SetDefaultAO(Texture& ao);
+            Texture& GetDefaultAO() const;
 
-            CAERULUS_GRAPHICS void SetDefaultMaterial(Material& material);
-            CAERULUS_GRAPHICS Material& GetDefaultMaterial() const;
+            void SetDefaultMaterial(Material& material);
+            Material& GetDefaultMaterial() const;
 
-            CAERULUS_GRAPHICS void SetGLWindow(GLWindow& window);
-            CAERULUS_GRAPHICS GLWindow& GetGLWindow() const;
+            void SetGLWindow(GLWindow& window);
+            GLWindow& GetGLWindow() const;
 
-            CAERULUS_GRAPHICS void SetPointLightMap(std::map<unsigned int, Graphics::Light::PointLight*> idPointMap);
-            CAERULUS_GRAPHICS const std::map<unsigned int, Graphics::Light::PointLight*>& GetPointLightMap() const;
+            void SetPointLightMap(std::map<unsigned int, Graphics::Light::PointLight*> idPointMap);
+            const std::map<unsigned int, Graphics::Light::PointLight*>& GetPointLightMap() const;
 
-            CAERULUS_GRAPHICS void SetDirectionalLightMap(std::map<unsigned int, Graphics::Light::DirectionalLight*> idDirectionalMap);
-            CAERULUS_GRAPHICS const std::map<unsigned int, Graphics::Light::DirectionalLight*>& GetDirectionalLightMap() const;
+            void SetDirectionalLightMap(std::map<unsigned int, Graphics::Light::DirectionalLight*> idDirectionalMap);
+            const std::map<unsigned int, Graphics::Light::DirectionalLight*>& GetDirectionalLightMap() const;
 
-            CAERULUS_GRAPHICS void SetModelMap(const std::map<unsigned int, Model*>& modelMap);
-            CAERULUS_GRAPHICS const std::map<unsigned int, Model*>& GetModelMap() const;
+            void SetModelMap(const std::map<unsigned int, Model*>& modelMap);
+            const std::map<unsigned int, Model*>& GetModelMap() const;
 
-            CAERULUS_GRAPHICS void SetTransformMap(const std::map<unsigned int, mat4*>& modelMap);
-            CAERULUS_GRAPHICS const std::map<unsigned int, mat4*>& GetTransformMap() const;
+            void SetTransformMap(const std::map<unsigned int, mat4*>& transformMap);
+            const std::map<unsigned int, mat4*>& GetTransformMap() const;
 
+            IBL& GetIBL() const;
+            SAO& GetSAO() const;
+            GPUProfiler& GetRenderProfiler() const;
+            StandardShaders& GetShaders() const;
 
-            CAERULUS_GRAPHICS IBL& GetIBL() const;
-            CAERULUS_GRAPHICS SAO& GetSAO() const;
-            CAERULUS_GRAPHICS GPUProfiler& GetRenderProfiler() const;
-            CAERULUS_GRAPHICS StandardShaders& GetShaders() const;
-
-            CAERULUS_GRAPHICS void ToggleWireframe();
-            CAERULUS_GRAPHICS void ToggleSAO();
-            CAERULUS_GRAPHICS void ToggleFXAA();
-            CAERULUS_GRAPHICS void ToggleMotionBlur();
-            CAERULUS_GRAPHICS void TogglePointLightRender();
-            CAERULUS_GRAPHICS void ToggleDirectionalLightRender();
-            CAERULUS_GRAPHICS void ToggleEnviromentLightRender();
-            CAERULUS_GRAPHICS void ToggleToneMapping(unsigned int tone = 1);
+            void ToggleWireframe();
+            void ToggleSAO();
+            void ToggleFXAA();
+            void ToggleMotionBlur();
+            void TogglePointLightRender();
+            void ToggleDirectionalLightRender();
+            void ToggleEnviromentLightRender();
+            void ToggleToneMapping(unsigned int tone = 1);
 
         private:
 
@@ -172,6 +174,9 @@ namespace Graphics
             void SetNullMaterial();
             void GPUProfiling();
 
+
+#pragma warning(push)
+#pragma warning( disable : 4251)
             GLWindow* m_Window;
 
             Camera* m_Camera;
@@ -196,6 +201,13 @@ namespace Graphics
             std::map<unsigned int, Graphics::Light::PointLight*> m_PointLightMap;
             // Map of ID to directional light
             std::map<unsigned int, Graphics::Light::DirectionalLight*> m_DirectionalLightMap;
+            
+            // UE4 dielectric fresnel
+            vec3 m_MaterialF0;
+
+            mat4 m_ProjViewModel;
+            mat4 m_ProjViewModelPrev;
+#pragma warning(pop)
 
             IBL* m_IBL;
             SAO* m_SAO;
@@ -211,22 +223,17 @@ namespace Graphics
             bool m_WireframeMode;
             bool m_ProfilingMode;
 
-            GLint m_GBufferView;
-            GLint m_AttenuationMode;
-            GLint m_ToneMappingMode;
-
-            // UE4 dielectric fresnel
-            vec3 m_MaterialF0;
-
             //Render Settings
             GLfloat m_MaterialRoughness;
             GLfloat m_MaterialMetallicity;
             GLfloat m_AmbientIntensity;
 
-            mat4 m_ProjViewModel;
-            mat4 m_ProjViewModelPrev;
+            // Pipeline settings
+            GLint m_GBufferView;
+            GLint m_AttenuationMode;
+            GLint m_ToneMappingMode;
 
-            //GBuffer
+            // GBuffer
             GLuint m_GBufferFBO;
             GLuint m_GPositionBuffer;
             GLuint m_GNormalBuffer;
@@ -266,3 +273,5 @@ namespace Graphics
         };
     }
 }
+
+#pragma warning(push)

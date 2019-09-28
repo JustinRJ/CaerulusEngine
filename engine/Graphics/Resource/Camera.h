@@ -2,7 +2,7 @@
 
 #define CAERULUS_GRAPHICS __declspec(dllexport)
 
-#include "../../Core/Math/MathFacade.h"
+#include "../../Core/Math/MathHelper.h"
 
 namespace Graphics
 {
@@ -10,46 +10,46 @@ namespace Graphics
     {
         using namespace Core::Math;
 
-        class Camera
+        class CAERULUS_GRAPHICS Camera
         {
         public:
 
-            CAERULUS_GRAPHICS Camera();
-            CAERULUS_GRAPHICS ~Camera();
+            Camera();
+            ~Camera();
 
-            CAERULUS_GRAPHICS const mat4& GetViewMatrix() const;
-            CAERULUS_GRAPHICS const mat4& GetProjMatrix() const;
-            CAERULUS_GRAPHICS void SetViewMatrix(const mat4& view);
-            CAERULUS_GRAPHICS void SetProjMatrix(const mat4& proj);
+            const mat4& GetViewMatrix() const;
+            const mat4& GetProjMatrix() const;
+            void SetViewMatrix(const mat4& view);
+            void SetProjMatrix(const mat4& proj);
 
-            CAERULUS_GRAPHICS vec3 GetPosition() const;
-            CAERULUS_GRAPHICS vec3 GetForward() const;
-            CAERULUS_GRAPHICS vec3 GetUp() const;
-            CAERULUS_GRAPHICS void SetPosition(const vec3& position);
-            CAERULUS_GRAPHICS void SetForward(const vec3& forward);
-            CAERULUS_GRAPHICS void SetUp(const vec3& up);
+            vec3 GetPosition() const;
+            vec3 GetForward() const;
+            vec3 GetUp() const;
+            void SetPosition(const vec3& position);
+            void SetForward(const vec3& forward);
+            void SetUp(const vec3& up);
 
-            CAERULUS_GRAPHICS float GetFOV() const;
-            CAERULUS_GRAPHICS float GetAspect() const;
-            CAERULUS_GRAPHICS float GetNear() const;
-            CAERULUS_GRAPHICS float GetFar() const;
+            float GetFOV() const;
+            float GetAspect() const;
+            float GetNear() const;
+            float GetFar() const;
 
-            CAERULUS_GRAPHICS float GetAperture() const;
-            CAERULUS_GRAPHICS float GetShutterSpeed() const;
-            CAERULUS_GRAPHICS float GetISO() const;
+            float GetAperture() const;
+            float GetShutterSpeed() const;
+            float GetISO() const;
 
-            CAERULUS_GRAPHICS void SetFOV(float fov);
-            CAERULUS_GRAPHICS void SetAspect(float aspect);
-            CAERULUS_GRAPHICS void SetNear(float near);
-            CAERULUS_GRAPHICS void SetFar(float far);
+            void SetFOV(float fov);
+            void SetAspect(float aspect);
+            void SetNear(float near);
+            void SetFar(float far);
 
-            CAERULUS_GRAPHICS void SetAperture(float aperture);
-            CAERULUS_GRAPHICS void SetShutterSpeed(float shutterSpeed);
-            CAERULUS_GRAPHICS void SetISO(float iso);
+            void SetAperture(float aperture);
+            void SetShutterSpeed(float shutterSpeed);
+            void SetISO(float iso);
 
-            CAERULUS_GRAPHICS void TranslateXZ(const vec3& translation);
-            CAERULUS_GRAPHICS void Translate(const vec3& translation);
-            CAERULUS_GRAPHICS void Rotate(const vec3& eulerDelta, const vec3& forcedUp = Core::Math::UnitUp());
+            void TranslateXZ(const vec3& translation);
+            void Translate(const vec3& translation);
+            void Rotate(const vec3& eulerDelta, const vec3& forcedUp = MathHelper::UnitUp());
 
         private:
             float m_DegFOV;
@@ -61,8 +61,12 @@ namespace Graphics
             float m_ShutterSpeed;
             float m_ISO;
 
+#pragma warning(push)
+#pragma warning( disable : 4251)
             mat4 m_View;
             mat4 m_Proj;
+#pragma warning(pop)
         };
     }
 }
+

@@ -22,7 +22,7 @@ namespace Input
         m_Controllers.clear();
     }
 
-    void InputDevice::PreUpdate()
+    void InputDevice::Update(float deltaTime)
     {
         for (auto it = m_Controllers.begin(); it != m_Controllers.cend(); it++)
         {

@@ -2,6 +2,7 @@
 
 #include "Engine.h"
 #include <iostream>
+#include "../Core/ECS/Entity.h"
 
 namespace Engine
 {
@@ -23,7 +24,9 @@ namespace Engine
 
         m_InputDevice = std::make_shared<OISInputDevice>();
         m_InputDevice->Initialize(m_RenderSystem->GetGLWindow().GetHandle());
+
         m_Tickable.push_back(m_InputDevice);
+        m_Tickable.push_back(m_RenderSystem);
 
         m_TextureManager.LoadHDR("skyBox", "assets/textures/hdr/pisa.hdr");
         m_RenderSystem->SetSkyBox(*m_TextureManager.Get("skyBox"));
@@ -47,18 +50,19 @@ namespace Engine
         m_MaterialManager.Create("gold", gold);
 
         //shaderBall
-        unsigned int shaderBall = 0;
+        Core::ECS::Entity shaderBall = Core::ECS::Entity();
+
         mat4* position = new mat4();
-        Core::Math::CreateTansform(*position, glm::vec3(0, 0, -20.0f), glm::quat(), glm::vec3(1.0f));
+        MathHelper::CreateTansform(*position, glm::vec3(0, 0, -20.0f), glm::quat(), glm::vec3(1.0f));
         auto transformMap = new std::map<unsigned int, mat4*>();
-        transformMap->insert(std::make_pair(shaderBall, position));
+        transformMap->insert(std::make_pair(shaderBall.GetID(), position));
         m_RenderSystem->SetTransformMap(*transformMap);
 
         Model* model = m_ModelManager.Get("shaderBall");
         model->SetMaterials(std::vector<Material*>({ m_MaterialManager.Get("gold") }));
 
         auto modelMap = new std::map<unsigned int, Model*>();
-        modelMap->insert(std::make_pair(shaderBall, model));
+        modelMap->insert(std::make_pair(shaderBall.GetID(), model));
         m_RenderSystem->SetModelMap(*modelMap);
 
         using namespace Input;
@@ -74,12 +78,12 @@ namespace Engine
         m_InputDevice->Command("tone2_render").Set([&]() { m_RenderSystem->ToggleToneMapping(2); }).Bind(Key::KEY_Y);
         m_InputDevice->Command("tone3_render").Set([&]() { m_RenderSystem->ToggleToneMapping(3); }).Bind(Key::KEY_U);
 
-        m_InputDevice->Command("move_forward").Set([&]() { m_RenderSystem->GetCamera().Translate(UnitForward()); }, Input::State::STATE_HOLD).Bind(Key::KEY_W).Bind(Key::KEY_UP);
-        m_InputDevice->Command("move_backward").Set([&]() { m_RenderSystem->GetCamera().Translate(-UnitForward()); }, Input::State::STATE_HOLD).Bind(Key::KEY_S).Bind(Key::KEY_DOWN);
-        m_InputDevice->Command("move_right").Set([&]() { m_RenderSystem->GetCamera().Translate(UnitRight()); }, Input::State::STATE_HOLD).Bind(Key::KEY_D).Bind(Key::KEY_RIGHT);
-        m_InputDevice->Command("move_left").Set([&]() { m_RenderSystem->GetCamera().Translate(-UnitRight()); }, Input::State::STATE_HOLD).Bind(Key::KEY_A).Bind(Key::KEY_LEFT);
-        m_InputDevice->Command("move_up").Set([&]() { m_RenderSystem->GetCamera().Translate(UnitUp()); }, Input::State::STATE_HOLD).Bind(Key::KEY_E);
-        m_InputDevice->Command("move_down").Set([&]() { m_RenderSystem->GetCamera().Translate(-UnitUp()); }, Input::State::STATE_HOLD).Bind(Key::KEY_Q);
+        m_InputDevice->Command("move_forward").Set([&]() { m_RenderSystem->GetCamera().Translate(MathHelper::UnitForward()); }, Input::State::STATE_HOLD).Bind(Key::KEY_W).Bind(Key::KEY_UP);
+        m_InputDevice->Command("move_backward").Set([&]() { m_RenderSystem->GetCamera().Translate(-MathHelper::UnitForward()); }, Input::State::STATE_HOLD).Bind(Key::KEY_S).Bind(Key::KEY_DOWN);
+        m_InputDevice->Command("move_right").Set([&]() { m_RenderSystem->GetCamera().TranslateXZ(MathHelper::UnitRight()); }, Input::State::STATE_HOLD).Bind(Key::KEY_D).Bind(Key::KEY_RIGHT);
+        m_InputDevice->Command("move_left").Set([&]() { m_RenderSystem->GetCamera().TranslateXZ(-MathHelper::UnitRight()); }, Input::State::STATE_HOLD).Bind(Key::KEY_A).Bind(Key::KEY_LEFT);
+        m_InputDevice->Command("move_up").Set([&]() { m_RenderSystem->GetCamera().Translate(MathHelper::UnitUp()); }, Input::State::STATE_HOLD).Bind(Key::KEY_E);
+        m_InputDevice->Command("move_down").Set([&]() { m_RenderSystem->GetCamera().Translate(-MathHelper::UnitUp()); }, Input::State::STATE_HOLD).Bind(Key::KEY_Q);
         m_InputDevice->Command("look").Set<glm::vec2>([&](glm::vec2 xy) { m_RenderSystem->GetCamera().Rotate(glm::vec3(xy.x, xy.y, 0.0f)); }).Bind(MouseButton::MOUSE_XY_DELTA);
     }
 
@@ -90,53 +94,50 @@ namespace Engine
     void Engine::Run()
     {
         m_Running = true;
-        //try
-        //{
+        try
+        {
             while (m_Running)
             {
                 m_DeltaTime = m_FPSLimiter->Delta(m_FPSLimit);
                 m_FixedTime = m_FixedLimiter->Fixed(m_FPSLimit);
                 Tick();
             }
-        //}
-        //catch (...)
-        //{
-        //    m_Running = false;
-        //    std::cerr << "Error in Caerulus Engine!"  << std::endl;
-        //}
+        }
+        catch (...)
+        {
+            m_Running = false;
+            std::cerr << "Error in Caerulus Engine!"  << std::endl;
+        }
     }
 
     void Engine::Tick()
     {
         for (auto updatable : m_Tickable)
         {
-            updatable->PreUpdate();
+            updatable->Update(m_DeltaTime);
         }
-
-        if (m_FixedTime != 0.0)
-        {
-            //std::cout << "FixedTime : " << m_FixedTime << std::endl;
-            for (auto updatable : m_Tickable)
-            {
-                updatable->FixedUpdate(m_FixedTime);
-            }
-        }
-
-        // Todo
-        m_RenderSystem->Update(m_DeltaTime);
 
         if (m_DeltaTime != 0.0)
         {
-            //std::cout << "DeltaTime : " << m_DeltaTime << std::endl;
+            std::cout << "DeltaTime : " << m_DeltaTime << std::endl;
             for (auto updatable : m_Tickable)
             {
                 updatable->Update(m_DeltaTime);
             }
         }
 
+        if (m_FixedTime != 0.0)
+        {
+            std::cout << "FixedTime : " << m_FixedTime << std::endl;
+            for (auto updatable : m_Tickable)
+            {
+                updatable->FixedUpdate(m_FixedTime);
+            }
+        }
+
         for (auto updatable : m_Tickable)
         {
-            updatable->PostUpdate();
+            updatable->LateUpdate(m_DeltaTime);
         }
     }
 }

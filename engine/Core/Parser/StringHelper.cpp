@@ -45,7 +45,7 @@ namespace Core
 
         bool StringHelper::IsWhitespace(char c)
         {
-            return strchr(WHITESPACE.c_str(), c) != NULL;
+            return strchr(WHITESPACE.c_str(), c) != nullptr;
         }
 
         std::string StringHelper::Trim(const std::string & str, const char * delim)
@@ -122,14 +122,14 @@ namespace Core
 
         std::vector<std::string> StringHelper::Tokenize(const char* str, const char* delim)
         {
-            char* context = NULL;
+            char* context = nullptr;
             std::vector<std::string> tokens;
             char* val = _strdup(str);
             char* pch = strtok_s(val, delim, &context);
-            while (pch != NULL)
+            while (pch != nullptr)
             {
                 tokens.push_back(pch);
-                pch = strtok_s(NULL, delim, &context);
+                pch = strtok_s(nullptr, delim, &context);
             }
             free(val);
             return tokens;

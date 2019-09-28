@@ -74,32 +74,24 @@
     <LinkIncremental>true</LinkIncremental>
     <OutDir>$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(Platform)\</OutDir>
     <IntDir>$(SolutionDir)$(MSBuildProjectName)\temp\$(Configuration)\$(Platform)\</IntDir>
-    <IncludePath>$(SolutionDir)..\dependencies\glm-0.9.9.0\include\;$(SolutionDir)..\dependencies\glfw-3.2.1\include\;$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)..\dependencies\glfw-3.2.1\lib\$(Configuration)\$(Platform)\;$(LibraryPath)</LibraryPath>
     <TargetName>Caerulus_$(ProjectName)</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
     <OutDir>$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(Platform)\</OutDir>
     <IntDir>$(SolutionDir)$(MSBuildProjectName)\temp\$(Configuration)\$(Platform)\</IntDir>
-    <IncludePath>$(SolutionDir)..\dependencies\glm-0.9.9.0\include\;$(SolutionDir)..\dependencies\glfw-3.2.1\include\;$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)..\dependencies\glfw-3.2.1\lib\$(Configuration)\$(Platform)\;$(LibraryPath)</LibraryPath>
     <TargetName>Caerulus_$(ProjectName)</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(Platform)\</OutDir>
     <IntDir>$(SolutionDir)$(MSBuildProjectName)\temp\$(Configuration)\$(Platform)\</IntDir>
-    <IncludePath>$(SolutionDir)..\dependencies\glm-0.9.9.0\include\;$(SolutionDir)..\dependencies\glfw-3.2.1\include\;$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)..\dependencies\glfw-3.2.1\lib\$(Configuration)\$(Platform)\;$(LibraryPath)</LibraryPath>
     <TargetName>Caerulus_$(ProjectName)</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(Platform)\</OutDir>
     <IntDir>$(SolutionDir)$(MSBuildProjectName)\temp\$(Configuration)\$(Platform)\</IntDir>
-    <IncludePath>$(SolutionDir)..\dependencies\glm-0.9.9.0\include\;$(SolutionDir)..\dependencies\glfw-3.2.1\include\;$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)..\dependencies\glfw-3.2.1\lib\$(Configuration)\$(Platform)\;$(LibraryPath)</LibraryPath>
     <TargetName>Caerulus_$(ProjectName)</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -110,11 +102,13 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;CORE_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\dependencies\glm-0.9.9.0\include\;$(SolutionDir)..\dependencies\glfw-3.2.1\include\;</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>glfw3dll.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)..\dependencies\glfw-3.2.1\lib\$(Configuration)\$(Platform)\;</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
       <Command>echo DA | xcopy /E "$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(Platform)\*.dll" "$(SolutionDir)..\bin\$(Configuration)\$(Platform)"</Command>
@@ -133,11 +127,13 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;CORE_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\dependencies\glm-0.9.9.0\include\;$(SolutionDir)..\dependencies\glfw-3.2.1\include\;</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>glfw3dll.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)..\dependencies\glfw-3.2.1\lib\$(Configuration)\$(Platform)\;</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
       <Command>echo DA | xcopy /E "$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(Platform)\*.dll" "$(SolutionDir)..\bin\$(Configuration)\$(Platform)"</Command>
@@ -158,6 +154,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;CORE_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\dependencies\glm-0.9.9.0\include\;$(SolutionDir)..\dependencies\glfw-3.2.1\include\;</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -165,6 +162,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>glfw3dll.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)..\dependencies\glfw-3.2.1\lib\$(Configuration)\$(Platform)\;</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
       <Command>echo DA | xcopy /E "$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(Platform)\*.dll" "$(SolutionDir)..\bin\$(Configuration)\$(Platform)"</Command>
@@ -185,6 +183,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;CORE_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\dependencies\glm-0.9.9.0\include\;$(SolutionDir)..\dependencies\glfw-3.2.1\include\;</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -192,6 +191,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>glfw3dll.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)..\dependencies\glfw-3.2.1\lib\$(Configuration)\$(Platform)\;</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
       <Command>echo DA | xcopy /E "$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(Platform)\*.dll" "$(SolutionDir)..\bin\$(Configuration)\$(Platform)"</Command>
@@ -203,10 +203,11 @@
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="Interface\IResetable.h" />
+    <ClInclude Include="ECS\Entity.h" />
+    <ClInclude Include="Interface\IEntity.h" />
     <ClInclude Include="Interface\ISerializable.h" />
     <ClInclude Include="Interface\ITickable.h" />
-    <ClInclude Include="Math\MathFacade.h" />
+    <ClInclude Include="Math\MathHelper.h" />
     <ClInclude Include="Parser\StringHelper.h" />
     <ClInclude Include="Parser\Tokenizer.h" />
     <ClInclude Include="stdafx.h" />
@@ -217,7 +218,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp" />
-    <ClCompile Include="Math\MathFacade.cpp" />
+    <ClCompile Include="ECS\Entity.cpp" />
+    <ClCompile Include="Math\MathHelper.cpp" />
     <ClCompile Include="Parser\StringHelper.cpp" />
     <ClCompile Include="Parser\Tokenizer.cpp" />
     <ClCompile Include="stdafx.cpp">

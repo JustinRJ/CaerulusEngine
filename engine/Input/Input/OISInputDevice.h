@@ -7,15 +7,15 @@
 
 namespace Input
 {
-    class OISInputDevice : public InputDevice
+    class CAERULUS_INPUT OISInputDevice : public InputDevice
     {
     public:
 
-        CAERULUS_INPUT OISInputDevice();
-        CAERULUS_INPUT virtual ~OISInputDevice();
+        OISInputDevice();
+        virtual ~OISInputDevice();
 
-        CAERULUS_INPUT virtual void Initialize(void* hwnd) override;
-        CAERULUS_INPUT virtual void Uninitialize() override;
+        virtual void Initialize(void* hwnd) override;
+        virtual void Uninitialize() override;
 
     private:
 

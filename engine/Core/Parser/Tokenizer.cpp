@@ -6,8 +6,8 @@ namespace Core
     namespace Parser
     {
         Tokenizer::Tokenizer(const std::string& str, const std::string& delim) :
-            m_String(NULL),
-            m_Context(NULL),
+            m_String(nullptr),
+            m_Context(nullptr),
             m_Original(str.c_str()),
             m_Delims(delim.c_str())
         {
@@ -23,9 +23,9 @@ namespace Core
             if (m_String)
             {
                 free(m_String);
-                m_String = NULL;
+                m_String = nullptr;
             }
-            m_Context = NULL;
+            m_Context = nullptr;
         }
 
         const char* Tokenizer::Start(const std::string& delims)
@@ -42,7 +42,7 @@ namespace Core
 
         const char* Tokenizer::Next(const std::string& delims)
         {
-            return strtok_s(NULL, delims.c_str(), &m_Context);
+            return strtok_s(nullptr, delims.c_str(), &m_Context);
         }
 
         const char* Tokenizer::Next()

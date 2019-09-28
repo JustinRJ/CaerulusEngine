@@ -44,26 +44,26 @@ namespace Graphics
 
             bool force = l1Norm(forcedUp) > 0.0f;
 
-            quat yaw = angleAxis(radians(-eulerDelta.x), force ? forcedUp : UpVector(orig_rot));
-            quat pitch = angleAxis(radians(-eulerDelta.y), RightVector(orig_rot));
-            quat roll = angleAxis(radians(eulerDelta.z), ForwardVector(orig_rot));
+            quat yaw = angleAxis(radians(-eulerDelta.x), force ? forcedUp : MathHelper::UpVector(orig_rot));
+            quat pitch = angleAxis(radians(-eulerDelta.y), MathHelper::RightVector(orig_rot));
+            quat roll = angleAxis(radians(eulerDelta.z), MathHelper::ForwardVector(orig_rot));
             quat rotation = yaw * pitch * roll * orig_rot;
 
             if (force)
             {
-                float dot = Dot(UpVector(normalize(rotation)), forcedUp) - CAMERA_CORRECTION;
+                float dot = glm::dot(MathHelper::UpVector(normalize(rotation)), forcedUp) - CAMERA_CORRECTION;
                 if (dot < 0.0f)
                 {
                     float adjustment = (acosf(dot) - half_pi<float>())
-                        * (Dot(forcedUp, ForwardVector(rotation)) < 0.0f ? 1.0f : -1.0f);
+                        * (glm::dot(forcedUp, MathHelper::ForwardVector(rotation)) < 0.0f ? 1.0f : -1.0f);
 
-                    rotation = angleAxis(adjustment, RightVector(rotation)) * rotation;
+                    rotation = angleAxis(adjustment, MathHelper::RightVector(rotation)) * rotation;
                 }
             }
 
             mat4 temp = mat4_cast(rotation);
 
-            SetAxis(temp, GetAxis(model, Index::W), Index::W);
+            MathHelper::SetAxis(temp, MathHelper::GetAxis(model, Index::W), Index::W);
 
             m_View = inverse(temp);
         }
@@ -80,7 +80,7 @@ namespace Graphics
 
         vec3 Camera::GetPosition() const
         {
-            return vec3(GetTranslation(m_View));
+            return vec3(MathHelper::GetTranslation(m_View));
         }
 
         void Camera::SetViewMatrix(const mat4& view)
@@ -94,12 +94,12 @@ namespace Graphics
 
         vec3 Camera::GetForward() const
         {
-            return GetColumn(m_View, Index::Z);
+            return MathHelper::GetColumn(m_View, Index::Z);
         }
 
         vec3 Camera::GetUp() const
         {
-            return GetColumn(m_View, Index::Y);
+            return MathHelper::GetColumn(m_View, Index::Y);
         }
 
         float Camera::GetFOV() const
@@ -124,17 +124,17 @@ namespace Graphics
 
         void Camera::SetPosition(const vec3& position)
         {
-            SetTranslation(m_View, position);
+            MathHelper::SetTranslation(m_View, position);
         }
 
         void Camera::SetForward(const vec3& forward)
         {
-            SetColumn(m_View, forward, Index::Z);
+            MathHelper::SetColumn(m_View, forward, Index::Z);
         }
 
         void Camera::SetUp(const vec3& up)
         {
-            SetColumn(m_View, up, Index::Y);
+            MathHelper::SetColumn(m_View, up, Index::Y);
         }
 
         void Camera::SetFOV(float fov)

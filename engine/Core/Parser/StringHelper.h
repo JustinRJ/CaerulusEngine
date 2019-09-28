@@ -35,14 +35,14 @@ namespace Core
             static std::vector<std::string> Tokenize(const char* str, const char* delim = " ");
 
             template <typename T>
-                static const std::string& Type()
+            static const std::string& Type()
             {
                 static const std::string str = Type(typeid(T).name());
                 return str;
             }
 
             template<typename T>
-                static std::string ToBinary(T number)
+            static std::string ToBinary(T number)
             {
                 size_t size = sizeof(T) * 8;
                 std::string str(size, "0");
@@ -58,13 +58,13 @@ namespace Core
             }
 
             template<typename T>
-                static void FromString(const std::string& str, T& value)
+            static void FromString(const std::string& str, T& value)
             {
                 std::std::stringstream(str) >> value;
             }
 
             template<typename T>
-                static T FromString(const std::string& str)
+            static T FromString(const std::string& str)
             {
                 T value;
                 FromString(str, value);

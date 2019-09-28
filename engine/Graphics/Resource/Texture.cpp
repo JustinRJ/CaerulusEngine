@@ -195,7 +195,7 @@ namespace Graphics
 
             for (GLuint i = 0; i < 6; ++i)
             {
-                if (m_Width == NULL && m_Height == NULL && m_Components == NULL)
+                if (m_Width == 0 && m_Height == 0 && m_Components == 0)
                 {
                     m_Width = width;
                     m_Height = width;

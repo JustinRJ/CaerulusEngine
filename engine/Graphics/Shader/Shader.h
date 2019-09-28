@@ -8,18 +8,18 @@ namespace Graphics
 {
     namespace Shaders
     {
-        class Shader
+        class CAERULUS_GRAPHICS Shader
         {
         public:
-            CAERULUS_GRAPHICS Shader();
-            CAERULUS_GRAPHICS ~Shader();
+            Shader();
+            ~Shader();
 
-            CAERULUS_GRAPHICS bool IsLoaded() const;
-            CAERULUS_GRAPHICS void Load(const GLchar* vertexPath, const GLchar* fragmentPath);
-            CAERULUS_GRAPHICS bool Compile(const ShaderSource& vertex, const ShaderSource& fragment);
-            CAERULUS_GRAPHICS void Use() const;
+            bool IsLoaded() const;
+            void Load(const GLchar* vertexPath, const GLchar* fragmentPath);
+            bool Compile(const ShaderSource& vertex, const ShaderSource& fragment);
+            void Use() const;
 
-            CAERULUS_GRAPHICS GLuint GetHandle() const;
+            GLuint GetHandle() const;
 
         private:
             GLuint m_ShaderProgram;

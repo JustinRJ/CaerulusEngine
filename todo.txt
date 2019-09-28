@@ -1,6 +1,7 @@
 Add glew-2.1.0 dependency debug files
 
-Remove CAERULUS_ from functions to classes
+create ECS system to use between dlls.. so you can...
+Remove C4251 supressions
 
 Add colour class
 
@@ -8,4 +9,4 @@ Set m_UniformLocations in ShaderSource via reading file
 
 Rename glsl (shader files) "color" -> "colour"! (and code)
 
-Remove all uses of 'new' and replace to unique/shared_ptr
+remove CAERULUS_GRAPHICS and use warning supression

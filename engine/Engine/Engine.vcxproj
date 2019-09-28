@@ -74,8 +74,6 @@
     <LinkIncremental>true</LinkIncremental>
     <OutDir>$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(Platform)\</OutDir>
     <IntDir>$(SolutionDir)$(MSBuildProjectName)\temp\$(Configuration)\$(Platform)\</IntDir>
-    <IncludePath>$(SolutionDir)..\dependencies\glew-2.1.0\include\;$(SolutionDir)..\dependencies\glfw-3.2.1\include\;$(SolutionDir)..\dependencies\glm-0.9.9.0\include\;$(SolutionDir)..\dependencies\assimp-4.1.0\include\;$(SolutionDir)..\dependencies\OIS-1-4\include\;$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)..\dependencies\glew-2.1.0\lib\$(Configuration)\$(Platform)\;$(SolutionDir)..\dependencies\glfw-3.2.1\lib\$(Configuration)\$(Platform)\;$(SolutionDir)..\dependencies\assimp-4.1.0\lib\$(Configuration)\$(Platform)\;$(SolutionDir)..\dependencies\OIS-1-4\lib\$(Configuration)\$(Platform)\;C:\Users\Justin\Documents\Visual Studio 2017\Projects\CaerulusEngine\engine\Core;$(LibraryPath)</LibraryPath>
     <CustomBuildAfterTargets>
     </CustomBuildAfterTargets>
     <TargetName>Caerulus_$(ProjectName)</TargetName>
@@ -84,8 +82,6 @@
     <LinkIncremental>true</LinkIncremental>
     <OutDir>$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(Platform)\</OutDir>
     <IntDir>$(SolutionDir)$(MSBuildProjectName)\temp\$(Configuration)\$(Platform)\</IntDir>
-    <IncludePath>$(SolutionDir)..\dependencies\glew-2.1.0\include\;$(SolutionDir)..\dependencies\glfw-3.2.1\include\;$(SolutionDir)..\dependencies\glm-0.9.9.0\include\;$(SolutionDir)..\dependencies\assimp-4.1.0\include\;$(SolutionDir)..\dependencies\OIS-1-4\include\;$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)..\dependencies\glew-2.1.0\lib\$(Configuration)\$(Platform)\;$(SolutionDir)..\dependencies\glfw-3.2.1\lib\$(Configuration)\$(Platform)\;$(SolutionDir)..\dependencies\assimp-4.1.0\lib\$(Configuration)\$(Platform)\;$(SolutionDir)..\dependencies\OIS-1-4\lib\$(Configuration)\$(Platform)\;C:\Users\Justin\Documents\Visual Studio 2017\Projects\CaerulusEngine\engine\Core;$(LibraryPath)</LibraryPath>
     <CustomBuildAfterTargets>
     </CustomBuildAfterTargets>
     <TargetName>Caerulus_$(ProjectName)</TargetName>
@@ -94,8 +90,6 @@
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(Platform)\</OutDir>
     <IntDir>$(SolutionDir)$(MSBuildProjectName)\temp\$(Configuration)\$(Platform)\</IntDir>
-    <IncludePath>$(SolutionDir)..\dependencies\glew-2.1.0\include\;$(SolutionDir)..\dependencies\glfw-3.2.1\include\;$(SolutionDir)..\dependencies\glm-0.9.9.0\include\;$(SolutionDir)..\dependencies\assimp-4.1.0\include\;$(SolutionDir)..\dependencies\OIS-1-4\include\;$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)..\dependencies\glew-2.1.0\lib\$(Configuration)\$(Platform)\;$(SolutionDir)..\dependencies\glfw-3.2.1\lib\$(Configuration)\$(Platform)\;$(SolutionDir)..\dependencies\assimp-4.1.0\lib\$(Configuration)\$(Platform)\;$(SolutionDir)..\dependencies\OIS-1-4\lib\$(Configuration)\$(Platform)\;C:\Users\Justin\Documents\Visual Studio 2017\Projects\CaerulusEngine\engine\Core;$(LibraryPath)</LibraryPath>
     <CustomBuildAfterTargets>
     </CustomBuildAfterTargets>
     <TargetName>Caerulus_$(ProjectName)</TargetName>
@@ -104,8 +98,6 @@
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(Platform)\</OutDir>
     <IntDir>$(SolutionDir)$(MSBuildProjectName)\temp\$(Configuration)\$(Platform)\</IntDir>
-    <IncludePath>$(SolutionDir)..\dependencies\glew-2.1.0\include\;$(SolutionDir)..\dependencies\glfw-3.2.1\include\;$(SolutionDir)..\dependencies\glm-0.9.9.0\include\;$(SolutionDir)..\dependencies\assimp-4.1.0\include\;$(SolutionDir)..\dependencies\OIS-1-4\include\;$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)..\dependencies\glew-2.1.0\lib\$(Configuration)\$(Platform)\;$(SolutionDir)..\dependencies\glfw-3.2.1\lib\$(Configuration)\$(Platform)\;$(SolutionDir)..\dependencies\assimp-4.1.0\lib\$(Configuration)\$(Platform)\;$(SolutionDir)..\dependencies\OIS-1-4\lib\$(Configuration)\$(Platform)\;C:\Users\Justin\Documents\Visual Studio 2017\Projects\CaerulusEngine\engine\Core;$(LibraryPath)</LibraryPath>
     <CustomBuildAfterTargets>
     </CustomBuildAfterTargets>
     <TargetName>Caerulus_$(ProjectName)</TargetName>
@@ -118,12 +110,13 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\dependencies\glew-2.1.0\include\;$(SolutionDir)..\dependencies\glfw-3.2.1\include\;$(SolutionDir)..\dependencies\glm-0.9.9.0\include\;$(SolutionDir)..\dependencies\assimp-4.1.0\include\;$(SolutionDir)..\dependencies\OIS-1-4\include\;</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>opengl32.lib;glew32.lib;glfw3dll.lib;assimp-vc140-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)..\dependencies\glew-2.1.0\lib\$(Configuration)\$(Platform)\;$(SolutionDir)..\dependencies\glfw-3.2.1\lib\$(Configuration)\$(Platform)\;$(SolutionDir)..\dependencies\assimp-4.1.0\lib\$(Configuration)\$(Platform)\;$(SolutionDir)..\dependencies\OIS-1-4\lib\$(Configuration)\$(Platform)\;C:\Users\Justin\Documents\Visual Studio 2017\Projects\CaerulusEngine\engine\Core\;</AdditionalLibraryDirectories>
     </Link>
     <CustomBuildStep>
       <Command>
@@ -152,12 +145,13 @@ echo DA | xcopy /E "$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(P
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\dependencies\glew-2.1.0\include\;$(SolutionDir)..\dependencies\glfw-3.2.1\include\;$(SolutionDir)..\dependencies\glm-0.9.9.0\include\;$(SolutionDir)..\dependencies\assimp-4.1.0\include\;$(SolutionDir)..\dependencies\OIS-1-4\include\;</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>opengl32.lib;glew32.lib;glfw3dll.lib;assimp-vc140-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)..\dependencies\glew-2.1.0\lib\$(Configuration)\$(Platform)\;$(SolutionDir)..\dependencies\glfw-3.2.1\lib\$(Configuration)\$(Platform)\;$(SolutionDir)..\dependencies\assimp-4.1.0\lib\$(Configuration)\$(Platform)\;$(SolutionDir)..\dependencies\OIS-1-4\lib\$(Configuration)\$(Platform)\;C:\Users\Justin\Documents\Visual Studio 2017\Projects\CaerulusEngine\engine\Core\;</AdditionalLibraryDirectories>
     </Link>
     <CustomBuildStep>
       <Command>
@@ -188,7 +182,7 @@ echo DA | xcopy /E "$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(P
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\dependencies\glew-2.1.0\include\;$(SolutionDir)..\dependencies\glfw-3.2.1\include\;$(SolutionDir)..\dependencies\glm-0.9.9.0\include\;$(SolutionDir)..\dependencies\assimp-4.1.0\include\;$(SolutionDir)..\dependencies\OIS-1-4\include\;</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -196,6 +190,7 @@ echo DA | xcopy /E "$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(P
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>opengl32.lib;glew32.lib;glfw3dll.lib;assimp-vc140-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)..\dependencies\glew-2.1.0\lib\$(Configuration)\$(Platform)\;$(SolutionDir)..\dependencies\glfw-3.2.1\lib\$(Configuration)\$(Platform)\;$(SolutionDir)..\dependencies\assimp-4.1.0\lib\$(Configuration)\$(Platform)\;$(SolutionDir)..\dependencies\OIS-1-4\lib\$(Configuration)\$(Platform)\;C:\Users\Justin\Documents\Visual Studio 2017\Projects\CaerulusEngine\engine\Core\;</AdditionalLibraryDirectories>
     </Link>
     <CustomBuildStep>
       <Command>
@@ -226,7 +221,7 @@ echo DA | xcopy /E "$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(P
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\dependencies\glew-2.1.0\include\;$(SolutionDir)..\dependencies\glfw-3.2.1\include\;$(SolutionDir)..\dependencies\glm-0.9.9.0\include\;$(SolutionDir)..\dependencies\assimp-4.1.0\include\;$(SolutionDir)..\dependencies\OIS-1-4\include\;</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -234,6 +229,7 @@ echo DA | xcopy /E "$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(P
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>opengl32.lib;glew32.lib;glfw3dll.lib;assimp-vc140-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)..\dependencies\glew-2.1.0\lib\$(Configuration)\$(Platform)\;$(SolutionDir)..\dependencies\glfw-3.2.1\lib\$(Configuration)\$(Platform)\;$(SolutionDir)..\dependencies\assimp-4.1.0\lib\$(Configuration)\$(Platform)\;$(SolutionDir)..\dependencies\OIS-1-4\lib\$(Configuration)\$(Platform)\;C:\Users\Justin\Documents\Visual Studio 2017\Projects\CaerulusEngine\engine\Core\;</AdditionalLibraryDirectories>
     </Link>
     <CustomBuildStep>
       <Command>
