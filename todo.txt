@@ -8,5 +8,3 @@ Add colour class
 Set m_UniformLocations in ShaderSource via reading file
 
 Rename glsl (shader files) "color" -> "colour"! (and code)
-
-remove CAERULUS_GRAPHICS and use warning supression

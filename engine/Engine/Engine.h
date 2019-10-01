@@ -1,15 +1,13 @@
 #pragma once
 
-#include "../Input/Input/OISInputDevice.h"
-
 #include "../Graphics/RenderSystem.h"
 #include "../Graphics/Window/GLWindow.h"
 
-#include "../Core/Interface/ITickable.h"
+#include "../Core/Input/MouseInputManager.hpp"
+#include "../Core/Input/KeyboardInputManager.hpp"
 #include "../Core/Time/FPSLimiter.h"
 #include "../Core/Time/FixedLimiter.h"
-#include "../Core/Parser/Tokenizer.h"
-#include "../Core/Parser/StringHelper.h"
+#include "../Core/Interface/ITickable.h"
 
 #include "../Managers/Model/ModelManager.h"
 #include "../Managers/Shader/ShaderManager.h"
@@ -18,14 +16,12 @@
 
 namespace Engine
 {
-    using namespace Input;
-
     using namespace Graphics::Render;
     using namespace Graphics::Window;
 
     using namespace Core::Time;
+    using namespace Core::Input;
     using namespace Core::Interface;
-    using namespace Core::Parser;
 
     using namespace Managers::Model;
     using namespace Managers::Shader;
@@ -57,8 +53,9 @@ namespace Engine
         std::unique_ptr<FPSLimiter> m_FPSLimiter;
         std::unique_ptr<FixedLimiter> m_FixedLimiter;
 
-        std::shared_ptr<InputDevice> m_InputDevice;
         std::shared_ptr<RenderSystem> m_RenderSystem;
+        std::shared_ptr<KeyboardInputManager> m_KeyboardInputManager;
+        std::shared_ptr<MouseInputManager> m_MouseInputManager;
 
         std::vector<std::shared_ptr<ITickable>> m_Tickable;
 

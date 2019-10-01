@@ -204,6 +204,9 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="ECS\Entity.h" />
+    <ClInclude Include="Input\InputDefines.h" />
+    <ClInclude Include="Input\KeyboardInputManager.hpp" />
+    <ClInclude Include="Input\MouseInputManager.hpp" />
     <ClInclude Include="Interface\IEntity.h" />
     <ClInclude Include="Interface\ISerializable.h" />
     <ClInclude Include="Interface\ITickable.h" />

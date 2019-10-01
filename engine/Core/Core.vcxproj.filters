@@ -19,6 +19,9 @@
     <Filter Include="ECS">
       <UniqueIdentifier>{947c449d-d05b-4add-89b2-e3604a472c92}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Input">
+      <UniqueIdentifier>{5ed08db7-aad3-4a58-aba3-c58c4015db59}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp" />
@@ -82,6 +85,15 @@
     </ClInclude>
     <ClInclude Include="Interface\IEntity.h">
       <Filter>Interface</Filter>
+    </ClInclude>
+    <ClInclude Include="Input\KeyboardInputManager.hpp">
+      <Filter>Input</Filter>
+    </ClInclude>
+    <ClInclude Include="Input\MouseInputManager.hpp">
+      <Filter>Input</Filter>
+    </ClInclude>
+    <ClInclude Include="Input\InputDefines.h">
+      <Filter>Input</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
