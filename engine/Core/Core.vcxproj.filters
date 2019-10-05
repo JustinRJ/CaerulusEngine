@@ -7,20 +7,17 @@
     <Filter Include="Logging">
       <UniqueIdentifier>{24a9ff48-ee4a-4fa7-a783-6de059fef952}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Parser">
-      <UniqueIdentifier>{f3c833a2-6182-42c4-a5ae-60d4fe7df5e4}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Time">
       <UniqueIdentifier>{b239773a-3c68-4dcc-b557-c23f31324b2b}</UniqueIdentifier>
     </Filter>
     <Filter Include="Interface">
       <UniqueIdentifier>{002dbe01-4b59-46db-9625-8a7b98485a59}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ECS">
-      <UniqueIdentifier>{947c449d-d05b-4add-89b2-e3604a472c92}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Input">
       <UniqueIdentifier>{5ed08db7-aad3-4a58-aba3-c58c4015db59}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="String">
+      <UniqueIdentifier>{f3c833a2-6182-42c4-a5ae-60d4fe7df5e4}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -35,20 +32,18 @@
     <ClCompile Include="Time\Timer.cpp">
       <Filter>Time</Filter>
     </ClCompile>
-    <ClCompile Include="Parser\StringHelper.cpp">
-      <Filter>Parser</Filter>
-    </ClCompile>
-    <ClCompile Include="Parser\Tokenizer.cpp">
-      <Filter>Parser</Filter>
-    </ClCompile>
     <ClCompile Include="Time\FixedLimiter.cpp">
       <Filter>Time</Filter>
     </ClCompile>
     <ClCompile Include="Math\MathHelper.cpp">
       <Filter>Math</Filter>
     </ClCompile>
-    <ClCompile Include="ECS\Entity.cpp">
-      <Filter>ECS</Filter>
+    <ClCompile Include="Node.cpp" />
+    <ClCompile Include="String\StringHelper.cpp">
+      <Filter>String</Filter>
+    </ClCompile>
+    <ClCompile Include="String\Tokenizer.cpp">
+      <Filter>String</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -62,12 +57,6 @@
     <ClInclude Include="Time\Timer.h">
       <Filter>Time</Filter>
     </ClInclude>
-    <ClInclude Include="Parser\StringHelper.h">
-      <Filter>Parser</Filter>
-    </ClInclude>
-    <ClInclude Include="Parser\Tokenizer.h">
-      <Filter>Parser</Filter>
-    </ClInclude>
     <ClInclude Include="Interface\ISerializable.h">
       <Filter>Interface</Filter>
     </ClInclude>
@@ -80,12 +69,6 @@
     <ClInclude Include="Math\MathHelper.h">
       <Filter>Math</Filter>
     </ClInclude>
-    <ClInclude Include="ECS\Entity.h">
-      <Filter>ECS</Filter>
-    </ClInclude>
-    <ClInclude Include="Interface\IEntity.h">
-      <Filter>Interface</Filter>
-    </ClInclude>
     <ClInclude Include="Input\KeyboardInputManager.hpp">
       <Filter>Input</Filter>
     </ClInclude>
@@ -94,6 +77,16 @@
     </ClInclude>
     <ClInclude Include="Input\InputDefines.h">
       <Filter>Input</Filter>
+    </ClInclude>
+    <ClInclude Include="Interface\INode.h">
+      <Filter>Interface</Filter>
+    </ClInclude>
+    <ClInclude Include="Node.h" />
+    <ClInclude Include="String\StringHelper.h">
+      <Filter>String</Filter>
+    </ClInclude>
+    <ClInclude Include="String\Tokenizer.h">
+      <Filter>String</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

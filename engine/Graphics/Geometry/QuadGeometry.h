@@ -18,7 +18,7 @@ namespace Graphics
             void Draw() const override;
 
         private:
-            virtual void GenerateBuffer() override;
+            void GenerateBuffer() override;
         };
     }
 }

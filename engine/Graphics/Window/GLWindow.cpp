@@ -1,9 +1,10 @@
 #include "stdafx.h"
 
 #include "GLWindow.h"
-#include <glew.h>
 #define GLFW_EXPOSE_NATIVE_WIN32
 #include <glfw3native.h>
+#include <iostream>
+#include "../../Core/Math/MathHelper.h"
 
 namespace Graphics
 {
@@ -11,10 +12,17 @@ namespace Graphics
     {
         GLWindow::GLWindow(const std::string& title, int x, int y, int bits, bool fullscreen) :
             m_Window(nullptr),
-            m_LockedCursor(false)
+            m_LockedCursor(true)
         {
+            if (!glfwInit())
+            {
+                std::cerr << "Failed to init GLFW!" << std::endl;
+                exit(1);
+            }
+
             Window::Set(title, x, y, bits, fullscreen);
             Apply();
+            CenterCursor();
         }
 
         GLWindow::~GLWindow()
@@ -52,23 +60,43 @@ namespace Graphics
             return m_Window;
         }
 
-        void GLWindow::CenterCursor() const
+        void GLWindow::Update()
+        {
+            if (m_LockedCursor)
+            {
+                CenterCursor();
+                glfwSetInputMode(m_Window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+            }
+            else
+            {
+                glfwSetInputMode(m_Window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+            }
+        }
+
+        void GLWindow::CenterCursor()
         {
             glfwSetCursorPos(m_Window, m_ActiveState.Width / 2, m_ActiveState.Height / 2);
         }
 
         void GLWindow::ToggleLockedCursor()
         {
-            if (m_LockedCursor)
-            {
-                glfwSetInputMode(m_Window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-            }
-            else
-            {
-                glfwSetInputMode(m_Window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
-                CenterCursor();
-            }
+            CenterCursor();
             m_LockedCursor = !m_LockedCursor;
+        }
+
+        bool GLWindow::IsCursorLocked() const
+        {
+            return m_LockedCursor;
+        }
+
+        Geometry::QuadGeometry* GLWindow::GetQuad() const
+        {
+            return m_Quad;
+        }
+
+        void GLWindow::SetQuad(Geometry::QuadGeometry* quad)
+        {
+            m_Quad = quad;
         }
     }
 }

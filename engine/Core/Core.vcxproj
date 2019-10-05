@@ -203,17 +203,17 @@
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="ECS\Entity.h" />
     <ClInclude Include="Input\InputDefines.h" />
     <ClInclude Include="Input\KeyboardInputManager.hpp" />
     <ClInclude Include="Input\MouseInputManager.hpp" />
-    <ClInclude Include="Interface\IEntity.h" />
+    <ClInclude Include="Interface\INode.h" />
     <ClInclude Include="Interface\ISerializable.h" />
     <ClInclude Include="Interface\ITickable.h" />
     <ClInclude Include="Math\MathHelper.h" />
-    <ClInclude Include="Parser\StringHelper.h" />
-    <ClInclude Include="Parser\Tokenizer.h" />
+    <ClInclude Include="Node.h" />
     <ClInclude Include="stdafx.h" />
+    <ClInclude Include="String\StringHelper.h" />
+    <ClInclude Include="String\Tokenizer.h" />
     <ClInclude Include="Time\FixedLimiter.h" />
     <ClInclude Include="Time\FPSLimiter.h" />
     <ClInclude Include="Time\Time.h" />
@@ -221,16 +221,16 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp" />
-    <ClCompile Include="ECS\Entity.cpp" />
     <ClCompile Include="Math\MathHelper.cpp" />
-    <ClCompile Include="Parser\StringHelper.cpp" />
-    <ClCompile Include="Parser\Tokenizer.cpp" />
+    <ClCompile Include="Node.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="String\StringHelper.cpp" />
+    <ClCompile Include="String\Tokenizer.cpp" />
     <ClCompile Include="Time\FixedLimiter.cpp" />
     <ClCompile Include="Time\FPSLimiter.cpp" />
     <ClCompile Include="Time\Time.cpp" />

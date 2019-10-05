@@ -81,11 +81,10 @@ namespace Managers
             std::vector<tinyobj::material_t> materials = std::vector<tinyobj::material_t>();
 
             std::istream is(&fb);
-
             tinyobj::LoadMtl(&materialNames, &materials, &is);
             fb.close();
 
-            //general path before material name
+            // general path before material name
             std::string generalPath = path;
             generalPath.erase(generalPath.rfind("/"));
 
@@ -103,8 +102,8 @@ namespace Managers
                     return false;
                 }
 
-                ///TODO change this to the correct mapping
-                ///Change current .mtl file to follow the correct standard!
+                // TODO change this to the correct mapping
+                // Change current .mtl file to follow the correct standard!
                 std::string diffuseTexName = materials.at(i).diffuse_texname;
                 diffuseTexName.erase(diffuseTexName.rfind("."));
                 m_TextureManager.Load(diffuseTexName, generalPath + "/" + materials.at(i).diffuse_texname);

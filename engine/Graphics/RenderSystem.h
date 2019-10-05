@@ -6,7 +6,7 @@
 
 #include "Window/GLWindow.h"
 
-#include "Shader/Shader.h"
+#include "PipeLine/Shader.h"
 
 #include "Lighting/PointLight.h"
 #include "Lighting/DirectionalLight.h"
@@ -27,7 +27,7 @@ namespace Graphics
     {
         using namespace Light;
         using namespace Window;
-        using namespace Shaders;
+        using namespace PipeLine;
         using namespace Geometry;
         using namespace Resource;
 
@@ -44,14 +44,14 @@ namespace Graphics
 
         struct SAO
         {
-            GLint Samples;
-            GLint Turns;
-            GLint BlurSize;
-            GLint MotionBlurMaxSamples;
-            GLfloat Radius;
-            GLfloat Bias;
-            GLfloat Scale;
-            GLfloat Contrast;
+            GLint Samples = 12;
+            GLint Turns = 7;
+            GLint BlurSize = 4;
+            GLfloat Radius = 0.3f;
+            GLfloat Bias = 0.001f;
+            GLfloat Scale = 0.7f;
+            GLfloat Contrast = 0.8f;
+            GLint MotionBlurMaxSamples = 32;
         };
 
         struct GPUProfiler
@@ -62,11 +62,11 @@ namespace Graphics
                 Stop = 1
             };
 
-            GLfloat DeltaGeometryTime;
-            GLfloat DeltaLightingTime;
-            GLfloat DeltaSAOTime;
-            GLfloat DeltaPostProcessTime;
-            GLfloat DeltaForwardTime;
+            GLfloat DeltaGeometryTime = 0.0f;
+            GLfloat DeltaLightingTime = 0.0f;
+            GLfloat DeltaSAOTime = 0.0f;
+            GLfloat DeltaPostProcessTime = 0.0f;
+            GLfloat DeltaForwardTime = 0.0f;
 
             unsigned int QueryIDGeometry[2];
             unsigned int QueryIDLighting[2];
@@ -93,7 +93,7 @@ namespace Graphics
         {
         public:
 
-            RenderSystem();
+            RenderSystem(GLWindow& window);
 
             virtual void Update(float deltaTime) override;
             virtual void FixedUpdate(float fixedTime) override {};
@@ -101,19 +101,19 @@ namespace Graphics
             virtual void Reset() override {};
 
             void SetCamera(Camera& camera);
-            Camera& GetCamera() const;
+            Camera& GetCamera();
 
             void SetSkyBox(Texture& skyBox);
-            Texture& GetSkyBox() const;
+            Texture& GetSkyBox();
 
             void SetDefaultAO(Texture& ao);
-            Texture& GetDefaultAO() const;
+            Texture& GetDefaultAO();
 
             void SetDefaultMaterial(Material& material);
-            Material& GetDefaultMaterial() const;
+            Material& GetDefaultMaterial();
 
             void SetGLWindow(GLWindow& window);
-            GLWindow& GetGLWindow() const;
+            GLWindow& GetGLWindow();
 
             void SetPointLightMap(std::map<unsigned int, Graphics::Light::PointLight*> idPointMap);
             const std::map<unsigned int, Graphics::Light::PointLight*>& GetPointLightMap() const;
@@ -144,7 +144,6 @@ namespace Graphics
         private:
 
             //Initialize - in order
-            bool InitGLEW() const;
             void SetCapabilities() const;
             void LoadShaders();
             void SetShaderUniformLocations();
@@ -171,47 +170,26 @@ namespace Graphics
             void ForwardPassRendering(const mat4& view, const mat4& proj);
 
             //Misc
-            void SetNullMaterial();
-            void GPUProfiling();
+            void UseNullMaterial();
+            void ProfileGPUs();
 
+            GLWindow& m_Window;
 
-#pragma warning(push)
-#pragma warning( disable : 4251)
-            GLWindow* m_Window;
+            Camera& m_Camera;
 
-            Camera* m_Camera;
+            GPUProfiler& m_Profiler;
 
-            // Move to window class
-            QuadGeometry*       m_WindowQuad;
+            SAO& m_SAO;
+
             // Move to IBL
-            Texture*            m_SkyBox;
+            Texture* m_SkyBox;
 
             // Default AO
-            Texture*            m_DefualtAO;
+            Texture* m_DefualtAO;
             // Default Material
-            Material*           m_DefaultMaterial;
-
-            // Map of ID to absolute transform
-            std::map<unsigned int, Model*> m_ModelMap;
-            // Map of ID to  model
-            std::map<unsigned int, mat4*> m_TransformMap;
-            // Map of ID to material
-            std::map<unsigned int, Material*> m_MaterialMap;
-            // Map of ID to point light
-            std::map<unsigned int, Graphics::Light::PointLight*> m_PointLightMap;
-            // Map of ID to directional light
-            std::map<unsigned int, Graphics::Light::DirectionalLight*> m_DirectionalLightMap;
-            
-            // UE4 dielectric fresnel
-            vec3 m_MaterialF0;
-
-            mat4 m_ProjViewModel;
-            mat4 m_ProjViewModelPrev;
-#pragma warning(pop)
+            Material* m_DefaultMaterial;
 
             IBL* m_IBL;
-            SAO* m_SAO;
-            GPUProfiler* m_Profiler;
             StandardShaders* m_Shaders;
 
             bool m_PointMode;
@@ -270,6 +248,26 @@ namespace Graphics
             //Prefilter FBO/RBO
             GLuint m_PrefilterFBO;
             GLuint m_PrefilterRBO;
+
+#pragma warning(push)
+#pragma warning( disable : 4251)
+            // Map of ID to absolute transform
+            std::map<unsigned int, Model*> m_ModelMap;
+            // Map of ID to  model
+            std::map<unsigned int, mat4*> m_TransformMap;
+            // Map of ID to material
+            std::map<unsigned int, Material*> m_MaterialMap;
+            // Map of ID to point light
+            std::map<unsigned int, Graphics::Light::PointLight*> m_PointLightMap;
+            // Map of ID to directional light
+            std::map<unsigned int, Graphics::Light::DirectionalLight*> m_DirectionalLightMap;
+
+            // UE4 dielectric fresnel
+            vec3 m_MaterialF0;
+
+            mat4 m_ProjViewModel;
+            mat4 m_ProjViewModelPrev;
+#pragma warning(pop)
         };
     }
 }

@@ -2,17 +2,13 @@
 
 #include "Engine.h"
 #include <iostream>
-#include "../Core/ECS/Entity.h"
+#include "../Core/Node.h"
 
 namespace Engine
 {
     Engine::Engine(int argc, char** argv) :
         m_ArgCount(argc),
         m_ArgValue(argv),
-        m_Running(false),
-        m_DeltaTime(0.0f),
-        m_FixedTime(0.0f),
-        m_FPSLimit(1.0f / 60.0f),
         m_ModelManager(),
         m_TextureManager(),
         m_MaterialManager(m_TextureManager)
@@ -20,16 +16,17 @@ namespace Engine
         m_FPSLimiter = std::make_unique<FPSLimiter>();
         m_FixedLimiter = std::make_unique<FixedLimiter>();
 
-        m_RenderSystem = std::make_shared<RenderSystem>();
-        m_KeyboardInputManager = std::make_shared<KeyboardInputManager>(m_RenderSystem->GetGLWindow().GetGLFWWindow());
-        m_MouseInputManager = std::make_shared<MouseInputManager>(m_RenderSystem->GetGLWindow().GetGLFWWindow());
-
-        m_TextureManager.LoadHDR("skyBox", "assets/textures/hdr/pisa.hdr");
-        m_RenderSystem->SetSkyBox(*m_TextureManager.Get("skyBox"));
+        m_Window = std::make_shared<GLWindow>("Caerulus", 800, 600, 32);
+        m_RenderSystem = std::make_shared<RenderSystem>(*m_Window);
+        m_KeyboardInputManager = std::make_shared<KeyboardInputManager>(&m_RenderSystem->GetGLWindow());
+        m_MouseInputManager = std::make_shared<MouseInputManager>(&m_RenderSystem->GetGLWindow());
 
         m_Tickable.push_back(m_KeyboardInputManager);
         m_Tickable.push_back(m_MouseInputManager);
         m_Tickable.push_back(m_RenderSystem);
+
+        m_TextureManager.LoadHDR("skyBox", "assets/textures/hdr/pisa.hdr");
+        m_RenderSystem->SetSkyBox(*m_TextureManager.Get("skyBox"));
 
         m_ModelManager.Load("shaderBall", "assets/models/shaderBall.obj");
 
@@ -50,8 +47,7 @@ namespace Engine
         m_MaterialManager.Create("gold", gold);
 
         //shaderBall
-        // todo - move out of core into seperate ECS dll
-        Core::ECS::Entity shaderBall = Core::ECS::Entity();
+        Core::Node shaderBall = Core::Node();
 
         mat4* position = new mat4();
         MathHelper::CreateTansform(*position, glm::vec3(0, 0, -20.0f), glm::quat(), glm::vec3(1.0f));
@@ -67,8 +63,9 @@ namespace Engine
         m_RenderSystem->SetModelMap(*modelMap);
 
         using namespace Core::Input;
-        GLFWwindow* window = m_RenderSystem->GetGLWindow().GetGLFWWindow();
+        GLWindow* window = &m_RenderSystem->GetGLWindow();
         m_KeyboardInputManager->AddWindowKeyCallback(window, GLFW_KEY_ESCAPE, Release, [=](Modifier) { m_Running = false; });
+        m_KeyboardInputManager->AddWindowKeyCallback(window, GLFW_KEY_TAB, Release, [&](Modifier) { m_RenderSystem->GetGLWindow().ToggleLockedCursor(); });
         m_KeyboardInputManager->AddWindowKeyCallback(window, GLFW_KEY_X, Release, [&](Modifier) { m_RenderSystem->ToggleWireframe(); });
         m_KeyboardInputManager->AddWindowKeyCallback(window, GLFW_KEY_J, Release, [&](Modifier) { m_RenderSystem->ToggleSAO(); });
         m_KeyboardInputManager->AddWindowKeyCallback(window, GLFW_KEY_K, Release, [&](Modifier) { m_RenderSystem->ToggleFXAA(); });
@@ -80,13 +77,20 @@ namespace Engine
         m_KeyboardInputManager->AddWindowKeyCallback(window, GLFW_KEY_Y, Release, [&](Modifier) { m_RenderSystem->ToggleToneMapping(2); });
         m_KeyboardInputManager->AddWindowKeyCallback(window, GLFW_KEY_U, Release, [&](Modifier) { m_RenderSystem->ToggleToneMapping(3); });
 
-        m_KeyboardInputManager->AddWindowKeyCallback(window, GLFW_KEY_A, Hold, [&](Modifier) { m_RenderSystem->GetCamera().Translate(-MathHelper::UnitRight()); });
+        m_KeyboardInputManager->AddWindowKeyCallback(window, GLFW_KEY_A, Hold, [&](Modifier) { m_RenderSystem->GetCamera().TranslateXZ(-MathHelper::UnitRight()); });
         m_KeyboardInputManager->AddWindowKeyCallback(window, GLFW_KEY_D, Hold, [&](Modifier) { m_RenderSystem->GetCamera().TranslateXZ(MathHelper::UnitRight()); });
         m_KeyboardInputManager->AddWindowKeyCallback(window, GLFW_KEY_W, Hold, [&](Modifier) { m_RenderSystem->GetCamera().Translate(MathHelper::UnitForward()); });
         m_KeyboardInputManager->AddWindowKeyCallback(window, GLFW_KEY_S, Hold, [&](Modifier) { m_RenderSystem->GetCamera().Translate(-MathHelper::UnitForward()); });
         m_KeyboardInputManager->AddWindowKeyCallback(window, GLFW_KEY_Q, Hold, [&](Modifier) { m_RenderSystem->GetCamera().Translate(-MathHelper::UnitUp()); });
         m_KeyboardInputManager->AddWindowKeyCallback(window, GLFW_KEY_E, Hold, [&](Modifier) { m_RenderSystem->GetCamera().Translate(MathHelper::UnitUp()); });
-        //m_InputDevice->Command("look").Set<glm::vec2>([&](glm,::vec2 xy) { m_RenderSystem->GetCamera().Rotate(glm::vec3(xy.x, xy.y, 0.0f)); }).Bind(MouseButton::MOUSE_XY_DELTA);
+
+        m_MouseInputManager->AddDragMouseCallback(window, [&](DragData dd)
+        { 
+            if (m_RenderSystem->GetGLWindow().IsCursorLocked())
+            {
+                m_RenderSystem->GetCamera().Rotate(glm::vec3(dd.DeltaX * m_DeltaTime * m_MouseSensitivity, dd.DeltaY * m_DeltaTime * m_MouseSensitivity, 0.0f));
+            }
+        });
     }
 
     Engine::~Engine()
@@ -114,6 +118,8 @@ namespace Engine
 
     void Engine::Tick()
     {
+        glfwPollEvents();
+
         for (auto updatable : m_Tickable)
         {
             updatable->Update(m_DeltaTime);

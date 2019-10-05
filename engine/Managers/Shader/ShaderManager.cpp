@@ -3,8 +3,9 @@
 
 namespace Managers
 {
-    namespace Shader
+    namespace PipeLine
     {
+
         ShaderManager::ShaderManager(ShaderSourceManager& shaderStageManager) :
             m_ShaderStageManager(shaderStageManager)
         {}
@@ -20,18 +21,18 @@ namespace Managers
             m_ShaderStageManager.Load(vertexPath, vertexPath, Vertex, vertexUniformLocations);
             m_ShaderStageManager.Load(fragmentPath, fragmentPath, Fragment, fragmentUniformLocations);
 
-            Graphics::Shaders::Shader* s = new Graphics::Shaders::Shader();
+            Shader* s = new Shader();
             s->Compile(*m_ShaderStageManager.Get(vertexPath), *m_ShaderStageManager.Get(fragmentPath));
             Manager::Insert(name, s);
             return true;
         }
 
-        Graphics::Shaders::Shader* ShaderManager::Get(const std::string& name) const
+        Shader* ShaderManager::Get(const std::string& name) const
         {
             return Manager::Get(name);
         }
 
-        std::vector<Graphics::Shaders::Shader*> ShaderManager::GetAll(const std::vector<std::string>& names) const
+        std::vector<Shader*> ShaderManager::GetAll(const std::vector<std::string>& names) const
         {
             return Manager::GetAll(names);
         }

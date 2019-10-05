@@ -26,7 +26,7 @@ namespace Graphics
             m_Direction = direction;
         }
 
-        void DirectionalLight::RenderToShader(unsigned int ID, const Shaders::Shader& shader, const mat4& view) const
+        void DirectionalLight::RenderToShader(unsigned int ID, const PipeLine::Shader& shader, const mat4& view) const
         {
             vec3 lightDirectionViewSpace = vec3(view * vec4(m_Direction, 0.0f));
 

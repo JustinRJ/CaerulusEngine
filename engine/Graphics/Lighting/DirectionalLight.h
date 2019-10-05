@@ -15,7 +15,7 @@ namespace Graphics
             const vec3& GetDirection() const;
             void SetDirection(const vec3& direction);
 
-            void RenderToShader(unsigned int ID, const Shaders::Shader& shader, const mat4& view) const override;
+            void RenderToShader(unsigned int ID, const PipeLine::Shader& shader, const mat4& view) const override;
 
         protected:
             vec3 m_Direction;

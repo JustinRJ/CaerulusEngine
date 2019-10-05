@@ -2,6 +2,11 @@
 
 #include "Model.h"
 #include <iostream>
+#include <unordered_map>
+
+// define this in only *one* .cpp
+#define TINYOBJLOADER_IMPLEMENTATION 
+#include <tiny_obj_loader.h>
 
 namespace Graphics
 {
@@ -12,29 +17,61 @@ namespace Graphics
             m_IsLoaded(false),
             m_Path(*new std::string(path)),
             m_Meshes(*new std::vector<Mesh>()),
-            m_MeshMaterials(*new std::vector<std::string>()),
             m_Materials()
         {
-            Assimp::Importer importer;
-            const aiScene* scene = importer.ReadFile(m_Path,
-                aiProcess_Triangulate |
-                aiProcess_FlipUVs |
-                aiProcess_CalcTangentSpace |
-                aiProcess_OptimizeGraph |
-                aiProcess_SplitLargeMeshes |
-                aiProcess_OptimizeMeshes |
-                aiProcess_SortByPType |
-                aiProcess_OptimizeGraph |
-                aiProcess_FindInstances);
+            tinyobj::attrib_t attrib;
+            std::vector<tinyobj::shape_t> shapes;
+            std::vector<tinyobj::material_t> materials;
+            std::string error;
 
-            if (!scene || scene->mFlags == AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
+            if (!tinyobj::LoadObj(&attrib, &shapes, &materials, &error, m_Path.c_str()))
+                throw std::runtime_error(error);
+
+            // std::unordered_map<Vertex, uint32_t> uniqueVertices;
+            for (const auto& shape : shapes)
             {
-                std::cerr << "Assimp error: " << importer.GetErrorString() << std::endl;
-                return;
+                std::vector<Vertex> vertices;
+                std::vector<GLuint> indices;
+                // Loop over faces(polygon)
+                size_t index_offset = 0;
+                for (size_t f = 0; f < shape.mesh.num_face_vertices.size(); ++f)
+                {
+                    unsigned int fv = shape.mesh.num_face_vertices[f];
+                    for (size_t v = 0; v < fv; ++v)
+                    {
+                        tinyobj::index_t idx = shape.mesh.indices[index_offset + v];
+
+                        Vertex vertex = {};
+
+                        vertex.Position = {
+                            attrib.vertices[3 * idx.vertex_index + 0],
+                            attrib.vertices[3 * idx.vertex_index + 1],
+                            attrib.vertices[3 * idx.vertex_index + 2] };
+
+                        vertex.TexCoords = {
+                            attrib.texcoords[2 * idx.texcoord_index + 0],
+                            attrib.texcoords[2 * idx.texcoord_index + 1] };
+
+                        vertex.Normal = {
+                            attrib.normals[3 * idx.normal_index + 0],
+                            attrib.normals[3 * idx.normal_index + 1],
+                            attrib.normals[3 * idx.normal_index + 2] };
+
+                        //if (uniqueVertices.count(vertex) == 0)
+                        //{
+                        //    uniqueVertices[vertex] = static_cast<uint32_t>(vertices.size());
+                        //    vertices.push_back(vertex);
+                        //}
+                        vertices.push_back(vertex);
+                        indices.push_back(indices.size());
+                    }
+
+                    index_offset += fv;
+                    // per-face material
+                    shape.mesh.material_ids[f];
+                }
+                m_Meshes.push_back(Mesh(vertices, indices));
             }
-
-            ProcessNode(scene->mRootNode, scene);
-
             m_IsLoaded = true;
         }
 
@@ -59,96 +96,15 @@ namespace Graphics
             m_Meshes[mesh].Draw(wireframe);
         }
 
-        void Model::ProcessNode(const aiNode* node, const aiScene* scene)
-        {
-            for (unsigned int i = 0; i < node->mNumMeshes; i++)
-            {
-                //pushback mesh
-                aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
-                m_Meshes.push_back(ProcessMesh(*mesh));
-
-                //pushback mesh name
-                aiMaterial* mat = scene->mMaterials[mesh->mMaterialIndex];
-                aiString materialName;
-                mat->Get(AI_MATKEY_NAME, materialName);
-                if (!std::string("DefaultMaterial").compare(materialName.C_Str()))
-                {
-                    m_MeshMaterials.push_back("");
-                }
-                else
-                {
-                    m_MeshMaterials.push_back(materialName.C_Str());
-                }
-            }
-
-            for (unsigned int i = 0; i < node->mNumChildren; i++)
-            {
-                ProcessNode(node->mChildren[i], scene);
-            }
-        }
-
-        const Mesh& Model::ProcessMesh(const aiMesh& mesh) const
-        {
-            std::vector<Vertex> vertices;
-            std::vector<GLuint> indices;
-
-            for (unsigned int i = 0; i < mesh.mNumVertices; i++)
-            {
-                Vertex vertex;
-                vec3 vector;
-
-                vector.x = mesh.mVertices[i].x;
-                vector.y = mesh.mVertices[i].y;
-                vector.z = mesh.mVertices[i].z;
-                vertex.Position = vector;
-
-                vector.x = mesh.mNormals[i].x;
-                vector.y = mesh.mNormals[i].y;
-                vector.z = mesh.mNormals[i].z;
-                vertex.Normal = vector;
-
-                if (mesh.mTextureCoords[0])
-                {
-                    vec2 vec;
-                    vec.x = mesh.mTextureCoords[0][i].x;
-                    vec.y = mesh.mTextureCoords[0][i].y;
-                    vertex.TexCoords = vec;
-                }
-                else
-                {
-                    vertex.TexCoords = vec2(0.0f, 0.0f);
-                }
-
-                vertices.push_back(vertex);
-            }
-
-            for (unsigned int i = 0; i < mesh.mNumFaces; i++)
-            {
-                aiFace face = mesh.mFaces[i];
-                for (unsigned int j = 0; j < face.mNumIndices; j++)
-                {
-                    indices.push_back(face.mIndices[j]);
-                }
-            }
-
-            return *new Mesh(vertices, indices);
-        }
-
         const std::vector<Mesh>& Model::GetMeshes() const
         {
             return m_Meshes;
-        }
-
-        const std::vector<std::string>& Model::GetMeshMaterials() const
-        {
-            return m_MeshMaterials;
         }
 
         bool Model::IsLoaded() const
         {
             return m_IsLoaded;
         }
-
 
         const std::vector<Material*>& Model::GetMaterials() const
         {

@@ -38,7 +38,7 @@ namespace Graphics
             m_Radius = radius;
         }
 
-        void PointLight::RenderToShader(unsigned int ID, const Shaders::Shader& shader, const mat4& view) const
+        void PointLight::RenderToShader(unsigned int ID, const PipeLine::Shader& shader, const mat4& view) const
         {
             vec3 lightPositionViewSpace = vec3(view * vec4(m_Position, 1.0f));
 

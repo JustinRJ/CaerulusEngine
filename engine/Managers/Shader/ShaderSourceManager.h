@@ -1,13 +1,13 @@
 #pragma once
 
 #include "../Manager.h"
-#include "../../Graphics/Shader/ShaderSource.h"
+#include "../../Graphics/PipeLine/ShaderSource.h"
 
 namespace Managers
 {
-    namespace Shader
+    namespace PipeLine
     {
-        using namespace Graphics::Shaders;
+        using namespace Graphics::PipeLine;
 
         class ShaderSourceManager : Manager<ShaderSource>
         {

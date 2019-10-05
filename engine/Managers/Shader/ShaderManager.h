@@ -3,21 +3,23 @@
 #define CAERULUS_MANAGERS __declspec(dllexport)
 
 #include "ShaderSourceManager.h"
-#include "../../Graphics/Shader/Shader.h"
+#include "../../Graphics/PipeLine/Shader.h"
 
 namespace Managers
 {
-    namespace Shader
+    namespace PipeLine
     {
-        class CAERULUS_MANAGERS ShaderManager : Manager<Graphics::Shaders::Shader>
+        using namespace Graphics::PipeLine;
+
+        class CAERULUS_MANAGERS ShaderManager : Manager<Shader>
         {
         public:
             ShaderManager(ShaderSourceManager& shaderStageManager);
             virtual ~ShaderManager() {}
 
-            virtual Graphics::Shaders::Shader* Get(const std::string& name) const;
+            virtual Shader* Get(const std::string& name) const;
 
-            virtual std::vector<Graphics::Shaders::Shader*> GetAll(const std::vector<std::string>& names) const;
+            virtual std::vector<Shader*> GetAll(const std::vector<std::string>& names) const;
 
             virtual bool IsLoaded(const std::string& name) const;
 

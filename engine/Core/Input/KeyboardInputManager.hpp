@@ -4,13 +4,14 @@
 #include <functional>
 #include <map>
 #include <string>
-#include <iostream>
 #include "../Interface/ITickable.h"
 
 namespace Core
 {
     namespace Input
     {
+        class Graphics::Window::GLWindow;
+
         struct KeyData
         {
             Action Action = Action::Unknown;
@@ -28,11 +29,11 @@ namespace Core
         {
         public:
 
-            KeyboardInputManager(GLFWwindow* window) :
+            KeyboardInputManager(Graphics::Window::GLWindow* window) :
                 m_KeyDataMap(*new std::map<int, KeyData*>()),
                 m_KeyBindingMap(*new std::map<int, KeyBinding*>())
             {
-                glfwSetWindowUserPointer(window, this);
+                glfwSetWindowUserPointer(window->GetGLFWWindow(), this);
             };
 
             virtual ~KeyboardInputManager() {};
@@ -44,7 +45,6 @@ namespace Core
 
             virtual void Update(float deltaTime) override
             {
-                glfwPollEvents();
                 InvokeCallbacks();
                 UpdateActionState();
             }
@@ -53,7 +53,7 @@ namespace Core
 
             virtual void LateUpdate(float deltaTime) override {};
 
-            void AddWindowKeyCallback(GLFWwindow* window, int key, Action action, std::function<void(Modifier)> callback, Modifier modifier = None, std::string name = "")
+            void AddWindowKeyCallback(Graphics::Window::GLWindow* window, int key, Action action, std::function<void(Modifier)> callback, Modifier modifier = None, std::string name = "")
             {
                 KeyBinding newBinding;
                 newBinding.TargetAction = action;
@@ -62,7 +62,7 @@ namespace Core
 
                 m_KeyBindingMap[key] = std::make_unique<KeyBinding>(newBinding).release();
 
-                glfwSetKeyCallback(window, [](GLFWwindow* windowI, int keyI, int scancodeI, int actionI, int modeI)
+                glfwSetKeyCallback(window->GetGLFWWindow(), [](GLFWwindow* windowI, int keyI, int scancodeI, int actionI, int modeI)
                 {
                     auto self = static_cast<KeyboardInputManager*>(glfwGetWindowUserPointer(windowI));
                     if (self->GetKeyBindingMap().find(keyI) != self->GetKeyBindingMap().end())
@@ -73,12 +73,12 @@ namespace Core
                 });
             }
 
-            std::map<int, KeyData*>& GetKeyDataMap() const
+            std::map<int, KeyData*>& GetKeyDataMap()
             {
                 return m_KeyDataMap;
             }
 
-            std::map<int, KeyBinding*>& GetKeyBindingMap() const
+            std::map<int, KeyBinding*>& GetKeyBindingMap()
             {
                 return m_KeyBindingMap;
             }
@@ -86,7 +86,7 @@ namespace Core
             bool Invoke(const std::string& name, Modifier mod = None)
             {
                 bool invoked = false;
-                for (auto bindingMap : m_KeyBindingMap)
+                for (auto& bindingMap : m_KeyBindingMap)
                 {
                     if (bindingMap.second && name.compare(bindingMap.second->Name) == 0)
                     { 
@@ -117,7 +117,7 @@ namespace Core
 
             void InvokeCallbacks()
             {
-                for (auto bindingPair : m_KeyBindingMap)
+                for (auto& bindingPair : m_KeyBindingMap)
                 {
                     int key = bindingPair.first;
                     if (m_KeyDataMap.find(key) != m_KeyDataMap.end())

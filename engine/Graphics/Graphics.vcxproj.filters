@@ -27,12 +27,6 @@
     <ClCompile Include="Lighting\Light.cpp">
       <Filter>Light</Filter>
     </ClCompile>
-    <ClCompile Include="Shader\Shader.cpp">
-      <Filter>Shader</Filter>
-    </ClCompile>
-    <ClCompile Include="Shader\ShaderSource.cpp">
-      <Filter>Shader</Filter>
-    </ClCompile>
     <ClCompile Include="Resource\Camera.cpp">
       <Filter>Resource</Filter>
     </ClCompile>
@@ -48,6 +42,12 @@
     </ClCompile>
     <ClCompile Include="Resource\Texture.cpp">
       <Filter>Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="Pipeline\Shader.cpp">
+      <Filter>Pipeline</Filter>
+    </ClCompile>
+    <ClCompile Include="Pipeline\ShaderSource.cpp">
+      <Filter>Pipeline</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -73,12 +73,6 @@
     <ClInclude Include="Lighting\Light.h">
       <Filter>Light</Filter>
     </ClInclude>
-    <ClInclude Include="Shader\Shader.h">
-      <Filter>Shader</Filter>
-    </ClInclude>
-    <ClInclude Include="Shader\ShaderSource.h">
-      <Filter>Shader</Filter>
-    </ClInclude>
     <ClInclude Include="Lighting\DirectionalLight.h">
       <Filter>Light</Filter>
     </ClInclude>
@@ -98,6 +92,15 @@
     <ClInclude Include="Resource\Texture.h">
       <Filter>Resource</Filter>
     </ClInclude>
+    <ClInclude Include="Pipeline\PipeLineItem.h">
+      <Filter>Pipeline</Filter>
+    </ClInclude>
+    <ClInclude Include="Pipeline\Shader.h">
+      <Filter>Pipeline</Filter>
+    </ClInclude>
+    <ClInclude Include="Pipeline\ShaderSource.h">
+      <Filter>Pipeline</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Window">
@@ -109,11 +112,11 @@
     <Filter Include="Geometry">
       <UniqueIdentifier>{b110112b-b640-4295-a305-bdbad6e53c67}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Shader">
-      <UniqueIdentifier>{3c4a208d-dc57-4a2f-8cbc-08494e51b63d}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Light">
       <UniqueIdentifier>{121e4977-eefc-4ca1-af5b-153e61aabb02}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Pipeline">
+      <UniqueIdentifier>{0ca40c0a-364b-4e3e-823c-1386529f52fa}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

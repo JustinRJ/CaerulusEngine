@@ -3,7 +3,7 @@
 
 namespace Managers
 {
-    namespace Shader
+    namespace PipeLine
     {
         ShaderSourceManager::ShaderSourceManager()
         {}

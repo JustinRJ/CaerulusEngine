@@ -3,7 +3,7 @@
 #define CAERULUS_GRAPHICS __declspec(dllexport)
 
 #include "Window.h"
-#include <glew.h>
+#include "../Geometry/QuadGeometry.h"
 #include <glfw3.h>
 
 namespace Graphics
@@ -22,13 +22,19 @@ namespace Graphics
             virtual void SwapBuffer() const override;
             virtual void* GetHandle() const override;
 
-            virtual GLFWwindow* GetGLFWWindow() const;
+            GLFWwindow* GetGLFWWindow() const;
 
-            virtual void CenterCursor() const;
-            virtual void ToggleLockedCursor();
+            void SetQuad(Geometry::QuadGeometry* quad);
+            Geometry::QuadGeometry* GetQuad() const;
+            
+            void Update();
+            void ToggleLockedCursor();
+            bool IsCursorLocked() const;
+            void CenterCursor();
         private:
 
             GLFWwindow* m_Window;
+            Geometry::QuadGeometry* m_Quad;
             bool m_LockedCursor;
         };
     }

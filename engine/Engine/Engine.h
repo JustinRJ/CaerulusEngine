@@ -16,17 +16,17 @@
 
 namespace Engine
 {
-    using namespace Graphics::Render;
-    using namespace Graphics::Window;
-
     using namespace Core::Time;
     using namespace Core::Input;
     using namespace Core::Interface;
 
+    using namespace Graphics::Window;
+    using namespace Graphics::Render;
+
     using namespace Managers::Model;
-    using namespace Managers::Shader;
     using namespace Managers::Texture;
     using namespace Managers::Material;
+    using namespace Managers::PipeLine;
 
     class Engine
     {
@@ -44,15 +44,17 @@ namespace Engine
         int m_ArgCount;
         char** m_ArgValue;
 
-        bool m_Running;
+        bool m_Running = false;
 
-        float m_DeltaTime;
-        float m_FixedTime;
-        float m_FPSLimit;
+        float m_DeltaTime = 0.0f;
+        float m_FixedTime = 0.0f;
+        float m_FPSLimit = 1.0f / 60.0f;
+        double m_MouseSensitivity = 5.0;
 
         std::unique_ptr<FPSLimiter> m_FPSLimiter;
         std::unique_ptr<FixedLimiter> m_FixedLimiter;
 
+        std::shared_ptr<GLWindow> m_Window;
         std::shared_ptr<RenderSystem> m_RenderSystem;
         std::shared_ptr<KeyboardInputManager> m_KeyboardInputManager;
         std::shared_ptr<MouseInputManager> m_MouseInputManager;

@@ -18,7 +18,7 @@ namespace Graphics
             float GetRadius() const;
             void SetRadius(float radius);
 
-            void RenderToShader(unsigned int ID, const Shaders::Shader& shader, const mat4& view) const override;
+            void RenderToShader(unsigned int ID, const PipeLine::Shader& shader, const mat4& view) const override;
 
         protected:
             vec3 m_Position;

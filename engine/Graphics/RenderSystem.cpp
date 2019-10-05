@@ -25,17 +25,13 @@ namespace Graphics
 {
     namespace Render
     {
-        RenderSystem::RenderSystem()
+        RenderSystem::RenderSystem(GLWindow& window) :
+            m_Window(window),
+            m_Camera(*new Camera()),
+            m_Profiler(*new GPUProfiler()),
+            m_SAO(*new SAO())
         {
-            if (!glfwInit())
-            {
-                std::cerr << "Failed to init GLFW!" << std::endl;
-                exit(1);
-            }
-
-            m_Window = new GLWindow("Caerulus", 800, 600, 32);
-
-            glewExperimental = TRUE;
+            glewExperimental = true;
 
             GLenum error = glGetError();
             if (error != GL_NO_ERROR)
@@ -49,26 +45,25 @@ namespace Graphics
                 exit(1);
             }
 
-            m_Camera = new Camera();
-            m_Camera->SetFOV(CAMERA_INIT_FOV);
-            m_Camera->SetAspect(CAMERA_INIT_ASPECT);
-            m_Camera->SetNear(CAMERA_INIT_NEAR);
-            m_Camera->SetFar(CAMERA_INIT_FAR);
+            m_Camera.SetFOV(CAMERA_INIT_FOV);
+            m_Camera.SetAspect(CAMERA_INIT_ASPECT);
+            m_Camera.SetNear(CAMERA_INIT_NEAR);
+            m_Camera.SetFar(CAMERA_INIT_FAR);
 
-            m_Camera->SetViewMatrix(glm::lookAt(
+            m_Camera.SetViewMatrix(glm::lookAt(
                 CAMERA_INIT_POSITION,
                 CAMERA_INIT_FORWARD + CAMERA_INIT_POSITION,
                 CAMERA_INIT_UP));
 
-            m_Camera->SetProjMatrix(glm::perspective(
+            m_Camera.SetProjMatrix(glm::perspective(
                 glm::radians(CAMERA_INIT_FOV),
                 CAMERA_INIT_ASPECT,
                 CAMERA_INIT_NEAR,
                 CAMERA_INIT_FAR));
 
-            m_Camera->SetAperture(CAMERA_INIT_APETURE);
-            m_Camera->SetShutterSpeed(CAMERA_INIT_SHUTTER_SPEED);
-            m_Camera->SetISO(CAMERA_INIT_ISO);
+            m_Camera.SetAperture(CAMERA_INIT_APETURE);
+            m_Camera.SetShutterSpeed(CAMERA_INIT_SHUTTER_SPEED);
+            m_Camera.SetISO(CAMERA_INIT_ISO);
 
             m_PointMode         = true;
             m_DirectionalMode   = true;
@@ -94,31 +89,11 @@ namespace Graphics
 
             mat4 quadTransform;
             MathHelper::CreateTansform(quadTransform, vec3(1.0f), vec3(0.0f), vec3(0.0f));
-            m_WindowQuad        = new QuadGeometry(quadTransform);
+            m_Window.SetQuad(new QuadGeometry(quadTransform));
 
             // Temp lights
-            m_PointLightMap.insert(std::make_pair(0, new PointLight(vec4(1.0f, 1.0f, 1.0f, 1.0f), vec3(0.0, -1.0f, 0.0f), 5.0)));
+            m_PointLightMap.insert(std::make_pair(0, new PointLight(vec4(1.0f, 1.0f, 1.0f, 1.0f), vec3(0.0, 0.0f, 0.0f), 25.0)));
             m_DirectionalLightMap.insert(std::make_pair(0, new DirectionalLight(vec4(1.0f, 1.0f, 1.0f, 1.0f), vec3(0.0, -1.0f, 0.0f))));
-
-
-            //GPU Profiling
-            m_Profiler = new GPUProfiler();
-            m_Profiler->DeltaGeometryTime    = 0.0f;
-            m_Profiler->DeltaLightingTime    = 0.0f;
-            m_Profiler->DeltaSAOTime         = 0.0f;
-            m_Profiler->DeltaPostProcessTime = 0.0f;
-            m_Profiler->DeltaForwardTime     = 0.0f;
-
-            //SAO
-            m_SAO = new SAO();
-            m_SAO->Samples               = 12;
-            m_SAO->Turns                 = 7;
-            m_SAO->BlurSize              = 4;
-            m_SAO->Radius                = 0.3f;
-            m_SAO->Bias                  = 0.001f;
-            m_SAO->Scale                 = 0.7f;
-            m_SAO->Contrast              = 0.8f;
-            m_SAO->MotionBlurMaxSamples  = 32;
 
             //IBL
             m_IBL = new IBL();
@@ -149,21 +124,9 @@ namespace Graphics
             InitProfileQuery();
         }
 
-        bool RenderSystem::InitGLEW() const
-        {
-            // Use glewExperimental so GLEW forces the use of modern OpengGL functions.
-            glewExperimental = GL_TRUE;
-            if (glewInit() != GLEW_OK)
-            {
-                std::cerr << "Error initialising GLEW." << std::endl;
-                return false;
-            }
-            return true;
-        }
-
         void RenderSystem::SetCapabilities() const
         {
-            glViewport(0, 0, m_Window->GetActiveState().Width, m_Window->GetActiveState().Height);
+            glViewport(0, 0, m_Window.GetActiveState().Width, m_Window.GetActiveState().Height);
             glEnable(GL_DEPTH_TEST);
             glDepthFunc(GL_LESS);
             glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
@@ -260,7 +223,7 @@ namespace Graphics
             // Position
             glGenTextures(1, &m_GPositionBuffer);
             glBindTexture(GL_TEXTURE_2D, m_GPositionBuffer);
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, m_Window->GetActiveState().Width, m_Window->GetActiveState().Height, 0, GL_RGBA, GL_FLOAT, NULL);
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, m_Window.GetActiveState().Width, m_Window.GetActiveState().Height, 0, GL_RGBA, GL_FLOAT, NULL);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
@@ -270,7 +233,7 @@ namespace Graphics
             // Albedo + Roughness
             glGenTextures(1, &m_GAlbedoBuffer);
             glBindTexture(GL_TEXTURE_2D, m_GAlbedoBuffer);
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, m_Window->GetActiveState().Width, m_Window->GetActiveState().Height, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, m_Window.GetActiveState().Width, m_Window.GetActiveState().Height, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
             glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, m_GAlbedoBuffer, 0);
@@ -278,7 +241,7 @@ namespace Graphics
             // Normals + Metalness
             glGenTextures(1, &m_GNormalBuffer);
             glBindTexture(GL_TEXTURE_2D, m_GNormalBuffer);
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, m_Window->GetActiveState().Width, m_Window->GetActiveState().Height, 0, GL_RGBA, GL_FLOAT, NULL);
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, m_Window.GetActiveState().Width, m_Window.GetActiveState().Height, 0, GL_RGBA, GL_FLOAT, NULL);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
             glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT2, GL_TEXTURE_2D, m_GNormalBuffer, 0);
@@ -286,7 +249,7 @@ namespace Graphics
             // Effects (AO + Velocity)
             glGenTextures(1, &m_GEffectsBuffer);
             glBindTexture(GL_TEXTURE_2D, m_GEffectsBuffer);
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, m_Window->GetActiveState().Width, m_Window->GetActiveState().Height, 0, GL_RGB, GL_FLOAT, NULL);
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, m_Window.GetActiveState().Width, m_Window.GetActiveState().Height, 0, GL_RGB, GL_FLOAT, NULL);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
             glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT3, GL_TEXTURE_2D, m_GEffectsBuffer, 0);
@@ -298,7 +261,7 @@ namespace Graphics
             // Z-Buffer
             glGenRenderbuffers(1, &m_DepthRBO);
             glBindRenderbuffer(GL_RENDERBUFFER, m_DepthRBO);
-            glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, m_Window->GetActiveState().Width, m_Window->GetActiveState().Height);
+            glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, m_Window.GetActiveState().Width, m_Window.GetActiveState().Height);
             glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, m_DepthRBO);
 
             // Check if the framebuffer is complete before continuing
@@ -315,7 +278,7 @@ namespace Graphics
             glBindFramebuffer(GL_FRAMEBUFFER, m_SAOFBO);
             glGenTextures(1, &m_SAOBuffer);
             glBindTexture(GL_TEXTURE_2D, m_SAOBuffer);
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, m_Window->GetActiveState().Width, m_Window->GetActiveState().Height, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, m_Window.GetActiveState().Width, m_Window.GetActiveState().Height, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
             glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_SAOBuffer, 0);
@@ -330,7 +293,7 @@ namespace Graphics
             glBindFramebuffer(GL_FRAMEBUFFER, m_SAOBlurFBO);
             glGenTextures(1, &m_SAOBlurBuffer);
             glBindTexture(GL_TEXTURE_2D, m_SAOBlurBuffer);
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, m_Window->GetActiveState().Width, m_Window->GetActiveState().Height, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, m_Window.GetActiveState().Width, m_Window.GetActiveState().Height, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
             glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_SAOBlurBuffer, 0);
@@ -351,7 +314,7 @@ namespace Graphics
 
             glGenTextures(1, &m_PostProcessBuffer);
             glBindTexture(GL_TEXTURE_2D, m_PostProcessBuffer);
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, m_Window->GetActiveState().Width, m_Window->GetActiveState().Height, 0, GL_RGBA, GL_FLOAT, NULL);
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, m_Window.GetActiveState().Width, m_Window.GetActiveState().Height, 0, GL_RGBA, GL_FLOAT, NULL);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
             glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_PostProcessBuffer, 0);
@@ -474,33 +437,33 @@ namespace Graphics
             m_Shaders->IntegrateIBL.Use();
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-            m_WindowQuad->Draw();
+            m_Window.GetQuad()->Draw();
 
             glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-            glViewport(0, 0, m_Window->GetActiveState().Width, m_Window->GetActiveState().Height);
+            glViewport(0, 0, m_Window.GetActiveState().Width, m_Window.GetActiveState().Height);
         }
 
         void RenderSystem::InitProfileQuery()
         {
-            glGenQueries(2, m_Profiler->QueryIDGeometry);
-            glGenQueries(2, m_Profiler->QueryIDLighting);
-            glGenQueries(2, m_Profiler->QueryIDSAO);
-            glGenQueries(2, m_Profiler->QueryIDPostprocess);
-            glGenQueries(2, m_Profiler->QueryIDForward);
+            glGenQueries(2, m_Profiler.QueryIDGeometry);
+            glGenQueries(2, m_Profiler.QueryIDLighting);
+            glGenQueries(2, m_Profiler.QueryIDSAO);
+            glGenQueries(2, m_Profiler.QueryIDPostprocess);
+            glGenQueries(2, m_Profiler.QueryIDForward);
         }
 
         void RenderSystem::DrawAll()
         {
             //Time taken to render geometry
-            glQueryCounter(m_Profiler->QueryIDGeometry[GPUProfiler::Start], GL_TIMESTAMP);
+            glQueryCounter(m_Profiler.QueryIDGeometry[GPUProfiler::Start], GL_TIMESTAMP);
 
-            mat4 view = m_Camera->GetViewMatrix() /** this by transform of camera*/;
-            mat4 proj = m_Camera->GetProjMatrix();
+            mat4 view = m_Camera.GetViewMatrix() /** this by transform of camera*/;
+            mat4 proj = m_Camera.GetProjMatrix();
 
             // geo rendering
             m_Shaders->GBuffer.Use();
-            SetCameraUniforms(view, proj, m_Camera->GetNear(), m_Camera->GetFar());
+            SetCameraUniforms(view, proj, m_Camera.GetNear(), m_Camera.GetFar());
 
             for (auto model : m_ModelMap)
             {
@@ -515,7 +478,7 @@ namespace Graphics
                 }
             }
 
-            glQueryCounter(m_Profiler->QueryIDGeometry[GPUProfiler::Stop], GL_TIMESTAMP);
+            glQueryCounter(m_Profiler.QueryIDGeometry[GPUProfiler::Stop], GL_TIMESTAMP);
         }
 
         void RenderSystem::SetCameraUniforms(const mat4& view, const mat4& proj, float nearPlane, float farPlane) const
@@ -535,6 +498,7 @@ namespace Graphics
 
         void RenderSystem::Update(float deltaTime)
         {
+            m_Window.Update();
             FlushErrors();
             Clear();
             DrawAll();
@@ -543,12 +507,12 @@ namespace Graphics
 
         void RenderSystem::SetCamera(Camera& camera)
         {
-            *m_Camera = camera;
+            m_Camera = camera;
         }
 
-        Camera& RenderSystem::GetCamera() const
+        Camera& RenderSystem::GetCamera()
         {
-            return *m_Camera;
+            return m_Camera;
         }
 
         void RenderSystem::Clear() const
@@ -566,25 +530,25 @@ namespace Graphics
 
         void RenderSystem::SwapBuffer(float frameRate)
         {
-            mat4 view = m_Camera->GetViewMatrix()/* * m_TransformCM->GetTransform(camera)*/;
-            mat4 proj = m_Camera->GetProjMatrix();
+            mat4 view = m_Camera.GetViewMatrix()/* * m_TransformCM->GetTransform(camera)*/;
+            mat4 proj = m_Camera.GetProjMatrix();
 
             //update previous projviewmodel
             m_ProjViewModelPrev = m_ProjViewModel;
 
             SAORendering(proj);
             LightRendering(view, proj);
-            PostProcessRendering(frameRate, m_Camera->GetAperture(), m_Camera->GetShutterSpeed(), m_Camera->GetISO());
+            PostProcessRendering(frameRate, m_Camera.GetAperture(), m_Camera.GetShutterSpeed(), m_Camera.GetISO());
             ForwardPassRendering(view, proj);
             if (m_ProfilingMode)
             {
-                GPUProfiling();
+                ProfileGPUs();
             }
 
-            m_Window->SwapBuffer();
+            m_Window.SwapBuffer();
         }
 
-        void RenderSystem::GPUProfiling()
+        void RenderSystem::ProfileGPUs()
         {
             GLuint64 startGeometryTime, startLightingTime, startSAOTime, startPostProcessTime, startForwardTime;
             GLuint64 stopGeometryTime, stopLightingTime, stopSAOTime, stopPostProcessTime, stopForwardTime;
@@ -595,40 +559,37 @@ namespace Graphics
             GLint stopPostprocessTimerAvailable = 0;
             GLint stopForwardTimerAvailable = 0;
 
-            while (!stopGeometryTimerAvailable
-                && !stopLightingTimerAvailable
-                && !stopSAOTimerAvailable
-                && !stopPostprocessTimerAvailable
-                && !stopForwardTimerAvailable)
+            while (!stopGeometryTimerAvailable && !stopLightingTimerAvailable &&
+                !stopSAOTimerAvailable && !stopPostprocessTimerAvailable && !stopForwardTimerAvailable)
             {
-                glGetQueryObjectiv(m_Profiler->QueryIDGeometry[GPUProfiler::Stop], GL_QUERY_RESULT_AVAILABLE, &stopGeometryTimerAvailable);
-                glGetQueryObjectiv(m_Profiler->QueryIDLighting[GPUProfiler::Stop], GL_QUERY_RESULT_AVAILABLE, &stopLightingTimerAvailable);
-                glGetQueryObjectiv(m_Profiler->QueryIDSAO[GPUProfiler::Stop], GL_QUERY_RESULT_AVAILABLE, &stopSAOTimerAvailable);
-                glGetQueryObjectiv(m_Profiler->QueryIDPostprocess[GPUProfiler::Stop], GL_QUERY_RESULT_AVAILABLE, &stopPostprocessTimerAvailable);
-                glGetQueryObjectiv(m_Profiler->QueryIDForward[GPUProfiler::Stop], GL_QUERY_RESULT_AVAILABLE, &stopForwardTimerAvailable);
+                glGetQueryObjectiv(m_Profiler.QueryIDGeometry[GPUProfiler::Stop], GL_QUERY_RESULT_AVAILABLE, &stopGeometryTimerAvailable);
+                glGetQueryObjectiv(m_Profiler.QueryIDLighting[GPUProfiler::Stop], GL_QUERY_RESULT_AVAILABLE, &stopLightingTimerAvailable);
+                glGetQueryObjectiv(m_Profiler.QueryIDSAO[GPUProfiler::Stop], GL_QUERY_RESULT_AVAILABLE, &stopSAOTimerAvailable);
+                glGetQueryObjectiv(m_Profiler.QueryIDPostprocess[GPUProfiler::Stop], GL_QUERY_RESULT_AVAILABLE, &stopPostprocessTimerAvailable);
+                glGetQueryObjectiv(m_Profiler.QueryIDForward[GPUProfiler::Stop], GL_QUERY_RESULT_AVAILABLE, &stopForwardTimerAvailable);
             }
 
-            glGetQueryObjectui64v(m_Profiler->QueryIDGeometry[GPUProfiler::Start], GL_QUERY_RESULT, &startGeometryTime);
-            glGetQueryObjectui64v(m_Profiler->QueryIDGeometry[GPUProfiler::Stop], GL_QUERY_RESULT, &stopGeometryTime);
-            glGetQueryObjectui64v(m_Profiler->QueryIDLighting[GPUProfiler::Start], GL_QUERY_RESULT, &startLightingTime);
-            glGetQueryObjectui64v(m_Profiler->QueryIDLighting[GPUProfiler::Stop], GL_QUERY_RESULT, &stopLightingTime);
-            glGetQueryObjectui64v(m_Profiler->QueryIDSAO[GPUProfiler::Start], GL_QUERY_RESULT, &startSAOTime);
-            glGetQueryObjectui64v(m_Profiler->QueryIDSAO[GPUProfiler::Stop], GL_QUERY_RESULT, &stopSAOTime);
-            glGetQueryObjectui64v(m_Profiler->QueryIDPostprocess[GPUProfiler::Start], GL_QUERY_RESULT, &startPostProcessTime);
-            glGetQueryObjectui64v(m_Profiler->QueryIDPostprocess[GPUProfiler::Stop], GL_QUERY_RESULT, &stopPostProcessTime);
-            glGetQueryObjectui64v(m_Profiler->QueryIDForward[GPUProfiler::Start], GL_QUERY_RESULT, &startForwardTime);
-            glGetQueryObjectui64v(m_Profiler->QueryIDForward[GPUProfiler::Stop], GL_QUERY_RESULT, &stopForwardTime);
+            glGetQueryObjectui64v(m_Profiler.QueryIDGeometry[GPUProfiler::Start], GL_QUERY_RESULT, &startGeometryTime);
+            glGetQueryObjectui64v(m_Profiler.QueryIDGeometry[GPUProfiler::Stop], GL_QUERY_RESULT, &stopGeometryTime);
+            glGetQueryObjectui64v(m_Profiler.QueryIDLighting[GPUProfiler::Start], GL_QUERY_RESULT, &startLightingTime);
+            glGetQueryObjectui64v(m_Profiler.QueryIDLighting[GPUProfiler::Stop], GL_QUERY_RESULT, &stopLightingTime);
+            glGetQueryObjectui64v(m_Profiler.QueryIDSAO[GPUProfiler::Start], GL_QUERY_RESULT, &startSAOTime);
+            glGetQueryObjectui64v(m_Profiler.QueryIDSAO[GPUProfiler::Stop], GL_QUERY_RESULT, &stopSAOTime);
+            glGetQueryObjectui64v(m_Profiler.QueryIDPostprocess[GPUProfiler::Start], GL_QUERY_RESULT, &startPostProcessTime);
+            glGetQueryObjectui64v(m_Profiler.QueryIDPostprocess[GPUProfiler::Stop], GL_QUERY_RESULT, &stopPostProcessTime);
+            glGetQueryObjectui64v(m_Profiler.QueryIDForward[GPUProfiler::Start], GL_QUERY_RESULT, &startForwardTime);
+            glGetQueryObjectui64v(m_Profiler.QueryIDForward[GPUProfiler::Stop], GL_QUERY_RESULT, &stopForwardTime);
 
-            m_Profiler->DeltaGeometryTime    = (float)((stopGeometryTime       - startGeometryTime)    * Core::Time::MILLISECOND);
-            m_Profiler->DeltaLightingTime    = (float)((stopLightingTime       - startLightingTime)    * Core::Time::MILLISECOND);
-            m_Profiler->DeltaSAOTime         = (float)((stopSAOTime            - startSAOTime)         * Core::Time::MILLISECOND);
-            m_Profiler->DeltaPostProcessTime = (float)((stopPostProcessTime    - startPostProcessTime) * Core::Time::MILLISECOND);
-            m_Profiler->DeltaForwardTime     = (float)((stopForwardTime        - startForwardTime)     * Core::Time::MILLISECOND);
+            m_Profiler.DeltaGeometryTime    = (float)((stopGeometryTime       - startGeometryTime)    * Core::Time::MILLISECOND);
+            m_Profiler.DeltaLightingTime    = (float)((stopLightingTime       - startLightingTime)    * Core::Time::MILLISECOND);
+            m_Profiler.DeltaSAOTime         = (float)((stopSAOTime            - startSAOTime)         * Core::Time::MILLISECOND);
+            m_Profiler.DeltaPostProcessTime = (float)((stopPostProcessTime    - startPostProcessTime) * Core::Time::MILLISECOND);
+            m_Profiler.DeltaForwardTime     = (float)((stopForwardTime        - startForwardTime)     * Core::Time::MILLISECOND);
         }
 
         void RenderSystem::SAORendering(const mat4& proj)
         {
-            glQueryCounter(m_Profiler->QueryIDSAO[GPUProfiler::Start], GL_TIMESTAMP);
+            glQueryCounter(m_Profiler.QueryIDSAO[GPUProfiler::Start], GL_TIMESTAMP);
             glBindFramebuffer(GL_FRAMEBUFFER, m_SAOFBO);
             glClear(GL_COLOR_BUFFER_BIT);
             if (m_SAOMode)
@@ -641,16 +602,16 @@ namespace Graphics
                 glActiveTexture(GL_TEXTURE1);
                 glBindTexture(GL_TEXTURE_2D, m_GNormalBuffer);
 
-                glUniform1i(glGetUniformLocation(m_Shaders->SAO.GetHandle(), "saoSamples"), m_SAO->Samples);
-                glUniform1f(glGetUniformLocation(m_Shaders->SAO.GetHandle(), "saoRadius"), m_SAO->Radius);
-                glUniform1i(glGetUniformLocation(m_Shaders->SAO.GetHandle(), "saoTurns"), m_SAO->Turns);
-                glUniform1f(glGetUniformLocation(m_Shaders->SAO.GetHandle(), "saoBias"), m_SAO->Bias);
-                glUniform1f(glGetUniformLocation(m_Shaders->SAO.GetHandle(), "saoScale"), m_SAO->Scale);
-                glUniform1f(glGetUniformLocation(m_Shaders->SAO.GetHandle(), "saoContrast"), m_SAO->Contrast);
-                glUniform1i(glGetUniformLocation(m_Shaders->SAO.GetHandle(), "viewportWidth"), m_Window->GetActiveState().Width);
-                glUniform1i(glGetUniformLocation(m_Shaders->SAO.GetHandle(), "viewportHeight"), m_Window->GetActiveState().Height);
+                glUniform1i(glGetUniformLocation(m_Shaders->SAO.GetHandle(), "saoSamples"), m_SAO.Samples);
+                glUniform1f(glGetUniformLocation(m_Shaders->SAO.GetHandle(), "saoRadius"), m_SAO.Radius);
+                glUniform1i(glGetUniformLocation(m_Shaders->SAO.GetHandle(), "saoTurns"), m_SAO.Turns);
+                glUniform1f(glGetUniformLocation(m_Shaders->SAO.GetHandle(), "saoBias"), m_SAO.Bias);
+                glUniform1f(glGetUniformLocation(m_Shaders->SAO.GetHandle(), "saoScale"), m_SAO.Scale);
+                glUniform1f(glGetUniformLocation(m_Shaders->SAO.GetHandle(), "saoContrast"), m_SAO.Contrast);
+                glUniform1i(glGetUniformLocation(m_Shaders->SAO.GetHandle(), "viewportWidth"), m_Window.GetActiveState().Width);
+                glUniform1i(glGetUniformLocation(m_Shaders->SAO.GetHandle(), "viewportHeight"), m_Window.GetActiveState().Height);
 
-                m_WindowQuad->Draw();
+                m_Window.GetQuad()->Draw();
 
                 glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
@@ -660,20 +621,20 @@ namespace Graphics
 
                 m_Shaders->SAOBlur.Use();
 
-                glUniform1i(glGetUniformLocation(m_Shaders->SAOBlur.GetHandle(), "saoBlurSize"), m_SAO->BlurSize);
+                glUniform1i(glGetUniformLocation(m_Shaders->SAOBlur.GetHandle(), "saoBlurSize"), m_SAO.BlurSize);
                 glActiveTexture(GL_TEXTURE0);
                 glBindTexture(GL_TEXTURE_2D, m_SAOBuffer);
 
-                m_WindowQuad->Draw();
+                m_Window.GetQuad()->Draw();
 
                 glBindFramebuffer(GL_FRAMEBUFFER, 0);
             }
-            glQueryCounter(m_Profiler->QueryIDSAO[GPUProfiler::Stop], GL_TIMESTAMP);
+            glQueryCounter(m_Profiler.QueryIDSAO[GPUProfiler::Stop], GL_TIMESTAMP);
         }
 
         void RenderSystem::LightRendering(const mat4& view, const mat4& proj)
         {
-            glQueryCounter(m_Profiler->QueryIDLighting[GPUProfiler::Start], GL_TIMESTAMP);
+            glQueryCounter(m_Profiler.QueryIDLighting[GPUProfiler::Start], GL_TIMESTAMP);
 
             glBindFramebuffer(GL_FRAMEBUFFER, m_PostProcessFBO);
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -731,22 +692,22 @@ namespace Graphics
             glUniform1i(glGetUniformLocation(m_Shaders->LightingBRDF.GetHandle(), "iblMode"), m_IBLMode);
             glUniform1i(glGetUniformLocation(m_Shaders->LightingBRDF.GetHandle(), "attenuationMode"), m_AttenuationMode);
 
-            m_WindowQuad->Draw();
+            m_Window.GetQuad()->Draw();
 
             glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-            glQueryCounter(m_Profiler->QueryIDLighting[GPUProfiler::Stop], GL_TIMESTAMP);
+            glQueryCounter(m_Profiler.QueryIDLighting[GPUProfiler::Stop], GL_TIMESTAMP);
         }
 
         void RenderSystem::PostProcessRendering(GLfloat frameRate, GLfloat cameraAperture, GLfloat cameraShutterSpeed, GLfloat cameraISO)
         {
-            glQueryCounter(m_Profiler->QueryIDPostprocess[GPUProfiler::Start], GL_TIMESTAMP);
+            glQueryCounter(m_Profiler.QueryIDPostprocess[GPUProfiler::Start], GL_TIMESTAMP);
 
             glClear(GL_COLOR_BUFFER_BIT);
             m_Shaders->FirstPassPostProcess.Use();
 
             glUniform1i(glGetUniformLocation(m_Shaders->FirstPassPostProcess.GetHandle(), "gBufferView"), m_GBufferView);
-            glUniform2f(glGetUniformLocation(m_Shaders->FirstPassPostProcess.GetHandle(), "screenTextureSize"), 1.0f / m_Window->GetActiveState().Width, 1.0f / m_Window->GetActiveState().Height);
+            glUniform2f(glGetUniformLocation(m_Shaders->FirstPassPostProcess.GetHandle(), "screenTextureSize"), 1.0f / m_Window.GetActiveState().Width, 1.0f / m_Window.GetActiveState().Height);
             glUniform1f(glGetUniformLocation(m_Shaders->FirstPassPostProcess.GetHandle(), "cameraAperture"), cameraAperture);
             glUniform1f(glGetUniformLocation(m_Shaders->FirstPassPostProcess.GetHandle(), "cameraShutterSpeed"), cameraShutterSpeed);
             glUniform1f(glGetUniformLocation(m_Shaders->FirstPassPostProcess.GetHandle(), "cameraISO"), cameraISO);
@@ -754,7 +715,7 @@ namespace Graphics
             glUniform1i(glGetUniformLocation(m_Shaders->FirstPassPostProcess.GetHandle(), "fxaaMode"), m_FXAAMode);
             glUniform1i(glGetUniformLocation(m_Shaders->FirstPassPostProcess.GetHandle(), "motionBlurMode"), m_MotionBlurMode);
             glUniform1f(glGetUniformLocation(m_Shaders->FirstPassPostProcess.GetHandle(), "motionBlurScale"), frameRate);
-            glUniform1i(glGetUniformLocation(m_Shaders->FirstPassPostProcess.GetHandle(), "motionBlurMaxSamples"), m_SAO->MotionBlurMaxSamples);
+            glUniform1i(glGetUniformLocation(m_Shaders->FirstPassPostProcess.GetHandle(), "motionBlurMaxSamples"), m_SAO.MotionBlurMaxSamples);
             glUniform1i(glGetUniformLocation(m_Shaders->FirstPassPostProcess.GetHandle(), "tonemappingMode"), m_ToneMappingMode);
 
             glActiveTexture(GL_TEXTURE0);
@@ -764,14 +725,14 @@ namespace Graphics
             glActiveTexture(GL_TEXTURE2);
             glBindTexture(GL_TEXTURE_2D, m_GEffectsBuffer);
 
-            m_WindowQuad->Draw();
+            m_Window.GetQuad()->Draw();
 
-            glQueryCounter(m_Profiler->QueryIDPostprocess[GPUProfiler::Stop], GL_TIMESTAMP);
+            glQueryCounter(m_Profiler.QueryIDPostprocess[GPUProfiler::Stop], GL_TIMESTAMP);
         }
 
         void RenderSystem::ForwardPassRendering(const mat4& view, const mat4& proj)
         {
-            glQueryCounter(m_Profiler->QueryIDForward[GPUProfiler::Start], GL_TIMESTAMP);
+            glQueryCounter(m_Profiler.QueryIDForward[GPUProfiler::Start], GL_TIMESTAMP);
 
             glBindFramebuffer(GL_READ_FRAMEBUFFER, m_GBufferFBO);
             glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
@@ -779,11 +740,11 @@ namespace Graphics
             // Copy the depth informations from the Geometry Pass into the default framebuffer
             glBlitFramebuffer(
                 0, 0,
-                m_Window->GetActiveState().Width,
-                m_Window->GetActiveState().Height,
+                m_Window.GetActiveState().Width,
+                m_Window.GetActiveState().Height,
                 0, 0,
-                m_Window->GetActiveState().Width,
-                m_Window->GetActiveState().Height,
+                m_Window.GetActiveState().Width,
+                m_Window.GetActiveState().Height,
                 GL_DEPTH_BUFFER_BIT, GL_NEAREST);
 
             glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -804,10 +765,10 @@ namespace Graphics
                 }
 
             }
-            glQueryCounter(m_Profiler->QueryIDForward[GPUProfiler::Stop], GL_TIMESTAMP);
+            glQueryCounter(m_Profiler.QueryIDForward[GPUProfiler::Stop], GL_TIMESTAMP);
         }
 
-        void RenderSystem::SetNullMaterial()
+        void RenderSystem::UseNullMaterial()
         {
             glActiveTexture(GL_TEXTURE0);
             glBindTexture(GL_TEXTURE_2D, 0);
@@ -868,12 +829,12 @@ namespace Graphics
 
         SAO& RenderSystem::GetSAO() const
         {
-            return *m_SAO;
+            return m_SAO;
         }
 
         GPUProfiler& RenderSystem::GetRenderProfiler() const
         {
-            return *m_Profiler;
+            return m_Profiler;
         }
 
         StandardShaders& RenderSystem::GetShaders() const
@@ -887,7 +848,7 @@ namespace Graphics
             IBLBufferSetup();
         }
 
-        Texture& RenderSystem::GetSkyBox() const
+        Texture& RenderSystem::GetSkyBox()
         {
             return *m_SkyBox;
         }
@@ -897,7 +858,7 @@ namespace Graphics
             m_DefualtAO = &ao;
         }
 
-        Texture& RenderSystem::GetDefaultAO() const
+        Texture& RenderSystem::GetDefaultAO()
         {
             return *m_DefualtAO;
         }
@@ -907,7 +868,7 @@ namespace Graphics
             m_DefaultMaterial = &material;
         }
 
-        Material& RenderSystem::GetDefaultMaterial() const
+        Material& RenderSystem::GetDefaultMaterial()
         {
             return *m_DefaultMaterial;
         }
@@ -934,12 +895,12 @@ namespace Graphics
 
         void RenderSystem::SetGLWindow(GLWindow& window)
         {
-            m_Window = &window;
+            m_Window = window;
         }
 
-        GLWindow& RenderSystem::GetGLWindow() const
+        GLWindow& RenderSystem::GetGLWindow()
         {
-            return *m_Window;
+            return m_Window;
         }
 
         void RenderSystem::SetModelMap(const std::map<unsigned int, Model*>& modelMap)

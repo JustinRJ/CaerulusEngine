@@ -9,10 +9,14 @@ namespace Core
 {
     namespace Input
     {
+        class Graphics::Window::GLWindow;
+
         struct DragData
         {
-            int X = 0;
-            int Y = 0;
+            double X = 0;
+            double Y = 0;
+            double DeltaX = 0;
+            double DeltaY = 0;
         };
 
         struct DragBinding
@@ -25,11 +29,12 @@ namespace Core
         {
         public:
 
-            MouseInputManager(GLFWwindow* window) :
+            MouseInputManager(Graphics::Window::GLWindow* window) :
                 m_DragBindingMap(*new std::vector<DragBinding*>()),
                 m_DragData(*new DragData()),
                 m_Window(window)
             {
+                glfwSetInputMode(m_Window->GetGLFWWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
             };
 
             virtual ~MouseInputManager() {};
@@ -40,9 +45,10 @@ namespace Core
 
             virtual void Update(float deltaTime) override
             {
+                UpdateMouseDrag();
             }
 
-            void AddDragMouseCallback(GLFWwindow* window, std::function<void(DragData)> callback, std::string name = "")
+            void AddDragMouseCallback(Graphics::Window::GLWindow* window, std::function<void(DragData)> callback, std::string name = "")
             {
                 DragBinding dragBinding;
                 dragBinding.Callback = callback;
@@ -51,7 +57,6 @@ namespace Core
                 m_DragBindingMap.push_back(std::make_unique<DragBinding>(dragBinding).release());
             }
 
-
             virtual void FixedUpdate(float fixedTime) override {};
 
             virtual void LateUpdate(float deltaTime) override {};
@@ -59,8 +64,20 @@ namespace Core
         private:
             DragData& m_DragData;
             std::vector<DragBinding*>& m_DragBindingMap;
+            Graphics::Window::GLWindow* m_Window;
 
-            GLFWwindow* m_Window;
+            void UpdateMouseDrag()
+            {
+                double xpos, ypos;
+                glfwGetCursorPos(m_Window->GetGLFWWindow(), &xpos, &ypos);
+                double deltaX = xpos - (m_Window->GetActiveState().Width / 2);
+                double deltaY = ypos - (m_Window->GetActiveState().Height / 2);
+
+                for (auto& dragBindingPair : m_DragBindingMap)
+                {
+                    dragBindingPair->Callback(DragData({ xpos, ypos, deltaX, deltaY }));
+                }
+            }
         };
     }
 }

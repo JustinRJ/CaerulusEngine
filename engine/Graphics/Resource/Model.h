@@ -2,9 +2,6 @@
 
 #define CAERULUS_GRAPHICS __declspec(dllexport)
 
-#include <assimp/Importer.hpp>
-#include <assimp/scene.h>
-#include <assimp/postprocess.h>
 #include <glew.h>
 #include <vector>
 #include "../../Core/Math/MathHelper.h"
@@ -90,20 +87,16 @@ namespace Graphics
             void DrawMesh(bool wireframe, unsigned int mesh) const;
 
             const std::vector<Mesh>& GetMeshes() const;
-            const std::vector<std::string>& GetMeshMaterials() const;
 
             const std::vector<Material*>& GetMaterials() const;
             void SetMaterials(const std::vector<Material*>& materials);
 
 
         private:
-            void ProcessNode(const aiNode* node, const aiScene* scene);
-            const Mesh& ProcessMesh(const aiMesh& mesh) const;
 
             bool m_IsLoaded;
             std::vector<Mesh>& m_Meshes;
             std::string& m_Path;
-            std::vector<std::string>& m_MeshMaterials;
 
 #pragma warning(push)
 #pragma warning( disable : 4251)

@@ -104,20 +104,19 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;GRAPHICS_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\dependencies\glew-2.1.0\include\;$(SolutionDir)..\dependencies\glfw-3.2.1\include\;$(SolutionDir)..\dependencies\glm-0.9.9.0\include\;$(SolutionDir)..\dependencies\stb_image-2.20\include\;$(SolutionDir)..\dependencies\assimp-4.1.0\include\;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\dependencies\glew-2.1.0\include\;$(SolutionDir)..\dependencies\glfw-3.2.1\include\;$(SolutionDir)..\dependencies\glm-0.9.9.0\include\;$(SolutionDir)..\dependencies\stb_image-2.20\include\;$(SolutionDir)..\dependencies\tinyobjloader-1.0.0\include\</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>opengl32.lib;glew32.lib;glfw3dll.lib;assimp-vc140-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(SolutionDir)..\dependencies\glew-2.1.0\lib\$(Configuration)\$(Platform)\;$(SolutionDir)..\dependencies\glfw-3.2.1\lib\$(Configuration)\$(Platform)\;$(SolutionDir)..\dependencies\assimp-4.1.0\lib\$(Configuration)\$(Platform)\;</AdditionalLibraryDirectories>
+      <AdditionalDependencies>opengl32.lib;glew32.lib;glfw3dll.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)..\dependencies\glew-2.1.0\lib\$(Configuration)\$(Platform)\;$(SolutionDir)..\dependencies\glfw-3.2.1\lib\$(Configuration)\$(Platform)\;$(SolutionDir)..\dependencies\tinyobjloader-1.0.0\lib\$(Configuration)\$(Platform)\</AdditionalLibraryDirectories>
     </Link>
     <PreBuildEvent>
       <Command>echo DA | xcopy /E "$(SolutionDir)..\dependencies\glew-2.1.0\bin\$(Configuration)\$(Platform)\glew32.dll" "$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(Platform)\"
-echo DA | xcopy /E "$(SolutionDir)..\dependencies\glfw-3.2.1\bin\$(Configuration)\$(Platform)\glfw3.dll" "$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(Platform)\"
-echo DA | xcopy /E "$(SolutionDir)..\dependencies\assimp-4.1.0\bin\$(Configuration)\$(Platform)\assimp-vc140-mt.dll" "$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(Platform)\"</Command>
+echo DA | xcopy /E "$(SolutionDir)..\dependencies\glfw-3.2.1\bin\$(Configuration)\$(Platform)\glfw3.dll" "$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(Platform)\"</Command>
     </PreBuildEvent>
     <PostBuildEvent>
       <Command>echo DA | xcopy /E "$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(Platform)\*.dll" "$(SolutionDir)..\bin\$(Configuration)\$(Platform)"</Command>
@@ -131,18 +130,17 @@ echo DA | xcopy /E "$(SolutionDir)..\dependencies\assimp-4.1.0\bin\$(Configurati
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;GRAPHICS_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\dependencies\glew-2.1.0\include\;$(SolutionDir)..\dependencies\glfw-3.2.1\include\;$(SolutionDir)..\dependencies\glm-0.9.9.0\include\;$(SolutionDir)..\dependencies\stb_image-2.20\include\;$(SolutionDir)..\dependencies\assimp-4.1.0\include\;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\dependencies\glew-2.1.0\include\;$(SolutionDir)..\dependencies\glfw-3.2.1\include\;$(SolutionDir)..\dependencies\glm-0.9.9.0\include\;$(SolutionDir)..\dependencies\stb_image-2.20\include\;$(SolutionDir)..\dependencies\tinyobjloader-1.0.0\include\</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>opengl32.lib;glew32.lib;glfw3dll.lib;assimp-vc140-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(SolutionDir)..\dependencies\glew-2.1.0\lib\$(Configuration)\$(Platform)\;$(SolutionDir)..\dependencies\glfw-3.2.1\lib\$(Configuration)\$(Platform)\;$(SolutionDir)..\dependencies\assimp-4.1.0\lib\$(Configuration)\$(Platform)\;</AdditionalLibraryDirectories>
+      <AdditionalDependencies>opengl32.lib;glew32.lib;glfw3dll.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)..\dependencies\glew-2.1.0\lib\$(Configuration)\$(Platform)\;$(SolutionDir)..\dependencies\glfw-3.2.1\lib\$(Configuration)\$(Platform)\;$(SolutionDir)..\dependencies\tinyobjloader-1.0.0\lib\$(Configuration)\$(Platform)\</AdditionalLibraryDirectories>
     </Link>
     <PreBuildEvent>
       <Command>echo DA | xcopy /E "$(SolutionDir)..\dependencies\glew-2.1.0\bin\$(Configuration)\$(Platform)\glew32.dll" "$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(Platform)\"
-echo DA | xcopy /E "$(SolutionDir)..\dependencies\glfw-3.2.1\bin\$(Configuration)\$(Platform)\glfw3.dll" "$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(Platform)\"
-echo DA | xcopy /E "$(SolutionDir)..\dependencies\assimp-4.1.0\bin\$(Configuration)\$(Platform)\assimp-vc140-mt.dll" "$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(Platform)\"</Command>
+echo DA | xcopy /E "$(SolutionDir)..\dependencies\glfw-3.2.1\bin\$(Configuration)\$(Platform)\glfw3.dll" "$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(Platform)\"</Command>
     </PreBuildEvent>
     <PostBuildEvent>
       <Command>echo DA | xcopy /E "$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(Platform)\*.dll" "$(SolutionDir)..\bin\$(Configuration)\$(Platform)"</Command>
@@ -156,18 +154,17 @@ echo DA | xcopy /E "$(SolutionDir)..\dependencies\assimp-4.1.0\bin\$(Configurati
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;GRAPHICS_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\dependencies\glew-2.1.0\include\;$(SolutionDir)..\dependencies\glfw-3.2.1\include\;$(SolutionDir)..\dependencies\glm-0.9.9.0\include\;$(SolutionDir)..\dependencies\stb_image-2.20\include\;$(SolutionDir)..\dependencies\assimp-4.1.0\include\;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\dependencies\glew-2.1.0\include\;$(SolutionDir)..\dependencies\glfw-3.2.1\include\;$(SolutionDir)..\dependencies\glm-0.9.9.0\include\;$(SolutionDir)..\dependencies\stb_image-2.20\include\;$(SolutionDir)..\dependencies\tinyobjloader-1.0.0\include\</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>opengl32.lib;glew32.lib;glfw3dll.lib;assimp-vc140-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(SolutionDir)..\dependencies\glew-2.1.0\lib\$(Configuration)\$(Platform)\;$(SolutionDir)..\dependencies\glfw-3.2.1\lib\$(Configuration)\$(Platform)\;$(SolutionDir)..\dependencies\assimp-4.1.0\lib\$(Configuration)\$(Platform)\;</AdditionalLibraryDirectories>
+      <AdditionalDependencies>opengl32.lib;glew32.lib;glfw3dll.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)..\dependencies\glew-2.1.0\lib\$(Configuration)\$(Platform)\;$(SolutionDir)..\dependencies\glfw-3.2.1\lib\$(Configuration)\$(Platform)\;$(SolutionDir)..\dependencies\tinyobjloader-1.0.0\lib\$(Configuration)\$(Platform)\</AdditionalLibraryDirectories>
     </Link>
     <PreBuildEvent>
       <Command>echo DA | xcopy /E "$(SolutionDir)..\dependencies\glew-2.1.0\bin\$(Configuration)\$(Platform)\glew32.dll" "$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(Platform)\"
-echo DA | xcopy /E "$(SolutionDir)..\dependencies\glfw-3.2.1\bin\$(Configuration)\$(Platform)\glfw3.dll" "$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(Platform)\"
-echo DA | xcopy /E "$(SolutionDir)..\dependencies\assimp-4.1.0\bin\$(Configuration)\$(Platform)\assimp-vc140-mt.dll" "$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(Platform)\"</Command>
+echo DA | xcopy /E "$(SolutionDir)..\dependencies\glfw-3.2.1\bin\$(Configuration)\$(Platform)\glfw3.dll" "$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(Platform)\"</Command>
     </PreBuildEvent>
     <PostBuildEvent>
       <Command>echo DA | xcopy /E "$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(Platform)\*.dll" "$(SolutionDir)..\bin\$(Configuration)\$(Platform)"</Command>
@@ -183,20 +180,19 @@ echo DA | xcopy /E "$(SolutionDir)..\dependencies\assimp-4.1.0\bin\$(Configurati
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;GRAPHICS_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\dependencies\glew-2.1.0\include\;$(SolutionDir)..\dependencies\glfw-3.2.1\include\;$(SolutionDir)..\dependencies\glm-0.9.9.0\include\;$(SolutionDir)..\dependencies\stb_image-2.20\include\;$(SolutionDir)..\dependencies\assimp-4.1.0\include\;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\dependencies\glew-2.1.0\include\;$(SolutionDir)..\dependencies\glfw-3.2.1\include\;$(SolutionDir)..\dependencies\glm-0.9.9.0\include\;$(SolutionDir)..\dependencies\stb_image-2.20\include\;$(SolutionDir)..\dependencies\tinyobjloader-1.0.0\include\</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>opengl32.lib;glew32.lib;glfw3dll.lib;assimp-vc140-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(SolutionDir)..\dependencies\glew-2.1.0\lib\$(Configuration)\$(Platform)\;$(SolutionDir)..\dependencies\glfw-3.2.1\lib\$(Configuration)\$(Platform)\;$(SolutionDir)..\dependencies\assimp-4.1.0\lib\$(Configuration)\$(Platform)\;</AdditionalLibraryDirectories>
+      <AdditionalDependencies>opengl32.lib;glew32.lib;glfw3dll.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)..\dependencies\glew-2.1.0\lib\$(Configuration)\$(Platform)\;$(SolutionDir)..\dependencies\glfw-3.2.1\lib\$(Configuration)\$(Platform)\;$(SolutionDir)..\dependencies\tinyobjloader-1.0.0\lib\$(Configuration)\$(Platform)\</AdditionalLibraryDirectories>
     </Link>
     <PreBuildEvent>
       <Command>echo DA | xcopy /E "$(SolutionDir)..\dependencies\glew-2.1.0\bin\$(Configuration)\$(Platform)\glew32.dll" "$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(Platform)\"
-echo DA | xcopy /E "$(SolutionDir)..\dependencies\glfw-3.2.1\bin\$(Configuration)\$(Platform)\glfw3.dll" "$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(Platform)\"
-echo DA | xcopy /E "$(SolutionDir)..\dependencies\assimp-4.1.0\bin\$(Configuration)\$(Platform)\assimp-vc140-mt.dll" "$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(Platform)\"</Command>
+echo DA | xcopy /E "$(SolutionDir)..\dependencies\glfw-3.2.1\bin\$(Configuration)\$(Platform)\glfw3.dll" "$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(Platform)\"</Command>
     </PreBuildEvent>
     <PostBuildEvent>
       <Command>echo DA | xcopy /E "$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(Platform)\*.dll" "$(SolutionDir)..\bin\$(Configuration)\$(Platform)"</Command>
@@ -210,13 +206,14 @@ echo DA | xcopy /E "$(SolutionDir)..\dependencies\assimp-4.1.0\bin\$(Configurati
     <ClInclude Include="Lighting\DirectionalLight.h" />
     <ClInclude Include="Lighting\Light.h" />
     <ClInclude Include="Lighting\PointLight.h" />
+    <ClInclude Include="Pipeline\PipeLineItem.h" />
+    <ClInclude Include="Pipeline\Shader.h" />
+    <ClInclude Include="Pipeline\ShaderSource.h" />
     <ClInclude Include="RenderSystem.h" />
     <ClInclude Include="Resource\Camera.h" />
     <ClInclude Include="Resource\Material.h" />
     <ClInclude Include="Resource\Model.h" />
     <ClInclude Include="Resource\Texture.h" />
-    <ClInclude Include="Shader\Shader.h" />
-    <ClInclude Include="Shader\ShaderSource.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="Window\GLWindow.h" />
     <ClInclude Include="Window\Window.h" />
@@ -230,13 +227,13 @@ echo DA | xcopy /E "$(SolutionDir)..\dependencies\assimp-4.1.0\bin\$(Configurati
     <ClCompile Include="Lighting\DirectionalLight.cpp" />
     <ClCompile Include="Lighting\Light.cpp" />
     <ClCompile Include="Lighting\PointLight.cpp" />
+    <ClCompile Include="Pipeline\Shader.cpp" />
+    <ClCompile Include="Pipeline\ShaderSource.cpp" />
     <ClCompile Include="RenderSystem.cpp" />
     <ClCompile Include="Resource\Camera.cpp" />
     <ClCompile Include="Resource\Material.cpp" />
     <ClCompile Include="Resource\Model.cpp" />
     <ClCompile Include="Resource\Texture.cpp" />
-    <ClCompile Include="Shader\Shader.cpp" />
-    <ClCompile Include="Shader\ShaderSource.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
