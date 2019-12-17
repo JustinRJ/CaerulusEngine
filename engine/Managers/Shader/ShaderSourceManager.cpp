@@ -17,28 +17,8 @@ namespace Managers
             std::cout << "Loading shader stage " + name + " with path " + path << std::endl;
             ShaderSource* ss = new ShaderSource(type, path);
             ss->Load();
-            Manager::Insert(name, ss);
+            Insert(name, ss);
             return true;
-        }
-
-        ShaderSource* ShaderSourceManager::Get(const std::string& name) const
-        {
-            return Manager::Get(name);
-        }
-
-        std::vector<ShaderSource*> ShaderSourceManager::GetAll(const std::vector<std::string>& names) const
-        {
-            return Manager::GetAll(names);
-        }
-
-        bool ShaderSourceManager::IsLoaded(const std::string& name) const
-        {
-            return Manager::IsLoaded(name);
-        }
-
-        bool ShaderSourceManager::Remove(const std::string& name)
-        {
-            return Manager::Remove(name);
         }
     }
 }

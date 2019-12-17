@@ -44,12 +44,13 @@ namespace Engine
         int m_ArgCount;
         char** m_ArgValue;
 
+        bool m_Paused = false;
         bool m_Running = false;
 
         float m_DeltaTime = 0.0f;
         float m_FixedTime = 0.0f;
         float m_FPSLimit = 1.0f / 60.0f;
-        double m_MouseSensitivity = 5.0;
+        double m_MouseSensitivity = 10.0;
 
         std::unique_ptr<FPSLimiter> m_FPSLimiter;
         std::unique_ptr<FixedLimiter> m_FixedLimiter;
@@ -61,8 +62,8 @@ namespace Engine
 
         std::vector<std::shared_ptr<ITickable>> m_Tickable;
 
-        ModelManager m_ModelManager;
         TextureManager m_TextureManager;
         MaterialManager m_MaterialManager;
+        ModelManager m_ModelManager;
     };
 }

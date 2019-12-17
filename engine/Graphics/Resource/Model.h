@@ -18,14 +18,23 @@ namespace Graphics
             vec3 Position;
             vec3 Normal;
             vec2 TexCoords;
+
+            bool operator==(const Vertex& other) const
+            {
+                return
+                    Position == other.Position &&
+                    Normal == other.Normal &&
+                    TexCoords == other.TexCoords;
+            }
         };
 
         class Mesh
         {
         public:
-            Mesh(std::vector<Vertex>& vertices, std::vector<GLuint>& indices) :
+            Mesh(std::vector<Vertex>& vertices, std::vector<GLuint>& indices, const std::string& materialName) :
+                m_Vertices(*new std::vector<Vertex>()),
                 m_Indices(*new std::vector<GLuint>()),
-                m_Vertices(*new std::vector<Vertex>())
+                m_MaterialName(materialName)
             {
                 m_Vertices = vertices;
                 m_Indices = indices;
@@ -36,16 +45,22 @@ namespace Graphics
             {
             }
 
-            void Draw(bool wireframe) const
+            void Draw(std::vector<Material*> material, bool wireframe) const
             {
                 glBindVertexArray(m_VAO);
                 glDrawElements(wireframe ? GL_LINES : GL_TRIANGLES, (GLsizei)m_Indices.size(), GL_UNSIGNED_INT, 0);
                 glBindVertexArray(0);
             }
 
+            const std::string& GetMaterialName() const
+            {
+                return m_MaterialName;
+            }
+
         private:
             std::vector<Vertex>& m_Vertices;
             std::vector<GLuint>& m_Indices;
+            std::string m_MaterialName;
 
             GLuint m_VAO;
             GLuint m_VBO;
@@ -89,20 +104,29 @@ namespace Graphics
             const std::vector<Mesh>& GetMeshes() const;
 
             const std::vector<Material*>& GetMaterials() const;
-            void SetMaterials(const std::vector<Material*>& materials);
-
+            void SetMaterials(std::vector<Material*> materials);
 
         private:
 
             bool m_IsLoaded;
+            std::string m_Path;
             std::vector<Mesh>& m_Meshes;
-            std::string& m_Path;
-
-#pragma warning(push)
-#pragma warning( disable : 4251)
             std::vector<Material*> m_Materials;
-#pragma warning(pop)
         };
     }
 }
 
+namespace std
+{
+    template<>
+    struct hash<Graphics::Resource::Vertex>
+    {
+        size_t operator()(const Graphics::Resource::Vertex& vertex) const
+        {
+            return
+                ((hash<glm::vec3>()(vertex.Position) ^
+                (hash<glm::vec3>()(vertex.Normal) << 1)) >> 1) ^
+                    (hash<glm::vec2>()(vertex.TexCoords) << 1);
+        }
+    };
+}

@@ -60,12 +60,8 @@ namespace Graphics
             float m_Aperture;
             float m_ShutterSpeed;
             float m_ISO;
-
-#pragma warning(push)
-#pragma warning( disable : 4251)
             mat4 m_View;
             mat4 m_Proj;
-#pragma warning(pop)
         };
     }
 }

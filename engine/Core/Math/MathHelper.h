@@ -6,8 +6,9 @@
 
 #include <glm.hpp>
 #include <gtc/matrix_transform.hpp>
-#include <gtx/quaternion.hpp>
 #include <gtc/type_ptr.hpp>
+#include <gtx/quaternion.hpp>
+#include <gtx/hash.hpp>
 
 namespace Core
 {

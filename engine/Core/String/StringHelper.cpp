@@ -14,31 +14,31 @@ namespace Core
             return str && *str;
         }
 
-        bool StringHelper::Compare(const char * str1, const char * str2, bool ignore_case)
+        bool StringHelper::Compare(const char * str1, const char * str2, bool ignoreCase)
         {
-            return ignore_case ? _stricmp(str1, str2) : strcmp(str1, str2) == 0;
+            return ignoreCase ? _stricmp(str1, str2) : strcmp(str1, str2) == 0;
         }
 
-        bool StringHelper::BeginsWith(const char * str1, const char * str2, bool ignore_case)
+        bool StringHelper::BeginsWith(const char * str1, const char * str2, bool ignoreCase)
         {
             size_t len1 = strlen(str1);
             size_t len2 = strlen(str2);
             if (len1 >= len2)
             {
                 std::string str1s(str1, len2);
-                return Compare(str1s.c_str(), str2, ignore_case);
+                return Compare(str1s.c_str(), str2, ignoreCase);
             }
             return false;
         }
 
-        bool StringHelper::EndsWith(const char * str1, const char * str2, bool ignore_case)
+        bool StringHelper::EndsWith(const char * str1, const char * str2, bool ignoreCase)
         {
             size_t len1 = strlen(str1);
             size_t len2 = strlen(str2);
             if (len1 >= len2)
             {
                 std::string str1s(str1, len1 - len2, len2);
-                return Compare(str1s.c_str(), str2, ignore_case);
+                return Compare(str1s.c_str(), str2, ignoreCase);
             }
             return false;
         }

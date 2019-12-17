@@ -16,8 +16,9 @@ namespace Graphics
 
             Light(const vec4& colour);
             virtual ~Light();
-            virtual void SetColour(const vec4& colour);
-            virtual const vec4& GetColour() const;
+
+            void SetColour(const vec4& colour);
+            const vec4& GetColour() const;
 
             virtual void RenderToShader(unsigned int ID, const PipeLine::Shader& shader, const mat4& view) const = 0;
 

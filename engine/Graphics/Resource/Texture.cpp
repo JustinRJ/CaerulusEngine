@@ -10,8 +10,7 @@ namespace Graphics
 {
     namespace Resource
     {
-        Texture::Texture() :
-            m_Path(*new std::string())
+        Texture::Texture()
         {
         }
 

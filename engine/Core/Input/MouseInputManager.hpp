@@ -30,8 +30,6 @@ namespace Core
         public:
 
             MouseInputManager(Graphics::Window::GLWindow* window) :
-                m_DragBindingMap(*new std::vector<DragBinding*>()),
-                m_DragData(*new DragData()),
                 m_Window(window)
             {
                 glfwSetInputMode(m_Window->GetGLFWWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
@@ -62,8 +60,8 @@ namespace Core
             virtual void LateUpdate(float deltaTime) override {};
 
         private:
-            DragData& m_DragData;
-            std::vector<DragBinding*>& m_DragBindingMap;
+            DragData m_DragData;
+            std::vector<DragBinding*> m_DragBindingMap;
             Graphics::Window::GLWindow* m_Window;
 
             void UpdateMouseDrag()

@@ -14,9 +14,9 @@ namespace Core
         public:
 
             static bool IsValid(const char* str);
-            static bool Compare(const char* str1, const char* str2, bool ignore_case = true);
-            static bool EndsWith(const char* str1, const char* str2, bool ignore_case = true);
-            static bool BeginsWith(const char* str1, const char* str2, bool ignore_case = true);
+            static bool Compare(const char* str1, const char* str2, bool ignoreCase = true);
+            static bool EndsWith(const char* str1, const char* str2, bool ignoreCase = true);
+            static bool BeginsWith(const char* str1, const char* str2, bool ignoreCase = true);
             static bool IsWhitespace(char c);
 
             static std::string Trim(const std::string& str, const char* delim = " \t\r\n\f\v");

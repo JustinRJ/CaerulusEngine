@@ -95,22 +95,16 @@ namespace Graphics
 
             RenderSystem(GLWindow& window);
 
-            virtual void Update(float deltaTime) override;
-            virtual void FixedUpdate(float fixedTime) override {};
-            virtual void LateUpdate(float deltaTime) override {};
-            virtual void Reset() override {};
+            void Update(float deltaTime) override;
+            void FixedUpdate(float fixedTime) override {};
+            void LateUpdate(float deltaTime) override {};
+            void Reset() override {};
 
             void SetCamera(Camera& camera);
             Camera& GetCamera();
 
             void SetSkyBox(Texture& skyBox);
             Texture& GetSkyBox();
-
-            void SetDefaultAO(Texture& ao);
-            Texture& GetDefaultAO();
-
-            void SetDefaultMaterial(Material& material);
-            Material& GetDefaultMaterial();
 
             void SetGLWindow(GLWindow& window);
             GLWindow& GetGLWindow();
@@ -184,11 +178,6 @@ namespace Graphics
             // Move to IBL
             Texture* m_SkyBox;
 
-            // Default AO
-            Texture* m_DefualtAO;
-            // Default Material
-            Material* m_DefaultMaterial;
-
             IBL* m_IBL;
             StandardShaders* m_Shaders;
 
@@ -249,8 +238,6 @@ namespace Graphics
             GLuint m_PrefilterFBO;
             GLuint m_PrefilterRBO;
 
-#pragma warning(push)
-#pragma warning( disable : 4251)
             // Map of ID to absolute transform
             std::map<unsigned int, Model*> m_ModelMap;
             // Map of ID to  model
@@ -267,7 +254,6 @@ namespace Graphics
 
             mat4 m_ProjViewModel;
             mat4 m_ProjViewModelPrev;
-#pragma warning(pop)
         };
     }
 }

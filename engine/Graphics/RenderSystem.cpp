@@ -469,9 +469,9 @@ namespace Graphics
             {
                 if (model.second)
                 {
-                    //Todo add material rendering
                     mat4 transform = *m_TransformMap.at(model.first);
 
+                    // TODO - broken motion blue shader
                     m_ProjViewModel = proj * view * transform;
                     SetModelUniforms(transform);
                     model.second->Draw(m_WireframeMode);
@@ -851,26 +851,6 @@ namespace Graphics
         Texture& RenderSystem::GetSkyBox()
         {
             return *m_SkyBox;
-        }
-
-        void RenderSystem::SetDefaultAO(Texture& ao)
-        {
-            m_DefualtAO = &ao;
-        }
-
-        Texture& RenderSystem::GetDefaultAO()
-        {
-            return *m_DefualtAO;
-        }
-
-        void RenderSystem::SetDefaultMaterial(Material& material)
-        {
-            m_DefaultMaterial = &material;
-        }
-
-        Material& RenderSystem::GetDefaultMaterial()
-        {
-            return *m_DefaultMaterial;
         }
 
         void RenderSystem::SetPointLightMap(std::map<unsigned int, Graphics::Light::PointLight*> idPointMap)

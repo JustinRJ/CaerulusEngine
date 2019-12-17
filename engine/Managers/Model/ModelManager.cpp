@@ -7,39 +7,41 @@ namespace Managers
 {
     namespace Model
     {
-        ModelManager::ModelManager()
+        ModelManager::ModelManager(Material::MaterialManager& materialManager) :
+            m_MaterialManager(materialManager)
         {
         }
 
-        bool ModelManager::Load(const std::string& name, const std::string& path)
+        bool ModelManager::Load(const std::string& name, const std::string& modelPath, const std::string& materialPath)
         {
             if (IsLoaded(name))
             {
                 return false;
             }
-            std::cout << "Loading model " + name + " with path " + path << std::endl;
-            Manager::Insert(name, new Graphics::Resource::Model(path));
+            std::cout << "Loading model " + name + " with path " + modelPath << std::endl;
+
+            Graphics::Resource::Model* newModel = new Graphics::Resource::Model(modelPath);
+
+            std::string tempMaterialPath(materialPath);
+            if (tempMaterialPath == "")
+            {
+                tempMaterialPath = modelPath;
+                tempMaterialPath.erase(tempMaterialPath.find_last_of('.'));
+                tempMaterialPath.append(".mtl");
+            }
+
+            std::vector<Graphics::Resource::Material*> newModelMaterials;
+            if (m_MaterialManager.Load(tempMaterialPath))
+            {
+                for (auto mesh : newModel->GetMeshes())
+                {
+                    newModelMaterials.push_back(m_MaterialManager.Get(mesh.GetMaterialName()));
+                }
+            }
+            newModel->SetMaterials(newModelMaterials);
+
+            Insert(name, newModel);
             return true;
-        }
-
-        Graphics::Resource::Model* ModelManager::Get(const std::string& name) const
-        {
-            return Manager::Get(name);
-        }
-
-        std::vector<Graphics::Resource::Model*> ModelManager::GetAll(const std::vector<std::string>& names) const
-        {
-            return Manager::GetAll(names);
-        }
-
-        bool ModelManager::IsLoaded(const std::string& name) const
-        {
-            return Manager::IsLoaded(name);
-        }
-
-        bool ModelManager::Remove(const std::string& name)
-        {
-            return Manager::Remove(name);
         }
     }
 }

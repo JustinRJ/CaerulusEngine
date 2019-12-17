@@ -29,9 +29,7 @@ namespace Core
         {
         public:
 
-            KeyboardInputManager(Graphics::Window::GLWindow* window) :
-                m_KeyDataMap(*new std::map<int, KeyData*>()),
-                m_KeyBindingMap(*new std::map<int, KeyBinding*>())
+            KeyboardInputManager(Graphics::Window::GLWindow* window)
             {
                 glfwSetWindowUserPointer(window->GetGLFWWindow(), this);
             };
@@ -133,8 +131,8 @@ namespace Core
                 }
             }
 
-            std::map<int, KeyData*>& m_KeyDataMap;
-            std::map<int, KeyBinding*>& m_KeyBindingMap;
+            std::map<int, KeyData*> m_KeyDataMap;
+            std::map<int, KeyBinding*> m_KeyBindingMap;
         };
     }
 }

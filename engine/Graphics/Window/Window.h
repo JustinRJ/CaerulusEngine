@@ -10,10 +10,7 @@ namespace Graphics
     {
         struct CAERULUS_GRAPHICS State
         {
-#pragma warning(push)
-#pragma warning( disable : 4251)
             std::string Title;
-#pragma warning(pop)
             int Width;
             int Height;
             int Bits;

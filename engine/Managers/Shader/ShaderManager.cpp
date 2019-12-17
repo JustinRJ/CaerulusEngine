@@ -23,28 +23,8 @@ namespace Managers
 
             Shader* s = new Shader();
             s->Compile(*m_ShaderStageManager.Get(vertexPath), *m_ShaderStageManager.Get(fragmentPath));
-            Manager::Insert(name, s);
+            Insert(name, s);
             return true;
-        }
-
-        Shader* ShaderManager::Get(const std::string& name) const
-        {
-            return Manager::Get(name);
-        }
-
-        std::vector<Shader*> ShaderManager::GetAll(const std::vector<std::string>& names) const
-        {
-            return Manager::GetAll(names);
-        }
-
-        bool ShaderManager::IsLoaded(const std::string& name) const
-        {
-            return Manager::IsLoaded(name);
-        }
-
-        bool ShaderManager::Remove(const std::string& name)
-        {
-            return Manager::Remove(name);
         }
     }
 }

@@ -17,7 +17,7 @@ namespace Managers
         Manager() {}
         virtual ~Manager() {}
 
-        virtual T* Get(const std::string& key) const
+        T* Get(const std::string& key) const
         {
             if (IsLoaded(key))
             {
@@ -27,7 +27,7 @@ namespace Managers
             return nullptr;
         }
 
-        virtual std::vector<T*> GetAll(const std::vector<std::string>& keys) const
+        std::vector<T*> GetAll(const std::vector<std::string>& keys) const
         {
             std::vector<T*> values = std::vector<T*>();
             for (unsigned int i = 0; i < keys.size(); i++)
@@ -37,13 +37,13 @@ namespace Managers
             return values;
         }
 
-        virtual bool Remove(const std::string& key)
+        bool Remove(const std::string& key)
         {
             delete m_ManagedMap.at(key);
             return m_ManagedMap.erase(key) > 0;
         }
 
-        virtual bool IsLoaded(const std::string& key) const
+        bool IsLoaded(const std::string& key) const
         {
             if (m_ManagedMap.find(key) != m_ManagedMap.end())
             {
@@ -52,18 +52,20 @@ namespace Managers
             return false;
         }
 
+        const std::map<const std::string, T*>& GetMap() const
+        {
+            return m_ManagedMap;
+        }
+
     protected:
 
-        virtual void Insert(const std::string& key, T* value)
+        void Insert(const std::string& key, T* value)
         {
             if (value)
             {
                 m_ManagedMap.insert(std::make_pair(key, value));
             }
         }
-#pragma warning(push)
-#pragma warning( disable : 4251)
         std::map<const std::string, T*> m_ManagedMap;
-#pragma warning(pop)
     };
 }

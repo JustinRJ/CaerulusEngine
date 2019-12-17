@@ -38,7 +38,7 @@ namespace Graphics
            void ComputeMipmap();
 
         private:
-            std::string& m_Path;
+            std::string m_Path;
             GLfloat m_AnisoFilterLevel;
             GLuint m_ID;
             GLuint m_Width;

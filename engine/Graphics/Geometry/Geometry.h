@@ -12,6 +12,10 @@ namespace Graphics
         class Geometry
         {
         public:
+            Geometry();
+            Geometry(const mat4& transform);
+            virtual ~Geometry();
+
             virtual void Draw() const = 0;
 
             GLuint GetVAO() const;
@@ -21,9 +25,6 @@ namespace Graphics
             const mat4& GetTransform() const;
 
         protected:
-            Geometry();
-            Geometry(const mat4& transform);
-            virtual ~Geometry();
 
             virtual void GenerateBuffer() = 0;
 

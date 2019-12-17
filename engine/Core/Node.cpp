@@ -7,14 +7,14 @@ namespace
 {
     unsigned int s_NumEntities = 0;
     unsigned int s_MaxDiscardedNodeIDs = 64;
-    std::list<unsigned int> s_ReusableNodeIDs = std::list<unsigned int>(s_MaxDiscardedNodeIDs);
+    std::list<unsigned int> s_ReusableNodeIDs;
 }
 
 namespace Core
 {
     Node::Node()
     {
-        if (s_MaxDiscardedNodeIDs < s_ReusableNodeIDs.size())
+        if (s_MaxDiscardedNodeIDs > s_ReusableNodeIDs.size())
         {
             m_ID = s_NumEntities++;
         }

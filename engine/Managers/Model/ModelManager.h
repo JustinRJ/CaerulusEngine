@@ -3,27 +3,23 @@
 #define CAERULUS_MANAGERS __declspec(dllexport)
 
 #include "../Manager.h"
+#include "../Material/MaterialManager.h"
 #include "../../Graphics/Resource/Model.h"
 
 namespace Managers
 {
     namespace Model
     {
-        class CAERULUS_MANAGERS ModelManager : Manager<Graphics::Resource::Model>
+        class CAERULUS_MANAGERS ModelManager : public Manager<Graphics::Resource::Model>
         {
         public:
-            ModelManager();
+            ModelManager(Material::MaterialManager& materialManager);
             virtual ~ModelManager() {}
 
-            virtual Graphics::Resource::Model* Get(const std::string& name) const;
+            bool Load(const std::string& name, const std::string& modelPath, const std::string& materialPath = "");
 
-            virtual std::vector<Graphics::Resource::Model*> GetAll(const std::vector<std::string>& names) const;
-
-            virtual bool IsLoaded(const std::string& name) const;
-
-            virtual bool Remove(const std::string& name);
-
-            bool Load(const std::string& name, const std::string& path);
+        private:
+            Material::MaterialManager& m_MaterialManager;
         };
     }
 }

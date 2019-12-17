@@ -34,11 +34,8 @@ namespace Graphics
             bool m_IsLoaded;
             GLuint m_Handle;
             ShaderType m_Type;
-            const std::string& m_Path;
-#pragma warning(push)
-#pragma warning( disable : 4251)
+            const std::string m_Path;
             const ShaderParams m_UniformLocations[2];
-#pragma warning(pop)
         };
     }
 }

@@ -40,7 +40,12 @@ namespace Graphics
             if (!Window::Compare(m_NewState))
             {
                 m_ActiveState = m_NewState;
-                m_Window = glfwCreateWindow(m_ActiveState.Width, m_ActiveState.Height, m_ActiveState.Title.c_str(), nullptr, nullptr);
+                m_Window = glfwCreateWindow(
+                    m_ActiveState.Width,
+                    m_ActiveState.Height,
+                    m_ActiveState.Title.c_str(),
+                    m_ActiveState.Fullscreen ? glfwGetPrimaryMonitor() : nullptr,
+                    nullptr);
                 glfwMakeContextCurrent(m_Window);
             }
         }
@@ -62,6 +67,7 @@ namespace Graphics
 
         void GLWindow::Update()
         {
+            Apply();
             if (m_LockedCursor)
             {
                 CenterCursor();

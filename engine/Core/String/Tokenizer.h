@@ -11,7 +11,7 @@ namespace Core
         class CAERULUS_CORE Tokenizer
         {
         public:
-            Tokenizer(const std::string&, const std::string& = " ");
+            Tokenizer(const std::string& str, const std::string& delims = " ");
             virtual ~Tokenizer();
 
             const char* Start();
