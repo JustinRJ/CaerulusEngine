@@ -17,7 +17,7 @@ namespace Core
         public:
 
             Timer(bool start = false);
-            virtual ~Timer();
+            virtual ~Timer() = default;
 
             virtual void Start();
             virtual void Stop();

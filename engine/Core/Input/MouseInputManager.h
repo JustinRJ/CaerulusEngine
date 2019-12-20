@@ -25,55 +25,61 @@ namespace Core
             std::string Name = "";
         };
 
+        using namespace Graphics::Window;
         class MouseInputManager : public Interface::ITickable
         {
         public:
 
-            MouseInputManager(Graphics::Window::GLWindow* window) :
+            MouseInputManager(std::shared_ptr<GLWindow> window) :
                 m_Window(window)
             {
-                glfwSetInputMode(m_Window->GetGLFWWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+                glfwSetInputMode(m_Window->GetGLFWWindow().get(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
             };
 
-            virtual ~MouseInputManager() {};
+            ~MouseInputManager() = default;
 
-            virtual void Reset() override
+            void Reset() override
             {
             }
 
-            virtual void Update(float deltaTime) override
+            void PreUpdate(float deltaTime) override
             {
                 UpdateMouseDrag();
             }
 
-            void AddDragMouseCallback(Graphics::Window::GLWindow* window, std::function<void(DragData)> callback, std::string name = "")
+            void Update(float deltaTime) override {}
+
+            void FixedUpdate(float fixedTime) override {}
+
+            void AddDragMouseCallback(std::shared_ptr<GLWindow> window, std::function<void(DragData)> callback, std::string name = "")
             {
                 DragBinding dragBinding;
                 dragBinding.Callback = callback;
                 dragBinding.Name = name;
 
-                m_DragBindingMap.push_back(std::make_unique<DragBinding>(dragBinding).release());
+                m_DragBindingMap.push_back(dragBinding);
             }
 
-            virtual void FixedUpdate(float fixedTime) override {};
-
-            virtual void LateUpdate(float deltaTime) override {};
+            DragData GetDragData() const
+            {
+                return m_DragData;
+            }
 
         private:
             DragData m_DragData;
-            std::vector<DragBinding*> m_DragBindingMap;
-            Graphics::Window::GLWindow* m_Window;
+            std::vector<DragBinding> m_DragBindingMap;
+            std::shared_ptr<GLWindow> m_Window;
 
             void UpdateMouseDrag()
             {
                 double xpos, ypos;
-                glfwGetCursorPos(m_Window->GetGLFWWindow(), &xpos, &ypos);
+                glfwGetCursorPos(m_Window->GetGLFWWindow().get(), &xpos, &ypos);
                 double deltaX = xpos - (m_Window->GetActiveState().Width / 2);
                 double deltaY = ypos - (m_Window->GetActiveState().Height / 2);
 
                 for (auto& dragBindingPair : m_DragBindingMap)
                 {
-                    dragBindingPair->Callback(DragData({ xpos, ypos, deltaX, deltaY }));
+                    dragBindingPair.Callback(DragData({ xpos, ypos, deltaX, deltaY }));
                 }
             }
         };

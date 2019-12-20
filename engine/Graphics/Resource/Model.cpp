@@ -15,7 +15,7 @@ namespace Graphics
             m_IsLoaded(false),
             m_Path(path),
             m_Meshes(*new std::vector<Mesh>()),
-            m_Materials(std::vector<Material*>())
+            m_Materials(std::vector<std::shared_ptr<Material>>())
         {
             tinyobj::attrib_t attrib;
             std::vector<tinyobj::shape_t> shapes;
@@ -88,7 +88,7 @@ namespace Graphics
 
         void Model::Draw(bool wireframe) const
         {
-            for (GLuint i = 0; i < m_Meshes.size(); i++)
+            for (GLuint i = 0; i < m_Meshes.size(); ++i)
             {
                 if (i < m_Materials.size())
                 {
@@ -102,7 +102,7 @@ namespace Graphics
 
         void Model::DrawMesh(bool wireframe, unsigned int mesh) const
         {
-            m_Meshes.at(mesh).Draw(m_Materials, wireframe);
+            m_Meshes.at(mesh).Draw(wireframe);
         }
 
         const std::vector<Mesh>& Model::GetMeshes() const
@@ -115,12 +115,12 @@ namespace Graphics
             return m_IsLoaded;
         }
 
-        const std::vector<Material*>& Model::GetMaterials() const
+        const std::vector<std::shared_ptr<Material>>& Model::GetMaterials() const
         {
             return m_Materials;
         }
 
-        void Model::SetMaterials(std::vector<Material*> materials)
+        void Model::SetMaterials(std::vector<std::shared_ptr<Material>> materials)
         {
             m_Materials = materials;
         }

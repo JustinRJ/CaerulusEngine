@@ -13,7 +13,7 @@ namespace Graphics
 
             QuadGeometry();
             QuadGeometry(const mat4& transform);
-            virtual ~QuadGeometry();
+            virtual ~QuadGeometry() = default;
 
             void Draw() const override;
 

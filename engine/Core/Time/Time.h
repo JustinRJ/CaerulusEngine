@@ -19,7 +19,7 @@ namespace Core
         public:
 
             Time(bool update = true);
-            virtual ~Time();
+            virtual ~Time() = default;
 
             virtual void Update();
             virtual void Increment(time_t time);

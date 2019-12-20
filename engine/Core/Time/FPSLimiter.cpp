@@ -11,10 +11,6 @@ namespace Core
         {
         }
 
-        FPSLimiter::~FPSLimiter() 
-        { 
-        }
-
         float FPSLimiter::Delta(float frameLimit)
         {
             m_FrameTime = Timer::Delta();

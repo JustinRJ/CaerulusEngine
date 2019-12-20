@@ -12,7 +12,7 @@ namespace Graphics
             m_Name(name),
             m_Path(path),
             m_TextureNames(),
-            m_Textures(*new std::vector<Texture*>(5))
+            m_Textures(std::vector<std::shared_ptr<Texture>>(MaterialType::Size))
         {
             m_Textures[Albedo] = nullptr;
             m_Textures[Normal] = nullptr;
@@ -42,12 +42,12 @@ namespace Graphics
             m_TextureNames[AO] = "";
         }
 
-        Texture* Material::GetTexture(MaterialType materialType) const
+        std::shared_ptr<Texture> Material::GetTexture(MaterialType materialType) const
         {
             return m_Textures.at(materialType);
         }
 
-        void Material::SetTexture(Texture* texture, MaterialType materialType)
+        void Material::SetTexture(std::shared_ptr<Texture> texture, MaterialType materialType)
         {
             if (materialType > AO)
             {

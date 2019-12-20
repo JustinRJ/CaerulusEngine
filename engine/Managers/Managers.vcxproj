@@ -200,26 +200,26 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Manager.h" />
-    <ClInclude Include="Material\MaterialManager.h" />
-    <ClInclude Include="Model\ModelManager.h" />
-    <ClInclude Include="Shader\ShaderManager.h" />
-    <ClInclude Include="Shader\ShaderSourceManager.h" />
+    <ClInclude Include="Managers\MaterialManager.h" />
+    <ClInclude Include="Managers\ModelManager.h" />
+    <ClInclude Include="Managers\ShaderManager.h" />
+    <ClInclude Include="Managers\ShaderSourceManager.h" />
+    <ClInclude Include="Managers\TextureManager.h" />
     <ClInclude Include="stdafx.h" />
-    <ClInclude Include="Texture\TextureManager.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp" />
-    <ClCompile Include="Material\MaterialManager.cpp" />
-    <ClCompile Include="Model\ModelManager.cpp" />
-    <ClCompile Include="Shader\ShaderManager.cpp" />
-    <ClCompile Include="Shader\ShaderSourceManager.cpp" />
+    <ClCompile Include="Managers\MaterialManager.cpp" />
+    <ClCompile Include="Managers\ModelManager.cpp" />
+    <ClCompile Include="Managers\ShaderManager.cpp" />
+    <ClCompile Include="Managers\ShaderSourceManager.cpp" />
+    <ClCompile Include="Managers\TextureManager.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="Texture\TextureManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Core\Core.vcxproj">

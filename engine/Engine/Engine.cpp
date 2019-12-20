@@ -3,6 +3,12 @@
 #include "Engine.h"
 #include <iostream>
 #include "../Core/Node.h"
+#include "../Core/Logging/Log.h"
+
+namespace
+{
+    class Graphics::Window::GLWindow;
+}
 
 namespace Engine
 {
@@ -14,26 +20,26 @@ namespace Engine
         m_ModelManager(m_MaterialManager)
     {
         m_FPSLimiter = std::make_unique<FPSLimiter>();
-        m_FixedLimiter = std::make_unique<FixedLimiter>();
+        m_FixedTimer = std::make_unique<FixedTimer>();
 
-
+        m_Camera = std::make_shared<Camera>();
         m_Window = std::make_shared<GLWindow>("Caerulus", 1280, 1024, 32, false);
-        m_RenderSystem = std::make_shared<RenderSystem>(*m_Window);
-        m_KeyboardInputManager = std::make_shared<KeyboardInputManager>(&m_RenderSystem->GetGLWindow());
-        m_MouseInputManager = std::make_shared<MouseInputManager>(&m_RenderSystem->GetGLWindow());
+        m_RenderSystem = std::make_shared<RenderSystem>(m_Window, m_Camera);
+        m_KeyboardInputManager = std::make_shared<KeyboardInputManager>(m_RenderSystem->GetGLWindow());
+        m_MouseInputManager = std::make_shared<MouseInputManager>(m_RenderSystem->GetGLWindow());
 
         m_Tickable.push_back(m_KeyboardInputManager);
         m_Tickable.push_back(m_MouseInputManager);
         m_Tickable.push_back(m_RenderSystem);
 
         // TODO
-        auto transformMap = new std::map<unsigned int, mat4*>();
-        auto modelMap = new std::map<unsigned int, Model*>();
+        auto transformMap = std::make_shared<std::map<unsigned int, std::shared_ptr<mat4>>>();
+        auto modelMap = std::make_shared<std::map<unsigned int, std::shared_ptr<Model>>>();
 
         /// ------------------------------------------------------------------------------------------------------------------------------
 
         m_TextureManager.LoadHDR("skyBox", "assets/textures/hdr/pisa.hdr");
-        m_RenderSystem->SetSkyBox(*m_TextureManager.Get("skyBox"));
+        m_RenderSystem->SetSkyBox(m_TextureManager.Get("skyBox"));
 
         // Shaderball model
         m_ModelManager.Load("shaderBall", "assets/models/shaderBall.obj");
@@ -46,7 +52,7 @@ namespace Engine
         m_TextureManager.Load("goldAO",         "assets/textures/pbr/gold/gold_ao.png");
 
         // Gold material
-        std::vector<Texture*> gold = std::vector<Texture*>(5);
+        auto gold = std::vector<std::shared_ptr<Texture>>(MaterialType::Size);
         gold[Albedo] = m_TextureManager.Get("goldAlbedo");
         gold[Normal] = m_TextureManager.Get("goldNormal");
         gold[Roughness] = m_TextureManager.Get("goldRoughness");
@@ -56,19 +62,19 @@ namespace Engine
 
         // ShaderBall entity setup
         Core::Node shaderBall = Core::Node();
-        mat4* position1 = new mat4();
-        Model* model1 = m_ModelManager.Get("shaderBall");
+        auto position1 = std::make_shared<mat4>();
+        auto model1 = m_ModelManager.Get("shaderBall");
         MathHelper::CreateTansform(*position1, glm::vec3(0.0f, 0.0f, -20.0f), glm::quat(), glm::vec3(1.0f));
         transformMap->insert(std::make_pair(shaderBall.GetID(), position1));
-        model1->SetMaterials(std::vector<Material*>({ m_MaterialManager.Get("gold") }));
+        model1->SetMaterials(std::vector<std::shared_ptr<Material>>({ m_MaterialManager.Get("gold") }));
         modelMap->insert(std::make_pair(shaderBall.GetID(), model1));
 
         // Sponza model and material
         m_ModelManager.Load("sponza", "assets/models/sponza/sponza.obj" /*no material path - in same dir as obj*/);
         // Sponza entity setup
         Core::Node sponza = Core::Node();
-        mat4* position2 = new mat4();
-        Model* model2 = m_ModelManager.Get("sponza");
+        auto position2 = std::make_shared<mat4>();
+        auto model2 = m_ModelManager.Get("sponza");
         MathHelper::CreateTansform(*position2, glm::vec3(0.0f, -7.0f, 0.0f), glm::quat(), glm::vec3(0.33f));
         transformMap->insert(std::make_pair(sponza.GetID(), position2));
         modelMap->insert(std::make_pair(sponza.GetID(), model2));
@@ -89,33 +95,32 @@ namespace Engine
         m_RenderSystem->SetModelMap(*modelMap);
 
         using namespace Core::Input;
-        GLWindow* window = &m_RenderSystem->GetGLWindow();
+        auto window = m_RenderSystem->GetGLWindow();
         m_KeyboardInputManager->AddWindowKeyCallback(window, GLFW_KEY_ESCAPE, Release, [=](Modifier) { m_Running = false; });
-        m_KeyboardInputManager->AddWindowKeyCallback(window, GLFW_KEY_P, Release, [=](Modifier) { m_Paused  = !m_Paused; });
-        m_KeyboardInputManager->AddWindowKeyCallback(window, GLFW_KEY_TAB, Release, [&](Modifier) { m_RenderSystem->GetGLWindow().ToggleLockedCursor(); });
+        m_KeyboardInputManager->AddWindowKeyCallback(window, GLFW_KEY_TAB, Release, [&](Modifier) { m_RenderSystem->GetGLWindow()->ToggleLockedCursor(); });
         m_KeyboardInputManager->AddWindowKeyCallback(window, GLFW_KEY_X, Release, [&](Modifier) { m_RenderSystem->ToggleWireframe(); });
         m_KeyboardInputManager->AddWindowKeyCallback(window, GLFW_KEY_J, Release, [&](Modifier) { m_RenderSystem->ToggleSAO(); });
         m_KeyboardInputManager->AddWindowKeyCallback(window, GLFW_KEY_K, Release, [&](Modifier) { m_RenderSystem->ToggleFXAA(); });
         m_KeyboardInputManager->AddWindowKeyCallback(window, GLFW_KEY_L, Release, [&](Modifier) { m_RenderSystem->ToggleMotionBlur(); });
-        m_KeyboardInputManager->AddWindowKeyCallback(window, GLFW_KEY_B, Release, [&](Modifier) { m_RenderSystem->TogglePointLightRender(); });
-        m_KeyboardInputManager->AddWindowKeyCallback(window, GLFW_KEY_N, Release, [&](Modifier) { m_RenderSystem->ToggleDirectionalLightRender(); });
-        m_KeyboardInputManager->AddWindowKeyCallback(window, GLFW_KEY_M, Release, [&](Modifier) { m_RenderSystem->ToggleEnviromentLightRender(); });
+        m_KeyboardInputManager->AddWindowKeyCallback(window, GLFW_KEY_P, Release, [&](Modifier) { m_RenderSystem->TogglePointLightRender(); });
+        m_KeyboardInputManager->AddWindowKeyCallback(window, GLFW_KEY_O, Release, [&](Modifier) { m_RenderSystem->ToggleDirectionalLightRender(); });
+        m_KeyboardInputManager->AddWindowKeyCallback(window, GLFW_KEY_I, Release, [&](Modifier) { m_RenderSystem->ToggleEnviromentLightRender(); });
         //m_KeyboardInputManager->AddWindowKeyCallback(window, GLFW_KEY_T, Release, [&](Modifier) { m_RenderSystem->ToggleToneMapping(1); });
         //m_KeyboardInputManager->AddWindowKeyCallback(window, GLFW_KEY_Y, Release, [&](Modifier) { m_RenderSystem->ToggleToneMapping(2); });
         //m_KeyboardInputManager->AddWindowKeyCallback(window, GLFW_KEY_U, Release, [&](Modifier) { m_RenderSystem->ToggleToneMapping(3); });
 
-        m_KeyboardInputManager->AddWindowKeyCallback(window, GLFW_KEY_A, Hold, [&](Modifier) { m_RenderSystem->GetCamera().TranslateXZ(-MathHelper::UnitRight()); });
-        m_KeyboardInputManager->AddWindowKeyCallback(window, GLFW_KEY_D, Hold, [&](Modifier) { m_RenderSystem->GetCamera().TranslateXZ(MathHelper::UnitRight()); });
-        m_KeyboardInputManager->AddWindowKeyCallback(window, GLFW_KEY_W, Hold, [&](Modifier) { m_RenderSystem->GetCamera().Translate(MathHelper::UnitForward()); });
-        m_KeyboardInputManager->AddWindowKeyCallback(window, GLFW_KEY_S, Hold, [&](Modifier) { m_RenderSystem->GetCamera().Translate(-MathHelper::UnitForward()); });
-        m_KeyboardInputManager->AddWindowKeyCallback(window, GLFW_KEY_Q, Hold, [&](Modifier) { m_RenderSystem->GetCamera().Translate(-MathHelper::UnitUp()); });
-        m_KeyboardInputManager->AddWindowKeyCallback(window, GLFW_KEY_E, Hold, [&](Modifier) { m_RenderSystem->GetCamera().Translate(MathHelper::UnitUp()); });
+        m_KeyboardInputManager->AddWindowKeyCallback(window, GLFW_KEY_A, Hold, [&](Modifier m) { m_RenderSystem->GetCamera()->TranslateXZ(-MathHelper::UnitRight() * m_DeltaTime * (m == Shift ? m_SprintSpeed : m_NormalSpeed)); });
+        m_KeyboardInputManager->AddWindowKeyCallback(window, GLFW_KEY_D, Hold, [&](Modifier m) { m_RenderSystem->GetCamera()->TranslateXZ(MathHelper::UnitRight()  * m_DeltaTime * (m == Shift ? m_SprintSpeed : m_NormalSpeed)); });
+        m_KeyboardInputManager->AddWindowKeyCallback(window, GLFW_KEY_W, Hold, [&](Modifier m) { m_RenderSystem->GetCamera()->Translate(MathHelper::UnitForward()  * m_DeltaTime * (m == Shift ? m_SprintSpeed : m_NormalSpeed)); });
+        m_KeyboardInputManager->AddWindowKeyCallback(window, GLFW_KEY_S, Hold, [&](Modifier m) { m_RenderSystem->GetCamera()->Translate(-MathHelper::UnitForward() * m_DeltaTime * (m == Shift ? m_SprintSpeed : m_NormalSpeed)); });
+        m_KeyboardInputManager->AddWindowKeyCallback(window, GLFW_KEY_Q, Hold, [&](Modifier m) { m_RenderSystem->GetCamera()->Translate(-MathHelper::UnitUp()      * m_DeltaTime * (m == Shift ? m_SprintSpeed : m_NormalSpeed)); });
+        m_KeyboardInputManager->AddWindowKeyCallback(window, GLFW_KEY_E, Hold, [&](Modifier m) { m_RenderSystem->GetCamera()->Translate(MathHelper::UnitUp()       * m_DeltaTime * (m == Shift ? m_SprintSpeed : m_NormalSpeed )); });
 
         m_MouseInputManager->AddDragMouseCallback(window, [&](DragData dd)
         { 
-            if (m_RenderSystem->GetGLWindow().IsCursorLocked())
+            if (m_RenderSystem->GetGLWindow()->IsCursorLocked())
             {
-                m_RenderSystem->GetCamera().Rotate(glm::vec3(dd.DeltaX * m_DeltaTime * m_MouseSensitivity, dd.DeltaY * m_DeltaTime * m_MouseSensitivity, 0.0f));
+                m_RenderSystem->GetCamera()->Rotate(glm::vec3(dd.DeltaX * m_DeltaTime * m_MouseSensitivity, dd.DeltaY * m_DeltaTime * m_MouseSensitivity, 0.0f));
             }
         });
     }
@@ -126,20 +131,26 @@ namespace Engine
 
     void Engine::Run()
     {
+        using namespace Core::Logging;
         m_Running = true;
         try
         {
             while (m_Running)
             {
                 m_DeltaTime = m_FPSLimiter->Delta(m_FPSLimit);
-                m_FixedTime = m_FixedLimiter->Fixed(m_FPSLimit);
+                m_FixedTime = m_FixedTimer->Fixed(m_FPSLimit);
                 Tick();
             }
+        }
+        catch (const std::exception& ex)
+        {
+            m_Running = false;
+            Log::LogException("Error in Caerulus Engine", ex.what());
         }
         catch (...)
         {
             m_Running = false;
-            std::cerr << "Error in Caerulus Engine!"  << std::endl;
+            Log::LogError("Unknown error in Caerulus Engine");
         }
     }
 
@@ -147,29 +158,21 @@ namespace Engine
     {
         glfwPollEvents();
 
-        if (!m_Paused)
+        for (auto updatable : m_Tickable)
         {
-            //std::cout << "DeltaTime : " << m_DeltaTime << std::endl;
-            for (auto updatable : m_Tickable)
-            {
-                updatable->Update(m_DeltaTime);
-            }
-
-            //std::cout << "FixedTime : " << m_FixedTime << std::endl;
-            for (auto updatable : m_Tickable)
-            {
-                updatable->FixedUpdate(m_FixedTime);
-            }
-
-            for (auto updatable : m_Tickable)
-            {
-                updatable->LateUpdate(m_DeltaTime);
-            }
+            updatable->PreUpdate(m_DeltaTime);
         }
-        else
+
+        //std::cout << "DeltaTime : " << m_DeltaTime << std::endl;
+        for (auto updatable : m_Tickable)
         {
-            m_KeyboardInputManager->Update(0.0f);
-            m_MouseInputManager->Update(0.0f);
+            updatable->Update(m_DeltaTime);
+        }
+
+        //std::cout << "FixedTime : " << m_FixedTime << std::endl;
+        for (auto updatable : m_Tickable)
+        {
+            updatable->FixedUpdate(m_FixedTime);
         }
     }
 }

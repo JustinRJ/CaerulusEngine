@@ -28,10 +28,6 @@ namespace Graphics
             GenerateBuffer();
         }
 
-        PlaneGeometry::~PlaneGeometry()
-        {
-        }
-
         void PlaneGeometry::Draw() const
         {
             glBindVertexArray(m_VAO);

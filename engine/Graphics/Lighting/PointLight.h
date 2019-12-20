@@ -10,7 +10,7 @@ namespace Graphics
         {
         public:
             PointLight(const vec4& colour, const vec3& position, float radius);
-            virtual ~PointLight();
+            virtual ~PointLight() = default;
 
             const vec3& GetPosition() const;
             void SetPosition(const vec3& pos);

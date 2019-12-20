@@ -208,17 +208,16 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Input\InputDefines.h" />
-    <ClInclude Include="Input\KeyboardInputManager.hpp" />
-    <ClInclude Include="Input\MouseInputManager.hpp" />
+    <ClInclude Include="Input\KeyboardInputManager.h" />
+    <ClInclude Include="Input\MouseInputManager.h" />
     <ClInclude Include="Interface\INode.h" />
     <ClInclude Include="Interface\ISerializable.h" />
     <ClInclude Include="Interface\ITickable.h" />
+    <ClInclude Include="Logging\Log.h" />
     <ClInclude Include="Math\MathHelper.h" />
     <ClInclude Include="Node.h" />
     <ClInclude Include="stdafx.h" />
-    <ClInclude Include="String\StringHelper.h" />
-    <ClInclude Include="String\Tokenizer.h" />
-    <ClInclude Include="Time\FixedLimiter.h" />
+    <ClInclude Include="Time\FixedTimer.h" />
     <ClInclude Include="Time\FPSLimiter.h" />
     <ClInclude Include="Time\Time.h" />
     <ClInclude Include="Time\Timer.h" />
@@ -233,9 +232,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="String\StringHelper.cpp" />
-    <ClCompile Include="String\Tokenizer.cpp" />
-    <ClCompile Include="Time\FixedLimiter.cpp" />
+    <ClCompile Include="Time\FixedTimer.cpp" />
     <ClCompile Include="Time\FPSLimiter.cpp" />
     <ClCompile Include="Time\Time.cpp" />
     <ClCompile Include="Time\Timer.cpp" />

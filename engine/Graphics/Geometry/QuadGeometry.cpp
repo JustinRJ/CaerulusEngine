@@ -26,10 +26,6 @@ namespace Graphics
             GenerateBuffer();
         }
 
-        QuadGeometry::~QuadGeometry()
-        {
-        }
-
         void QuadGeometry::Draw() const
         {
             glBindVertexArray(m_VAO);

@@ -14,7 +14,7 @@ namespace Graphics
         public:
             Geometry();
             Geometry(const mat4& transform);
-            virtual ~Geometry();
+            virtual ~Geometry() = default;
 
             virtual void Draw() const = 0;
 

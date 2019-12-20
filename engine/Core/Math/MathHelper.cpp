@@ -107,9 +107,9 @@ namespace Core
             mat4 scaleM = scale(mat4(1.0f), GetScale(outTransform));
             mat4 rotateM = mat4_cast(normalize(rotation));
 
-            for (unsigned int i = X; i < W; i++)
+            for (unsigned int i = X; i < W; ++i)
             {
-                for (unsigned int j = X; j < W; j++)
+                for (unsigned int j = X; j < W; ++j)
                 {
                     outTransform[i][j] = (rotateM * scaleM)[i][j];
                 }

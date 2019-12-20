@@ -93,38 +93,33 @@ namespace Graphics
         {
         public:
 
-            RenderSystem(GLWindow& window);
+            RenderSystem(std::shared_ptr<GLWindow> window, std::shared_ptr<Camera> camera);
 
+            void SetGLWindow(std::shared_ptr<GLWindow> window);
+            std::shared_ptr<GLWindow> GetGLWindow();
+
+            void SetCamera(std::shared_ptr<Camera> camera);
+            std::shared_ptr<Camera>GetCamera();
+
+            void SetSkyBox(std::shared_ptr<Texture> skyBox);
+            std::shared_ptr<Texture> GetSkyBox() const;
+
+            void PreUpdate(float deltaTime) override {}
             void Update(float deltaTime) override;
-            void FixedUpdate(float fixedTime) override {};
-            void LateUpdate(float deltaTime) override {};
-            void Reset() override {};
+            void FixedUpdate(float fixedTime) override {}
+            void Reset() override {}
 
-            void SetCamera(Camera& camera);
-            Camera& GetCamera();
+            void SetPointLightMap(std::map<unsigned int, std::shared_ptr<PointLight>> idPointMap);
+            const std::map<unsigned int, std::shared_ptr<PointLight>>& GetPointLightMap() const;
 
-            void SetSkyBox(Texture& skyBox);
-            Texture& GetSkyBox();
+            void SetDirectionalLightMap(std::map<unsigned int, std::shared_ptr<DirectionalLight>> idDirectionalMap);
+            const std::map<unsigned int, std::shared_ptr<DirectionalLight>>& GetDirectionalLightMap() const;
 
-            void SetGLWindow(GLWindow& window);
-            GLWindow& GetGLWindow();
+            void SetModelMap(const std::map<unsigned int, std::shared_ptr<Model>>& modelMap);
+            const std::map<unsigned int, std::shared_ptr<Model>>& GetModelMap() const;
 
-            void SetPointLightMap(std::map<unsigned int, Graphics::Light::PointLight*> idPointMap);
-            const std::map<unsigned int, Graphics::Light::PointLight*>& GetPointLightMap() const;
-
-            void SetDirectionalLightMap(std::map<unsigned int, Graphics::Light::DirectionalLight*> idDirectionalMap);
-            const std::map<unsigned int, Graphics::Light::DirectionalLight*>& GetDirectionalLightMap() const;
-
-            void SetModelMap(const std::map<unsigned int, Model*>& modelMap);
-            const std::map<unsigned int, Model*>& GetModelMap() const;
-
-            void SetTransformMap(const std::map<unsigned int, mat4*>& transformMap);
-            const std::map<unsigned int, mat4*>& GetTransformMap() const;
-
-            IBL& GetIBL() const;
-            SAO& GetSAO() const;
-            GPUProfiler& GetRenderProfiler() const;
-            StandardShaders& GetShaders() const;
+            void SetTransformMap(const std::map<unsigned int, std::shared_ptr<mat4>>& transformMap);
+            const std::map<unsigned int, std::shared_ptr<mat4>>& GetTransformMap() const;
 
             void ToggleWireframe();
             void ToggleSAO();
@@ -167,19 +162,20 @@ namespace Graphics
             void UseNullMaterial();
             void ProfileGPUs();
 
-            GLWindow& m_Window;
+            std::shared_ptr<GLWindow> m_Window;
 
-            Camera& m_Camera;
+            std::shared_ptr<Camera> m_Camera;
 
-            GPUProfiler& m_Profiler;
+            GPUProfiler m_Profiler;
 
-            SAO& m_SAO;
+            SAO m_SAO;
 
             // Move to IBL
-            Texture* m_SkyBox;
+            std::shared_ptr<Texture> m_SkyBox;
 
-            IBL* m_IBL;
-            StandardShaders* m_Shaders;
+            std::shared_ptr<IBL> m_IBL;
+
+            std::shared_ptr<StandardShaders> m_Shaders;
 
             bool m_PointMode;
             bool m_DirectionalMode;
@@ -239,15 +235,13 @@ namespace Graphics
             GLuint m_PrefilterRBO;
 
             // Map of ID to absolute transform
-            std::map<unsigned int, Model*> m_ModelMap;
+            std::map<unsigned int, std::shared_ptr<mat4>> m_TransformMap;
             // Map of ID to  model
-            std::map<unsigned int, mat4*> m_TransformMap;
-            // Map of ID to material
-            std::map<unsigned int, Material*> m_MaterialMap;
+            std::map<unsigned int, std::shared_ptr<Model>> m_ModelMap;
             // Map of ID to point light
-            std::map<unsigned int, Graphics::Light::PointLight*> m_PointLightMap;
+            std::map<unsigned int, std::shared_ptr<PointLight>> m_PointLightMap;
             // Map of ID to directional light
-            std::map<unsigned int, Graphics::Light::DirectionalLight*> m_DirectionalLightMap;
+            std::map<unsigned int, std::shared_ptr<DirectionalLight>> m_DirectionalLightMap;
 
             // UE4 dielectric fresnel
             vec3 m_MaterialF0;

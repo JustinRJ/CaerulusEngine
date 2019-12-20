@@ -1,21 +1,17 @@
 #include "stdafx.h"
 
-#include "FixedLimiter.h"
+#include "FixedTimer.h"
 
 namespace Core
 {
     namespace Time
     {
-        FixedLimiter::FixedLimiter() :
+        FixedTimer::FixedTimer() :
             m_AccumulatedTime(0.0f)
         {
         }
 
-        FixedLimiter::~FixedLimiter()
-        {
-        }
-
-        float FixedLimiter::Fixed(float fixed)
+        float FixedTimer::Fixed(float fixed)
         {
             m_AccumulatedTime += Timer::Delta();
             unsigned int count = 0;

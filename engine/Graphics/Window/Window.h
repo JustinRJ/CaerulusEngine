@@ -50,7 +50,7 @@ namespace Graphics
         {
         public:
             Window();
-            virtual ~Window();
+            virtual ~Window() = default;
 
             virtual const State& GetActiveState() const;
             virtual void Set(const std::string& title, int x, int y, int bits, bool fullscreen = false);

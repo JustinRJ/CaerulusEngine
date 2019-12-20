@@ -3,53 +3,44 @@
   <ItemGroup>
     <ClCompile Include="stdafx.cpp" />
     <ClCompile Include="dllmain.cpp" />
-    <ClCompile Include="Model\ModelManager.cpp">
-      <Filter>Model</Filter>
+    <ClCompile Include="Managers\MaterialManager.cpp">
+      <Filter>Managers</Filter>
     </ClCompile>
-    <ClCompile Include="Material\MaterialManager.cpp">
-      <Filter>Material</Filter>
+    <ClCompile Include="Managers\ModelManager.cpp">
+      <Filter>Managers</Filter>
     </ClCompile>
-    <ClCompile Include="Shader\ShaderManager.cpp">
-      <Filter>Shader</Filter>
+    <ClCompile Include="Managers\ShaderManager.cpp">
+      <Filter>Managers</Filter>
     </ClCompile>
-    <ClCompile Include="Shader\ShaderSourceManager.cpp">
-      <Filter>Shader</Filter>
+    <ClCompile Include="Managers\ShaderSourceManager.cpp">
+      <Filter>Managers</Filter>
     </ClCompile>
-    <ClCompile Include="Texture\TextureManager.cpp">
-      <Filter>Texture</Filter>
+    <ClCompile Include="Managers\TextureManager.cpp">
+      <Filter>Managers</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
-    <ClInclude Include="Model\ModelManager.h">
-      <Filter>Model</Filter>
-    </ClInclude>
-    <ClInclude Include="Material\MaterialManager.h">
-      <Filter>Material</Filter>
-    </ClInclude>
-    <ClInclude Include="Shader\ShaderManager.h">
-      <Filter>Shader</Filter>
-    </ClInclude>
-    <ClInclude Include="Shader\ShaderSourceManager.h">
-      <Filter>Shader</Filter>
-    </ClInclude>
-    <ClInclude Include="Texture\TextureManager.h">
-      <Filter>Texture</Filter>
-    </ClInclude>
     <ClInclude Include="Manager.h" />
+    <ClInclude Include="Managers\MaterialManager.h">
+      <Filter>Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="Managers\ModelManager.h">
+      <Filter>Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="Managers\ShaderManager.h">
+      <Filter>Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="Managers\ShaderSourceManager.h">
+      <Filter>Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="Managers\TextureManager.h">
+      <Filter>Managers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <Filter Include="Model">
-      <UniqueIdentifier>{1f6949d5-4fe2-4126-89e3-8525e044fa91}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Texture">
-      <UniqueIdentifier>{cd744ded-cc10-4dcf-8d22-9022c06acfa8}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Shader">
-      <UniqueIdentifier>{44f3a258-d3a5-4aa8-b886-f5e780fb404d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Material">
-      <UniqueIdentifier>{495c7f1c-e424-4b6c-b753-d157a614235b}</UniqueIdentifier>
+    <Filter Include="Managers">
+      <UniqueIdentifier>{d61b4cee-7988-42d2-a1a6-07bbff3e3436}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

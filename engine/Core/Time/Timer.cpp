@@ -33,10 +33,6 @@ namespace Core
             }
         }
 
-        Timer::~Timer()
-        {
-        }
-
         void Timer::Start()
         {
             if (m_Running == false)

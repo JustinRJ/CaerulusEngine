@@ -14,10 +14,6 @@ namespace Graphics
             m_NewState = State(title, x, y, bits, fullscreen);
         }
 
-        Window::~Window()
-        {
-        }
-
         const State& Window::GetActiveState() const
         {
             return m_ActiveState;

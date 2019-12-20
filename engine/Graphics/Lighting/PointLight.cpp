@@ -14,10 +14,6 @@ namespace Graphics
         {
         }
 
-        PointLight::~PointLight()
-        {
-        }
-
         const vec3& PointLight::GetPosition() const
         {
             return m_Position;

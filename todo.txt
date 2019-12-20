@@ -1,7 +1,10 @@
 Add colour class
 
-Set m_UniformLocations in ShaderSource via reading file
-
 Rename glsl (shader files) "color" -> "colour"! (and code)
 
-Change Manager to return shared_ptr<T> and change all code to use shared_ptr (Managers)
+Set m_UniformLocations in ShaderSource via reading file
+
+Create component system, that's where node.h will live
+This should live in the Managers.dll
+
+Load shaders into managers

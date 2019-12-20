@@ -11,10 +11,6 @@ namespace Graphics
         {
         }
 
-        Light::~Light()
-        {
-        }
-
         const vec4& Light::GetColour() const
         {
             return m_Colour;

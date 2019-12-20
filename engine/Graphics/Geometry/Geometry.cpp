@@ -18,10 +18,6 @@ namespace Graphics
             GenerateBuffer();
         }
 
-        Geometry::~Geometry()
-        {
-        }
-
         void Geometry::GenerateBuffer()
         {
             glGenVertexArrays(1, &m_VAO);

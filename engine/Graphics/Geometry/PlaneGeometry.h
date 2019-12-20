@@ -13,7 +13,7 @@ namespace Graphics
 
             PlaneGeometry();
             PlaneGeometry(const mat4& transform);
-            virtual ~PlaneGeometry();
+            virtual ~PlaneGeometry() = default;
 
             void Draw() const override;
 

@@ -45,7 +45,7 @@ namespace Graphics
             {
             }
 
-            void Draw(std::vector<Material*> material, bool wireframe) const
+            void Draw(bool wireframe) const
             {
                 glBindVertexArray(m_VAO);
                 glDrawElements(wireframe ? GL_LINES : GL_TRIANGLES, (GLsizei)m_Indices.size(), GL_UNSIGNED_INT, 0);
@@ -103,15 +103,15 @@ namespace Graphics
 
             const std::vector<Mesh>& GetMeshes() const;
 
-            const std::vector<Material*>& GetMaterials() const;
-            void SetMaterials(std::vector<Material*> materials);
+            const std::vector<std::shared_ptr<Material>>& GetMaterials() const;
+            void SetMaterials(std::vector<std::shared_ptr<Material>> materials);
 
         private:
 
             bool m_IsLoaded;
             std::string m_Path;
             std::vector<Mesh>& m_Meshes;
-            std::vector<Material*> m_Materials;
+            std::vector<std::shared_ptr<Material>> m_Materials;
         };
     }
 }

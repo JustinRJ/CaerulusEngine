@@ -3,16 +3,16 @@
 #include "../Graphics/RenderSystem.h"
 #include "../Graphics/Window/GLWindow.h"
 
-#include "../Core/Input/MouseInputManager.hpp"
-#include "../Core/Input/KeyboardInputManager.hpp"
+#include "../Core/Input/MouseInputManager.h"
+#include "../Core/Input/KeyboardInputManager.h"
 #include "../Core/Time/FPSLimiter.h"
-#include "../Core/Time/FixedLimiter.h"
+#include "../Core/Time/FixedTimer.h"
 #include "../Core/Interface/ITickable.h"
 
-#include "../Managers/Model/ModelManager.h"
-#include "../Managers/Shader/ShaderManager.h"
-#include "../Managers/Texture/TextureManager.h"
-#include "../Managers/Material/MaterialManager.h"
+#include "../Managers/Managers/TextureManager.h"
+#include "../Managers/Managers/MaterialManager.h"
+#include "../Managers/Managers/ModelManager.h"
+#include "../Managers/Managers/ShaderManager.h"
 
 namespace Engine
 {
@@ -23,10 +23,7 @@ namespace Engine
     using namespace Graphics::Window;
     using namespace Graphics::Render;
 
-    using namespace Managers::Model;
-    using namespace Managers::Texture;
-    using namespace Managers::Material;
-    using namespace Managers::PipeLine;
+    using namespace Managers;
 
     class Engine
     {
@@ -44,17 +41,19 @@ namespace Engine
         int m_ArgCount;
         char** m_ArgValue;
 
-        bool m_Paused = false;
         bool m_Running = false;
 
         float m_DeltaTime = 0.0f;
         float m_FixedTime = 0.0f;
         float m_FPSLimit = 1.0f / 60.0f;
+        float m_NormalSpeed = 100.0f;
+        float m_SprintSpeed = 200.0f;
         double m_MouseSensitivity = 10.0;
 
         std::unique_ptr<FPSLimiter> m_FPSLimiter;
-        std::unique_ptr<FixedLimiter> m_FixedLimiter;
+        std::unique_ptr<FixedTimer> m_FixedTimer;
 
+        std::shared_ptr<Camera> m_Camera;
         std::shared_ptr<GLWindow> m_Window;
         std::shared_ptr<RenderSystem> m_RenderSystem;
         std::shared_ptr<KeyboardInputManager> m_KeyboardInputManager;

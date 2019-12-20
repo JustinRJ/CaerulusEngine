@@ -9,14 +9,6 @@ namespace Graphics
 {
     namespace Resource
     {
-        enum TextureType
-        {
-            Default = 0,
-            HDR = 1,
-            CustomHDR = 2,
-            Cube = 3,
-        };
-
         class CAERULUS_GRAPHICS Texture
         {
         public:

@@ -8,14 +8,14 @@ namespace Core
 {
     namespace Time
     {
-        class CAERULUS_CORE FixedLimiter : public Timer
+        class CAERULUS_CORE FixedTimer : public Timer
         {
         public:
 
-            FixedLimiter();
-            virtual ~FixedLimiter();
+            FixedTimer();
+            virtual ~FixedTimer() = default;
 
-            virtual float Fixed(float fixed);
+            float Fixed(float fixed);
 
         private:
 

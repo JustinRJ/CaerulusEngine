@@ -15,7 +15,7 @@ namespace Graphics
         public:
 
             Light(const vec4& colour);
-            virtual ~Light();
+            virtual ~Light() = default;
 
             void SetColour(const vec4& colour);
             const vec4& GetColour() const;

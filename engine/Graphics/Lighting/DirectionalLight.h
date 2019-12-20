@@ -10,7 +10,7 @@ namespace Graphics
         {
         public:
             DirectionalLight(const vec4& colour, const vec3& direction);
-            virtual ~DirectionalLight();
+            virtual ~DirectionalLight() = default;
 
             const vec3& GetDirection() const;
             void SetDirection(const vec3& direction);

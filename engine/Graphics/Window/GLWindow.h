@@ -10,6 +10,7 @@ namespace Graphics
 {
     namespace Window
     {
+        using namespace Geometry;
         class CAERULUS_GRAPHICS GLWindow : public Window
         {
         public:
@@ -22,10 +23,10 @@ namespace Graphics
             virtual void SwapBuffer() const override;
             virtual void* GetHandle() const override;
 
-            GLFWwindow* GetGLFWWindow() const;
+            std::shared_ptr<GLFWwindow> GetGLFWWindow() const;
 
-            void SetQuad(Geometry::QuadGeometry* quad);
-            Geometry::QuadGeometry* GetQuad() const;
+            void SetQuad(std::shared_ptr<QuadGeometry> quad);
+            std::shared_ptr<QuadGeometry> GetQuad() const;
             
             void Update();
             void ToggleLockedCursor();
@@ -33,8 +34,8 @@ namespace Graphics
             void CenterCursor();
         private:
 
-            GLFWwindow* m_Window;
-            Geometry::QuadGeometry* m_Quad;
+            std::shared_ptr<GLFWwindow> m_Window;
+            std::shared_ptr<QuadGeometry> m_Quad;
             bool m_LockedCursor;
         };
     }

@@ -13,9 +13,9 @@ namespace Core
         public:
 
             FPSLimiter();
-            virtual ~FPSLimiter();
+            virtual ~FPSLimiter() = default;
 
-            virtual float Delta(float frameLimit);
+            float Delta(float frameLimit);
 
         private:
 

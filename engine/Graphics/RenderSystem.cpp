@@ -3,7 +3,7 @@
 #include "RenderSystem.h"
 #include "../Core/Time/Timer.h"
 #include "../Core/Math/MathHelper.h"
-#include <iostream>
+#include "../Core/Logging/Log.h"
 
 namespace
 {
@@ -25,45 +25,45 @@ namespace Graphics
 {
     namespace Render
     {
-        RenderSystem::RenderSystem(GLWindow& window) :
+        RenderSystem::RenderSystem(std::shared_ptr<GLWindow> window, std::shared_ptr<Camera> camera) :
             m_Window(window),
-            m_Camera(*new Camera()),
-            m_Profiler(*new GPUProfiler()),
-            m_SAO(*new SAO())
+            m_Camera(camera)
         {
             glewExperimental = true;
 
+            using namespace Core::Logging;
             GLenum error = glGetError();
             if (error != GL_NO_ERROR)
             {
-                std::cout << "OpenGL Error: " << error << std::endl;
+                Log::LogError("OpenGL Error", std::to_string(error));
+                exit(1);
             }
 
             if (glewInit() != GLEW_OK)
             {
-                std::cerr << "Failed to init GLEW!" << std::endl;
+                Log::LogError("Failed to init GLEW!");
                 exit(1);
             }
 
-            m_Camera.SetFOV(CAMERA_INIT_FOV);
-            m_Camera.SetAspect(CAMERA_INIT_ASPECT);
-            m_Camera.SetNear(CAMERA_INIT_NEAR);
-            m_Camera.SetFar(CAMERA_INIT_FAR);
+            m_Camera->SetFOV(CAMERA_INIT_FOV);
+            m_Camera->SetAspect(CAMERA_INIT_ASPECT);
+            m_Camera->SetNear(CAMERA_INIT_NEAR);
+            m_Camera->SetFar(CAMERA_INIT_FAR);
 
-            m_Camera.SetViewMatrix(glm::lookAt(
+            m_Camera->SetViewMatrix(glm::lookAt(
                 CAMERA_INIT_POSITION,
                 CAMERA_INIT_FORWARD + CAMERA_INIT_POSITION,
                 CAMERA_INIT_UP));
 
-            m_Camera.SetProjMatrix(glm::perspective(
+            m_Camera->SetProjMatrix(glm::perspective(
                 glm::radians(CAMERA_INIT_FOV),
                 CAMERA_INIT_ASPECT,
                 CAMERA_INIT_NEAR,
                 CAMERA_INIT_FAR));
 
-            m_Camera.SetAperture(CAMERA_INIT_APETURE);
-            m_Camera.SetShutterSpeed(CAMERA_INIT_SHUTTER_SPEED);
-            m_Camera.SetISO(CAMERA_INIT_ISO);
+            m_Camera->SetAperture(CAMERA_INIT_APETURE);
+            m_Camera->SetShutterSpeed(CAMERA_INIT_SHUTTER_SPEED);
+            m_Camera->SetISO(CAMERA_INIT_ISO);
 
             m_PointMode         = true;
             m_DirectionalMode   = true;
@@ -89,14 +89,14 @@ namespace Graphics
 
             mat4 quadTransform;
             MathHelper::CreateTansform(quadTransform, vec3(1.0f), vec3(0.0f), vec3(0.0f));
-            m_Window.SetQuad(new QuadGeometry(quadTransform));
+            m_Window->SetQuad(std::make_shared<QuadGeometry>(quadTransform));
 
             // Temp lights
-            m_PointLightMap.insert(std::make_pair(0, new PointLight(vec4(1.0f, 1.0f, 1.0f, 1.0f), vec3(0.0, 0.0f, 0.0f), 25.0)));
-            m_DirectionalLightMap.insert(std::make_pair(0, new DirectionalLight(vec4(1.0f, 1.0f, 1.0f, 1.0f), vec3(0.0, -1.0f, 0.0f))));
+            m_PointLightMap.insert(std::make_pair(0, std::make_shared<PointLight>(vec4(1.0f, 1.0f, 1.0f, 1.0f), vec3(0.0, 0.0f, 0.0f), 1000.0)));
+            m_DirectionalLightMap.insert(std::make_pair(0, std::make_shared<DirectionalLight>(vec4(1.0f, 1.0f, 1.0f, 1.0f), vec3(0.0, -1.0f, 0.0f))));
 
             //IBL
-            m_IBL = new IBL();
+            m_IBL = std::make_shared<IBL>();
             m_IBL->MapLUT.CreateHDR(512, 512, GL_RG, GL_RG16F, GL_FLOAT, GL_LINEAR);
             m_IBL->MapCube.CreateCube(512, GL_RGB, GL_RGB16F, GL_FLOAT, GL_LINEAR_MIPMAP_LINEAR);
             m_IBL->MapIrradiance.CreateCube(32, GL_RGB, GL_RGB16F, GL_FLOAT, GL_LINEAR);
@@ -126,7 +126,7 @@ namespace Graphics
 
         void RenderSystem::SetCapabilities() const
         {
-            glViewport(0, 0, m_Window.GetActiveState().Width, m_Window.GetActiveState().Height);
+            glViewport(0, 0, m_Window->GetActiveState().Width, m_Window->GetActiveState().Height);
             glEnable(GL_DEPTH_TEST);
             glDepthFunc(GL_LESS);
             glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
@@ -134,7 +134,7 @@ namespace Graphics
 
         void RenderSystem::LoadShaders()
         {
-            m_Shaders = new StandardShaders();
+            m_Shaders = std::make_shared<StandardShaders>();
 
             m_Shaders->GBuffer.Load(
                 "assets/shaders/gBuffer.vert",
@@ -223,7 +223,7 @@ namespace Graphics
             // Position
             glGenTextures(1, &m_GPositionBuffer);
             glBindTexture(GL_TEXTURE_2D, m_GPositionBuffer);
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, m_Window.GetActiveState().Width, m_Window.GetActiveState().Height, 0, GL_RGBA, GL_FLOAT, NULL);
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, m_Window->GetActiveState().Width, m_Window->GetActiveState().Height, 0, GL_RGBA, GL_FLOAT, NULL);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
@@ -233,7 +233,7 @@ namespace Graphics
             // Albedo + Roughness
             glGenTextures(1, &m_GAlbedoBuffer);
             glBindTexture(GL_TEXTURE_2D, m_GAlbedoBuffer);
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, m_Window.GetActiveState().Width, m_Window.GetActiveState().Height, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, m_Window->GetActiveState().Width, m_Window->GetActiveState().Height, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
             glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, m_GAlbedoBuffer, 0);
@@ -241,7 +241,7 @@ namespace Graphics
             // Normals + Metalness
             glGenTextures(1, &m_GNormalBuffer);
             glBindTexture(GL_TEXTURE_2D, m_GNormalBuffer);
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, m_Window.GetActiveState().Width, m_Window.GetActiveState().Height, 0, GL_RGBA, GL_FLOAT, NULL);
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, m_Window->GetActiveState().Width, m_Window->GetActiveState().Height, 0, GL_RGBA, GL_FLOAT, NULL);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
             glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT2, GL_TEXTURE_2D, m_GNormalBuffer, 0);
@@ -249,7 +249,7 @@ namespace Graphics
             // Effects (AO + Velocity)
             glGenTextures(1, &m_GEffectsBuffer);
             glBindTexture(GL_TEXTURE_2D, m_GEffectsBuffer);
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, m_Window.GetActiveState().Width, m_Window.GetActiveState().Height, 0, GL_RGB, GL_FLOAT, NULL);
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, m_Window->GetActiveState().Width, m_Window->GetActiveState().Height, 0, GL_RGB, GL_FLOAT, NULL);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
             glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT3, GL_TEXTURE_2D, m_GEffectsBuffer, 0);
@@ -261,7 +261,7 @@ namespace Graphics
             // Z-Buffer
             glGenRenderbuffers(1, &m_DepthRBO);
             glBindRenderbuffer(GL_RENDERBUFFER, m_DepthRBO);
-            glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, m_Window.GetActiveState().Width, m_Window.GetActiveState().Height);
+            glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, m_Window->GetActiveState().Width, m_Window->GetActiveState().Height);
             glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, m_DepthRBO);
 
             // Check if the framebuffer is complete before continuing
@@ -278,7 +278,7 @@ namespace Graphics
             glBindFramebuffer(GL_FRAMEBUFFER, m_SAOFBO);
             glGenTextures(1, &m_SAOBuffer);
             glBindTexture(GL_TEXTURE_2D, m_SAOBuffer);
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, m_Window.GetActiveState().Width, m_Window.GetActiveState().Height, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, m_Window->GetActiveState().Width, m_Window->GetActiveState().Height, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
             glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_SAOBuffer, 0);
@@ -293,7 +293,7 @@ namespace Graphics
             glBindFramebuffer(GL_FRAMEBUFFER, m_SAOBlurFBO);
             glGenTextures(1, &m_SAOBlurBuffer);
             glBindTexture(GL_TEXTURE_2D, m_SAOBlurBuffer);
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, m_Window.GetActiveState().Width, m_Window.GetActiveState().Height, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, m_Window->GetActiveState().Width, m_Window->GetActiveState().Height, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
             glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_SAOBlurBuffer, 0);
@@ -314,7 +314,7 @@ namespace Graphics
 
             glGenTextures(1, &m_PostProcessBuffer);
             glBindTexture(GL_TEXTURE_2D, m_PostProcessBuffer);
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, m_Window.GetActiveState().Width, m_Window.GetActiveState().Height, 0, GL_RGBA, GL_FLOAT, NULL);
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, m_Window->GetActiveState().Width, m_Window->GetActiveState().Height, 0, GL_RGBA, GL_FLOAT, NULL);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
             glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_PostProcessBuffer, 0);
@@ -437,11 +437,11 @@ namespace Graphics
             m_Shaders->IntegrateIBL.Use();
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-            m_Window.GetQuad()->Draw();
+            m_Window->GetQuad()->Draw();
 
             glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-            glViewport(0, 0, m_Window.GetActiveState().Width, m_Window.GetActiveState().Height);
+            glViewport(0, 0, m_Window->GetActiveState().Width, m_Window->GetActiveState().Height);
         }
 
         void RenderSystem::InitProfileQuery()
@@ -458,21 +458,22 @@ namespace Graphics
             //Time taken to render geometry
             glQueryCounter(m_Profiler.QueryIDGeometry[GPUProfiler::Start], GL_TIMESTAMP);
 
-            mat4 view = m_Camera.GetViewMatrix() /** this by transform of camera*/;
-            mat4 proj = m_Camera.GetProjMatrix();
+            mat4 view = m_Camera->GetViewMatrix() /** this by transform of camera*/;
+            mat4 proj = m_Camera->GetProjMatrix();
 
             // geo rendering
             m_Shaders->GBuffer.Use();
-            SetCameraUniforms(view, proj, m_Camera.GetNear(), m_Camera.GetFar());
+            SetCameraUniforms(view, proj, m_Camera->GetNear(), m_Camera->GetFar());
+
+            glm::mat4 cameraTransform;
+            MathHelper::CreateTansform(cameraTransform, m_Camera->GetPosition(), m_Camera->GetForward(), glm::vec3(1.0f));
+            m_ProjViewModel = proj * view * cameraTransform;
 
             for (auto model : m_ModelMap)
             {
                 if (model.second)
                 {
                     mat4 transform = *m_TransformMap.at(model.first);
-
-                    // TODO - broken motion blue shader
-                    m_ProjViewModel = proj * view * transform;
                     SetModelUniforms(transform);
                     model.second->Draw(m_WireframeMode);
                 }
@@ -487,30 +488,30 @@ namespace Graphics
             glUniformMatrix4fv(glGetUniformLocation(m_Shaders->GBuffer.GetHandle(), "view"), 1, GL_FALSE, value_ptr(view));
             glUniformMatrix4fv(glGetUniformLocation(m_Shaders->GBuffer.GetHandle(), "nearPlane"), 1, GL_FALSE, &nearPlane);
             glUniformMatrix4fv(glGetUniformLocation(m_Shaders->GBuffer.GetHandle(), "farPlane"), 1, GL_FALSE, &farPlane);
+            glUniformMatrix4fv(glGetUniformLocation(m_Shaders->GBuffer.GetHandle(), "projViewModel"), 1, GL_FALSE, value_ptr(m_ProjViewModel));
+            glUniformMatrix4fv(glGetUniformLocation(m_Shaders->GBuffer.GetHandle(), "projViewModelPrev"), 1, GL_FALSE, value_ptr(m_ProjViewModelPrev));
         }
 
         void RenderSystem::SetModelUniforms(const mat4& model) const
         {
-            glUniformMatrix4fv(glGetUniformLocation(m_Shaders->GBuffer.GetHandle(), "projViewModel"), 1, GL_FALSE, value_ptr(m_ProjViewModel));
-            glUniformMatrix4fv(glGetUniformLocation(m_Shaders->GBuffer.GetHandle(), "projViewModelPrev"), 1, GL_FALSE, value_ptr(m_ProjViewModelPrev));
             glUniformMatrix4fv(glGetUniformLocation(m_Shaders->GBuffer.GetHandle(), "model"), 1, GL_FALSE, value_ptr(model));
         }
 
         void RenderSystem::Update(float deltaTime)
         {
-            m_Window.Update();
+            m_Window->Update();
             FlushErrors();
             Clear();
             DrawAll();
             SwapBuffer(deltaTime);
         }
 
-        void RenderSystem::SetCamera(Camera& camera)
+        void RenderSystem::SetCamera(std::shared_ptr<Camera> camera)
         {
             m_Camera = camera;
         }
 
-        Camera& RenderSystem::GetCamera()
+        std::shared_ptr<Camera> RenderSystem::GetCamera()
         {
             return m_Camera;
         }
@@ -530,22 +531,22 @@ namespace Graphics
 
         void RenderSystem::SwapBuffer(float frameRate)
         {
-            mat4 view = m_Camera.GetViewMatrix()/* * m_TransformCM->GetTransform(camera)*/;
-            mat4 proj = m_Camera.GetProjMatrix();
+            mat4 view = m_Camera->GetViewMatrix()/* * m_TransformCM->GetTransform(camera)*/;
+            mat4 proj = m_Camera->GetProjMatrix();
 
             //update previous projviewmodel
             m_ProjViewModelPrev = m_ProjViewModel;
 
             SAORendering(proj);
             LightRendering(view, proj);
-            PostProcessRendering(frameRate, m_Camera.GetAperture(), m_Camera.GetShutterSpeed(), m_Camera.GetISO());
+            PostProcessRendering(frameRate, m_Camera->GetAperture(), m_Camera->GetShutterSpeed(), m_Camera->GetISO());
             ForwardPassRendering(view, proj);
             if (m_ProfilingMode)
             {
                 ProfileGPUs();
             }
 
-            m_Window.SwapBuffer();
+            m_Window->SwapBuffer();
         }
 
         void RenderSystem::ProfileGPUs()
@@ -608,10 +609,10 @@ namespace Graphics
                 glUniform1f(glGetUniformLocation(m_Shaders->SAO.GetHandle(), "saoBias"), m_SAO.Bias);
                 glUniform1f(glGetUniformLocation(m_Shaders->SAO.GetHandle(), "saoScale"), m_SAO.Scale);
                 glUniform1f(glGetUniformLocation(m_Shaders->SAO.GetHandle(), "saoContrast"), m_SAO.Contrast);
-                glUniform1i(glGetUniformLocation(m_Shaders->SAO.GetHandle(), "viewportWidth"), m_Window.GetActiveState().Width);
-                glUniform1i(glGetUniformLocation(m_Shaders->SAO.GetHandle(), "viewportHeight"), m_Window.GetActiveState().Height);
+                glUniform1i(glGetUniformLocation(m_Shaders->SAO.GetHandle(), "viewportWidth"), m_Window->GetActiveState().Width);
+                glUniform1i(glGetUniformLocation(m_Shaders->SAO.GetHandle(), "viewportHeight"), m_Window->GetActiveState().Height);
 
-                m_Window.GetQuad()->Draw();
+                m_Window->GetQuad()->Draw();
 
                 glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
@@ -625,7 +626,7 @@ namespace Graphics
                 glActiveTexture(GL_TEXTURE0);
                 glBindTexture(GL_TEXTURE_2D, m_SAOBuffer);
 
-                m_Window.GetQuad()->Draw();
+                m_Window->GetQuad()->Draw();
 
                 glBindFramebuffer(GL_FRAMEBUFFER, 0);
             }
@@ -692,7 +693,7 @@ namespace Graphics
             glUniform1i(glGetUniformLocation(m_Shaders->LightingBRDF.GetHandle(), "iblMode"), m_IBLMode);
             glUniform1i(glGetUniformLocation(m_Shaders->LightingBRDF.GetHandle(), "attenuationMode"), m_AttenuationMode);
 
-            m_Window.GetQuad()->Draw();
+            m_Window->GetQuad()->Draw();
 
             glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
@@ -707,7 +708,7 @@ namespace Graphics
             m_Shaders->FirstPassPostProcess.Use();
 
             glUniform1i(glGetUniformLocation(m_Shaders->FirstPassPostProcess.GetHandle(), "gBufferView"), m_GBufferView);
-            glUniform2f(glGetUniformLocation(m_Shaders->FirstPassPostProcess.GetHandle(), "screenTextureSize"), 1.0f / m_Window.GetActiveState().Width, 1.0f / m_Window.GetActiveState().Height);
+            glUniform2f(glGetUniformLocation(m_Shaders->FirstPassPostProcess.GetHandle(), "screenTextureSize"), 1.0f / m_Window->GetActiveState().Width, 1.0f / m_Window->GetActiveState().Height);
             glUniform1f(glGetUniformLocation(m_Shaders->FirstPassPostProcess.GetHandle(), "cameraAperture"), cameraAperture);
             glUniform1f(glGetUniformLocation(m_Shaders->FirstPassPostProcess.GetHandle(), "cameraShutterSpeed"), cameraShutterSpeed);
             glUniform1f(glGetUniformLocation(m_Shaders->FirstPassPostProcess.GetHandle(), "cameraISO"), cameraISO);
@@ -725,7 +726,7 @@ namespace Graphics
             glActiveTexture(GL_TEXTURE2);
             glBindTexture(GL_TEXTURE_2D, m_GEffectsBuffer);
 
-            m_Window.GetQuad()->Draw();
+            m_Window->GetQuad()->Draw();
 
             glQueryCounter(m_Profiler.QueryIDPostprocess[GPUProfiler::Stop], GL_TIMESTAMP);
         }
@@ -740,11 +741,11 @@ namespace Graphics
             // Copy the depth informations from the Geometry Pass into the default framebuffer
             glBlitFramebuffer(
                 0, 0,
-                m_Window.GetActiveState().Width,
-                m_Window.GetActiveState().Height,
+                m_Window->GetActiveState().Width,
+                m_Window->GetActiveState().Height,
                 0, 0,
-                m_Window.GetActiveState().Width,
-                m_Window.GetActiveState().Height,
+                m_Window->GetActiveState().Width,
+                m_Window->GetActiveState().Height,
                 GL_DEPTH_BUFFER_BIT, GL_NEAREST);
 
             glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -822,83 +823,63 @@ namespace Graphics
             m_ToneMappingMode = tone;
         }
 
-        IBL& RenderSystem::GetIBL() const
+        void RenderSystem::SetSkyBox(std::shared_ptr<Texture> skyBox)
         {
-            return *m_IBL;
-        }
-
-        SAO& RenderSystem::GetSAO() const
-        {
-            return m_SAO;
-        }
-
-        GPUProfiler& RenderSystem::GetRenderProfiler() const
-        {
-            return m_Profiler;
-        }
-
-        StandardShaders& RenderSystem::GetShaders() const
-        {
-            return *m_Shaders;
-        }
-
-        void RenderSystem::SetSkyBox(Texture& skyBox)
-        {
-            m_SkyBox = &skyBox;
+            m_SkyBox = skyBox;
             IBLBufferSetup();
         }
 
-        Texture& RenderSystem::GetSkyBox()
+        std::shared_ptr<Texture> RenderSystem::GetSkyBox() const
         {
-            return *m_SkyBox;
+            return m_SkyBox;
         }
 
-        void RenderSystem::SetPointLightMap(std::map<unsigned int, Graphics::Light::PointLight*> idPointMap)
+        void RenderSystem::SetPointLightMap(std::map<unsigned int, std::shared_ptr<PointLight>> idPointMap)
         {
             m_PointLightMap = idPointMap;
         }
 
-        const std::map<unsigned int, Graphics::Light::PointLight*>& RenderSystem::GetPointLightMap() const
+        const std::map<unsigned int, std::shared_ptr<PointLight>>& RenderSystem::GetPointLightMap() const
         {
             return m_PointLightMap;
         }
 
-        void RenderSystem::SetDirectionalLightMap(std::map<unsigned int, Graphics::Light::DirectionalLight*> idDirectionalMap)
+        void RenderSystem::SetDirectionalLightMap(std::map<unsigned int, std::shared_ptr<DirectionalLight>> idDirectionalMap)
         {
             m_DirectionalLightMap = idDirectionalMap;
         }
 
-        const std::map<unsigned int, Graphics::Light::DirectionalLight*>& RenderSystem::GetDirectionalLightMap() const
+        const std::map<unsigned int, std::shared_ptr<DirectionalLight>>& RenderSystem::GetDirectionalLightMap() const
         {
             return m_DirectionalLightMap;
         }
 
-        void RenderSystem::SetGLWindow(GLWindow& window)
+        void RenderSystem::SetGLWindow(std::shared_ptr<GLWindow> window)
         {
             m_Window = window;
         }
 
-        GLWindow& RenderSystem::GetGLWindow()
+        std::shared_ptr<GLWindow> RenderSystem::GetGLWindow()
         {
             return m_Window;
         }
 
-        void RenderSystem::SetModelMap(const std::map<unsigned int, Model*>& modelMap)
+        void RenderSystem::SetModelMap(const std::map<unsigned int, std::shared_ptr<Model>>& modelMap)
         {
             m_ModelMap = modelMap;
         }
 
-        const std::map<unsigned int, Model*>& RenderSystem::GetModelMap() const
+        const std::map<unsigned int, std::shared_ptr<Model>>& RenderSystem::GetModelMap() const
         {
             return m_ModelMap;
         }
 
-        void RenderSystem::SetTransformMap(const std::map<unsigned int, mat4*>& transformMap)
+        void RenderSystem::SetTransformMap(const std::map<unsigned int, std::shared_ptr<mat4>>& transformMap)
         {
             m_TransformMap = transformMap;
         }
 
-        const std::map<unsigned int, mat4*>& RenderSystem::GetTransformMap() const
+        const std::map<unsigned int, std::shared_ptr<mat4>>& RenderSystem::GetTransformMap() const
         {
             return m_TransformMap;
         }

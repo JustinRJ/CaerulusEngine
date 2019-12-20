@@ -27,12 +27,11 @@ namespace Graphics
 
         GLWindow::~GLWindow()
         {
-            glfwDestroyWindow(m_Window);
         }
 
         void* GLWindow::GetHandle() const
         {
-            return glfwGetWin32Window(m_Window);
+            return glfwGetWin32Window(m_Window.get());
         }
 
         void GLWindow::Apply()
@@ -40,27 +39,27 @@ namespace Graphics
             if (!Window::Compare(m_NewState))
             {
                 m_ActiveState = m_NewState;
-                m_Window = glfwCreateWindow(
+                m_Window.reset(glfwCreateWindow(
                     m_ActiveState.Width,
                     m_ActiveState.Height,
                     m_ActiveState.Title.c_str(),
                     m_ActiveState.Fullscreen ? glfwGetPrimaryMonitor() : nullptr,
-                    nullptr);
-                glfwMakeContextCurrent(m_Window);
+                    nullptr));
+                glfwMakeContextCurrent(m_Window.get());
             }
         }
 
         void GLWindow::Focus()
         {
-            glfwFocusWindow(m_Window);
+            glfwFocusWindow(m_Window.get());
         }
 
         void GLWindow::SwapBuffer() const
         {
-            glfwSwapBuffers(m_Window);
+            glfwSwapBuffers(m_Window.get());
         }
 
-        GLFWwindow* GLWindow::GetGLFWWindow() const
+        std::shared_ptr<GLFWwindow> GLWindow::GetGLFWWindow() const
         {
             return m_Window;
         }
@@ -71,17 +70,17 @@ namespace Graphics
             if (m_LockedCursor)
             {
                 CenterCursor();
-                glfwSetInputMode(m_Window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+                glfwSetInputMode(m_Window.get(), GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
             }
             else
             {
-                glfwSetInputMode(m_Window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+                glfwSetInputMode(m_Window.get(), GLFW_CURSOR, GLFW_CURSOR_NORMAL);
             }
         }
 
         void GLWindow::CenterCursor()
         {
-            glfwSetCursorPos(m_Window, m_ActiveState.Width / 2, m_ActiveState.Height / 2);
+            glfwSetCursorPos(m_Window.get(), m_ActiveState.Width / 2, m_ActiveState.Height / 2);
         }
 
         void GLWindow::ToggleLockedCursor()
@@ -95,12 +94,12 @@ namespace Graphics
             return m_LockedCursor;
         }
 
-        Geometry::QuadGeometry* GLWindow::GetQuad() const
+        std::shared_ptr<QuadGeometry> GLWindow::GetQuad() const
         {
             return m_Quad;
         }
 
-        void GLWindow::SetQuad(Geometry::QuadGeometry* quad)
+        void GLWindow::SetQuad(std::shared_ptr<QuadGeometry> quad)
         {
             m_Quad = quad;
         }

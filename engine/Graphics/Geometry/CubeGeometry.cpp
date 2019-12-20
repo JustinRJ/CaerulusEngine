@@ -63,10 +63,6 @@ namespace Graphics
             GenerateBuffer();
         }
 
-        CubeGeometry::~CubeGeometry()
-        {
-        }
-
         void CubeGeometry::Draw() const
         {
             glBindVertexArray(m_VAO);

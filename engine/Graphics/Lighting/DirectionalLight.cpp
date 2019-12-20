@@ -13,9 +13,6 @@ namespace Graphics
         {
         }
 
-        DirectionalLight::~DirectionalLight()
-        {}
-
         const vec3& DirectionalLight::GetDirection() const
         {
             return m_Direction;

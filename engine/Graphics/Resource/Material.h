@@ -16,7 +16,8 @@ namespace Graphics
             Normal = 1,
             Roughness = 2,
             Metallic = 3,
-            AO = 4
+            AO = 4,
+            Size = 5
         };
 
         class CAERULUS_GRAPHICS Material
@@ -27,8 +28,8 @@ namespace Graphics
             ~Material();
             void RenderToShader() const;
 
-            Texture* GetTexture(MaterialType materialType) const;
-            void SetTexture(Texture* texture, MaterialType materialType);
+            std::shared_ptr<Texture> GetTexture(MaterialType materialType) const;
+            void SetTexture(std::shared_ptr<Texture> texture, MaterialType materialType);
 
             static std::vector<std::string> GetFileMaterialNames(std::istream& is);
 
@@ -41,7 +42,7 @@ namespace Graphics
             std::string m_Name;
             std::string m_Path;
             std::map<MaterialType, std::string> m_TextureNames;
-            std::vector<Texture*>& m_Textures;
+            std::vector<std::shared_ptr<Texture>> m_Textures;
         };
     }
 }

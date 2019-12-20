@@ -15,7 +15,7 @@ namespace Graphics
             {
             }
 
-            virtual ~PipeLineItem() {};
+            virtual ~PipeLineItem() = default;
             virtual void SendParamsToShader() = 0;
 
         private:

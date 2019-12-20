@@ -5,7 +5,7 @@
 #include <map>
 #include <vector>
 #include <string>
-#include <iostream>
+#include "../../Core/Logging/Log.h"
 
 namespace Managers
 {
@@ -15,26 +15,17 @@ namespace Managers
     public:
 
         Manager() {}
-        virtual ~Manager() {}
+        virtual ~Manager() = default;
 
-        T* Get(const std::string& key) const
+        std::shared_ptr<T> Get(const std::string& key) const
         {
+            using namespace Core::Logging;
             if (IsLoaded(key))
             {
                 return m_ManagedMap.at(key);
             }
-            std::cerr << "Managed object " + key + " not found!" << std::endl;
+            Log::LogInDebug("Managed object " + key + " not found!");
             return nullptr;
-        }
-
-        std::vector<T*> GetAll(const std::vector<std::string>& keys) const
-        {
-            std::vector<T*> values = std::vector<T*>();
-            for (unsigned int i = 0; i < keys.size(); i++)
-            {
-                values.push_back(Get(keys.at(i)));
-            }
-            return values;
         }
 
         bool Remove(const std::string& key)
@@ -52,20 +43,15 @@ namespace Managers
             return false;
         }
 
-        const std::map<const std::string, T*>& GetMap() const
-        {
-            return m_ManagedMap;
-        }
-
     protected:
 
-        void Insert(const std::string& key, T* value)
+        void Insert(const std::string& key, std::shared_ptr<T> value)
         {
             if (value)
             {
                 m_ManagedMap.insert(std::make_pair(key, value));
             }
         }
-        std::map<const std::string, T*> m_ManagedMap;
+        std::map<const std::string, std::shared_ptr<T>> m_ManagedMap;
     };
 }

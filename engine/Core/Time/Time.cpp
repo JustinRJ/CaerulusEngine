@@ -39,10 +39,6 @@ namespace Core
             }
         }
 
-        Time::~Time()
-        {
-        }
-
         void Time::Update()
         {
             time(&m_Time);

@@ -13,7 +13,7 @@ namespace Graphics
 
             CubeGeometry();
             CubeGeometry(const mat4& transform);
-            virtual ~CubeGeometry();
+            virtual ~CubeGeometry() = default;
 
             void Draw() const override;
 
