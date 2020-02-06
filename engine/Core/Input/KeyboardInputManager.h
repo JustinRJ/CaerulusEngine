@@ -70,7 +70,7 @@ namespace Core
                 });
             }
 
-            bool Invoke(const std::string& name, Modifier mod = None)
+            bool Invoke(const std::string& name, Modifier mod = Modifier::None)
             {
                 bool invoked = false;
                 for (auto& bindingMap : m_KeyBindingMap)
@@ -105,13 +105,13 @@ namespace Core
             {
                 for (auto& keyDataPair : m_KeyDataMap)
                 {
-                    if (keyDataPair.second == Press)
+                    if (keyDataPair.second == Action::Press)
                     {
-                        keyDataPair.second = Hold;
+                        keyDataPair.second = Action::Hold;
                     }
-                    else if (keyDataPair.second == Release)
+                    else if (keyDataPair.second == Action::Release)
                     {
-                        keyDataPair.second = Unknown;
+                        keyDataPair.second = Action::Unknown;
                     }
                 }
             }
@@ -126,7 +126,7 @@ namespace Core
                         Action action = m_KeyDataMap.at(key);
                         Action targetAction = bindingPair.second.TargetAction;
 
-                        if (action == targetAction && action != Unknown)
+                        if (action == targetAction && action != Action::Unknown)
                         {
                             bindingPair.second.Callback(m_currentModifier);
                         }

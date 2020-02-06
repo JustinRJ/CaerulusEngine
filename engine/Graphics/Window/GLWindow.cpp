@@ -25,10 +25,6 @@ namespace Graphics
             CenterCursor();
         }
 
-        GLWindow::~GLWindow()
-        {
-        }
-
         void* GLWindow::GetHandle() const
         {
             return glfwGetWin32Window(m_Window.get());

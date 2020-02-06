@@ -104,7 +104,7 @@ namespace Graphics
             void SetSkyBox(std::shared_ptr<Texture> skyBox);
             std::shared_ptr<Texture> GetSkyBox() const;
 
-            void PreUpdate(float deltaTime) override {}
+            void PreUpdate(float deltaTime) override;
             void Update(float deltaTime) override;
             void FixedUpdate(float fixedTime) override {}
             void Reset() override {}
@@ -120,6 +120,8 @@ namespace Graphics
 
             void SetTransformMap(const std::map<unsigned int, std::shared_ptr<mat4>>& transformMap);
             const std::map<unsigned int, std::shared_ptr<mat4>>& GetTransformMap() const;
+
+            // TODO -- Add shader set map!
 
             void ToggleWireframe();
             void ToggleSAO();
@@ -148,18 +150,17 @@ namespace Graphics
             void DrawAll();
             void Clear() const;
             void FlushErrors() const;
-            void SwapBuffer(float frameRate);
+            void SwapBuffer(float deltaTime);
 
-            void SetCameraUniforms(const mat4& view, const mat4& proj, float nearPlane, float farPlane) const;
+            void SetCameraUniforms() const;
             void SetModelUniforms(const mat4& model) const;
 
             void SAORendering(const mat4& proj);
             void LightRendering(const mat4& view, const mat4& proj);
-            void PostProcessRendering(GLfloat frameRate, GLfloat cameraAperture, GLfloat cameraShutterSpeed, GLfloat cameraISO);
+            void PostProcessRendering(GLfloat deltaTime);
             void ForwardPassRendering(const mat4& view, const mat4& proj);
 
             //Misc
-            void UseNullMaterial();
             void ProfileGPUs();
 
             std::shared_ptr<GLWindow> m_Window;

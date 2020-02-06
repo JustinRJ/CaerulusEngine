@@ -27,6 +27,7 @@ namespace Core
         class CAERULUS_CORE MathHelper
         {
         public:
+            MathHelper() = delete;
 
             static vec3 UnitUp();
             static vec3 UnitRight();

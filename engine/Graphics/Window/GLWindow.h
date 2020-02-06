@@ -16,7 +16,7 @@ namespace Graphics
         public:
 
             GLWindow(const std::string& title, int x, int y, int bits, bool fullscreen = false);
-            virtual ~GLWindow();
+            virtual ~GLWindow() = default;
 
             virtual void Apply() override;
             virtual void Focus() override;

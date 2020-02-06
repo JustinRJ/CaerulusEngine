@@ -4,7 +4,7 @@
 
 int main(int argc, char** argv)
 {
-    Engine::Engine engine(argc, argv);
+    Engine engine(argc, argv);
     engine.Run();
     return 0;
 }

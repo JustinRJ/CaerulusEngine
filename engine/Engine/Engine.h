@@ -13,56 +13,57 @@
 #include "../Managers/Managers/MaterialManager.h"
 #include "../Managers/Managers/ModelManager.h"
 #include "../Managers/Managers/ShaderManager.h"
+#include "../Managers/Managers/ShaderSourceManager.h"
 
-namespace Engine
+using namespace Core::Time;
+using namespace Core::Input;
+using namespace Core::Interface;
+
+using namespace Graphics::Window;
+using namespace Graphics::Render;
+
+using namespace Managers;
+
+// TODO - turn engine into an interface to whole engine
+class Engine
 {
-    using namespace Core::Time;
-    using namespace Core::Input;
-    using namespace Core::Interface;
+public:
 
-    using namespace Graphics::Window;
-    using namespace Graphics::Render;
+    Engine(int argc, char** argv);
+    ~Engine();
 
-    using namespace Managers;
+    void Run();
 
-    class Engine
-    {
-    public:
+private:
 
-        Engine(int argc, char** argv);
-        ~Engine();
+    void Tick();
 
-        void Run();
+    int m_ArgCount;
+    char** m_ArgValue;
 
-    private:
+    bool m_Running = false;
 
-        void Tick();
+    float m_DeltaTime = 0.0f;
+    float m_FixedTime = 0.0f;
+    float m_FPSLimit = 1.0f / 60.0f;
+    float m_NormalSpeed = 100.0f;
+    float m_SprintSpeed = 200.0f;
+    double m_MouseSensitivity = 50.0;
 
-        int m_ArgCount;
-        char** m_ArgValue;
+    std::unique_ptr<FPSLimiter> m_FPSLimiter;
+    std::unique_ptr<FixedTimer> m_FixedTimer;
 
-        bool m_Running = false;
+    std::shared_ptr<Camera> m_Camera;
+    std::shared_ptr<GLWindow> m_Window;
+    std::shared_ptr<RenderSystem> m_RenderSystem;
+    std::shared_ptr<KeyboardInputManager> m_KeyboardInputManager;
+    std::shared_ptr<MouseInputManager> m_MouseInputManager;
 
-        float m_DeltaTime = 0.0f;
-        float m_FixedTime = 0.0f;
-        float m_FPSLimit = 1.0f / 60.0f;
-        float m_NormalSpeed = 100.0f;
-        float m_SprintSpeed = 200.0f;
-        double m_MouseSensitivity = 10.0;
+    std::vector<std::shared_ptr<ITickable>> m_Tickable;
 
-        std::unique_ptr<FPSLimiter> m_FPSLimiter;
-        std::unique_ptr<FixedTimer> m_FixedTimer;
-
-        std::shared_ptr<Camera> m_Camera;
-        std::shared_ptr<GLWindow> m_Window;
-        std::shared_ptr<RenderSystem> m_RenderSystem;
-        std::shared_ptr<KeyboardInputManager> m_KeyboardInputManager;
-        std::shared_ptr<MouseInputManager> m_MouseInputManager;
-
-        std::vector<std::shared_ptr<ITickable>> m_Tickable;
-
-        TextureManager m_TextureManager;
-        MaterialManager m_MaterialManager;
-        ModelManager m_ModelManager;
-    };
-}
+    TextureManager m_TextureManager;
+    MaterialManager m_MaterialManager;
+    ModelManager m_ModelManager;
+    ShaderSourceManager m_ShaderSourceManager;
+    ShaderManager m_ShaderManager;
+};

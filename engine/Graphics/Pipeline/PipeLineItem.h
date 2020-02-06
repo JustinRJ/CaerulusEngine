@@ -9,7 +9,7 @@ namespace Graphics
         class PipeLineItem
         {
         public:
-            PipeLineItem(unsigned int ID, const Shader& shader) :
+            PipeLineItem(int ID, const Shader& shader) :
                 m_ItemID(ID),
                 m_Shader(shader)
             {
@@ -19,7 +19,7 @@ namespace Graphics
             virtual void SendParamsToShader() = 0;
 
         private:
-            unsigned int m_ItemID = -1;
+            int m_ItemID = -1;
             const Shader& m_Shader;
         };
     }

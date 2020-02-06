@@ -6,7 +6,7 @@ namespace Core
 {
     namespace Input
     {
-        enum Modifier
+        enum class Modifier
         {
             None = NULL,
             Shift = GLFW_MOD_SHIFT,
@@ -15,7 +15,7 @@ namespace Core
             Super = GLFW_MOD_SUPER
         };
 
-        enum Action
+        enum class Action
         {
             Unknown = GLFW_KEY_UNKNOWN,
             Press = GLFW_PRESS,

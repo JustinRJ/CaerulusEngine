@@ -6,12 +6,12 @@
 namespace Managers
 {
     using namespace Graphics::PipeLine;
-    class ShaderSourceManager : public Manager<ShaderSource>
+    class CAERULUS_MANAGERS ShaderSourceManager : public Manager<ShaderSource>
     {
     public:
         ShaderSourceManager();
         virtual ~ShaderSourceManager() = default;
 
-        bool Load(const std::string& name, const std::string& path, ShaderType type, const std::vector<std::string>& uniformLocations);
+        bool Load(const std::string& path, ShaderType type);
     };
 }

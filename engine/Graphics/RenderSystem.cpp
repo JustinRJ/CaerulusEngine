@@ -92,7 +92,7 @@ namespace Graphics
             m_Window->SetQuad(std::make_shared<QuadGeometry>(quadTransform));
 
             // Temp lights
-            m_PointLightMap.insert(std::make_pair(0, std::make_shared<PointLight>(vec4(1.0f, 1.0f, 1.0f, 1.0f), vec3(0.0, 0.0f, 0.0f), 1000.0)));
+            m_PointLightMap.insert(std::make_pair(0, std::make_shared<PointLight>(vec4(1.0f, 1.0f, 1.0f, 1.0f), vec3(0.0, 0.0f, 0.0f), 1000.0f)));
             m_DirectionalLightMap.insert(std::make_pair(0, std::make_shared<DirectionalLight>(vec4(1.0f, 1.0f, 1.0f, 1.0f), vec3(0.0, -1.0f, 0.0f))));
 
             //IBL
@@ -458,16 +458,13 @@ namespace Graphics
             //Time taken to render geometry
             glQueryCounter(m_Profiler.QueryIDGeometry[GPUProfiler::Start], GL_TIMESTAMP);
 
-            mat4 view = m_Camera->GetViewMatrix() /** this by transform of camera*/;
-            mat4 proj = m_Camera->GetProjMatrix();
-
             // geo rendering
             m_Shaders->GBuffer.Use();
-            SetCameraUniforms(view, proj, m_Camera->GetNear(), m_Camera->GetFar());
+            SetCameraUniforms();
 
             glm::mat4 cameraTransform;
             MathHelper::CreateTansform(cameraTransform, m_Camera->GetPosition(), m_Camera->GetForward(), glm::vec3(1.0f));
-            m_ProjViewModel = proj * view * cameraTransform;
+            m_ProjViewModel = m_Camera->GetProjMatrix() * m_Camera->GetViewMatrix() * cameraTransform;
 
             for (auto model : m_ModelMap)
             {
@@ -482,8 +479,13 @@ namespace Graphics
             glQueryCounter(m_Profiler.QueryIDGeometry[GPUProfiler::Stop], GL_TIMESTAMP);
         }
 
-        void RenderSystem::SetCameraUniforms(const mat4& view, const mat4& proj, float nearPlane, float farPlane) const
+        void RenderSystem::SetCameraUniforms() const
         {
+            float nearPlane = m_Camera->GetNear();
+            float farPlane = m_Camera->GetFar();
+            mat4 view = m_Camera->GetViewMatrix() /** this by transform of camera*/;
+            mat4 proj = m_Camera->GetProjMatrix();
+
             glUniformMatrix4fv(glGetUniformLocation(m_Shaders->GBuffer.GetHandle(), "projection"), 1, GL_FALSE, value_ptr(proj));
             glUniformMatrix4fv(glGetUniformLocation(m_Shaders->GBuffer.GetHandle(), "view"), 1, GL_FALSE, value_ptr(view));
             glUniformMatrix4fv(glGetUniformLocation(m_Shaders->GBuffer.GetHandle(), "nearPlane"), 1, GL_FALSE, &nearPlane);
@@ -497,11 +499,16 @@ namespace Graphics
             glUniformMatrix4fv(glGetUniformLocation(m_Shaders->GBuffer.GetHandle(), "model"), 1, GL_FALSE, value_ptr(model));
         }
 
+        void RenderSystem::PreUpdate(float deltaTime)
+        {
+            FlushErrors();
+            Clear();
+        }
+
+
         void RenderSystem::Update(float deltaTime)
         {
             m_Window->Update();
-            FlushErrors();
-            Clear();
             DrawAll();
             SwapBuffer(deltaTime);
         }
@@ -529,7 +536,7 @@ namespace Graphics
             }
         }
 
-        void RenderSystem::SwapBuffer(float frameRate)
+        void RenderSystem::SwapBuffer(float deltaTime)
         {
             mat4 view = m_Camera->GetViewMatrix()/* * m_TransformCM->GetTransform(camera)*/;
             mat4 proj = m_Camera->GetProjMatrix();
@@ -539,7 +546,7 @@ namespace Graphics
 
             SAORendering(proj);
             LightRendering(view, proj);
-            PostProcessRendering(frameRate, m_Camera->GetAperture(), m_Camera->GetShutterSpeed(), m_Camera->GetISO());
+            PostProcessRendering(deltaTime);
             ForwardPassRendering(view, proj);
             if (m_ProfilingMode)
             {
@@ -700,7 +707,7 @@ namespace Graphics
             glQueryCounter(m_Profiler.QueryIDLighting[GPUProfiler::Stop], GL_TIMESTAMP);
         }
 
-        void RenderSystem::PostProcessRendering(GLfloat frameRate, GLfloat cameraAperture, GLfloat cameraShutterSpeed, GLfloat cameraISO)
+        void RenderSystem::PostProcessRendering(GLfloat deltaTime)
         {
             glQueryCounter(m_Profiler.QueryIDPostprocess[GPUProfiler::Start], GL_TIMESTAMP);
 
@@ -709,13 +716,13 @@ namespace Graphics
 
             glUniform1i(glGetUniformLocation(m_Shaders->FirstPassPostProcess.GetHandle(), "gBufferView"), m_GBufferView);
             glUniform2f(glGetUniformLocation(m_Shaders->FirstPassPostProcess.GetHandle(), "screenTextureSize"), 1.0f / m_Window->GetActiveState().Width, 1.0f / m_Window->GetActiveState().Height);
-            glUniform1f(glGetUniformLocation(m_Shaders->FirstPassPostProcess.GetHandle(), "cameraAperture"), cameraAperture);
-            glUniform1f(glGetUniformLocation(m_Shaders->FirstPassPostProcess.GetHandle(), "cameraShutterSpeed"), cameraShutterSpeed);
-            glUniform1f(glGetUniformLocation(m_Shaders->FirstPassPostProcess.GetHandle(), "cameraISO"), cameraISO);
+            glUniform1f(glGetUniformLocation(m_Shaders->FirstPassPostProcess.GetHandle(), "cameraAperture"), m_Camera->GetAperture());
+            glUniform1f(glGetUniformLocation(m_Shaders->FirstPassPostProcess.GetHandle(), "cameraShutterSpeed"), m_Camera->GetShutterSpeed());
+            glUniform1f(glGetUniformLocation(m_Shaders->FirstPassPostProcess.GetHandle(), "cameraISO"), m_Camera->GetISO());
             glUniform1i(glGetUniformLocation(m_Shaders->FirstPassPostProcess.GetHandle(), "saoMode"), m_SAOMode);
             glUniform1i(glGetUniformLocation(m_Shaders->FirstPassPostProcess.GetHandle(), "fxaaMode"), m_FXAAMode);
             glUniform1i(glGetUniformLocation(m_Shaders->FirstPassPostProcess.GetHandle(), "motionBlurMode"), m_MotionBlurMode);
-            glUniform1f(glGetUniformLocation(m_Shaders->FirstPassPostProcess.GetHandle(), "motionBlurScale"), frameRate);
+            glUniform1f(glGetUniformLocation(m_Shaders->FirstPassPostProcess.GetHandle(), "motionBlurScale"), deltaTime);
             glUniform1i(glGetUniformLocation(m_Shaders->FirstPassPostProcess.GetHandle(), "motionBlurMaxSamples"), m_SAO.MotionBlurMaxSamples);
             glUniform1i(glGetUniformLocation(m_Shaders->FirstPassPostProcess.GetHandle(), "tonemappingMode"), m_ToneMappingMode);
 
@@ -767,20 +774,6 @@ namespace Graphics
 
             }
             glQueryCounter(m_Profiler.QueryIDForward[GPUProfiler::Stop], GL_TIMESTAMP);
-        }
-
-        void RenderSystem::UseNullMaterial()
-        {
-            glActiveTexture(GL_TEXTURE0);
-            glBindTexture(GL_TEXTURE_2D, 0);
-            glActiveTexture(GL_TEXTURE1);
-            glBindTexture(GL_TEXTURE_2D, 0);
-            glActiveTexture(GL_TEXTURE2);
-            glBindTexture(GL_TEXTURE_2D, 0);
-            glActiveTexture(GL_TEXTURE3);
-            glBindTexture(GL_TEXTURE_2D, 0);
-            glActiveTexture(GL_TEXTURE4);
-            glBindTexture(GL_TEXTURE_2D, 0);
         }
 
         void RenderSystem::ToggleWireframe()
