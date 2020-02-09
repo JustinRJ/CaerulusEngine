@@ -34,12 +34,27 @@ namespace Graphics
             std::unordered_map<Vertex, uint32_t> uniqueVertices;
             for (const auto& shape : shapes)
             {
+                std::string materialName = "";
+                std::string prevMaterialName = "";
                 std::vector<Vertex> vertices;
                 std::vector<GLuint> indices;
                 // Loop over faces(polygon)
                 size_t index_offset = 0;
                 for (size_t f = 0; f < shape.mesh.num_face_vertices.size(); ++f)
                 {
+                    int firstMeshesFaceMaterialID = shape.mesh.material_ids[f];
+                    if (firstMeshesFaceMaterialID != -1)
+                    {
+                        materialName = materials.at(firstMeshesFaceMaterialID).name;
+                    }
+
+                    if (materialName != prevMaterialName && prevMaterialName != "")
+                    {
+                        m_Meshes.push_back(Mesh(vertices, indices, prevMaterialName));
+                        vertices.clear();
+                        indices.clear();
+                    }
+
                     unsigned int fv = shape.mesh.num_face_vertices[f];
                     for (size_t v = 0; v < fv; ++v)
                     {
@@ -68,16 +83,14 @@ namespace Graphics
                         }
                         indices.push_back(uniqueVertices[vertex]);
                     }
-
                     index_offset += fv;
+
+                    if (f == shape.mesh.num_face_vertices.size() - 1)
+                    {
+                        m_Meshes.push_back(Mesh(vertices, indices, materialName));
+                    }
+                    prevMaterialName = materialName;
                 }
-                std::string materialName = "";
-                int firstMeshesFaceMaterialID = shape.mesh.material_ids[0];
-                if (firstMeshesFaceMaterialID != -1)
-                {
-                    materialName = materials.at(firstMeshesFaceMaterialID).name;
-                }
-                m_Meshes.push_back(Mesh(vertices, indices, materialName));
             }
             m_IsLoaded = true;
         }
@@ -86,16 +99,22 @@ namespace Graphics
         {
         }
 
-        void Model::Draw(bool wireframe) const
+        void Model::Draw(bool wireframe, std::shared_ptr<Material> defaultMaterial) const
         {
             for (GLuint i = 0; i < m_Meshes.size(); ++i)
             {
                 if (i < m_Materials.size())
                 {
-                    // Todo
-                    Material defaultMaterial("");
-                    m_Materials.at(i) ? m_Materials.at(i)->RenderToShader() : defaultMaterial.RenderToShader();
-                    DrawMesh(wireframe, i);
+                    if (m_Materials.at(i))
+                    {
+                        m_Materials.at(i)->RenderToShader();
+                        DrawMesh(wireframe, i);
+                    }
+                    else if(defaultMaterial)
+                    {
+                        defaultMaterial->RenderToShader();
+                        DrawMesh(wireframe, i);
+                    }
                 }
             }
         }

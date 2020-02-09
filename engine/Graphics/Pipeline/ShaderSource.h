@@ -18,24 +18,28 @@ namespace Graphics
             Geometry = GL_GEOMETRY_SHADER
         };
 
-        typedef std::vector<std::pair<std::string, size_t>> ShaderParams[2];
-
         class CAERULUS_GRAPHICS ShaderSource
         {
         public:
             ShaderSource(ShaderType type, const std::string& path);
             ~ShaderSource();
 
-            bool IsLoaded() const;
+            bool IsCompiled() const;
             void Load();
             GLuint GetHandle() const;
 
+            const std::vector<std::string>& GetUniforms() const;
+
         private:
-            bool m_IsLoaded;
+
+            void Compile(const std::string& source);
+            void SetUniforms(const std::string& source);
+
+            bool m_IsCompiled;
             GLuint m_Handle;
             ShaderType m_Type;
             const std::string m_Path;
-            const ShaderParams m_UniformLocations[2];
+            std::vector<std::string> m_Uniforms;
         };
     }
 }

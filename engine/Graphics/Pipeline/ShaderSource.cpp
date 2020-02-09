@@ -1,9 +1,9 @@
 #include "stdafx.h"
 
 #include "ShaderSource.h"
+#include "../../Core/Logging/Log.h"
 #include <fstream>
 #include <sstream>
-#include <iostream>
 
 namespace Graphics
 {
@@ -11,7 +11,7 @@ namespace Graphics
     {
         ShaderSource::ShaderSource(ShaderType type, const std::string& path) :
             m_Type(type),
-            m_IsLoaded(false),
+            m_IsCompiled(false),
             m_Path(path)
         {
         }
@@ -21,9 +21,9 @@ namespace Graphics
             glDeleteShader(m_Handle);
         }
 
-        bool ShaderSource::IsLoaded() const
+        bool ShaderSource::IsCompiled() const
         {
-            return m_IsLoaded;
+            return m_IsCompiled;
         }
 
         void ShaderSource::Load()
@@ -39,39 +39,92 @@ namespace Graphics
                 shaderFile.open(m_Path);
                 std::stringstream shaderStream;
                 shaderStream << shaderFile.rdbuf();
-                shaderFile.close();
                 code = shaderStream.str();
+                shaderFile.close();
+
+                Compile(code);
             }
             catch (std::ifstream::failure e)
             {
-                std::cerr << "Shader file not succesfully read!" << std::endl;
+                using Core::Logging::Log;
+                Log::LogException("Shader program linking failed!", e.what());
             }
+        }
 
-            const GLchar* shaderCode = code.c_str();
-
+        void ShaderSource::Compile(const std::string& source)
+        {
+            const unsigned int logSize = 512;
+            const GLchar* shaderCode = source.c_str();
             // Shaders compilation
-            GLchar infoLog[512];
-            GLint isLinkSuccess;
+            GLchar infoLog[logSize];
+            GLint isCompileSuccess;
 
             m_Handle = glCreateShader(m_Type);
             glShaderSource(m_Handle, 1, &shaderCode, NULL);
             glCompileShader(m_Handle);
-            glGetShaderiv(m_Handle, GL_COMPILE_STATUS, &isLinkSuccess);
+            glGetShaderiv(m_Handle, GL_COMPILE_STATUS, &isCompileSuccess);
 
-            if (!isLinkSuccess)
+            if (!isCompileSuccess)
             {
-                glGetShaderInfoLog(m_Handle, 512, NULL, infoLog);
-                std::cerr << "Shader " + std::string(m_Path) + "compilation failed!\n" << infoLog << std::endl;
+                using Core::Logging::Log;
+                glGetShaderInfoLog(m_Handle, logSize, NULL, infoLog);
+                Log::LogError("Shader " + std::string(m_Path) + "compilation failed!", infoLog);
             }
             else
             {
-                m_IsLoaded = true;
+                // Find uniforms
+                SetUniforms(source);
+                m_IsCompiled = true;
             }
         }
 
         GLuint ShaderSource::GetHandle() const
         {
             return m_Handle;
+        }
+
+        void ShaderSource::SetUniforms(const std::string& source)
+        {
+            auto shaderTypeToString = [&](ShaderType s) -> std::string
+            {
+                if (s == GL_VERTEX_SHADER)
+                    return "Vertex Shader";
+                else if (s == GL_FRAGMENT_SHADER)
+                    return "Fragment Shader";
+                else if (s == GL_GEOMETRY_SHADER)
+                    return "Geometry Shader";
+                else
+                    return "Unknown Shader";
+            };
+
+            using namespace Core::Logging;
+            Log::LogMessage("\t\tShaderType: " + shaderTypeToString(m_Type));
+
+            size_t offset = 0U;
+            bool searchForUniforms = true;
+            while (searchForUniforms)
+            {
+
+                auto spaceBeforeName = source.find("uniform", offset);
+                if (spaceBeforeName != std::string::npos)
+                {
+                    spaceBeforeName = source.find(" ", source.find(" ", spaceBeforeName) + 1);
+                    auto semicolonAfterName = source.find(";", spaceBeforeName);
+                    std::string unfiformName = std::string(source.c_str() + spaceBeforeName, source.c_str() + semicolonAfterName);
+                    offset = semicolonAfterName;
+                    m_Uniforms.push_back(unfiformName);
+                    Log::LogMessage("\t\tUniform " + std::to_string(m_Uniforms.size()) + ": " + unfiformName);
+                }
+                else
+                {
+                    searchForUniforms = false;
+                }
+            }
+        }
+
+        const std::vector<std::string>& ShaderSource::GetUniforms() const
+        {
+            return m_Uniforms;
         }
     }
 }

@@ -1,10 +1,18 @@
+Load model colours
+
+Pull-out setup code for shaders from RenderSystem to Engine
+
+Move model into Geometry
+
+Move material and texture into Pipeline
+
+Camera to core?
+
+Clean up interface to engine
+
 Add colour class
 
 Rename glsl (shader files) "color" -> "colour"! (and code)
 
-Set m_UniformLocations in ShaderSource via reading file
-
 Create component system, that's where node.h will live
 This should live in the Managers.dll
-
-Load shaders into managers

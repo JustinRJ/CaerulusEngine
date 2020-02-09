@@ -47,7 +47,7 @@ namespace Core
 
             static void LogError(const char* message, const char* error)
             {
-                std::cerr << error << std::endl;
+                std::cerr <<  message << "\n" << error << std::endl;
             }
 
             static void LogError(const std::string& message, const std::string& error)
@@ -57,8 +57,10 @@ namespace Core
 
             static void LogException(const std::string& message, const std::string& exception = "")
             {
-                std::cerr << message + "\n" + exception + "\n" + "\n In file: " +
-                    __FILE__ + "\n On line: " + std::to_string(__LINE__) << std::endl;
+                std::cerr << message +
+                    "\nException: " + exception +
+                    "\nIn file: " +  __FILE__ +
+                    "\nOn line: " + std::to_string(__LINE__) << std::endl;
             }
         };
     }

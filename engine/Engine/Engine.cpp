@@ -32,26 +32,20 @@ Engine::Engine(int argc, char** argv) :
     m_Tickable.push_back(m_MouseInputManager);
     m_Tickable.push_back(m_RenderSystem);
 
-    // TODO
+    /// ------------------------------------------------------------------------------------------------------------------------------
+    /// TODO - Create component managers which map a 'resource' to a Node ID.
     auto transformMap = std::make_shared<std::map<unsigned int, std::shared_ptr<mat4>>>();
     auto modelMap = std::make_shared<std::map<unsigned int, std::shared_ptr<Model>>>();
-
     /// ------------------------------------------------------------------------------------------------------------------------------
 
-    // Load shaders
-    //m_ShaderManager.Load("gBuffer",         "assets/shaders/gBuffer.vert",                  "assets/shaders/gBuffer.frag");
-    //m_ShaderManager.Load("latlongToCube",   "assets/shaders/latlongToCube.vert",            "assets/shaders/latlongToCube.frag");
-    //m_ShaderManager.Load("simple",          "assets/shaders/lighting/simple.vert",          "assets/shaders/lighting/simple.frag");
-    //m_ShaderManager.Load("lightingBRDF",    "assets/shaders/lighting/lightingBRDF.vert",    "assets/shaders/lighting/lightingBRDF.frag");
-    //m_ShaderManager.Load("irradianceIBL",   "assets/shaders/lighting/irradianceIBL.vert",   "assets/shaders/lighting/irradianceIBL.frag");
-    //m_ShaderManager.Load("prefilterIBL",    "assets/shaders/lighting/prefilterIBL.vert",    "assets/shaders/lighting/prefilterIBL.frag");
-    //m_ShaderManager.Load("integrateIBL",    "assets/shaders/lighting/integrateIBL.vert",    "assets/shaders/lighting/integrateIBL.frag");
-    //m_ShaderManager.Load("firstpass",       "assets/shaders/postprocess/postprocess.vert",  "assets/shaders/postprocess/firstpass.frag");
-    //m_ShaderManager.Load("sao",             "assets/shaders/postprocess/sao.vert",          "assets/shaders/postprocess/sao.frag");
-    //m_ShaderManager.Load("saoBlur",         "assets/shaders/postprocess/sao.vert",          "assets/shaders/postprocess/saoBlur.frag");
-
+    // Skybox
     m_TextureManager.LoadHDR("skyBox", "assets/textures/hdr/pisa.hdr");
     m_RenderSystem->SetSkyBox(m_TextureManager.Get("skyBox"));
+
+    // Default material
+    //auto defaultMaterial = std::vector<std::shared_ptr<Texture>>(5);
+    //m_MaterialManager.Create("defaultMaterial", defaultMaterial);
+    //m_RenderSystem->SetDefaultMaterial(m_MaterialManager.Get("defaultMaterial"));
 
     // Shaderball model
     m_ModelManager.Load("shaderBall", "assets/models/shaderBall.obj");
@@ -76,7 +70,7 @@ Engine::Engine(int argc, char** argv) :
     Core::Node shaderBall = Core::Node();
     auto position1 = std::make_shared<mat4>();
     auto model1 = m_ModelManager.Get("shaderBall");
-    MathHelper::CreateTansform(*position1, glm::vec3(0.0f, 0.0f, -20.0f), glm::quat(), glm::vec3(1.0f));
+    MathHelper::CreateTansform(*position1, vec3(0.0f, 0.0f, -20.0f), quat(), vec3(1.0f));
     transformMap->insert(std::make_pair(shaderBall.GetID(), position1));
     model1->SetMaterials(std::vector<std::shared_ptr<Material>>({ m_MaterialManager.Get("gold") }));
     modelMap->insert(std::make_pair(shaderBall.GetID(), model1));
@@ -88,7 +82,7 @@ Engine::Engine(int argc, char** argv) :
     Core::Node sponza = Core::Node();
     auto position2 = std::make_shared<mat4>();
     auto model2 = m_ModelManager.Get("sponza");
-    MathHelper::CreateTansform(*position2, glm::vec3(0.0f, -7.0f, 0.0f), glm::quat(), glm::vec3(0.33f));
+    MathHelper::CreateTansform(*position2, vec3(0.0f, -7.0f, 0.0f), quat(), vec3(0.33f));
     transformMap->insert(std::make_pair(sponza.GetID(), position2));
     modelMap->insert(std::make_pair(sponza.GetID(), model2));
 
@@ -103,9 +97,40 @@ Engine::Engine(int argc, char** argv) :
     }
 
     /// ------------------------------------------------------------------------------------------------------------------------------
+    /// Set shaders for render system   - needs to be switched to a vector or map of shaders that execute in a specified order
+    ///                                 - need to pull all log for setting up shader out of render system into the shader class and make
+    ///                                 - it dynamically set uniform locations
+
+    m_ShaderManager.Load("gBuffer",         "assets/shaders/gBuffer.vert",                  "assets/shaders/gBuffer.frag");
+    m_ShaderManager.Load("latlongToCube",   "assets/shaders/latlongToCube.vert",            "assets/shaders/latlongToCube.frag");
+    m_ShaderManager.Load("simple",          "assets/shaders/lighting/simple.vert",          "assets/shaders/lighting/simple.frag");
+    m_ShaderManager.Load("lightingBRDF",    "assets/shaders/lighting/lightingBRDF.vert",    "assets/shaders/lighting/lightingBRDF.frag");
+    m_ShaderManager.Load("irradianceIBL",   "assets/shaders/lighting/irradianceIBL.vert",   "assets/shaders/lighting/irradianceIBL.frag");
+    m_ShaderManager.Load("prefilterIBL",    "assets/shaders/lighting/prefilterIBL.vert",    "assets/shaders/lighting/prefilterIBL.frag");
+    m_ShaderManager.Load("integrateIBL",    "assets/shaders/lighting/integrateIBL.vert",    "assets/shaders/lighting/integrateIBL.frag");
+    m_ShaderManager.Load("firstpass",       "assets/shaders/postprocess/postprocess.vert",  "assets/shaders/postprocess/firstpass.frag");
+    m_ShaderManager.Load("sao",             "assets/shaders/postprocess/sao.vert",          "assets/shaders/postprocess/sao.frag");
+    m_ShaderManager.Load("saoBlur",         "assets/shaders/postprocess/sao.vert",          "assets/shaders/postprocess/saoBlur.frag");
+
+    auto shaders = std::make_shared<StandardShaders>();
+    shaders->GBuffer = m_ShaderManager.Get("gBuffer");
+    shaders->LatlongToCube = m_ShaderManager.Get("latlongToCube");
+    shaders->Simple = m_ShaderManager.Get("simple");
+    shaders->LightingBRDF = m_ShaderManager.Get("lightingBRDF");
+    shaders->IrradianceIBL = m_ShaderManager.Get("irradianceIBL");
+    shaders->PrefilterIBL = m_ShaderManager.Get("prefilterIBL");
+    shaders->IntegrateIBL = m_ShaderManager.Get("integrateIBL");
+    shaders->FirstPassPostProcess = m_ShaderManager.Get("firstpass");
+    shaders->SAO = m_ShaderManager.Get("sao");
+    shaders->SAOBlur = m_ShaderManager.Get("saoBlur");
+
+    m_RenderSystem->SetShaders(shaders);
+    m_RenderSystem->LoadShaders();
 
     m_RenderSystem->SetTransformMap(*transformMap);
     m_RenderSystem->SetModelMap(*modelMap);
+
+    /// ------------------------------------------------------------------------------------------------------------------------------
 
     using namespace Core::Input;
     auto window = m_RenderSystem->GetGLWindow();
@@ -133,7 +158,7 @@ Engine::Engine(int argc, char** argv) :
     { 
         if (m_RenderSystem->GetGLWindow()->IsCursorLocked())
         {
-            m_RenderSystem->GetCamera()->Rotate(glm::vec3(dd.DeltaX * m_DeltaTime * m_MouseSensitivity, dd.DeltaY * m_DeltaTime * m_MouseSensitivity, 0.0f));
+            m_RenderSystem->GetCamera()->Rotate(vec3(dd.DeltaX * m_DeltaTime * m_MouseSensitivity, dd.DeltaY * m_DeltaTime * m_MouseSensitivity, 0.0f));
         }
     });
 }
@@ -169,6 +194,10 @@ void Engine::Run()
 
 void Engine::Tick()
 {
+    using Core::Logging::Log;
+    Log::LogInDebug("DeltaTime: " + std::to_string(m_DeltaTime));
+    Log::LogInDebug("FixedTime: " + std::to_string(m_FixedTime));
+
     glfwPollEvents();
 
     for (auto updatable : m_Tickable)
@@ -176,13 +205,11 @@ void Engine::Tick()
         updatable->PreUpdate(m_DeltaTime);
     }
 
-    //std::cout << "DeltaTime : " << m_DeltaTime << std::endl;
     for (auto updatable : m_Tickable)
     {
         updatable->Update(m_DeltaTime);
     }
 
-    //std::cout << "FixedTime : " << m_FixedTime << std::endl;
     for (auto updatable : m_Tickable)
     {
         updatable->FixedUpdate(m_FixedTime);

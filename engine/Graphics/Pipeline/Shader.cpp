@@ -1,16 +1,15 @@
 #include "stdafx.h"
 
 #include "Shader.h"
-#include <string>
-#include <fstream>
-#include <sstream>
-#include <iostream>
+#include "../../Core/Logging/Log.h"
 
 namespace Graphics
 {
     namespace PipeLine
     {
-        Shader::Shader()
+        Shader::Shader(const ShaderSource& vertex, const ShaderSource& fragment) :
+            m_Vertex(vertex),
+            m_Fragment(fragment)
         {
         }
 
@@ -18,125 +17,98 @@ namespace Graphics
         {
         }
 
-        void Shader::Load(const GLchar* vertexPath, const GLchar* fragmentPath)
+        bool Shader::Link()
         {
-            // Shaders reading
-            std::string vertexCode;
-            std::string fragmentCode;
-            std::ifstream vShaderFile;
-            std::ifstream fShaderFile;
-
-            vShaderFile.exceptions(std::ifstream::badbit);
-            fShaderFile.exceptions(std::ifstream::badbit);
-
-            try
-            {
-                vShaderFile.open(vertexPath);
-                fShaderFile.open(fragmentPath);
-                std::stringstream vShaderStream, fShaderStream;
-
-                vShaderStream << vShaderFile.rdbuf();
-                fShaderStream << fShaderFile.rdbuf();
-                vShaderFile.close();
-                fShaderFile.close();
-
-                vertexCode = vShaderStream.str();
-                fragmentCode = fShaderStream.str();
-            }
-            catch (std::ifstream::failure e)
-            {
-                std::cerr << "Shader file not succesfully read!" << std::endl;
-            }
-
-            const GLchar* vShaderCode = vertexCode.c_str();
-            const GLchar * fShaderCode = fragmentCode.c_str();
-
-            // Shaders compilation
-            GLchar infoLog[512];
-
-            // Vertex Shader
-            m_VertexShaderObject = glCreateShader(GL_VERTEX_SHADER);
-            glShaderSource(m_VertexShaderObject, 1, &vShaderCode, NULL);
-            glCompileShader(m_VertexShaderObject);
-            glGetShaderiv(m_VertexShaderObject, GL_COMPILE_STATUS, &m_IsVertexSuccess);
-
-            if (!m_IsVertexSuccess)
-            {
-                glGetShaderInfoLog(m_VertexShaderObject, 512, NULL, infoLog);
-                std::cerr << "Shader vertex compilation failed!\n" << infoLog << std::endl;
-            }
-
-            // Fragment Shader
-            m_FragmentShaderObject = glCreateShader(GL_FRAGMENT_SHADER);
-            glShaderSource(m_FragmentShaderObject, 1, &fShaderCode, NULL);
-            glCompileShader(m_FragmentShaderObject);
-            glGetShaderiv(m_FragmentShaderObject, GL_COMPILE_STATUS, &m_IsFragmentSuccess);
-
-            if (!m_IsFragmentSuccess)
-            {
-                glGetShaderInfoLog(m_FragmentShaderObject, 512, NULL, infoLog);
-                std::cerr << "Shader fragment compilation failed!\n" << infoLog << std::endl;
-            }
-
-            // Shader Program
-            m_ShaderProgram = glCreateProgram();
-            glAttachShader(m_ShaderProgram, m_VertexShaderObject);
-            glAttachShader(m_ShaderProgram, m_FragmentShaderObject);
-            glLinkProgram(m_ShaderProgram);
-            glGetProgramiv(m_ShaderProgram, GL_LINK_STATUS, &m_IsLinkSuccess);
-
-            if (!m_IsLinkSuccess)
-            {
-                glGetProgramInfoLog(m_ShaderProgram, 512, NULL, infoLog);
-                std::cerr << "Shader program linking failed!\n" << infoLog << std::endl;
-            }
-
-            glDeleteShader(m_VertexShaderObject);
-            glDeleteShader(m_FragmentShaderObject);
-
-            if (m_IsVertexSuccess && m_IsFragmentSuccess && m_IsLinkSuccess)
-            {
-                m_IsLoaded = true;
-            }
-        }
-
-        bool Shader::Compile(const ShaderSource& vertex, const ShaderSource& fragment)
-        {
+            using Core::Logging::Log;
+            const unsigned int logSize = 512;
             // Shader Program Compilation
-            GLchar infoLog[512];
-            m_ShaderProgram = glCreateProgram();
-            glAttachShader(m_ShaderProgram, vertex.GetHandle());
-            glAttachShader(m_ShaderProgram, fragment.GetHandle());
-            glLinkProgram(m_ShaderProgram);
-            glGetProgramiv(m_ShaderProgram, GL_LINK_STATUS, &m_IsLinkSuccess);
+            GLchar infoLog[logSize];
+            m_Handle = glCreateProgram();
+            glAttachShader(m_Handle, m_Vertex.GetHandle());
+            glAttachShader(m_Handle, m_Fragment.GetHandle());
+            glLinkProgram(m_Handle);
 
-            if (!m_IsLinkSuccess)
+            GLint isLinkSuccessful = false;
+            glGetProgramiv(m_Handle, GL_LINK_STATUS, &isLinkSuccessful);
+
+            if (!isLinkSuccessful)
             {
-                glGetProgramInfoLog(m_ShaderProgram, 512, NULL, infoLog);
-                std::cerr << "Shader program linking failed!\n" << infoLog << std::endl;
+                glGetProgramInfoLog(m_Handle, logSize, NULL, infoLog);
+                Log::LogError("Shader program linking failed!", infoLog);
+                return false;
             }
 
-            if (m_IsLinkSuccess)
-            {
-                m_IsLoaded = true;
-            }
-
-            return false;
+            m_IsLinked = true;
+            return true;
         }
 
-        void Shader::Use() const
+        void Shader::Use()
         {
-            glUseProgram(m_ShaderProgram);
+            glUseProgram(m_Handle);
+        }
+
+        void Shader::Unuse()
+        {
+            glUseProgram(0);
         }
 
         GLuint Shader::GetHandle() const
         {
-            return m_ShaderProgram;
+            return m_Handle;
         }
 
-        bool Shader::IsLoaded() const
+        void Shader::Set1i(const std::string& name, GLint value)
         {
-            return m_IsLoaded;
+            Use();
+            glUniform1i(glGetUniformLocation(m_Handle, name.c_str()), value);
+            Unuse();
+        }
+
+        void Shader::Set1f(const std::string& name, GLfloat value)
+        {
+            Use();
+            glUniform1f(glGetUniformLocation(m_Handle, name.c_str()), value);
+            Unuse();
+        }
+
+        void Shader::SetVec2f(const std::string& name, fvec2 value)
+        {
+            Use();
+            glUniform2fv(glGetUniformLocation(m_Handle, name.c_str()), 1, value_ptr(value));
+            Unuse();
+        }
+
+        void Shader::SetVec3f(const std::string& name, fvec3 value)
+        {
+            Use();
+            glUniform3fv(glGetUniformLocation(m_Handle, name.c_str()), 1, value_ptr(value));
+            Unuse();
+        }
+
+        void Shader::SetVec4f(const std::string & name, fvec4 value)
+        {
+            Use();
+            glUniform4fv(glGetUniformLocation(m_Handle, name.c_str()), 1, value_ptr(value));
+            Unuse();
+        }
+
+        void Shader::SetMat3fv(const std::string & name, mat3 value, GLboolean transpose)
+        {
+            Use();
+            glUniformMatrix3fv(glGetUniformLocation(m_Handle, name.c_str()), 1, transpose, value_ptr(value));
+            Unuse();
+        }
+
+        void Shader::SetMat4fv(const std::string & name, mat4 value, GLboolean transpose)
+        {
+            Use();
+            glUniformMatrix4fv(glGetUniformLocation(m_Handle, name.c_str()), 1, transpose, value_ptr(value));
+            Unuse();
+        }
+
+        bool Shader::IsLinked() const
+        {
+            return m_IsLinked;
         }
     }
 }

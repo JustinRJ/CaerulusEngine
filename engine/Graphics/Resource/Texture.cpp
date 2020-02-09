@@ -4,7 +4,7 @@
 //required before stb_image define
 #define STB_IMAGE_IMPLEMENTATION 
 #include "stb_image.h"
-#include <iostream>
+#include "../../Core/Logging/Log.h"
 
 namespace Graphics
 {
@@ -73,7 +73,8 @@ namespace Graphics
             }
             else
             {
-                std::cerr << "Failed to load texture: " << texPath << std::endl;
+                using Core::Logging::Log;
+                Log::LogError("Failed to load texture: " + std::string(texPath));
                 return false;
             }
 
@@ -128,14 +129,16 @@ namespace Graphics
                 }
                 else
                 {
-                    std::cerr << "Failed to load HDR texture: " << texPath << std::endl;
+                    using Core::Logging::Log;
+                    Log::LogError("Failed to load HDR texture: " + std::string(texPath));
                     return false;
                 }
                 stbi_image_free(texData);
             }
             else
             {
-                std::cerr << "Texture isnt a HDR texture: " << texPath << std::endl;
+                using Core::Logging::Log;
+                Log::LogError("Texture isnt a HDR texture: " + std::string(texPath));
                 return false;
             }
             glBindTexture(GL_TEXTURE_2D, 0);

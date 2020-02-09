@@ -18,9 +18,9 @@ namespace Managers
             Log::LogInDebug("Material with name " + name + " already loaded or created");
             return false;
         }
+
         Log::LogMessage("Creating material " + name);
         auto m = std::make_shared<Material>(name);
-
         for (int i = 0; i < MaterialType::Size; ++i)
         {
             m->SetTexture(material.at(i), static_cast<MaterialType>(i));
@@ -47,6 +47,7 @@ namespace Managers
                     Log::LogInDebug("Material with name " + materialNamesInFile.at(i) + " already loaded or created");
                     break;
                 }
+
                 Log::LogMessage("Loading material " + materialNamesInFile.at(i) + " with path " + path);
                 auto newMaterial = std::make_shared<Material>("", path);
                 newMaterial->LoadMaterialTexturesNames(i, is);
@@ -65,10 +66,8 @@ namespace Managers
                         newMaterial->SetTexture(m_TextureManager.Get(textureName), newTextureIt.first);
                     }
                 }
-
                 Insert(newMaterial->GetName(), newMaterial);
             }
-
             fb.close();
             return true;
         }

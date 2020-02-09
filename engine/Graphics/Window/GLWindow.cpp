@@ -3,8 +3,8 @@
 #include "GLWindow.h"
 #define GLFW_EXPOSE_NATIVE_WIN32
 #include <glfw3native.h>
-#include <iostream>
 #include "../../Core/Math/MathHelper.h"
+#include "../../Core/Logging/Log.h"
 
 namespace Graphics
 {
@@ -16,7 +16,8 @@ namespace Graphics
         {
             if (!glfwInit())
             {
-                std::cerr << "Failed to init GLFW!" << std::endl;
+                using Core::Logging::Log;
+                Log::LogError("Failed to init GLFW!");
                 exit(1);
             }
 
@@ -27,7 +28,7 @@ namespace Graphics
 
         void* GLWindow::GetHandle() const
         {
-            return glfwGetWin32Window(m_Window.get());
+            return glfwGetWin32Window(m_Window);
         }
 
         void GLWindow::Apply()
@@ -35,27 +36,27 @@ namespace Graphics
             if (!Window::Compare(m_NewState))
             {
                 m_ActiveState = m_NewState;
-                m_Window.reset(glfwCreateWindow(
+                m_Window = glfwCreateWindow(
                     m_ActiveState.Width,
                     m_ActiveState.Height,
                     m_ActiveState.Title.c_str(),
                     m_ActiveState.Fullscreen ? glfwGetPrimaryMonitor() : nullptr,
-                    nullptr));
-                glfwMakeContextCurrent(m_Window.get());
+                    nullptr);
+                glfwMakeContextCurrent(m_Window);
             }
         }
 
         void GLWindow::Focus()
         {
-            glfwFocusWindow(m_Window.get());
+            glfwFocusWindow(m_Window);
         }
 
         void GLWindow::SwapBuffer() const
         {
-            glfwSwapBuffers(m_Window.get());
+            glfwSwapBuffers(m_Window);
         }
 
-        std::shared_ptr<GLFWwindow> GLWindow::GetGLFWWindow() const
+        GLFWwindow* GLWindow::GetGLFWWindow() const
         {
             return m_Window;
         }
@@ -66,17 +67,17 @@ namespace Graphics
             if (m_LockedCursor)
             {
                 CenterCursor();
-                glfwSetInputMode(m_Window.get(), GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+                glfwSetInputMode(m_Window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
             }
             else
             {
-                glfwSetInputMode(m_Window.get(), GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+                glfwSetInputMode(m_Window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
             }
         }
 
         void GLWindow::CenterCursor()
         {
-            glfwSetCursorPos(m_Window.get(), m_ActiveState.Width / 2, m_ActiveState.Height / 2);
+            glfwSetCursorPos(m_Window, m_ActiveState.Width / 2, m_ActiveState.Height / 2);
         }
 
         void GLWindow::ToggleLockedCursor()

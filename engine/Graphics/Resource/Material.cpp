@@ -1,8 +1,8 @@
 #include "stdafx.h"
 
 #include "Material.h"
-#include <iostream>
 #include <tiny_obj_loader.h>
+#include "../../Core/Logging/Log.h"
 
 namespace Graphics
 {
@@ -51,7 +51,8 @@ namespace Graphics
         {
             if (materialType > AO)
             {
-                std::cerr << "Texture outside material bounds!" << std::endl;
+                using Core::Logging::Log;
+                Log::LogError("Texture outside material bounds!");
             }
             else
             {

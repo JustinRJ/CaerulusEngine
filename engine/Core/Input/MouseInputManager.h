@@ -33,7 +33,7 @@ namespace Core
             MouseInputManager(std::shared_ptr<GLWindow> window) :
                 m_Window(window)
             {
-                glfwSetInputMode(m_Window->GetGLFWWindow().get(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+                glfwSetInputMode(m_Window->GetGLFWWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
             };
 
             ~MouseInputManager() = default;
@@ -73,7 +73,7 @@ namespace Core
             void UpdateMouseDrag()
             {
                 double xpos, ypos;
-                glfwGetCursorPos(m_Window->GetGLFWWindow().get(), &xpos, &ypos);
+                glfwGetCursorPos(m_Window->GetGLFWWindow(), &xpos, &ypos);
                 double deltaX = xpos - (m_Window->GetActiveState().Width / 2);
                 double deltaY = ypos - (m_Window->GetActiveState().Height / 2);
 

@@ -26,7 +26,7 @@ namespace Core
 
             KeyboardInputManager(std::shared_ptr<GLWindow> window)
             {
-                glfwSetWindowUserPointer(window->GetGLFWWindow().get(), this);
+                glfwSetWindowUserPointer(window->GetGLFWWindow(), this);
             };
 
             ~KeyboardInputManager() = default;
@@ -39,12 +39,10 @@ namespace Core
             void PreUpdate(float deltaTime) override
             {
                 InvokeCallbacks();
-            }
-
-            void Update(float deltaTime) override
-            {
                 UpdateActionState();
             }
+
+            void Update(float deltaTime) override {}
 
             void FixedUpdate(float fixedTime) override {}
 
@@ -57,7 +55,7 @@ namespace Core
 
                 m_KeyBindingMap.insert(std::make_pair(key, newBinding));
 
-                glfwSetKeyCallback(window->GetGLFWWindow().get(), [](GLFWwindow* windowI, int keyI, int scancodeI, int actionI, int modeI)
+                glfwSetKeyCallback(window->GetGLFWWindow(), [](GLFWwindow* windowI, int keyI, int scancodeI, int actionI, int modeI)
                 {
                     auto self = static_cast<KeyboardInputManager*>(glfwGetWindowUserPointer(windowI));
                     self->SetModifier(static_cast<Modifier>(modeI));

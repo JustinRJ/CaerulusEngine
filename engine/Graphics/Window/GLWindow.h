@@ -23,7 +23,7 @@ namespace Graphics
             virtual void SwapBuffer() const override;
             virtual void* GetHandle() const override;
 
-            std::shared_ptr<GLFWwindow> GetGLFWWindow() const;
+            GLFWwindow* GetGLFWWindow() const;
 
             void SetQuad(std::shared_ptr<QuadGeometry> quad);
             std::shared_ptr<QuadGeometry> GetQuad() const;
@@ -34,7 +34,7 @@ namespace Graphics
             void CenterCursor();
         private:
 
-            std::shared_ptr<GLFWwindow> m_Window;
+            GLFWwindow* m_Window;
             std::shared_ptr<QuadGeometry> m_Quad;
             bool m_LockedCursor;
         };

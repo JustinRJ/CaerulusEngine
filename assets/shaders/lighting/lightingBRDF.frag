@@ -17,9 +17,9 @@ struct LightObject
     float radius;
 };
 
-uniform int lightPointCounter = 3;
+uniform int lightPointCounter = 1;
 uniform int lightDirectionalCounter = 1;
-uniform LightObject lightPointArray[3];
+uniform LightObject lightPointArray[1];
 uniform LightObject lightDirectionalArray[1];
 
 // G-Buffer

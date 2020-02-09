@@ -98,7 +98,7 @@ namespace Graphics
 
             bool IsLoaded() const;
 
-            void Draw(bool wireframe) const;
+            void Draw(bool wireframe, std::shared_ptr<Material> defaultMaterial) const;
             void DrawMesh(bool wireframe, unsigned int mesh) const;
 
             const std::vector<Mesh>& GetMeshes() const;
@@ -123,10 +123,11 @@ namespace std
     {
         size_t operator()(const Graphics::Resource::Vertex& vertex) const
         {
+            using namespace Core::Math;
             return
-                ((hash<glm::vec3>()(vertex.Position) ^
-                (hash<glm::vec3>()(vertex.Normal) << 1)) >> 1) ^
-                    (hash<glm::vec2>()(vertex.TexCoords) << 1);
+                ((hash<vec3>()(vertex.Position) ^
+                (hash<vec3>()(vertex.Normal) << 1)) >> 1) ^
+                    (hash<vec2>()(vertex.TexCoords) << 1);
         }
     };
 }

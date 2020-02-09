@@ -7,9 +7,10 @@
 
 namespace
 {
-    const glm::vec3 CAMERA_INIT_POSITION = glm::vec3(0.0f, 0.0f, 0.0f);
-    const glm::vec3 CAMERA_INIT_FORWARD = glm::vec3(0.0f, 0.0f, -1.0f);
-    const glm::vec3 CAMERA_INIT_UP = glm::vec3(0.0f, 1.0f, 0.0f);
+    using namespace Core::Math;
+    const vec3 CAMERA_INIT_POSITION = vec3(0.0f, 0.0f, 0.0f);
+    const vec3 CAMERA_INIT_FORWARD = vec3(0.0f, 0.0f, -1.0f);
+    const vec3 CAMERA_INIT_UP = vec3(0.0f, 1.0f, 0.0f);
 
     const float CAMERA_INIT_ASPECT = (16.0f / 9.0f);
     const float CAMERA_INIT_FOV = 54.0f;
@@ -50,13 +51,13 @@ namespace Graphics
             m_Camera->SetNear(CAMERA_INIT_NEAR);
             m_Camera->SetFar(CAMERA_INIT_FAR);
 
-            m_Camera->SetViewMatrix(glm::lookAt(
+            m_Camera->SetViewMatrix(lookAt(
                 CAMERA_INIT_POSITION,
                 CAMERA_INIT_FORWARD + CAMERA_INIT_POSITION,
                 CAMERA_INIT_UP));
 
-            m_Camera->SetProjMatrix(glm::perspective(
-                glm::radians(CAMERA_INIT_FOV),
+            m_Camera->SetProjMatrix(perspective(
+                radians(CAMERA_INIT_FOV),
                 CAMERA_INIT_ASPECT,
                 CAMERA_INIT_NEAR,
                 CAMERA_INIT_FAR));
@@ -92,8 +93,12 @@ namespace Graphics
             m_Window->SetQuad(std::make_shared<QuadGeometry>(quadTransform));
 
             // Temp lights
-            m_PointLightMap.insert(std::make_pair(0, std::make_shared<PointLight>(vec4(1.0f, 1.0f, 1.0f, 1.0f), vec3(0.0, 0.0f, 0.0f), 1000.0f)));
+            // lightingBRDF.frag only supports 1 light of each type - easily set
+            m_PointLightMap.insert(std::make_pair(0, std::make_shared<PointLight>(vec4(1.0f, 1.0f, 1.0f, 0.0f), vec3(0.0, 25.0f, 0.0f), 10000.0f)));
             m_DirectionalLightMap.insert(std::make_pair(0, std::make_shared<DirectionalLight>(vec4(1.0f, 1.0f, 1.0f, 1.0f), vec3(0.0, -1.0f, 0.0f))));
+
+            //SAO
+            m_SAO = std::make_shared<SAO>();
 
             //IBL
             m_IBL = std::make_shared<IBL>();
@@ -115,110 +120,22 @@ namespace Graphics
             m_IBL->MapView.push_back(lookAt(vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, 1.0f),  vec3(0.0f, -1.0f, 0.0f)));
             m_IBL->MapView.push_back(lookAt(vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 0.0f, -1.0f), vec3(0.0f, -1.0f, 0.0f)));
 
-            SetCapabilities();
-            LoadShaders();
-            SetShaderUniformLocations();
-            GBufferSetup();
-            SAOBufferSetup();
-            PostProcessBufferSetup();
-            InitProfileQuery();
-        }
+            m_Profiler.InitProfileQuery();
 
-        void RenderSystem::SetCapabilities() const
-        {
             glViewport(0, 0, m_Window->GetActiveState().Width, m_Window->GetActiveState().Height);
             glEnable(GL_DEPTH_TEST);
+            glEnable(GL_CULL_FACE);
             glDepthFunc(GL_LESS);
             glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         }
 
         void RenderSystem::LoadShaders()
         {
-            m_Shaders = std::make_shared<StandardShaders>();
-
-            m_Shaders->GBuffer.Load(
-                "assets/shaders/gBuffer.vert",
-                "assets/shaders/gBuffer.frag");
-
-            m_Shaders->LatlongToCube.Load(
-                "assets/shaders/latlongToCube.vert",
-                "assets/shaders/latlongToCube.frag");
-
-            m_Shaders->Simple.Load(
-                "assets/shaders/lighting/simple.vert",
-                "assets/shaders/lighting/simple.frag");
-
-            m_Shaders->LightingBRDF.Load(
-                "assets/shaders/lighting/lightingBRDF.vert",
-                "assets/shaders/lighting/lightingBRDF.frag");
-
-            m_Shaders->IrradianceIBL.Load(
-                "assets/shaders/lighting/irradianceIBL.vert",
-                "assets/shaders/lighting/irradianceIBL.frag");
-
-            m_Shaders->PrefilterIBL.Load(
-                "assets/shaders/lighting/prefilterIBL.vert",
-                "assets/shaders/lighting/prefilterIBL.frag");
-
-            m_Shaders->IntegrateIBL.Load(
-                "assets/shaders/lighting/integrateIBL.vert",
-                "assets/shaders/lighting/integrateIBL.frag");
-
-            m_Shaders->FirstPassPostProcess.Load(
-                "assets/shaders/postprocess/postprocess.vert",
-                "assets/shaders/postprocess/firstpass.frag");
-
-            m_Shaders->SAO.Load(
-                "assets/shaders/postprocess/sao.vert",
-                "assets/shaders/postprocess/sao.frag");
-
-            m_Shaders->SAOBlur.Load(
-                "assets/shaders/postprocess/sao.vert",
-                "assets/shaders/postprocess/saoBlur.frag");
-        }
-
-        void RenderSystem::SetShaderUniformLocations()
-        {
-            m_Shaders->GBuffer.Use();
-            glUniform1i(glGetUniformLocation(m_Shaders->GBuffer.GetHandle(), "texAlbedo"), 0);
-            glUniform1i(glGetUniformLocation(m_Shaders->GBuffer.GetHandle(), "texNormal"), 1);
-            glUniform1i(glGetUniformLocation(m_Shaders->GBuffer.GetHandle(), "texRoughness"), 2);
-            glUniform1i(glGetUniformLocation(m_Shaders->GBuffer.GetHandle(), "texMetalness"), 3);
-            glUniform1i(glGetUniformLocation(m_Shaders->GBuffer.GetHandle(), "texAO"), 4);
-
-            m_Shaders->LightingBRDF.Use();
-            glUniform1i(glGetUniformLocation(m_Shaders->LightingBRDF.GetHandle(), "gPosition"), 0);
-            glUniform1i(glGetUniformLocation(m_Shaders->LightingBRDF.GetHandle(), "gAlbedo"), 1);
-            glUniform1i(glGetUniformLocation(m_Shaders->LightingBRDF.GetHandle(), "gNormal"), 2);
-            glUniform1i(glGetUniformLocation(m_Shaders->LightingBRDF.GetHandle(), "gEffects"), 3);
-            glUniform1i(glGetUniformLocation(m_Shaders->LightingBRDF.GetHandle(), "sao"), 4);
-            glUniform1i(glGetUniformLocation(m_Shaders->LightingBRDF.GetHandle(), "envMap"), 5);
-            glUniform1i(glGetUniformLocation(m_Shaders->LightingBRDF.GetHandle(), "envMapIrradiance"), 6);
-            glUniform1i(glGetUniformLocation(m_Shaders->LightingBRDF.GetHandle(), "envMapPrefilter"), 7);
-            glUniform1i(glGetUniformLocation(m_Shaders->LightingBRDF.GetHandle(), "envMapLUT"), 8);
-
-            m_Shaders->SAO.Use();
-            glUniform1i(glGetUniformLocation(m_Shaders->SAO.GetHandle(), "gPosition"), 0);
-            glUniform1i(glGetUniformLocation(m_Shaders->SAO.GetHandle(), "gNormal"), 1);
-
-            m_Shaders->FirstPassPostProcess.Use();
-            glUniform1i(glGetUniformLocation(m_Shaders->FirstPassPostProcess.GetHandle(), "sao"), 1);
-            glUniform1i(glGetUniformLocation(m_Shaders->FirstPassPostProcess.GetHandle(), "gEffects"), 2);
-
-            m_Shaders->LatlongToCube.Use();
-            glUniform1i(glGetUniformLocation(m_Shaders->LatlongToCube.GetHandle(), "envMap"), 0);
-
-            m_Shaders->IrradianceIBL.Use();
-            glUniform1i(glGetUniformLocation(m_Shaders->IrradianceIBL.GetHandle(), "envMap"), 0);
-
-            m_Shaders->PrefilterIBL.Use();
-            glUniform1i(glGetUniformLocation(m_Shaders->PrefilterIBL.GetHandle(), "envMap"), 0);
-        }
-
-        void RenderSystem::GBufferSetup()
-        {
+            /// GBUFFER
+            /// ------------------------------------------------------------------------------------------------------------------------------
             glGenFramebuffers(1, &m_GBufferFBO);
             glBindFramebuffer(GL_FRAMEBUFFER, m_GBufferFBO);
+
 
             // Position
             glGenTextures(1, &m_GPositionBuffer);
@@ -267,15 +184,17 @@ namespace Graphics
             // Check if the framebuffer is complete before continuing
             if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
             {
-                std::cerr << "Framebuffer not complete !" << std::endl;
+                using Core::Logging::Log;
+                Log::LogError("Framebuffer not complete!");
             }
-        }
 
-        void RenderSystem::SAOBufferSetup()
-        {
-            // SAO Buffer
+
+            /// ------------------------------------------------------------------------------------------------------------------------------
+            /// SAO Buffer
             glGenFramebuffers(1, &m_SAOFBO);
             glBindFramebuffer(GL_FRAMEBUFFER, m_SAOFBO);
+
+
             glGenTextures(1, &m_SAOBuffer);
             glBindTexture(GL_TEXTURE_2D, m_SAOBuffer);
             glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, m_Window->GetActiveState().Width, m_Window->GetActiveState().Height, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
@@ -285,12 +204,16 @@ namespace Graphics
 
             if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
             {
-                std::cerr << "SAO Framebuffer not complete !" << std::endl;
+                using Core::Logging::Log;
+                Log::LogError("SAO Framebuffer not complete!");
             }
 
-            // SAO Blur Buffer
+
+            /// SAO Blur Buffer
             glGenFramebuffers(1, &m_SAOBlurFBO);
             glBindFramebuffer(GL_FRAMEBUFFER, m_SAOBlurFBO);
+
+
             glGenTextures(1, &m_SAOBlurBuffer);
             glBindTexture(GL_TEXTURE_2D, m_SAOBlurBuffer);
             glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, m_Window->GetActiveState().Width, m_Window->GetActiveState().Height, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
@@ -300,17 +223,17 @@ namespace Graphics
 
             if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
             {
-                std::cerr << "SAO Blur Framebuffer not complete !" << std::endl;
+                using Core::Logging::Log;
+                Log::LogError("SAO Blur Framebuffer not complete!");
             }
-
             glBindFramebuffer(GL_FRAMEBUFFER, 0);
-        }
 
-        void RenderSystem::PostProcessBufferSetup()
-        {
-            // Post-processing Buffer
+
+            /// ------------------------------------------------------------------------------------------------------------------------------
+            /// Post-processing Buffer
             glGenFramebuffers(1, &m_PostProcessFBO);
             glBindFramebuffer(GL_FRAMEBUFFER, m_PostProcessFBO);
+
 
             glGenTextures(1, &m_PostProcessBuffer);
             glBindTexture(GL_TEXTURE_2D, m_PostProcessBuffer);
@@ -321,100 +244,95 @@ namespace Graphics
 
             if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
             {
-                std::cerr << "Postprocess Framebuffer not complete !" << std::endl;
+                using Core::Logging::Log;
+                Log::LogError("Postprocess Framebuffer not complete!");
             }
-        }
 
-        void RenderSystem::IBLBufferSetup()
-        {
-            // Latlong to Cubemap conversion
+
+            /// ------------------------------------------------------------------------------------------------------------------------------
+            /// Latlong to Cubemap conversion
             glGenFramebuffers(1, &m_EnvToCubeFBO);
             glGenRenderbuffers(1, &m_EnvToCubeRBO);
             glBindFramebuffer(GL_FRAMEBUFFER, m_EnvToCubeFBO);
             glBindRenderbuffer(GL_RENDERBUFFER, m_EnvToCubeRBO);
+
+
             glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, m_IBL->MapCube.GetWidth(), m_IBL->MapCube.GetHeight());
             glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, m_EnvToCubeRBO);
-
-            m_Shaders->LatlongToCube.Use();
-
-            glUniformMatrix4fv(glGetUniformLocation(m_Shaders->LatlongToCube.GetHandle(), "projection"), 1, GL_FALSE, value_ptr(m_IBL->MapProjection));
+            m_Shaders->LatlongToCube->Use();
+            glUniform1i(glGetUniformLocation(m_Shaders->LatlongToCube->GetHandle(), "envMap"), 0);
+            glUniformMatrix4fv(glGetUniformLocation(m_Shaders->LatlongToCube->GetHandle(), "projection"), 1, GL_FALSE, value_ptr(m_IBL->MapProjection));
             glActiveTexture(GL_TEXTURE0);
             m_SkyBox->UseTexture();
-
             glViewport(0, 0, m_IBL->MapCube.GetWidth(), m_IBL->MapCube.GetHeight());
             glBindFramebuffer(GL_FRAMEBUFFER, m_EnvToCubeFBO);
-
             for (unsigned int i = 0; i < 6; ++i)
             {
-                glUniformMatrix4fv(glGetUniformLocation(m_Shaders->LatlongToCube.GetHandle(), "view"), 1, GL_FALSE, value_ptr(m_IBL->MapView[i]));
+                glUniformMatrix4fv(glGetUniformLocation(m_Shaders->LatlongToCube->GetHandle(), "view"), 1, GL_FALSE, value_ptr(m_IBL->MapView[i]));
                 glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, m_IBL->MapCube.GetID(), 0);
                 glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-               
+
                 m_IBL->SceneCube.Draw();
             }
-
             m_IBL->MapCube.ComputeMipmap();
-
             glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-            // Diffuse irradiance capture
+
+            /// Diffuse irradiance capture
             glGenFramebuffers(1, &m_IrradianceFBO);
             glGenRenderbuffers(1, &m_IrradianceRBO);
             glBindFramebuffer(GL_FRAMEBUFFER, m_IrradianceFBO);
             glBindRenderbuffer(GL_RENDERBUFFER, m_IrradianceRBO);
+
+
             glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, m_IBL->MapIrradiance.GetWidth(), m_IBL->MapIrradiance.GetHeight());
-
-            m_Shaders->IrradianceIBL.Use();
-
-            glUniformMatrix4fv(glGetUniformLocation(m_Shaders->IrradianceIBL.GetHandle(), "projection"), 1, GL_FALSE, value_ptr(m_IBL->MapProjection));
+            m_Shaders->IrradianceIBL->Use();
+            glUniform1i(glGetUniformLocation(m_Shaders->IrradianceIBL->GetHandle(), "envMap"), 0);
+            glUniformMatrix4fv(glGetUniformLocation(m_Shaders->IrradianceIBL->GetHandle(), "projection"), 1, GL_FALSE, value_ptr(m_IBL->MapProjection));
             glActiveTexture(GL_TEXTURE0);
             m_IBL->MapCube.UseTexture();
-
             glViewport(0, 0, m_IBL->MapIrradiance.GetWidth(), m_IBL->MapIrradiance.GetHeight());
             glBindFramebuffer(GL_FRAMEBUFFER, m_IrradianceFBO);
-
             for (unsigned int i = 0; i < 6; ++i)
             {
-                glUniformMatrix4fv(glGetUniformLocation(m_Shaders->IrradianceIBL.GetHandle(), "view"), 1, GL_FALSE, value_ptr(m_IBL->MapView[i]));
+                glUniformMatrix4fv(glGetUniformLocation(m_Shaders->IrradianceIBL->GetHandle(), "view"), 1, GL_FALSE, value_ptr(m_IBL->MapView[i]));
                 glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, m_IBL->MapIrradiance.GetID(), 0);
                 glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
                 m_IBL->SceneCube.Draw();
             }
-
             glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-            // Prefilter cubemap
-            m_Shaders->PrefilterIBL.Use();
 
-            glUniformMatrix4fv(glGetUniformLocation(m_Shaders->PrefilterIBL.GetHandle(), "projection"), 1, GL_FALSE, value_ptr(m_IBL->MapProjection));
+            /// Prefilter cubemap
+            m_Shaders->PrefilterIBL->Use();
+            glUniform1i(glGetUniformLocation(m_Shaders->PrefilterIBL->GetHandle(), "envMap"), 0);
+            glUniformMatrix4fv(glGetUniformLocation(m_Shaders->PrefilterIBL->GetHandle(), "projection"), 1, GL_FALSE, value_ptr(m_IBL->MapProjection));
             m_IBL->MapCube.UseTexture();
 
+
             glGenFramebuffers(1, &m_PrefilterFBO);
-            glGenRenderbuffers(1, &m_PrefilterRBO);
             glBindFramebuffer(GL_FRAMEBUFFER, m_PrefilterFBO);
 
-            unsigned int maxMipLevels = 5;
 
+            unsigned int maxMipLevels = 5;
             for (unsigned int mip = 0; mip < maxMipLevels; ++mip)
             {
                 GLsizei mipWidth = static_cast<GLsizei>(m_IBL->MapPrefilter.GetWidth() * std::pow(0.5, mip));
                 GLsizei mipHeight = static_cast<GLsizei>(m_IBL->MapPrefilter.GetHeight() * std::pow(0.5, mip));
 
-                glBindRenderbuffer(GL_RENDERBUFFER, m_PrefilterRBO);
                 glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, mipWidth, mipHeight);
-
                 glViewport(0, 0, mipWidth, mipHeight);
 
                 float roughness = (float)mip / (float)(maxMipLevels - 1);
 
-                glUniform1f(glGetUniformLocation(m_Shaders->PrefilterIBL.GetHandle(), "roughness"), roughness);
-                glUniform1f(glGetUniformLocation(m_Shaders->PrefilterIBL.GetHandle(), "cubeResolutionWidth"), static_cast<GLfloat>(m_IBL->MapPrefilter.GetWidth()));
-                glUniform1f(glGetUniformLocation(m_Shaders->PrefilterIBL.GetHandle(), "cubeResolutionHeight"), static_cast<GLfloat>(m_IBL->MapPrefilter.GetHeight()));
+                glUniform1f(glGetUniformLocation(m_Shaders->PrefilterIBL->GetHandle(), "roughness"), roughness);
+                glUniform1f(glGetUniformLocation(m_Shaders->PrefilterIBL->GetHandle(), "cubeResolutionWidth"), static_cast<GLfloat>(m_IBL->MapPrefilter.GetWidth()));
+                glUniform1f(glGetUniformLocation(m_Shaders->PrefilterIBL->GetHandle(), "cubeResolutionHeight"), static_cast<GLfloat>(m_IBL->MapPrefilter.GetHeight()));
 
                 for (unsigned int i = 0; i < 6; ++i)
                 {
-                    glUniformMatrix4fv(glGetUniformLocation(m_Shaders->PrefilterIBL.GetHandle(), "view"), 1, GL_FALSE, value_ptr(m_IBL->MapView[i]));
+                    glUniformMatrix4fv(glGetUniformLocation(m_Shaders->PrefilterIBL->GetHandle(), "view"), 1, GL_FALSE, value_ptr(m_IBL->MapView[i]));
                     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, m_IBL->MapPrefilter.GetID(), mip);
 
                     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -422,36 +340,32 @@ namespace Graphics
                     m_IBL->SceneCube.Draw();
                 }
             }
-
             glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-            // BRDF LUT
+
+            /// BRDF LUT
             glGenFramebuffers(1, &m_BrdfLUTFBO);
             glGenRenderbuffers(1, &m_BrdfLUTRBO);
             glBindFramebuffer(GL_FRAMEBUFFER, m_BrdfLUTFBO);
             glBindRenderbuffer(GL_RENDERBUFFER, m_BrdfLUTRBO);
+
             glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, m_IBL->MapLUT.GetWidth(), m_IBL->MapLUT.GetHeight());
             glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_IBL->MapLUT.GetID(), 0);
-
             glViewport(0, 0, m_IBL->MapLUT.GetWidth(), m_IBL->MapLUT.GetHeight());
-            m_Shaders->IntegrateIBL.Use();
+            m_Shaders->IntegrateIBL->Use();
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+
+
+
+
+
             m_Window->GetQuad()->Draw();
-
             glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
             glViewport(0, 0, m_Window->GetActiveState().Width, m_Window->GetActiveState().Height);
         }
 
-        void RenderSystem::InitProfileQuery()
-        {
-            glGenQueries(2, m_Profiler.QueryIDGeometry);
-            glGenQueries(2, m_Profiler.QueryIDLighting);
-            glGenQueries(2, m_Profiler.QueryIDSAO);
-            glGenQueries(2, m_Profiler.QueryIDPostprocess);
-            glGenQueries(2, m_Profiler.QueryIDForward);
-        }
+
 
         void RenderSystem::DrawAll()
         {
@@ -459,44 +373,44 @@ namespace Graphics
             glQueryCounter(m_Profiler.QueryIDGeometry[GPUProfiler::Start], GL_TIMESTAMP);
 
             // geo rendering
-            m_Shaders->GBuffer.Use();
-            SetCameraUniforms();
+            m_Shaders->GBuffer->Use();
 
-            glm::mat4 cameraTransform;
-            MathHelper::CreateTansform(cameraTransform, m_Camera->GetPosition(), m_Camera->GetForward(), glm::vec3(1.0f));
+            if (!gBuffer)
+            {
+                glUniform1i(glGetUniformLocation(m_Shaders->GBuffer->GetHandle(), "texAlbedo"), 0);
+                glUniform1i(glGetUniformLocation(m_Shaders->GBuffer->GetHandle(), "texNormal"), 1);
+                glUniform1i(glGetUniformLocation(m_Shaders->GBuffer->GetHandle(), "texRoughness"), 2);
+                glUniform1i(glGetUniformLocation(m_Shaders->GBuffer->GetHandle(), "texMetalness"), 3);
+                glUniform1i(glGetUniformLocation(m_Shaders->GBuffer->GetHandle(), "texAO"), 4);
+                gBuffer = true;
+            }
+
+            float nearPlane = m_Camera->GetNear();
+            float farPlane = m_Camera->GetFar();
+            mat4 view = m_Camera->GetViewMatrix() /** this by transform of camera*/;
+            mat4 proj = m_Camera->GetProjMatrix();
+            mat4 cameraTransform;
+            MathHelper::CreateTansform(cameraTransform, m_Camera->GetPosition(), m_Camera->GetForward(), vec3(1.0f));
             m_ProjViewModel = m_Camera->GetProjMatrix() * m_Camera->GetViewMatrix() * cameraTransform;
+
+            glUniformMatrix4fv(glGetUniformLocation(m_Shaders->GBuffer->GetHandle(), "projection"), 1, GL_FALSE, value_ptr(proj));
+            glUniformMatrix4fv(glGetUniformLocation(m_Shaders->GBuffer->GetHandle(), "view"), 1, GL_FALSE, value_ptr(view));
+            glUniformMatrix4fv(glGetUniformLocation(m_Shaders->GBuffer->GetHandle(), "nearPlane"), 1, GL_FALSE, &nearPlane);
+            glUniformMatrix4fv(glGetUniformLocation(m_Shaders->GBuffer->GetHandle(), "farPlane"), 1, GL_FALSE, &farPlane);
+            glUniformMatrix4fv(glGetUniformLocation(m_Shaders->GBuffer->GetHandle(), "projViewModel"), 1, GL_FALSE, value_ptr(m_ProjViewModel));
+            glUniformMatrix4fv(glGetUniformLocation(m_Shaders->GBuffer->GetHandle(), "projViewModelPrev"), 1, GL_FALSE, value_ptr(m_ProjViewModelPrev));
 
             for (auto model : m_ModelMap)
             {
                 if (model.second)
                 {
-                    mat4 transform = *m_TransformMap.at(model.first);
-                    SetModelUniforms(transform);
-                    model.second->Draw(m_WireframeMode);
+                    const mat4& transform = *m_TransformMap.at(model.first);
+                    glUniformMatrix4fv(glGetUniformLocation(m_Shaders->GBuffer->GetHandle(), "model"), 1, GL_FALSE, value_ptr(transform));
+                    model.second->Draw(m_WireframeMode, m_DefaultMaterial);
                 }
             }
 
             glQueryCounter(m_Profiler.QueryIDGeometry[GPUProfiler::Stop], GL_TIMESTAMP);
-        }
-
-        void RenderSystem::SetCameraUniforms() const
-        {
-            float nearPlane = m_Camera->GetNear();
-            float farPlane = m_Camera->GetFar();
-            mat4 view = m_Camera->GetViewMatrix() /** this by transform of camera*/;
-            mat4 proj = m_Camera->GetProjMatrix();
-
-            glUniformMatrix4fv(glGetUniformLocation(m_Shaders->GBuffer.GetHandle(), "projection"), 1, GL_FALSE, value_ptr(proj));
-            glUniformMatrix4fv(glGetUniformLocation(m_Shaders->GBuffer.GetHandle(), "view"), 1, GL_FALSE, value_ptr(view));
-            glUniformMatrix4fv(glGetUniformLocation(m_Shaders->GBuffer.GetHandle(), "nearPlane"), 1, GL_FALSE, &nearPlane);
-            glUniformMatrix4fv(glGetUniformLocation(m_Shaders->GBuffer.GetHandle(), "farPlane"), 1, GL_FALSE, &farPlane);
-            glUniformMatrix4fv(glGetUniformLocation(m_Shaders->GBuffer.GetHandle(), "projViewModel"), 1, GL_FALSE, value_ptr(m_ProjViewModel));
-            glUniformMatrix4fv(glGetUniformLocation(m_Shaders->GBuffer.GetHandle(), "projViewModelPrev"), 1, GL_FALSE, value_ptr(m_ProjViewModelPrev));
-        }
-
-        void RenderSystem::SetModelUniforms(const mat4& model) const
-        {
-            glUniformMatrix4fv(glGetUniformLocation(m_Shaders->GBuffer.GetHandle(), "model"), 1, GL_FALSE, value_ptr(model));
         }
 
         void RenderSystem::PreUpdate(float deltaTime)
@@ -603,21 +517,27 @@ namespace Graphics
             if (m_SAOMode)
             {
                 // SAO noisy texture
-                m_Shaders->SAO.Use();
+                m_Shaders->SAO->Use();
+
+                if (!sao)
+                {
+                    glUniform1i(glGetUniformLocation(m_Shaders->SAO->GetHandle(), "gPosition"), 0);
+                    glUniform1i(glGetUniformLocation(m_Shaders->SAO->GetHandle(), "gNormal"), 1);
+                }
 
                 glActiveTexture(GL_TEXTURE0);
                 glBindTexture(GL_TEXTURE_2D, m_GPositionBuffer);
                 glActiveTexture(GL_TEXTURE1);
                 glBindTexture(GL_TEXTURE_2D, m_GNormalBuffer);
 
-                glUniform1i(glGetUniformLocation(m_Shaders->SAO.GetHandle(), "saoSamples"), m_SAO.Samples);
-                glUniform1f(glGetUniformLocation(m_Shaders->SAO.GetHandle(), "saoRadius"), m_SAO.Radius);
-                glUniform1i(glGetUniformLocation(m_Shaders->SAO.GetHandle(), "saoTurns"), m_SAO.Turns);
-                glUniform1f(glGetUniformLocation(m_Shaders->SAO.GetHandle(), "saoBias"), m_SAO.Bias);
-                glUniform1f(glGetUniformLocation(m_Shaders->SAO.GetHandle(), "saoScale"), m_SAO.Scale);
-                glUniform1f(glGetUniformLocation(m_Shaders->SAO.GetHandle(), "saoContrast"), m_SAO.Contrast);
-                glUniform1i(glGetUniformLocation(m_Shaders->SAO.GetHandle(), "viewportWidth"), m_Window->GetActiveState().Width);
-                glUniform1i(glGetUniformLocation(m_Shaders->SAO.GetHandle(), "viewportHeight"), m_Window->GetActiveState().Height);
+                glUniform1i(glGetUniformLocation(m_Shaders->SAO->GetHandle(), "saoSamples"), m_SAO->Samples);
+                glUniform1f(glGetUniformLocation(m_Shaders->SAO->GetHandle(), "saoRadius"), m_SAO->Radius);
+                glUniform1i(glGetUniformLocation(m_Shaders->SAO->GetHandle(), "saoTurns"), m_SAO->Turns);
+                glUniform1f(glGetUniformLocation(m_Shaders->SAO->GetHandle(), "saoBias"), m_SAO->Bias);
+                glUniform1f(glGetUniformLocation(m_Shaders->SAO->GetHandle(), "saoScale"), m_SAO->Scale);
+                glUniform1f(glGetUniformLocation(m_Shaders->SAO->GetHandle(), "saoContrast"), m_SAO->Contrast);
+                glUniform1i(glGetUniformLocation(m_Shaders->SAO->GetHandle(), "viewportWidth"), m_Window->GetActiveState().Width);
+                glUniform1i(glGetUniformLocation(m_Shaders->SAO->GetHandle(), "viewportHeight"), m_Window->GetActiveState().Height);
 
                 m_Window->GetQuad()->Draw();
 
@@ -627,9 +547,9 @@ namespace Graphics
                 glBindFramebuffer(GL_FRAMEBUFFER, m_SAOBlurFBO);
                 glClear(GL_COLOR_BUFFER_BIT);
 
-                m_Shaders->SAOBlur.Use();
+                m_Shaders->SAOBlur->Use();
 
-                glUniform1i(glGetUniformLocation(m_Shaders->SAOBlur.GetHandle(), "saoBlurSize"), m_SAO.BlurSize);
+                glUniform1i(glGetUniformLocation(m_Shaders->SAOBlur->GetHandle(), "saoBlurSize"), m_SAO->BlurSize);
                 glActiveTexture(GL_TEXTURE0);
                 glBindTexture(GL_TEXTURE_2D, m_SAOBuffer);
 
@@ -647,7 +567,21 @@ namespace Graphics
             glBindFramebuffer(GL_FRAMEBUFFER, m_PostProcessFBO);
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-            m_Shaders->LightingBRDF.Use();
+            m_Shaders->LightingBRDF->Use();
+
+            if (!lightingBRDF)
+            {
+                glUniform1i(glGetUniformLocation(m_Shaders->LightingBRDF->GetHandle(), "gPosition"), 0);
+                glUniform1i(glGetUniformLocation(m_Shaders->LightingBRDF->GetHandle(), "gAlbedo"), 1);
+                glUniform1i(glGetUniformLocation(m_Shaders->LightingBRDF->GetHandle(), "gNormal"), 2);
+                glUniform1i(glGetUniformLocation(m_Shaders->LightingBRDF->GetHandle(), "gEffects"), 3);
+                glUniform1i(glGetUniformLocation(m_Shaders->LightingBRDF->GetHandle(), "sao"), 4);
+                glUniform1i(glGetUniformLocation(m_Shaders->LightingBRDF->GetHandle(), "envMap"), 5);
+                glUniform1i(glGetUniformLocation(m_Shaders->LightingBRDF->GetHandle(), "envMapIrradiance"), 6);
+                glUniform1i(glGetUniformLocation(m_Shaders->LightingBRDF->GetHandle(), "envMapPrefilter"), 7);
+                glUniform1i(glGetUniformLocation(m_Shaders->LightingBRDF->GetHandle(), "envMapLUT"), 8);
+                lightingBRDF = true;
+            }
 
             glActiveTexture(GL_TEXTURE0);
             glBindTexture(GL_TEXTURE_2D, m_GPositionBuffer);
@@ -675,7 +609,7 @@ namespace Graphics
             {
                 if (idPointPair.second)
                 {
-                    idPointPair.second->RenderToShader(idPointPair.first, m_Shaders->LightingBRDF, view);
+                    idPointPair.second->RenderToShader(idPointPair.first, *m_Shaders->LightingBRDF, view);
                 }
             }
 
@@ -683,22 +617,22 @@ namespace Graphics
             {
                 if (idDirectionalPair.second)
                 {
-                    idDirectionalPair.second->RenderToShader(idDirectionalPair.first, m_Shaders->LightingBRDF, view);
+                    idDirectionalPair.second->RenderToShader(idDirectionalPair.first, *m_Shaders->LightingBRDF, view);
                 }
             }
 
-            glUniformMatrix4fv(glGetUniformLocation(m_Shaders->LightingBRDF.GetHandle(), "view"), 1, GL_FALSE, value_ptr(view));
-            glUniformMatrix4fv(glGetUniformLocation(m_Shaders->LightingBRDF.GetHandle(), "transposedView"), 1, GL_FALSE, value_ptr(transpose(view)));
-            glUniformMatrix4fv(glGetUniformLocation(m_Shaders->LightingBRDF.GetHandle(), "inverseProj"), 1, GL_FALSE, value_ptr(inverse(proj)));
-            glUniform1f(glGetUniformLocation(m_Shaders->LightingBRDF.GetHandle(), "materialRoughness"), m_MaterialRoughness);
-            glUniform1f(glGetUniformLocation(m_Shaders->LightingBRDF.GetHandle(), "materialMetallicity"), m_MaterialMetallicity);
-            glUniform3f(glGetUniformLocation(m_Shaders->LightingBRDF.GetHandle(), "materialF0"), m_MaterialF0.r, m_MaterialF0.g, m_MaterialF0.b);
-            glUniform1f(glGetUniformLocation(m_Shaders->LightingBRDF.GetHandle(), "ambientIntensity"), m_AmbientIntensity);
-            glUniform1i(glGetUniformLocation(m_Shaders->LightingBRDF.GetHandle(), "gBufferView"), m_GBufferView);
-            glUniform1i(glGetUniformLocation(m_Shaders->LightingBRDF.GetHandle(), "pointMode"), m_PointMode);
-            glUniform1i(glGetUniformLocation(m_Shaders->LightingBRDF.GetHandle(), "directionalMode"), m_DirectionalMode);
-            glUniform1i(glGetUniformLocation(m_Shaders->LightingBRDF.GetHandle(), "iblMode"), m_IBLMode);
-            glUniform1i(glGetUniformLocation(m_Shaders->LightingBRDF.GetHandle(), "attenuationMode"), m_AttenuationMode);
+            glUniformMatrix4fv(glGetUniformLocation(m_Shaders->LightingBRDF->GetHandle(), "view"), 1, GL_FALSE, value_ptr(view));
+            glUniformMatrix4fv(glGetUniformLocation(m_Shaders->LightingBRDF->GetHandle(), "transposedView"), 1, GL_FALSE, value_ptr(transpose(view)));
+            glUniformMatrix4fv(glGetUniformLocation(m_Shaders->LightingBRDF->GetHandle(), "inverseProj"), 1, GL_FALSE, value_ptr(inverse(proj)));
+            glUniform1f(glGetUniformLocation(m_Shaders->LightingBRDF->GetHandle(), "materialRoughness"), m_MaterialRoughness);
+            glUniform1f(glGetUniformLocation(m_Shaders->LightingBRDF->GetHandle(), "materialMetallicity"), m_MaterialMetallicity);
+            glUniform3f(glGetUniformLocation(m_Shaders->LightingBRDF->GetHandle(), "materialF0"), m_MaterialF0.r, m_MaterialF0.g, m_MaterialF0.b);
+            glUniform1f(glGetUniformLocation(m_Shaders->LightingBRDF->GetHandle(), "ambientIntensity"), m_AmbientIntensity);
+            glUniform1i(glGetUniformLocation(m_Shaders->LightingBRDF->GetHandle(), "gBufferView"), m_GBufferView);
+            glUniform1i(glGetUniformLocation(m_Shaders->LightingBRDF->GetHandle(), "pointMode"), m_PointMode);
+            glUniform1i(glGetUniformLocation(m_Shaders->LightingBRDF->GetHandle(), "directionalMode"), m_DirectionalMode);
+            glUniform1i(glGetUniformLocation(m_Shaders->LightingBRDF->GetHandle(), "iblMode"), m_IBLMode);
+            glUniform1i(glGetUniformLocation(m_Shaders->LightingBRDF->GetHandle(), "attenuationMode"), m_AttenuationMode);
 
             m_Window->GetQuad()->Draw();
 
@@ -712,19 +646,25 @@ namespace Graphics
             glQueryCounter(m_Profiler.QueryIDPostprocess[GPUProfiler::Start], GL_TIMESTAMP);
 
             glClear(GL_COLOR_BUFFER_BIT);
-            m_Shaders->FirstPassPostProcess.Use();
+            m_Shaders->FirstPassPostProcess->Use();
 
-            glUniform1i(glGetUniformLocation(m_Shaders->FirstPassPostProcess.GetHandle(), "gBufferView"), m_GBufferView);
-            glUniform2f(glGetUniformLocation(m_Shaders->FirstPassPostProcess.GetHandle(), "screenTextureSize"), 1.0f / m_Window->GetActiveState().Width, 1.0f / m_Window->GetActiveState().Height);
-            glUniform1f(glGetUniformLocation(m_Shaders->FirstPassPostProcess.GetHandle(), "cameraAperture"), m_Camera->GetAperture());
-            glUniform1f(glGetUniformLocation(m_Shaders->FirstPassPostProcess.GetHandle(), "cameraShutterSpeed"), m_Camera->GetShutterSpeed());
-            glUniform1f(glGetUniformLocation(m_Shaders->FirstPassPostProcess.GetHandle(), "cameraISO"), m_Camera->GetISO());
-            glUniform1i(glGetUniformLocation(m_Shaders->FirstPassPostProcess.GetHandle(), "saoMode"), m_SAOMode);
-            glUniform1i(glGetUniformLocation(m_Shaders->FirstPassPostProcess.GetHandle(), "fxaaMode"), m_FXAAMode);
-            glUniform1i(glGetUniformLocation(m_Shaders->FirstPassPostProcess.GetHandle(), "motionBlurMode"), m_MotionBlurMode);
-            glUniform1f(glGetUniformLocation(m_Shaders->FirstPassPostProcess.GetHandle(), "motionBlurScale"), deltaTime);
-            glUniform1i(glGetUniformLocation(m_Shaders->FirstPassPostProcess.GetHandle(), "motionBlurMaxSamples"), m_SAO.MotionBlurMaxSamples);
-            glUniform1i(glGetUniformLocation(m_Shaders->FirstPassPostProcess.GetHandle(), "tonemappingMode"), m_ToneMappingMode);
+            if (!firstPassProcess)
+            {
+                glUniform1i(glGetUniformLocation(m_Shaders->FirstPassPostProcess->GetHandle(), "sao"), 1);
+                glUniform1i(glGetUniformLocation(m_Shaders->FirstPassPostProcess->GetHandle(), "gEffects"), 2);
+            }
+
+            glUniform1i(glGetUniformLocation(m_Shaders->FirstPassPostProcess->GetHandle(), "gBufferView"), m_GBufferView);
+            glUniform2f(glGetUniformLocation(m_Shaders->FirstPassPostProcess->GetHandle(), "screenTextureSize"), 1.0f / m_Window->GetActiveState().Width, 1.0f / m_Window->GetActiveState().Height);
+            glUniform1f(glGetUniformLocation(m_Shaders->FirstPassPostProcess->GetHandle(), "cameraAperture"), m_Camera->GetAperture());
+            glUniform1f(glGetUniformLocation(m_Shaders->FirstPassPostProcess->GetHandle(), "cameraShutterSpeed"), m_Camera->GetShutterSpeed());
+            glUniform1f(glGetUniformLocation(m_Shaders->FirstPassPostProcess->GetHandle(), "cameraISO"), m_Camera->GetISO());
+            glUniform1i(glGetUniformLocation(m_Shaders->FirstPassPostProcess->GetHandle(), "saoMode"), m_SAOMode);
+            glUniform1i(glGetUniformLocation(m_Shaders->FirstPassPostProcess->GetHandle(), "fxaaMode"), m_FXAAMode);
+            glUniform1i(glGetUniformLocation(m_Shaders->FirstPassPostProcess->GetHandle(), "motionBlurMode"), m_MotionBlurMode);
+            glUniform1f(glGetUniformLocation(m_Shaders->FirstPassPostProcess->GetHandle(), "motionBlurScale"), deltaTime);
+            glUniform1i(glGetUniformLocation(m_Shaders->FirstPassPostProcess->GetHandle(), "motionBlurMaxSamples"), m_SAO->MotionBlurMaxSamples);
+            glUniform1i(glGetUniformLocation(m_Shaders->FirstPassPostProcess->GetHandle(), "tonemappingMode"), m_ToneMappingMode);
 
             glActiveTexture(GL_TEXTURE0);
             glBindTexture(GL_TEXTURE_2D, m_PostProcessBuffer);
@@ -759,16 +699,16 @@ namespace Graphics
 
             if (m_PointMode)
             {
-                m_Shaders->Simple.Use();
-                glUniformMatrix4fv(glGetUniformLocation(m_Shaders->Simple.GetHandle(), "projection"), 1, GL_FALSE, value_ptr(proj));
-                glUniformMatrix4fv(glGetUniformLocation(m_Shaders->Simple.GetHandle(), "view"), 1, GL_FALSE, value_ptr(view));
+                m_Shaders->Simple->Use();
+                glUniformMatrix4fv(glGetUniformLocation(m_Shaders->Simple->GetHandle(), "projection"), 1, GL_FALSE, value_ptr(proj));
+                glUniformMatrix4fv(glGetUniformLocation(m_Shaders->Simple->GetHandle(), "view"), 1, GL_FALSE, value_ptr(view));
 
                 for (auto idPointPair : m_PointLightMap)
                 {
                     if (idPointPair.second)
                     {
                         auto colour = idPointPair.second->GetColour();
-                        glUniform4f(glGetUniformLocation(m_Shaders->Simple.GetHandle(), "lightColor"), colour.r, colour.g, colour.b, colour.a);
+                        glUniform4f(glGetUniformLocation(m_Shaders->Simple->GetHandle(), "lightColor"), colour.r, colour.g, colour.b, colour.a);
                     }
                 }
 
@@ -819,7 +759,6 @@ namespace Graphics
         void RenderSystem::SetSkyBox(std::shared_ptr<Texture> skyBox)
         {
             m_SkyBox = skyBox;
-            IBLBufferSetup();
         }
 
         std::shared_ptr<Texture> RenderSystem::GetSkyBox() const
@@ -875,6 +814,26 @@ namespace Graphics
         const std::map<unsigned int, std::shared_ptr<mat4>>& RenderSystem::GetTransformMap() const
         {
             return m_TransformMap;
+        }
+
+        void RenderSystem::SetShaders(const std::shared_ptr<StandardShaders>& shaders)
+        {
+            m_Shaders = shaders;
+        }
+
+        const std::shared_ptr<StandardShaders>& RenderSystem::GetShaders() const
+        {
+            return m_Shaders;
+        }
+
+        void RenderSystem::SetDefaultMaterial(std::shared_ptr<Material> material)
+        {
+            m_DefaultMaterial = material;
+        }
+
+        std::shared_ptr<Material> RenderSystem::GetDefaultMaterial() const
+        {
+            return m_DefaultMaterial;
         }
     }
 }

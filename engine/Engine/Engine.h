@@ -34,6 +34,11 @@ public:
 
     void Run();
 
+    //virtual void InitInput();
+    //virtual void InitScene();
+    //virtual void InitShaders();
+
+
 private:
 
     void Tick();
@@ -45,9 +50,9 @@ private:
 
     float m_DeltaTime = 0.0f;
     float m_FixedTime = 0.0f;
-    float m_FPSLimit = 1.0f / 60.0f;
-    float m_NormalSpeed = 100.0f;
-    float m_SprintSpeed = 200.0f;
+    float m_FPSLimit = 1.0f / 144.0f;
+    float m_NormalSpeed = 150.0f;
+    float m_SprintSpeed = 300.0f;
     double m_MouseSensitivity = 50.0;
 
     std::unique_ptr<FPSLimiter> m_FPSLimiter;

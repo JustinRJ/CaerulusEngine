@@ -51,11 +51,11 @@ namespace Graphics
 
             if (force)
             {
-                float dot = glm::dot(MathHelper::UpVector(normalize(rotation)), forcedUp) - CAMERA_CORRECTION;
-                if (dot < 0.0f)
+                float dotVal = dot(MathHelper::UpVector(normalize(rotation)), forcedUp) - CAMERA_CORRECTION;
+                if (dotVal < 0.0f)
                 {
-                    float adjustment = (acosf(dot) - half_pi<float>())
-                        * (glm::dot(forcedUp, MathHelper::ForwardVector(rotation)) < 0.0f ? 1.0f : -1.0f);
+                    float adjustment = (acosf(dotVal) - half_pi<float>())
+                        * (dot(forcedUp, MathHelper::ForwardVector(rotation)) < 0.0f ? 1.0f : -1.0f);
 
                     rotation = angleAxis(adjustment, MathHelper::RightVector(rotation)) * rotation;
                 }
@@ -80,7 +80,7 @@ namespace Graphics
 
         vec3 Camera::GetPosition() const
         {
-            return vec3(MathHelper::GetTranslation(m_View));
+            return MathHelper::GetTranslation(m_View);
         }
 
         void Camera::SetViewMatrix(const mat4& view)

@@ -14,6 +14,7 @@ namespace Managers
             Log::LogInDebug("\tShader stage already loaded with path " + path);
             return false;
         }
+
         Log::LogMessage("\tLoading shader stage with path " + path);
         auto ss = std::make_shared<ShaderSource>(type, path);
         ss->Load();

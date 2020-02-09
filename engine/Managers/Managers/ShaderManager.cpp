@@ -15,13 +15,20 @@ namespace Managers
             Log::LogInDebug("Shader with name " + name + " already loaded");
             return false;
         }
+
         Log::LogMessage("Loading shader with name " + name + ":");
         m_ShaderStageManager.Load(vertexPath, Vertex);
         m_ShaderStageManager.Load(fragmentPath, Fragment);
 
-        auto s = std::make_shared<Shader>();
-        s->Compile(*m_ShaderStageManager.Get(vertexPath), *m_ShaderStageManager.Get(fragmentPath));
-        Insert(name, s);
-        return true;
+        auto s = std::make_shared<Shader>(
+            *m_ShaderStageManager.Get(vertexPath),
+            *m_ShaderStageManager.Get(fragmentPath));
+
+        if (s->Link())
+        {
+            Insert(name, s);
+            return true;
+        }
+        return false;
     }
 }

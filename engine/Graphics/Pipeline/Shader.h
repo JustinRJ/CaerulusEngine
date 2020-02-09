@@ -3,33 +3,41 @@
 #define CAERULUS_GRAPHICS __declspec(dllexport)
 
 #include "ShaderSource.h"
+#include "../../Core/Math/MathHelper.h"
+
+using namespace Core::Math;
 
 namespace Graphics
 {
     namespace PipeLine
     {
+
         class CAERULUS_GRAPHICS Shader
         {
         public:
-            Shader();
+            Shader(const ShaderSource& vertex, const ShaderSource& fragment);
             ~Shader();
 
-            bool IsLoaded() const;
-            void Load(const GLchar* vertexPath, const GLchar* fragmentPath);
-            bool Compile(const ShaderSource& vertex, const ShaderSource& fragment);
-            void Use() const;
+            bool IsLinked() const;
+            bool Link();
+            void Use();
+            void Unuse();
 
             GLuint GetHandle() const;
+            
+            void Set1i(const std::string& name, GLint value);
+            void Set1f(const std::string& name, GLfloat value);
+            void SetVec2f(const std::string& name, fvec2 value);
+            void SetVec3f(const std::string& name, fvec3 value);
+            void SetVec4f(const std::string& name, fvec4 value);
+            void SetMat3fv(const std::string& name, mat3 value, GLboolean transpose = GL_FALSE);
+            void SetMat4fv(const std::string& name, mat4 value, GLboolean transpose = GL_FALSE);
 
         private:
-            GLuint m_ShaderProgram;
-            GLuint m_VertexShaderObject;
-            GLuint m_FragmentShaderObject;
-
-            bool m_IsLoaded;
-            GLint m_IsVertexSuccess;
-            GLint m_IsFragmentSuccess;
-            GLint m_IsLinkSuccess;
+            bool m_IsLinked;
+            GLuint m_Handle;
+            ShaderSource m_Vertex;
+            ShaderSource m_Fragment;
         };
     }
 }
