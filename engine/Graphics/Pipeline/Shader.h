@@ -1,43 +1,36 @@
 #pragma once
 
-#define CAERULUS_GRAPHICS __declspec(dllexport)
-
+#include "PiplineUniform.h"
 #include "ShaderSource.h"
 #include "../../Core/Math/MathHelper.h"
-
-using namespace Core::Math;
 
 namespace Graphics
 {
     namespace PipeLine
     {
-
-        class CAERULUS_GRAPHICS Shader
+        class CAERULUS_GRAPHICS Shader : public PiplineUniform
         {
         public:
             Shader(const ShaderSource& vertex, const ShaderSource& fragment);
-            ~Shader();
+            virtual ~Shader() = default;
 
-            bool IsLinked() const;
+            void SetUniforms() override;
+            void UpdateUniforms() override;
+
             bool Link();
-            void Use();
-            void Unuse();
-
+            bool IsLinked() const;
             GLuint GetHandle() const;
-            
-            void Set1i(const std::string& name, GLint value);
-            void Set1f(const std::string& name, GLfloat value);
-            void SetVec2f(const std::string& name, fvec2 value);
-            void SetVec3f(const std::string& name, fvec3 value);
-            void SetVec4f(const std::string& name, fvec4 value);
-            void SetMat3fv(const std::string& name, mat3 value, GLboolean transpose = GL_FALSE);
-            void SetMat4fv(const std::string& name, mat4 value, GLboolean transpose = GL_FALSE);
+
+            void SetUniforms(std::function<void()> setUniforms);
+            void UpdateUniforms(std::function<void()> updateUniforms);
 
         private:
             bool m_IsLinked;
-            GLuint m_Handle;
             ShaderSource m_Vertex;
             ShaderSource m_Fragment;
+
+            std::function<void()> m_SetUniforms;
+            std::function<void()> m_UpdateUniforms;
         };
     }
 }

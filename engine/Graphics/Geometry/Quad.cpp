@@ -1,12 +1,12 @@
 #include "stdafx.h"
 
-#include "QuadGeometry.h"
+#include "Quad.h"
 
 namespace Graphics
 {
     namespace Geometry
     {
-        const GLfloat QuadGeometry::s_QuadVertices[] =
+        const GLfloat Quad::s_QuadVertices[] =
         {
             -1.0f,  1.0f, 0.0f, 0.0f, 1.0f,
             -1.0f, -1.0f, 0.0f, 0.0f, 0.0f,
@@ -14,36 +14,34 @@ namespace Graphics
             1.0f, -1.0f, 0.0f, 1.0f, 0.0f,
         };
 
-        QuadGeometry::QuadGeometry() :
+        Quad::Quad() :
             Geometry(mat4())
         {
-            GenerateBuffer();
+            SetVertices();
         }
 
-        QuadGeometry::QuadGeometry(const mat4& transform) :
+        Quad::Quad(const mat4& transform) :
             Geometry(transform)
         {
-            GenerateBuffer();
+            SetVertices();
         }
 
-        void QuadGeometry::Draw() const
+        void Quad::Draw(bool wireframe) const
         {
-            glBindVertexArray(m_VAO);
-            glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-            glBindVertexArray(0);
+            Bind();
+            glDrawArrays(wireframe ? GL_LINES : GL_TRIANGLE_STRIP, 0, 4);
+            Unbind();
         }
 
-        void QuadGeometry::GenerateBuffer()
+        void Quad::SetVertices()
         {
             glBufferData(GL_ARRAY_BUFFER, sizeof(s_QuadVertices), s_QuadVertices, GL_STATIC_DRAW);
-            glBindVertexArray(m_VAO);
-
+            Bind();
             glEnableVertexAttribArray(0);
             glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (GLvoid*)0);
             glEnableVertexAttribArray(1);
             glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (GLvoid*)(3 * sizeof(GLfloat)));
-
-            glBindVertexArray(0);
+            Unbind();
         }
     }
 }

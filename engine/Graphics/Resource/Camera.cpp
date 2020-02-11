@@ -2,7 +2,24 @@
 
 #include "Camera.h"
 
-const float CAMERA_CORRECTION = 0.1f;
+namespace
+{
+    using namespace Core::Math;
+    const vec3 CAMERA_INIT_POSITION = vec3(0.0f, 0.0f, 0.0f);
+    const vec3 CAMERA_INIT_FORWARD = vec3(0.0f, 0.0f, -1.0f);
+    const vec3 CAMERA_INIT_UP = vec3(0.0f, 1.0f, 0.0f);
+
+    const float CAMERA_INIT_ASPECT = (16.0f / 9.0f);
+    const float CAMERA_INIT_FOV = 54.0f;
+    const float CAMERA_INIT_NEAR = 1.0f;    //THIS IS SET IN SHADER G-BUFFER.FRAG
+    const float CAMERA_INIT_FAR = 1000.0f;  //THIS IS SET IN SHADER G-BUFFER.FRAG
+
+    float CAMERA_INIT_APETURE = 16.0f;
+    float CAMERA_INIT_SHUTTER_SPEED = 0.5f;
+    float CAMERA_INIT_ISO = 1000.0f;
+
+    const float CAMERA_CORRECTION = 0.1f;
+}
 
 namespace Graphics
 {
@@ -14,6 +31,25 @@ namespace Graphics
             m_View(mat4()),
             m_Proj(mat4())
         {
+            SetFOV(CAMERA_INIT_FOV);
+            SetAspect(CAMERA_INIT_ASPECT);
+            SetNear(CAMERA_INIT_NEAR);
+            SetFar(CAMERA_INIT_FAR);
+
+            SetViewMatrix(lookAt(
+                CAMERA_INIT_POSITION,
+                CAMERA_INIT_FORWARD + CAMERA_INIT_POSITION,
+                CAMERA_INIT_UP));
+
+            SetProjMatrix(perspective(
+                radians(CAMERA_INIT_FOV),
+                CAMERA_INIT_ASPECT,
+                CAMERA_INIT_NEAR,
+                CAMERA_INIT_FAR));
+
+            SetAperture(CAMERA_INIT_APETURE);
+            SetShutterSpeed(CAMERA_INIT_SHUTTER_SPEED);
+            SetISO(CAMERA_INIT_ISO);
         }
 
         Camera::~Camera()
@@ -66,6 +102,13 @@ namespace Graphics
             MathHelper::SetAxis(temp, MathHelper::GetAxis(model, Index::W), Index::W);
 
             m_View = inverse(temp);
+        }
+
+        void Camera::GetProjViewModel(mat4 & out) const
+        {
+            mat4 cameraTransform;
+            MathHelper::CreateTansform(cameraTransform, GetPosition(), GetForward(), vec3(1.0f));
+            out = m_Proj * m_View * cameraTransform;
         }
 
         const mat4& Camera::GetViewMatrix() const

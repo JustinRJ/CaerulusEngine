@@ -1,12 +1,12 @@
 #include "stdafx.h"
 
-#include "PlaneGeometry.h"
+#include "Plane.h"
 
 namespace Graphics
 {
     namespace Geometry
     {
-        const GLfloat PlaneGeometry::s_PlaneVertices[] =
+        const GLfloat Plane::s_PlaneVertices[] =
         {
             0.5f,  -0.5f,  0.5f,  0.0f, 1.0f, 0.0f,  1.0f, 0.0f,
             -0.5f, -0.5f,  0.5f,  0.0f, 1.0f, 0.0f,  0.0f, 0.0f,
@@ -16,39 +16,36 @@ namespace Graphics
             0.5f,  -0.5f, -0.5f,  0.0f, 1.0f, 0.0f,  1.0f, 1.0f
         };
 
-        PlaneGeometry::PlaneGeometry() :
+        Plane::Plane() :
             Geometry(mat4())
         {
-            GenerateBuffer();
+            SetVertices();
         }
 
-        PlaneGeometry::PlaneGeometry(const mat4& transform) :
+        Plane::Plane(const mat4& transform) :
             Geometry(transform)
         {
-            GenerateBuffer();
+            SetVertices();
         }
 
-        void PlaneGeometry::Draw() const
+        void Plane::Draw(bool wireframe) const
         {
-            glBindVertexArray(m_VAO);
-            glDrawArrays(GL_TRIANGLE_STRIP, 0, 6);
-            glBindVertexArray(0);
+            Bind();
+            glDrawArrays(wireframe ? GL_LINES : GL_TRIANGLE_STRIP, 0, 6);
+            Unbind();
         }
 
-        void PlaneGeometry::GenerateBuffer()
+        void Plane::SetVertices()
         {
             glBufferData(GL_ARRAY_BUFFER, sizeof(s_PlaneVertices), s_PlaneVertices, GL_STATIC_DRAW);
-            glBindVertexArray(m_VAO);
-
+            Bind();
             glEnableVertexAttribArray(0);
             glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid*)0);
             glEnableVertexAttribArray(1);
             glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid*)(3 * sizeof(GLfloat)));
             glEnableVertexAttribArray(2);
             glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid*)(6 * sizeof(GLfloat)));
-
-            glBindVertexArray(0);
+            Unbind();
         }
-
     }
 }

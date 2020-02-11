@@ -6,33 +6,18 @@ namespace Graphics
 {
     namespace Geometry
     {
+        using namespace PipeLine;
+
         Geometry::Geometry() :
             m_Transform(mat4())
         {
-            GenerateBuffer();
+            SetVertices();
         }
 
         Geometry::Geometry(const mat4& transform) :
             m_Transform(mat4(transform))
         {
-            GenerateBuffer();
-        }
-
-        void Geometry::GenerateBuffer()
-        {
-            glGenVertexArrays(1, &m_VAO);
-            glGenBuffers(1, &m_VBO);
-            glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
-        }
-
-        GLuint Geometry::GetVAO() const
-        {
-            return m_VAO;
-        }
-
-        GLuint Geometry::GetVBO() const
-        {
-            return m_VBO;
+            SetVertices();
         }
 
         void Geometry::SetTransform(const mat4& transform)

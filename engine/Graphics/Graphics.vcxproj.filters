@@ -6,15 +6,6 @@
     <ClCompile Include="Window\Window.cpp">
       <Filter>Window</Filter>
     </ClCompile>
-    <ClCompile Include="Geometry\CubeGeometry.cpp">
-      <Filter>Geometry</Filter>
-    </ClCompile>
-    <ClCompile Include="Geometry\PlaneGeometry.cpp">
-      <Filter>Geometry</Filter>
-    </ClCompile>
-    <ClCompile Include="Geometry\QuadGeometry.cpp">
-      <Filter>Geometry</Filter>
-    </ClCompile>
     <ClCompile Include="Geometry\Geometry.cpp">
       <Filter>Geometry</Filter>
     </ClCompile>
@@ -33,7 +24,6 @@
     <ClCompile Include="Window\GLWindow.cpp">
       <Filter>Window</Filter>
     </ClCompile>
-    <ClCompile Include="RenderSystem.cpp" />
     <ClCompile Include="Resource\Material.cpp">
       <Filter>Resource</Filter>
     </ClCompile>
@@ -49,20 +39,24 @@
     <ClCompile Include="Pipeline\ShaderSource.cpp">
       <Filter>Pipeline</Filter>
     </ClCompile>
+    <ClCompile Include="Geometry\Mesh.cpp">
+      <Filter>Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="GraphicsEngine.cpp" />
+    <ClCompile Include="Geometry\Cube.cpp">
+      <Filter>Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="Geometry\Plane.cpp">
+      <Filter>Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="Geometry\Quad.cpp">
+      <Filter>Geometry</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="Window\Window.h">
       <Filter>Window</Filter>
-    </ClInclude>
-    <ClInclude Include="Geometry\CubeGeometry.h">
-      <Filter>Geometry</Filter>
-    </ClInclude>
-    <ClInclude Include="Geometry\PlaneGeometry.h">
-      <Filter>Geometry</Filter>
-    </ClInclude>
-    <ClInclude Include="Geometry\QuadGeometry.h">
-      <Filter>Geometry</Filter>
     </ClInclude>
     <ClInclude Include="Geometry\Geometry.h">
       <Filter>Geometry</Filter>
@@ -82,7 +76,6 @@
     <ClInclude Include="Window\GLWindow.h">
       <Filter>Window</Filter>
     </ClInclude>
-    <ClInclude Include="RenderSystem.h" />
     <ClInclude Include="Resource\Material.h">
       <Filter>Resource</Filter>
     </ClInclude>
@@ -92,14 +85,30 @@
     <ClInclude Include="Resource\Texture.h">
       <Filter>Resource</Filter>
     </ClInclude>
-    <ClInclude Include="Pipeline\PipeLineItem.h">
-      <Filter>Pipeline</Filter>
-    </ClInclude>
     <ClInclude Include="Pipeline\Shader.h">
       <Filter>Pipeline</Filter>
     </ClInclude>
     <ClInclude Include="Pipeline\ShaderSource.h">
       <Filter>Pipeline</Filter>
+    </ClInclude>
+    <ClInclude Include="Pipeline\PiplineUniform.h">
+      <Filter>Pipeline</Filter>
+    </ClInclude>
+    <ClInclude Include="Pipeline\PipelineVertex.h">
+      <Filter>Pipeline</Filter>
+    </ClInclude>
+    <ClInclude Include="Geometry\Mesh.h">
+      <Filter>Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="GraphicsEngine.h" />
+    <ClInclude Include="Geometry\Cube.h">
+      <Filter>Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="Geometry\Plane.h">
+      <Filter>Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="Geometry\Quad.h">
+      <Filter>Geometry</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

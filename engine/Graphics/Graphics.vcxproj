@@ -203,17 +203,19 @@ echo DA | xcopy /E "$(SolutionDir)..\dependencies\glfw-3.2.1\bin\$(Configuration
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="Geometry\CubeGeometry.h" />
+    <ClInclude Include="Geometry\Cube.h" />
     <ClInclude Include="Geometry\Geometry.h" />
-    <ClInclude Include="Geometry\PlaneGeometry.h" />
-    <ClInclude Include="Geometry\QuadGeometry.h" />
+    <ClInclude Include="Geometry\Mesh.h" />
+    <ClInclude Include="Geometry\Plane.h" />
+    <ClInclude Include="Geometry\Quad.h" />
     <ClInclude Include="Lighting\DirectionalLight.h" />
     <ClInclude Include="Lighting\Light.h" />
     <ClInclude Include="Lighting\PointLight.h" />
-    <ClInclude Include="Pipeline\PipeLineItem.h" />
+    <ClInclude Include="Pipeline\PipelineVertex.h" />
+    <ClInclude Include="Pipeline\PiplineUniform.h" />
     <ClInclude Include="Pipeline\Shader.h" />
     <ClInclude Include="Pipeline\ShaderSource.h" />
-    <ClInclude Include="RenderSystem.h" />
+    <ClInclude Include="GraphicsEngine.h" />
     <ClInclude Include="Resource\Camera.h" />
     <ClInclude Include="Resource\Material.h" />
     <ClInclude Include="Resource\Model.h" />
@@ -224,16 +226,17 @@ echo DA | xcopy /E "$(SolutionDir)..\dependencies\glfw-3.2.1\bin\$(Configuration
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp" />
-    <ClCompile Include="Geometry\CubeGeometry.cpp" />
+    <ClCompile Include="Geometry\Cube.cpp" />
     <ClCompile Include="Geometry\Geometry.cpp" />
-    <ClCompile Include="Geometry\PlaneGeometry.cpp" />
-    <ClCompile Include="Geometry\QuadGeometry.cpp" />
+    <ClCompile Include="Geometry\Mesh.cpp" />
+    <ClCompile Include="Geometry\Plane.cpp" />
+    <ClCompile Include="Geometry\Quad.cpp" />
     <ClCompile Include="Lighting\DirectionalLight.cpp" />
     <ClCompile Include="Lighting\Light.cpp" />
     <ClCompile Include="Lighting\PointLight.cpp" />
     <ClCompile Include="Pipeline\Shader.cpp" />
     <ClCompile Include="Pipeline\ShaderSource.cpp" />
-    <ClCompile Include="RenderSystem.cpp" />
+    <ClCompile Include="GraphicsEngine.cpp" />
     <ClCompile Include="Resource\Camera.cpp" />
     <ClCompile Include="Resource\Material.cpp" />
     <ClCompile Include="Resource\Model.cpp" />

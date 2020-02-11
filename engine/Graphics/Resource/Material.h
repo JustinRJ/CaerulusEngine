@@ -26,7 +26,7 @@ namespace Graphics
         public:
             Material(const std::string& name, const std::string& path = "");
             ~Material();
-            void RenderToShader() const;
+            void Bind() const;
 
             std::shared_ptr<Texture> GetTexture(MaterialType materialType) const;
             void SetTexture(std::shared_ptr<Texture> texture, MaterialType materialType);

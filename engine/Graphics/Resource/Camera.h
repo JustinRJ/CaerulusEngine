@@ -51,6 +51,8 @@ namespace Graphics
             void Translate(const vec3& translation);
             void Rotate(const vec3& eulerDelta, const vec3& forcedUp = MathHelper::UnitUp());
 
+            void GetProjViewModel(mat4& out) const;
+
         private:
             float m_DegFOV;
             float m_Aspect;

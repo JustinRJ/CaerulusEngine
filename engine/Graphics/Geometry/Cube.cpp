@@ -1,12 +1,12 @@
 #include "stdafx.h"
 
-#include "CubeGeometry.h"
+#include "Cube.h"
 
 namespace Graphics
 {
     namespace Geometry
     {
-        const GLfloat CubeGeometry::s_CubeVertices[] =
+        const GLfloat Cube::s_CubeVertices[] =
         {
             -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f,  0.0f,
             0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  1.0f,  0.0f,
@@ -51,38 +51,36 @@ namespace Graphics
             -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  0.0f,  1.0f
         };
 
-        CubeGeometry::CubeGeometry() :
+        Cube::Cube() :
             Geometry(mat4())
         {
-            GenerateBuffer();
+            SetVertices();
         }
 
-        CubeGeometry::CubeGeometry(const mat4& transform) :
+        Cube::Cube(const mat4& transform) :
             Geometry(transform)
         {
-            GenerateBuffer();
+            SetVertices();
         }
 
-        void CubeGeometry::Draw() const
+        void Cube::Draw(bool wireframe) const
         {
-            glBindVertexArray(m_VAO);
-            glDrawArrays(GL_TRIANGLES, 0, 36);
-            glBindVertexArray(0);
+            Bind();
+            glDrawArrays(wireframe ? GL_LINES : GL_TRIANGLES, 0, 36);
+            Unbind();
         }
 
-        void CubeGeometry::GenerateBuffer()
+        void Cube::SetVertices()
         {
             glBufferData(GL_ARRAY_BUFFER, sizeof(s_CubeVertices), s_CubeVertices, GL_STATIC_DRAW);
-            glBindVertexArray(m_VAO);
-
+            Bind();
             glEnableVertexAttribArray(0);
             glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid*)0);
             glEnableVertexAttribArray(1);
             glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid*)(3 * sizeof(GLfloat)));
             glEnableVertexAttribArray(2);
             glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid*)(6 * sizeof(GLfloat)));
-
-            glBindVertexArray(0);
+            Unbind();
         }
     }
 }

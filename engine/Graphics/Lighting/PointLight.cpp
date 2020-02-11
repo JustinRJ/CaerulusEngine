@@ -34,23 +34,17 @@ namespace Graphics
             m_Radius = radius;
         }
 
-        void PointLight::RenderToShader(unsigned int ID, const PipeLine::Shader& shader, const mat4& view) const
+        void PointLight::UpdateUniforms(const std::vector<std::string>& uniforms, const PipeLine::Shader& shader, const mat4& view) const
         {
             vec3 lightPositionViewSpace = vec3(view * vec4(m_Position, 1.0f));
 
-            glUniform3f(glGetUniformLocation(shader.GetHandle(), ("lightPointArray[" + std::to_string(ID) + "].position").c_str()),
-                lightPositionViewSpace.x,
-                lightPositionViewSpace.y, 
-                lightPositionViewSpace.z);
+            glUniform4f(glGetUniformLocation(shader.GetHandle(), uniforms.at(0).c_str()),
+                m_Colour.r, m_Colour.g, m_Colour.b, m_Colour.a);
 
-            glUniform4f(glGetUniformLocation(shader.GetHandle(), ("lightPointArray[" + std::to_string(ID) + "].color").c_str()),
-                m_Colour.r, 
-                m_Colour.g, 
-                m_Colour.b, 
-                m_Colour.a);
+            glUniform3f(glGetUniformLocation(shader.GetHandle(), uniforms.at(1).c_str()),
+                lightPositionViewSpace.x, lightPositionViewSpace.y, lightPositionViewSpace.z);
 
-            glUniform1f(glGetUniformLocation(shader.GetHandle(), ("lightPointArray[" + std::to_string(ID) + "].radius").c_str()),
-                m_Radius);
+            glUniform1f(glGetUniformLocation(shader.GetHandle(), uniforms.at(2).c_str()), m_Radius);
         }
     }
 }

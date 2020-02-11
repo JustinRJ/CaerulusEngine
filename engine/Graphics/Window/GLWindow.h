@@ -3,7 +3,7 @@
 #define CAERULUS_GRAPHICS __declspec(dllexport)
 
 #include "Window.h"
-#include "../Geometry/QuadGeometry.h"
+#include "../Geometry/Quad.h"
 #include <glfw3.h>
 
 namespace Graphics
@@ -25,8 +25,8 @@ namespace Graphics
 
             GLFWwindow* GetGLFWWindow() const;
 
-            void SetQuad(std::shared_ptr<QuadGeometry> quad);
-            std::shared_ptr<QuadGeometry> GetQuad() const;
+            void SetQuad(std::shared_ptr<Quad> quad);
+            std::shared_ptr<Quad> GetQuad() const;
             
             void Update();
             void ToggleLockedCursor();
@@ -35,7 +35,7 @@ namespace Graphics
         private:
 
             GLFWwindow* m_Window;
-            std::shared_ptr<QuadGeometry> m_Quad;
+            std::shared_ptr<Quad> m_Quad;
             bool m_LockedCursor;
         };
     }

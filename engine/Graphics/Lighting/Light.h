@@ -20,7 +20,7 @@ namespace Graphics
             void SetColour(const vec4& colour);
             const vec4& GetColour() const;
 
-            virtual void RenderToShader(unsigned int ID, const PipeLine::Shader& shader, const mat4& view) const = 0;
+            virtual void UpdateUniforms(const std::vector<std::string>& uniforms, const PipeLine::Shader& shader, const mat4& view) const = 0;
 
         protected:
             vec4 m_Colour;

@@ -16,12 +16,12 @@ namespace Graphics
 
         Texture::~Texture()
         {
-            glDeleteTextures(1, &m_ID);
+            glDeleteTextures(1, &m_Handle);
         }
 
-        GLint Texture::GetID()
+        GLint Texture::GetHandle()
         {
-            return m_ID;
+            return m_Handle;
         }
 
         bool Texture::Load(const char* texPath, bool texFlip)
@@ -30,9 +30,9 @@ namespace Graphics
 
             stbi_set_flip_vertically_on_load(texFlip);
 
-            glGenTextures(1, &m_ID);
+            glGenTextures(1, &m_Handle);
             glActiveTexture(GL_TEXTURE0);
-            glBindTexture(GL_TEXTURE_2D, m_ID);
+            glBindTexture(GL_TEXTURE_2D, m_Handle);
             // Request the maximum level of anisotropy the GPU used can support and use it
             glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &m_AnisoFilterLevel);
             glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, m_AnisoFilterLevel);
@@ -90,9 +90,9 @@ namespace Graphics
 
             stbi_set_flip_vertically_on_load(texFlip);
 
-            glGenTextures(1, &m_ID);
+            glGenTextures(1, &m_Handle);
             glActiveTexture(GL_TEXTURE0);
-            glBindTexture(GL_TEXTURE_2D, m_ID);
+            glBindTexture(GL_TEXTURE_2D, m_Handle);
 
             if (stbi_is_hdr(texPath))
             {
@@ -149,9 +149,9 @@ namespace Graphics
         {
             m_Type = GL_TEXTURE_2D;
 
-            glGenTextures(1, &m_ID);
+            glGenTextures(1, &m_Handle);
             glActiveTexture(GL_TEXTURE0);
-            glBindTexture(GL_TEXTURE_2D, m_ID);
+            glBindTexture(GL_TEXTURE_2D, m_Handle);
 
             m_Width = width;
             m_Height = height;
@@ -191,9 +191,9 @@ namespace Graphics
         {
             m_Type = GL_TEXTURE_CUBE_MAP;
 
-            glGenTextures(1, &m_ID);
+            glGenTextures(1, &m_Handle);
             glActiveTexture(GL_TEXTURE0);
-            glBindTexture(m_Type, m_ID);
+            glBindTexture(m_Type, m_Handle);
 
             for (GLuint i = 0; i < 6; ++i)
             {
@@ -245,14 +245,14 @@ namespace Graphics
             return m_Path;
         }
 
-        void Texture::UseTexture() const
+        void Texture::Bind() const
         {
-            glBindTexture(m_Type, m_ID);
+            glBindTexture(m_Type, m_Handle);
         }
 
         void Texture::ComputeMipmap()
         {
-            glBindTexture(m_Type, m_ID);
+            glBindTexture(m_Type, m_Handle);
             glGenerateMipmap(m_Type);
         }
     }

@@ -91,12 +91,12 @@ namespace Graphics
             return m_LockedCursor;
         }
 
-        std::shared_ptr<QuadGeometry> GLWindow::GetQuad() const
+        std::shared_ptr<Quad> GLWindow::GetQuad() const
         {
             return m_Quad;
         }
 
-        void GLWindow::SetQuad(std::shared_ptr<QuadGeometry> quad)
+        void GLWindow::SetQuad(std::shared_ptr<Quad> quad)
         {
             m_Quad = quad;
         }

@@ -107,12 +107,12 @@ namespace Graphics
                 {
                     if (m_Materials.at(i))
                     {
-                        m_Materials.at(i)->RenderToShader();
+                        m_Materials.at(i)->Bind();
                         DrawMesh(wireframe, i);
                     }
                     else if(defaultMaterial)
                     {
-                        defaultMaterial->RenderToShader();
+                        defaultMaterial->Bind();
                         DrawMesh(wireframe, i);
                     }
                 }

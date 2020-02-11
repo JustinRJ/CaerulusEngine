@@ -15,7 +15,7 @@ namespace Graphics
             Texture();
             ~Texture();
 
-            GLint GetID();
+            GLint GetHandle();
 
             bool Load(const char* texPath, bool texFlip);
             bool LoadHDR(const char* texPath, bool texFlip);
@@ -26,13 +26,13 @@ namespace Graphics
             GLuint GetHeight() const;
 
             const std::string& GetPath() const;
-            void UseTexture() const;
-           void ComputeMipmap();
+            void Bind() const;
+            void ComputeMipmap();
 
         private:
             std::string m_Path;
             GLfloat m_AnisoFilterLevel;
-            GLuint m_ID;
+            GLuint m_Handle;
             GLuint m_Width;
             GLuint m_Height;
             GLuint m_Components;

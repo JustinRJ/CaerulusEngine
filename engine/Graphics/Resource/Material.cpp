@@ -60,18 +60,18 @@ namespace Graphics
             }
         }
 
-        void Material::RenderToShader() const
+        void Material::Bind() const
         {
             glActiveTexture(GL_TEXTURE0);
-            m_Textures.at(Albedo) != nullptr ? m_Textures.at(Albedo)->UseTexture() : glBindTexture(GL_TEXTURE_2D, 0);
+            m_Textures.at(Albedo) != nullptr ? m_Textures.at(Albedo)->Bind() : glBindTexture(GL_TEXTURE_2D, 0);
             glActiveTexture(GL_TEXTURE1);
-            m_Textures.at(Normal) != nullptr ? m_Textures.at(Normal)->UseTexture() : glBindTexture(GL_TEXTURE_2D, 0);
+            m_Textures.at(Normal) != nullptr ? m_Textures.at(Normal)->Bind() : glBindTexture(GL_TEXTURE_2D, 0);
             glActiveTexture(GL_TEXTURE2);
-            m_Textures.at(Roughness) != nullptr ? m_Textures.at(Roughness)->UseTexture() : glBindTexture(GL_TEXTURE_2D, 0);
+            m_Textures.at(Roughness) != nullptr ? m_Textures.at(Roughness)->Bind() : glBindTexture(GL_TEXTURE_2D, 0);
             glActiveTexture(GL_TEXTURE3);
-            m_Textures.at(Metallic) != nullptr ? m_Textures.at(Metallic)->UseTexture() : glBindTexture(GL_TEXTURE_2D, 0);
+            m_Textures.at(Metallic) != nullptr ? m_Textures.at(Metallic)->Bind() : glBindTexture(GL_TEXTURE_2D, 0);
             glActiveTexture(GL_TEXTURE4);
-            m_Textures.at(AO) != nullptr ? m_Textures.at(AO)->UseTexture() : glBindTexture(GL_TEXTURE_2D, 0);
+            m_Textures.at(AO) != nullptr ? m_Textures.at(AO)->Bind() : glBindTexture(GL_TEXTURE_2D, 0);
             glActiveTexture(GL_TEXTURE5);
             glBindTexture(GL_TEXTURE_2D, 0);
         }

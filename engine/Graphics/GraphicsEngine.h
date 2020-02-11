@@ -11,8 +11,8 @@
 #include "Lighting/PointLight.h"
 #include "Lighting/DirectionalLight.h"
 
-#include "Geometry/QuadGeometry.h"
-#include "Geometry/CubeGeometry.h"
+#include "Geometry/Quad.h"
+#include "Geometry/Cube.h"
 
 #include "Resource/Model.h"
 #include "Resource/Camera.h"
@@ -37,7 +37,7 @@ namespace Graphics
             Texture MapIrradiance;
             Texture MapPrefilter;
             Texture MapLUT;
-            CubeGeometry SceneCube;
+            Cube SceneCube;
             mat4 MapProjection;
             std::vector<mat4> MapView;
         };
@@ -98,11 +98,11 @@ namespace Graphics
             std::shared_ptr<Shader> SAOBlur;
         };
 
-        class CAERULUS_GRAPHICS RenderSystem : public Core::Interface::ITickable
+        class CAERULUS_GRAPHICS GraphicsEngine : public Core::Interface::ITickable
         {
         public:
 
-            RenderSystem(std::shared_ptr<GLWindow> window, std::shared_ptr<Camera> camera);
+            GraphicsEngine(std::shared_ptr<GLWindow> window, std::shared_ptr<Camera> camera);
 
             void SetGLWindow(std::shared_ptr<GLWindow> window);
             std::shared_ptr<GLWindow> GetGLWindow();
@@ -135,6 +135,8 @@ namespace Graphics
 
             void SetShaders(const std::shared_ptr<StandardShaders>& shaders);
             const std::shared_ptr<StandardShaders>& GetShaders() const;
+
+            void SetGBufferFBO(GLuint fbo);
 
 
             void ToggleWireframe();

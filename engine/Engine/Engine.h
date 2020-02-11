@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../Graphics/RenderSystem.h"
+#include "../Graphics/GraphicsEngine.h"
 #include "../Graphics/Window/GLWindow.h"
 
 #include "../Core/Input/MouseInputManager.h"
@@ -34,9 +34,9 @@ public:
 
     void Run();
 
-    //virtual void InitInput();
-    //virtual void InitScene();
-    //virtual void InitShaders();
+    virtual void InitInput();
+    virtual void InitScene();
+    //virtual void InitLighting();
 
 
 private:
@@ -60,7 +60,7 @@ private:
 
     std::shared_ptr<Camera> m_Camera;
     std::shared_ptr<GLWindow> m_Window;
-    std::shared_ptr<RenderSystem> m_RenderSystem;
+    std::shared_ptr<GraphicsEngine> m_GraphicsEngine;
     std::shared_ptr<KeyboardInputManager> m_KeyboardInputManager;
     std::shared_ptr<MouseInputManager> m_MouseInputManager;
 
@@ -71,4 +71,17 @@ private:
     ModelManager m_ModelManager;
     ShaderSourceManager m_ShaderSourceManager;
     ShaderManager m_ShaderManager;
+
+    /// Temp!
+    std::shared_ptr<StandardShaders> m_Shaders;
+    bool m_PointMode;
+    bool m_DirectionalMode;
+    bool m_IBLMode;
+    bool m_SAOMode;
+    bool m_FXAAMode;
+    bool m_MotionBlurMode;
+    bool lightingBRDF = false;
+    bool firstPassProcess = false;
+    bool gBufferInit = false;
+    bool saoInit = false;
 };
