@@ -212,10 +212,12 @@ echo DA | xcopy /E "$(SolutionDir)..\dependencies\glfw-3.2.1\bin\$(Configuration
     <ClInclude Include="Lighting\Light.h" />
     <ClInclude Include="Lighting\PointLight.h" />
     <ClInclude Include="Pipeline\PipelineVertex.h" />
-    <ClInclude Include="Pipeline\PiplineUniform.h" />
+    <ClInclude Include="Pipeline\PipelineUniform.h" />
     <ClInclude Include="Pipeline\Shader.h" />
-    <ClInclude Include="Pipeline\ShaderSource.h" />
+    <ClInclude Include="Pipeline\ShaderSrc.h" />
     <ClInclude Include="GraphicsEngine.h" />
+    <ClInclude Include="Render\PhysicallyBasedRendering.h" />
+    <ClInclude Include="Render\IRenderer.h" />
     <ClInclude Include="Resource\Camera.h" />
     <ClInclude Include="Resource\Material.h" />
     <ClInclude Include="Resource\Model.h" />
@@ -235,8 +237,9 @@ echo DA | xcopy /E "$(SolutionDir)..\dependencies\glfw-3.2.1\bin\$(Configuration
     <ClCompile Include="Lighting\Light.cpp" />
     <ClCompile Include="Lighting\PointLight.cpp" />
     <ClCompile Include="Pipeline\Shader.cpp" />
-    <ClCompile Include="Pipeline\ShaderSource.cpp" />
+    <ClCompile Include="Pipeline\ShaderSrc.cpp" />
     <ClCompile Include="GraphicsEngine.cpp" />
+    <ClCompile Include="Render\PhysicallyBasedRendering.cpp" />
     <ClCompile Include="Resource\Camera.cpp" />
     <ClCompile Include="Resource\Material.cpp" />
     <ClCompile Include="Resource\Model.cpp" />

@@ -17,8 +17,8 @@ Engine::Engine(int argc, char** argv) :
     m_TextureManager(),
     m_MaterialManager(m_TextureManager),
     m_ModelManager(m_MaterialManager),
-    m_ShaderSourceManager(),
-    m_ShaderManager(m_ShaderSourceManager)
+    m_ShaderSrcManager(),
+    m_ShaderManager(m_ShaderSrcManager)
 {
     m_FPSLimiter = std::make_unique<FPSLimiter>();
     m_FixedTimer = std::make_unique<FixedTimer>();
@@ -35,41 +35,7 @@ Engine::Engine(int argc, char** argv) :
 
     InitInput();
     InitScene();
-    //InitLighting();
-
-    /// ------------------------------------------------------------------------------------------------------------------------------
-    /// Set shaders for render system   - needs to be switched to a vector or map of shaders that execute in a specified order
-    ///                                 - need to pull all log for setting up shader out of render system into the shader class and make
-    ///                                 - it dynamically set uniform locations
-    m_ShaderManager.Load("gBuffer", "assets/shaders/gBuffer.vert", "assets/shaders/gBuffer.frag");
-    m_ShaderManager.Load("latlongToCube", "assets/shaders/latlongToCube.vert", "assets/shaders/latlongToCube.frag");
-    m_ShaderManager.Load("simple", "assets/shaders/lighting/simple.vert", "assets/shaders/lighting/simple.frag");
-    m_ShaderManager.Load("lightingBRDF", "assets/shaders/lighting/lightingBRDF.vert", "assets/shaders/lighting/lightingBRDF.frag");
-    m_ShaderManager.Load("irradianceIBL", "assets/shaders/lighting/irradianceIBL.vert", "assets/shaders/lighting/irradianceIBL.frag");
-    m_ShaderManager.Load("prefilterIBL", "assets/shaders/lighting/prefilterIBL.vert", "assets/shaders/lighting/prefilterIBL.frag");
-    m_ShaderManager.Load("integrateIBL", "assets/shaders/lighting/integrateIBL.vert", "assets/shaders/lighting/integrateIBL.frag");
-    m_ShaderManager.Load("firstpass", "assets/shaders/postprocess/postprocess.vert", "assets/shaders/postprocess/firstpass.frag");
-    m_ShaderManager.Load("sao", "assets/shaders/postprocess/sao.vert", "assets/shaders/postprocess/sao.frag");
-    m_ShaderManager.Load("saoBlur", "assets/shaders/postprocess/sao.vert", "assets/shaders/postprocess/saoBlur.frag");
-
-    auto m_Shaders = std::make_shared<StandardShaders>();
-    m_Shaders->GBuffer = m_ShaderManager.Get("gBuffer");
-    m_Shaders->LatlongToCube = m_ShaderManager.Get("latlongToCube");
-    m_Shaders->Simple = m_ShaderManager.Get("simple");
-    m_Shaders->LightingBRDF = m_ShaderManager.Get("lightingBRDF");
-    m_Shaders->IrradianceIBL = m_ShaderManager.Get("irradianceIBL");
-    m_Shaders->PrefilterIBL = m_ShaderManager.Get("prefilterIBL");
-    m_Shaders->IntegrateIBL = m_ShaderManager.Get("integrateIBL");
-    m_Shaders->FirstPassPostProcess = m_ShaderManager.Get("firstpass");
-    m_Shaders->SAO = m_ShaderManager.Get("sao");
-    m_Shaders->SAOBlur = m_ShaderManager.Get("saoBlur");
-
-    m_GraphicsEngine->SetShaders(m_Shaders);
-    m_GraphicsEngine->LoadShaders();
-}
-
-Engine::~Engine()
-{
+    InitRenderer();
 }
 
 void Engine::Run()
@@ -105,17 +71,17 @@ void Engine::Tick()
 
     glfwPollEvents();
 
-    for (auto updatable : m_Tickable)
+    for (auto& updatable : m_Tickable)
     {
         updatable->PreUpdate(m_DeltaTime);
     }
 
-    for (auto updatable : m_Tickable)
+    for (auto& updatable : m_Tickable)
     {
         updatable->Update(m_DeltaTime);
     }
 
-    for (auto updatable : m_Tickable)
+    for (auto& updatable : m_Tickable)
     {
         updatable->FixedUpdate(m_FixedTime);
     }
@@ -127,19 +93,19 @@ void Engine::InitInput()
     auto window = m_GraphicsEngine->GetGLWindow();
     m_KeyboardInputManager->AddWindowKeyCallback(window, GLFW_KEY_ESCAPE, Action::Release, [=](Modifier) { m_Running = false; });
     m_KeyboardInputManager->AddWindowKeyCallback(window, GLFW_KEY_TAB, Action::Release, [&](Modifier) { m_GraphicsEngine->GetGLWindow()->ToggleLockedCursor(); });
-    m_KeyboardInputManager->AddWindowKeyCallback(window, GLFW_KEY_X, Action::Release, [&](Modifier) { m_GraphicsEngine->ToggleWireframe(); });
-    m_KeyboardInputManager->AddWindowKeyCallback(window, GLFW_KEY_J, Action::Release, [&](Modifier) { m_GraphicsEngine->ToggleSAO(); });
-    m_KeyboardInputManager->AddWindowKeyCallback(window, GLFW_KEY_K, Action::Release, [&](Modifier) { m_GraphicsEngine->ToggleFXAA(); });
-    m_KeyboardInputManager->AddWindowKeyCallback(window, GLFW_KEY_L, Action::Release, [&](Modifier) { m_GraphicsEngine->ToggleMotionBlur(); });
-    m_KeyboardInputManager->AddWindowKeyCallback(window, GLFW_KEY_P, Action::Release, [&](Modifier) { m_GraphicsEngine->TogglePointLightRender(); });
-    m_KeyboardInputManager->AddWindowKeyCallback(window, GLFW_KEY_O, Action::Release, [&](Modifier) { m_GraphicsEngine->ToggleDirectionalLightRender(); });
-    m_KeyboardInputManager->AddWindowKeyCallback(window, GLFW_KEY_I, Action::Release, [&](Modifier) { m_GraphicsEngine->ToggleEnviromentLightRender(); });
-    //m_KeyboardInputManager->AddWindowKeyCallback(window, GLFW_KEY_T, Release, [&](Modifier) { m_GraphicsEngine->ToggleToneMapping(1); });
-    //m_KeyboardInputManager->AddWindowKeyCallback(window, GLFW_KEY_Y, Release, [&](Modifier) { m_GraphicsEngine->ToggleToneMapping(2); });
-    //m_KeyboardInputManager->AddWindowKeyCallback(window, GLFW_KEY_U, Release, [&](Modifier) { m_GraphicsEngine->ToggleToneMapping(3); });
+    m_KeyboardInputManager->AddWindowKeyCallback(window, GLFW_KEY_X, Action::Release, [&](Modifier) { m_RendererPBR->ToggleWireframe(); });
+    m_KeyboardInputManager->AddWindowKeyCallback(window, GLFW_KEY_J, Action::Release, [&](Modifier) { m_RendererPBR->ToggleSAO(); });
+    m_KeyboardInputManager->AddWindowKeyCallback(window, GLFW_KEY_K, Action::Release, [&](Modifier) { m_RendererPBR->ToggleFXAA(); });
+    m_KeyboardInputManager->AddWindowKeyCallback(window, GLFW_KEY_L, Action::Release, [&](Modifier) { m_RendererPBR->ToggleMotionBlur(); });
+    m_KeyboardInputManager->AddWindowKeyCallback(window, GLFW_KEY_P, Action::Release, [&](Modifier) { m_RendererPBR->TogglePointLights(); });
+    m_KeyboardInputManager->AddWindowKeyCallback(window, GLFW_KEY_O, Action::Release, [&](Modifier) { m_RendererPBR->ToggleDirectionalLights(); });
+    m_KeyboardInputManager->AddWindowKeyCallback(window, GLFW_KEY_I, Action::Release, [&](Modifier) { m_RendererPBR->ToggleEnviromentLights(); });
+    m_KeyboardInputManager->AddWindowKeyCallback(window, GLFW_KEY_T, Action::Release, [&](Modifier) { m_RendererPBR->ToggleToneMapping(1); });
+    m_KeyboardInputManager->AddWindowKeyCallback(window, GLFW_KEY_Y, Action::Release, [&](Modifier) { m_RendererPBR->ToggleToneMapping(2); });
+    m_KeyboardInputManager->AddWindowKeyCallback(window, GLFW_KEY_U, Action::Release, [&](Modifier) { m_RendererPBR->ToggleToneMapping(3); });
 
-    m_KeyboardInputManager->AddWindowKeyCallback(window, GLFW_KEY_A, Action::Hold, [&](Modifier m) { m_GraphicsEngine->GetCamera()->TranslateXZ(-MathHelper::UnitRight() * m_DeltaTime * (m == Modifier::Shift ? m_SprintSpeed : m_NormalSpeed)); });
-    m_KeyboardInputManager->AddWindowKeyCallback(window, GLFW_KEY_D, Action::Hold, [&](Modifier m) { m_GraphicsEngine->GetCamera()->TranslateXZ(MathHelper::UnitRight()  * m_DeltaTime * (m == Modifier::Shift ? m_SprintSpeed : m_NormalSpeed)); });
+    m_KeyboardInputManager->AddWindowKeyCallback(window, GLFW_KEY_A, Action::Hold, [&](Modifier m) { m_GraphicsEngine->GetCamera()->Translate(-MathHelper::UnitRight() * m_DeltaTime * (m == Modifier::Shift ? m_SprintSpeed : m_NormalSpeed), false); });
+    m_KeyboardInputManager->AddWindowKeyCallback(window, GLFW_KEY_D, Action::Hold, [&](Modifier m) { m_GraphicsEngine->GetCamera()->Translate(MathHelper::UnitRight()  * m_DeltaTime * (m == Modifier::Shift ? m_SprintSpeed : m_NormalSpeed), false); });
     m_KeyboardInputManager->AddWindowKeyCallback(window, GLFW_KEY_W, Action::Hold, [&](Modifier m) { m_GraphicsEngine->GetCamera()->Translate(MathHelper::UnitForward()  * m_DeltaTime * (m == Modifier::Shift ? m_SprintSpeed : m_NormalSpeed)); });
     m_KeyboardInputManager->AddWindowKeyCallback(window, GLFW_KEY_S, Action::Hold, [&](Modifier m) { m_GraphicsEngine->GetCamera()->Translate(-MathHelper::UnitForward() * m_DeltaTime * (m == Modifier::Shift ? m_SprintSpeed : m_NormalSpeed)); });
     m_KeyboardInputManager->AddWindowKeyCallback(window, GLFW_KEY_Q, Action::Hold, [&](Modifier m) { m_GraphicsEngine->GetCamera()->Translate(-MathHelper::UnitUp()      * m_DeltaTime * (m == Modifier::Shift ? m_SprintSpeed : m_NormalSpeed)); });
@@ -161,15 +127,6 @@ void Engine::InitScene()
     auto transformMap = std::make_shared<std::map<unsigned int, std::shared_ptr<mat4>>>();
     auto modelMap = std::make_shared<std::map<unsigned int, std::shared_ptr<Model>>>();
     /// ------------------------------------------------------------------------------------------------------------------------------
-
-    // Skybox
-    m_TextureManager.LoadHDR("skyBox", "assets/textures/hdr/pisa.hdr");
-    m_GraphicsEngine->SetSkyBox(m_TextureManager.Get("skyBox"));
-
-    // Default material
-    //auto defaultMaterial = std::vector<std::shared_ptr<Texture>>(5);
-    //m_MaterialManager.Create("defaultMaterial", defaultMaterial);
-    //m_GraphicsEngine->SetDefaultMaterial(m_MaterialManager.Get("defaultMaterial"));
 
     // Shaderball model
     m_ModelManager.Load("shaderBall", "assets/models/shaderBall.obj");
@@ -222,4 +179,42 @@ void Engine::InitScene()
 
     m_GraphicsEngine->SetTransformMap(*transformMap);
     m_GraphicsEngine->SetModelMap(*modelMap);
+}
+
+void Engine::InitRenderer()
+{
+    m_RendererPBR = std::make_shared<PhysicallyBasedRendering>(*m_GraphicsEngine);
+
+    m_ShaderManager.Load("gBuffer", "assets/shaders/gBuffer.vert", "assets/shaders/gBuffer.frag");
+    m_ShaderManager.Load("latlongToCube", "assets/shaders/latlongToCube.vert", "assets/shaders/latlongToCube.frag");
+    m_ShaderManager.Load("simple", "assets/shaders/lighting/simple.vert", "assets/shaders/lighting/simple.frag");
+    m_ShaderManager.Load("lightingBRDF", "assets/shaders/lighting/lightingBRDF.vert", "assets/shaders/lighting/lightingBRDF.frag");
+    m_ShaderManager.Load("irradianceIBL", "assets/shaders/lighting/irradianceIBL.vert", "assets/shaders/lighting/irradianceIBL.frag");
+    m_ShaderManager.Load("prefilterIBL", "assets/shaders/lighting/prefilterIBL.vert", "assets/shaders/lighting/prefilterIBL.frag");
+    m_ShaderManager.Load("integrateIBL", "assets/shaders/lighting/integrateIBL.vert", "assets/shaders/lighting/integrateIBL.frag");
+    m_ShaderManager.Load("firstpass", "assets/shaders/postprocess/postprocess.vert", "assets/shaders/postprocess/firstpass.frag");
+    m_ShaderManager.Load("sao", "assets/shaders/postprocess/sao.vert", "assets/shaders/postprocess/sao.frag");
+    m_ShaderManager.Load("saoBlur", "assets/shaders/postprocess/sao.vert", "assets/shaders/postprocess/saoBlur.frag");
+
+    m_RendererPBR->GBuffer = m_ShaderManager.Get("gBuffer");
+    m_RendererPBR->LatlongToCube = m_ShaderManager.Get("latlongToCube");
+    m_RendererPBR->Simple = m_ShaderManager.Get("simple");
+    m_RendererPBR->LightingBRDF = m_ShaderManager.Get("lightingBRDF");
+    m_RendererPBR->IrradianceIBL = m_ShaderManager.Get("irradianceIBL");
+    m_RendererPBR->PrefilterIBL = m_ShaderManager.Get("prefilterIBL");
+    m_RendererPBR->IntegrateIBL = m_ShaderManager.Get("integrateIBL");
+    m_RendererPBR->FirstPassPostProcess = m_ShaderManager.Get("firstpass");
+    m_RendererPBR->SAO = m_ShaderManager.Get("sao");
+    m_RendererPBR->SAOBlur = m_ShaderManager.Get("saoBlur");
+
+    m_TextureManager.Load("skyBox", "assets/textures/hdr/pisa.hdr", true);
+    m_RendererPBR->SkyBox = m_TextureManager.Get("skyBox");
+
+    // Default material
+    //auto defaultMaterial = std::vector<std::shared_ptr<Texture>>(5);
+    //m_MaterialManager.Create("defaultMaterial", defaultMaterial);
+    //m_GraphicsEngine->SetDefaultMaterial(m_MaterialManager.Get("defaultMaterial"));
+
+    m_RendererPBR->Init();
+    m_GraphicsEngine->SetRenderer(m_RendererPBR);
 }

@@ -36,40 +36,31 @@ namespace Graphics
             SetNear(CAMERA_INIT_NEAR);
             SetFar(CAMERA_INIT_FAR);
 
-            SetViewMatrix(lookAt(
+            m_View = lookAt(
                 CAMERA_INIT_POSITION,
                 CAMERA_INIT_FORWARD + CAMERA_INIT_POSITION,
-                CAMERA_INIT_UP));
+                CAMERA_INIT_UP);
 
-            SetProjMatrix(perspective(
+            m_Proj = perspective(
                 radians(CAMERA_INIT_FOV),
                 CAMERA_INIT_ASPECT,
                 CAMERA_INIT_NEAR,
-                CAMERA_INIT_FAR));
+                CAMERA_INIT_FAR);
 
             SetAperture(CAMERA_INIT_APETURE);
             SetShutterSpeed(CAMERA_INIT_SHUTTER_SPEED);
             SetISO(CAMERA_INIT_ISO);
         }
 
-        Camera::~Camera()
-        {
-        }
-
-        void Camera::TranslateXZ(const vec3& translation)
+        void Camera::Translate(const vec3& translation, bool translateY)
         {
             vec3 tempPos(m_View[X][W], m_View[Y][W], m_View[Z][W]);
-            tempPos += normalize(vec3(m_View[X][X], 0.0f, m_View[Z][X])) * translation.x;
-            tempPos += normalize(vec3(m_View[X][Z], 0.0f, m_View[Z][Z])) * translation.z;
-            m_View *= translate(mat4(1.0f), -tempPos);
-        }
-
-        void Camera::Translate(const vec3& translation)
-        {
-            vec3 tempPos(m_View[X][W], m_View[Y][W], m_View[Z][W]);
-            tempPos = tempPos + normalize(vec3(m_View[X][X], m_View[X][Z], m_View[Z][X])) * translation.x;
-            tempPos = tempPos + normalize(vec3(m_View[X][Y], m_View[Y][Y], m_View[Z][Y])) * translation.y;
-            tempPos = tempPos + normalize(vec3(m_View[X][Z], m_View[Y][Z], m_View[Z][Z])) * translation.z;
+            tempPos += normalize(vec3(m_View[X][X], translateY ? m_View[X][Z] : 0.0f, m_View[Z][X])) * translation.x;
+            if (translateY)
+            {
+                tempPos += normalize(vec3(m_View[X][Y], m_View[Y][Y], m_View[Z][Y])) * translation.y;
+            }
+            tempPos += normalize(vec3(m_View[X][Z], translateY ? m_View[Y][Z] : 0.0f, m_View[Z][Z])) * translation.z;
             m_View *= translate(mat4(1.0f), -tempPos);
         }
 
@@ -124,15 +115,6 @@ namespace Graphics
         vec3 Camera::GetPosition() const
         {
             return MathHelper::GetTranslation(m_View);
-        }
-
-        void Camera::SetViewMatrix(const mat4& view)
-        {
-            m_View = view;
-        }
-        void Camera::SetProjMatrix(const mat4& proj)
-        {
-            m_Proj = proj;
         }
 
         vec3 Camera::GetForward() const

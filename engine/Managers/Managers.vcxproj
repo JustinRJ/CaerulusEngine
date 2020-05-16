@@ -203,7 +203,7 @@
     <ClInclude Include="Managers\MaterialManager.h" />
     <ClInclude Include="Managers\ModelManager.h" />
     <ClInclude Include="Managers\ShaderManager.h" />
-    <ClInclude Include="Managers\ShaderSourceManager.h" />
+    <ClInclude Include="Managers\ShaderSrcManager.h" />
     <ClInclude Include="Managers\TextureManager.h" />
     <ClInclude Include="stdafx.h" />
   </ItemGroup>
@@ -212,7 +212,7 @@
     <ClCompile Include="Managers\MaterialManager.cpp" />
     <ClCompile Include="Managers\ModelManager.cpp" />
     <ClCompile Include="Managers\ShaderManager.cpp" />
-    <ClCompile Include="Managers\ShaderSourceManager.cpp" />
+    <ClCompile Include="Managers\ShaderSrcManager.cpp" />
     <ClCompile Include="Managers\TextureManager.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>

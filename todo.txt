@@ -1,14 +1,9 @@
+Pull-out setup code for shaders from RenderSystem to Engine
+    - an update functor must be created for directionalLight.cpp and pointLight.cpp
+
 Load model colours
 
-Pull-out setup code for shaders from RenderSystem to Engine
-
-Move model into Geometry
-
-Move material and texture into Pipeline
-
-Camera to core?
-
-Clean up interface to engine
+Clean up dll interfaces to engine
 
 Add colour class
 

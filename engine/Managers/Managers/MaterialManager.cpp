@@ -52,7 +52,7 @@ namespace Managers
                 auto newMaterial = std::make_shared<Material>("", path);
                 newMaterial->LoadMaterialTexturesNames(i, is);
 
-                for (auto newTextureIt : newMaterial->GetTextureNames())
+                for (auto& newTextureIt : newMaterial->GetTextureNames())
                 {
                     if (newTextureIt.second != "")
                     {

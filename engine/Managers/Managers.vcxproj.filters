@@ -12,10 +12,10 @@
     <ClCompile Include="Managers\ShaderManager.cpp">
       <Filter>Managers</Filter>
     </ClCompile>
-    <ClCompile Include="Managers\ShaderSourceManager.cpp">
+    <ClCompile Include="Managers\TextureManager.cpp">
       <Filter>Managers</Filter>
     </ClCompile>
-    <ClCompile Include="Managers\TextureManager.cpp">
+    <ClCompile Include="Managers\ShaderSrcManager.cpp">
       <Filter>Managers</Filter>
     </ClCompile>
   </ItemGroup>
@@ -31,10 +31,10 @@
     <ClInclude Include="Managers\ShaderManager.h">
       <Filter>Managers</Filter>
     </ClInclude>
-    <ClInclude Include="Managers\ShaderSourceManager.h">
+    <ClInclude Include="Managers\TextureManager.h">
       <Filter>Managers</Filter>
     </ClInclude>
-    <ClInclude Include="Managers\TextureManager.h">
+    <ClInclude Include="Managers\ShaderSrcManager.h">
       <Filter>Managers</Filter>
     </ClInclude>
   </ItemGroup>

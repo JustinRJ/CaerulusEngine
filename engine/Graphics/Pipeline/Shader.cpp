@@ -7,11 +7,9 @@ namespace Graphics
 {
     namespace PipeLine
     {
-        Shader::Shader(const ShaderSource& vertex, const ShaderSource& fragment) :
+        Shader::Shader(const ShaderSrc& vertex, const ShaderSrc& fragment) :
             m_Vertex(vertex),
-            m_Fragment(fragment),
-            m_SetUniforms({}),
-            m_UpdateUniforms({})
+            m_Fragment(fragment)
         {
         }
 
@@ -43,26 +41,6 @@ namespace Graphics
         GLuint Shader::GetHandle() const
         {
             return m_Handle;
-        }
-
-        void Shader::SetUniforms()
-        {
-            m_SetUniforms();
-        }
-
-        void Shader::UpdateUniforms()
-        {
-            m_UpdateUniforms();
-        }
-
-        void Shader::SetUniforms(std::function<void()> setUniforms)
-        {
-            m_SetUniforms = setUniforms;
-        }
-
-        void Shader::UpdateUniforms(std::function<void()> updateUniforms)
-        {
-            m_UpdateUniforms = updateUniforms;
         }
 
         bool Shader::IsLinked() const

@@ -15,6 +15,7 @@ namespace Graphics
             Texture();
             ~Texture();
 
+            void Bind() const;
             GLint GetHandle();
 
             bool Load(const char* texPath, bool texFlip);
@@ -22,12 +23,12 @@ namespace Graphics
             void CreateHDR(GLuint width, GLuint height, GLenum format, GLenum internalFormat, GLenum type, GLenum minFilter);
             void CreateCube(GLuint width, GLenum format, GLenum internalFormat, GLenum type, GLenum minFilter);
 
+            void ComputeMipmap();
+
             GLuint GetWidth() const;
             GLuint GetHeight() const;
 
             const std::string& GetPath() const;
-            void Bind() const;
-            void ComputeMipmap();
 
         private:
             std::string m_Path;

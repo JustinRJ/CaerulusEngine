@@ -1,6 +1,6 @@
 #include "stdafx.h"
 
-#include "ShaderSource.h"
+#include "ShaderSrc.h"
 #include "../../Core/Logging/Log.h"
 #include <fstream>
 #include <sstream>
@@ -9,24 +9,24 @@ namespace Graphics
 {
     namespace PipeLine
     {
-        ShaderSource::ShaderSource(ShaderType type, const std::string& path) :
+        ShaderSrc::ShaderSrc(ShaderType type, const std::string& path) :
             m_Type(type),
             m_IsCompiled(false),
             m_Path(path)
         {
         }
 
-        ShaderSource::~ShaderSource()
+        ShaderSrc::~ShaderSrc()
         {
             glDeleteShader(m_Handle);
         }
 
-        bool ShaderSource::IsCompiled() const
+        bool ShaderSrc::IsCompiled() const
         {
             return m_IsCompiled;
         }
 
-        void ShaderSource::Load()
+        void ShaderSrc::Load()
         {
             // Shaders reading
             std::string code;
@@ -51,7 +51,7 @@ namespace Graphics
             }
         }
 
-        void ShaderSource::Compile(const std::string& source)
+        void ShaderSrc::Compile(const std::string& source)
         {
             const unsigned int logSize = 512;
             const GLchar* shaderCode = source.c_str();
@@ -78,12 +78,12 @@ namespace Graphics
             }
         }
 
-        GLuint ShaderSource::GetHandle() const
+        GLuint ShaderSrc::GetHandle() const
         {
             return m_Handle;
         }
 
-        void ShaderSource::SetUniforms(const std::string& source)
+        void ShaderSrc::SetUniforms(const std::string& source)
         {
             auto shaderTypeToString = [&](ShaderType s) -> std::string
             {
@@ -104,7 +104,6 @@ namespace Graphics
             bool searchForUniforms = true;
             while (searchForUniforms)
             {
-
                 auto spaceBeforeName = source.find("uniform", offset);
                 if (spaceBeforeName != std::string::npos)
                 {
@@ -122,7 +121,7 @@ namespace Graphics
             }
         }
 
-        const std::vector<std::string>& ShaderSource::GetUniforms() const
+        const std::vector<std::string>& ShaderSrc::GetUniforms() const
         {
             return m_Uniforms;
         }

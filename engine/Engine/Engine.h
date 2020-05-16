@@ -13,15 +13,16 @@
 #include "../Managers/Managers/MaterialManager.h"
 #include "../Managers/Managers/ModelManager.h"
 #include "../Managers/Managers/ShaderManager.h"
-#include "../Managers/Managers/ShaderSourceManager.h"
+#include "../Managers/Managers/ShaderSrcManager.h"
+
+#include "../Graphics/Render/PhysicallyBasedRendering.h"
 
 using namespace Core::Time;
 using namespace Core::Input;
 using namespace Core::Interface;
-
+using namespace Graphics;
 using namespace Graphics::Window;
 using namespace Graphics::Render;
-
 using namespace Managers;
 
 // TODO - turn engine into an interface to whole engine
@@ -30,14 +31,12 @@ class Engine
 public:
 
     Engine(int argc, char** argv);
-    ~Engine();
 
     void Run();
 
     virtual void InitInput();
     virtual void InitScene();
-    //virtual void InitLighting();
-
+    virtual void InitRenderer();
 
 private:
 
@@ -69,19 +68,8 @@ private:
     TextureManager m_TextureManager;
     MaterialManager m_MaterialManager;
     ModelManager m_ModelManager;
-    ShaderSourceManager m_ShaderSourceManager;
+    ShaderSrcManager m_ShaderSrcManager;
     ShaderManager m_ShaderManager;
 
-    /// Temp!
-    std::shared_ptr<StandardShaders> m_Shaders;
-    bool m_PointMode;
-    bool m_DirectionalMode;
-    bool m_IBLMode;
-    bool m_SAOMode;
-    bool m_FXAAMode;
-    bool m_MotionBlurMode;
-    bool lightingBRDF = false;
-    bool firstPassProcess = false;
-    bool gBufferInit = false;
-    bool saoInit = false;
+    std::shared_ptr<PhysicallyBasedRendering> m_RendererPBR;
 };

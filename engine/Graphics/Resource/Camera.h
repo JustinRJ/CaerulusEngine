@@ -15,12 +15,9 @@ namespace Graphics
         public:
 
             Camera();
-            ~Camera();
 
             const mat4& GetViewMatrix() const;
             const mat4& GetProjMatrix() const;
-            void SetViewMatrix(const mat4& view);
-            void SetProjMatrix(const mat4& proj);
 
             vec3 GetPosition() const;
             vec3 GetForward() const;
@@ -47,8 +44,7 @@ namespace Graphics
             void SetShutterSpeed(float shutterSpeed);
             void SetISO(float iso);
 
-            void TranslateXZ(const vec3& translation);
-            void Translate(const vec3& translation);
+            void Translate(const vec3& translation, bool translateY = true);
             void Rotate(const vec3& eulerDelta, const vec3& forcedUp = MathHelper::UnitUp());
 
             void GetProjViewModel(mat4& out) const;

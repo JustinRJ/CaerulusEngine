@@ -11,11 +11,35 @@ namespace Graphics
 {
     namespace PipeLine
     {
-        class CAERULUS_GRAPHICS PiplineUniform
+        template <class T>
+        class CAERULUS_GRAPHICS PipelineUniform
         {
         public:
-            virtual void SetUniforms() = 0;
-            virtual void UpdateUniforms() = 0;
+            virtual void SetUniforms()
+            {
+                if (auto t = dynamic_cast<T*>(this))
+                {
+                    m_SetUniforms(*t);
+                }
+            }
+
+            virtual void UpdateUniforms()
+            {
+                if (auto t = dynamic_cast<T*>(this))
+                {
+                    m_UpdateUniforms(*t);
+                }
+            }
+
+            virtual void SetUniformsCallback(std::function<void(T&)> setUniforms)
+            {
+                m_SetUniforms = setUniforms;
+            }
+
+            virtual void UpdateUniformsCallback(std::function<void(T&)> updateUniforms)
+            {
+                m_UpdateUniforms = updateUniforms;
+            }
 
             virtual void Bind()
             {
@@ -39,19 +63,19 @@ namespace Graphics
                 glUniform1f(glGetUniformLocation(m_Handle, name.c_str()), value);
             }
 
-            void SetVec2f(const std::string& name, fvec2 value)
+            void Set2f(const std::string& name, fvec2 value)
             {
                 Bind();
                 glUniform2fv(glGetUniformLocation(m_Handle, name.c_str()), 1, value_ptr(value));
             }
 
-            void SetVec3f(const std::string& name, fvec3 value)
+            void Set3f(const std::string& name, fvec3 value)
             {
                 Bind();
                 glUniform3fv(glGetUniformLocation(m_Handle, name.c_str()), 1, value_ptr(value));
             }
 
-            void SetVec4f(const std::string & name, fvec4 value)
+            void Set4f(const std::string & name, fvec4 value)
             {
                 Bind();
                 glUniform4fv(glGetUniformLocation(m_Handle, name.c_str()), 1, value_ptr(value));
@@ -71,6 +95,8 @@ namespace Graphics
 
         protected:
             GLuint m_Handle;
+            std::function<void(T&)> m_SetUniforms = {};
+            std::function<void(T&)> m_UpdateUniforms = {};
         };
     }
 }

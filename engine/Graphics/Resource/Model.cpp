@@ -110,7 +110,7 @@ namespace Graphics
                         m_Materials.at(i)->Bind();
                         DrawMesh(wireframe, i);
                     }
-                    else if(defaultMaterial)
+                    else if (defaultMaterial)
                     {
                         defaultMaterial->Bind();
                         DrawMesh(wireframe, i);

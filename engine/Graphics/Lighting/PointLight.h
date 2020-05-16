@@ -6,10 +6,10 @@ namespace Graphics
 {
     namespace Light
     {
-        class PointLight : public Light
+        class PointLight : public Light, public PipelineUniform<PointLight>
         {
         public:
-            PointLight(const vec4& colour, const vec3& position, float radius);
+            PointLight(std::shared_ptr<Shader> shader, std::shared_ptr<Camera> camera);
             virtual ~PointLight() = default;
 
             const vec3& GetPosition() const;
@@ -17,9 +17,6 @@ namespace Graphics
 
             float GetRadius() const;
             void SetRadius(float radius);
-
-            void UpdateUniforms(const std::vector<std::string>& uniforms,
-                const PipeLine::Shader& shader, const mat4& view) const override;
 
         protected:
             vec3 m_Position;

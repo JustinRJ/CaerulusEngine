@@ -1,12 +1,12 @@
 #include "stdafx.h"
-#include "ShaderSourceManager.h"
+#include "ShaderSrcManager.h"
 
 namespace Managers
 {
-    ShaderSourceManager::ShaderSourceManager()
+    ShaderSrcManager::ShaderSrcManager()
     {}
 
-    bool ShaderSourceManager::Load(const std::string& path, ShaderType type)
+    bool ShaderSrcManager::Load(const std::string& path, ShaderType type)
     {
         using namespace Core::Logging;
         if (IsLoaded(path))
@@ -16,7 +16,7 @@ namespace Managers
         }
 
         Log::LogMessage("\tLoading shader stage with path " + path);
-        auto ss = std::make_shared<ShaderSource>(type, path);
+        auto ss = std::make_shared<ShaderSrc>(type, path);
         ss->Load();
         Insert(path, ss);
         return true;

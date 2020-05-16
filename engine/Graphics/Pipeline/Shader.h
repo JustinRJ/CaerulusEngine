@@ -1,36 +1,27 @@
 #pragma once
 
-#include "PiplineUniform.h"
-#include "ShaderSource.h"
+#include "PipelineUniform.h"
+#include "ShaderSrc.h"
 #include "../../Core/Math/MathHelper.h"
 
 namespace Graphics
 {
     namespace PipeLine
     {
-        class CAERULUS_GRAPHICS Shader : public PiplineUniform
+        class CAERULUS_GRAPHICS Shader : public PipelineUniform<Shader>
         {
         public:
-            Shader(const ShaderSource& vertex, const ShaderSource& fragment);
+            Shader(const ShaderSrc& vertex, const ShaderSrc& fragment);
             virtual ~Shader() = default;
-
-            void SetUniforms() override;
-            void UpdateUniforms() override;
 
             bool Link();
             bool IsLinked() const;
             GLuint GetHandle() const;
 
-            void SetUniforms(std::function<void()> setUniforms);
-            void UpdateUniforms(std::function<void()> updateUniforms);
-
         private:
             bool m_IsLinked;
-            ShaderSource m_Vertex;
-            ShaderSource m_Fragment;
-
-            std::function<void()> m_SetUniforms;
-            std::function<void()> m_UpdateUniforms;
+            ShaderSrc m_Vertex;
+            ShaderSrc m_Fragment;
         };
     }
 }

@@ -33,7 +33,7 @@ namespace Managers
         std::vector<std::shared_ptr<Material>> newModelMaterials;
         if (m_MaterialManager.Load(tempMaterialPath))
         {
-            for (auto mesh : newModel->GetMeshes())
+            for (auto& mesh : newModel->GetMeshes())
             {
                 newModelMaterials.push_back(m_MaterialManager.Get(mesh.GetMaterialName()));
             }

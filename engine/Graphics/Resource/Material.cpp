@@ -63,15 +63,15 @@ namespace Graphics
         void Material::Bind() const
         {
             glActiveTexture(GL_TEXTURE0);
-            m_Textures.at(Albedo) != nullptr ? m_Textures.at(Albedo)->Bind() : glBindTexture(GL_TEXTURE_2D, 0);
+            m_Textures.at(Albedo) ? m_Textures.at(Albedo)->Bind() : glBindTexture(GL_TEXTURE_2D, 0);
             glActiveTexture(GL_TEXTURE1);
-            m_Textures.at(Normal) != nullptr ? m_Textures.at(Normal)->Bind() : glBindTexture(GL_TEXTURE_2D, 0);
+            m_Textures.at(Normal) ? m_Textures.at(Normal)->Bind() : glBindTexture(GL_TEXTURE_2D, 0);
             glActiveTexture(GL_TEXTURE2);
-            m_Textures.at(Roughness) != nullptr ? m_Textures.at(Roughness)->Bind() : glBindTexture(GL_TEXTURE_2D, 0);
+            m_Textures.at(Roughness) ? m_Textures.at(Roughness)->Bind() : glBindTexture(GL_TEXTURE_2D, 0);
             glActiveTexture(GL_TEXTURE3);
-            m_Textures.at(Metallic) != nullptr ? m_Textures.at(Metallic)->Bind() : glBindTexture(GL_TEXTURE_2D, 0);
+            m_Textures.at(Metallic)? m_Textures.at(Metallic)->Bind() : glBindTexture(GL_TEXTURE_2D, 0);
             glActiveTexture(GL_TEXTURE4);
-            m_Textures.at(AO) != nullptr ? m_Textures.at(AO)->Bind() : glBindTexture(GL_TEXTURE_2D, 0);
+            m_Textures.at(AO) ? m_Textures.at(AO)->Bind() : glBindTexture(GL_TEXTURE_2D, 0);
             glActiveTexture(GL_TEXTURE5);
             glBindTexture(GL_TEXTURE_2D, 0);
         }
@@ -95,7 +95,7 @@ namespace Graphics
             is.seekg(0, is.beg);
             
             std::vector<std::string> actualMaterialNames;
-            for (auto mat : materials)
+            for (auto& mat : materials)
             {
                 actualMaterialNames.push_back(mat.name);
             }

@@ -2,7 +2,7 @@
 
 #define CAERULUS_MANAGERS __declspec(dllexport)
 
-#include "ShaderSourceManager.h"
+#include "ShaderSrcManager.h"
 #include "../../Graphics/PipeLine/Shader.h"
 
 namespace Managers
@@ -11,12 +11,12 @@ namespace Managers
     class CAERULUS_MANAGERS ShaderManager : public Manager<Shader>
     {
     public:
-        ShaderManager(ShaderSourceManager& shaderStageManager);
+        ShaderManager(ShaderSrcManager& shaderStageManager);
         virtual ~ShaderManager() = default;
 
         bool Load(const std::string& name, const std::string& vertexPath, const std::string& fragmentPath);
 
     private:
-        ShaderSourceManager& m_ShaderStageManager;
+        ShaderSrcManager& m_ShaderStageManager;
     };
 }

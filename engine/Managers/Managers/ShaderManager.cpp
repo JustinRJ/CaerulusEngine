@@ -3,7 +3,7 @@
 
 namespace Managers
 {
-    ShaderManager::ShaderManager(ShaderSourceManager& shaderStageManager) :
+    ShaderManager::ShaderManager(ShaderSrcManager& shaderStageManager) :
         m_ShaderStageManager(shaderStageManager)
     {}
 

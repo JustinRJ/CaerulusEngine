@@ -1,7 +1,5 @@
 #pragma once
 
-
-
 #define CAERULUS_GRAPHICS __declspec(dllexport)
 
 #include <glew.h>
@@ -18,14 +16,14 @@ namespace Graphics
             Geometry = GL_GEOMETRY_SHADER
         };
 
-        class CAERULUS_GRAPHICS ShaderSource
+        class CAERULUS_GRAPHICS ShaderSrc
         {
         public:
-            ShaderSource(ShaderType type, const std::string& path);
-            ~ShaderSource();
+            ShaderSrc(ShaderType type, const std::string& path);
+            ~ShaderSrc();
 
-            bool IsCompiled() const;
             void Load();
+            bool IsCompiled() const;
             GLuint GetHandle() const;
 
             const std::vector<std::string>& GetUniforms() const;

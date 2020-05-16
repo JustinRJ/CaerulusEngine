@@ -6,16 +6,14 @@ namespace Graphics
 {
     namespace Light
     {
-        class DirectionalLight : public Light
+        class DirectionalLight : public Light, public PipelineUniform<DirectionalLight>
         {
         public:
-            DirectionalLight(const vec4& colour, const vec3& direction);
+            DirectionalLight(std::shared_ptr<Shader> shader, std::shared_ptr<Camera> camera);
             virtual ~DirectionalLight() = default;
 
             const vec3& GetDirection() const;
             void SetDirection(const vec3& direction);
-
-            void UpdateUniforms(const std::vector<std::string>& uniforms, const PipeLine::Shader& shader, const mat4& view) const override;
 
         protected:
             vec3 m_Direction;

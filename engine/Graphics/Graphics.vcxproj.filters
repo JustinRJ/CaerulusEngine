@@ -36,9 +36,6 @@
     <ClCompile Include="Pipeline\Shader.cpp">
       <Filter>Pipeline</Filter>
     </ClCompile>
-    <ClCompile Include="Pipeline\ShaderSource.cpp">
-      <Filter>Pipeline</Filter>
-    </ClCompile>
     <ClCompile Include="Geometry\Mesh.cpp">
       <Filter>Geometry</Filter>
     </ClCompile>
@@ -51,6 +48,12 @@
     </ClCompile>
     <ClCompile Include="Geometry\Quad.cpp">
       <Filter>Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="Pipeline\ShaderSrc.cpp">
+      <Filter>Pipeline</Filter>
+    </ClCompile>
+    <ClCompile Include="Render\PhysicallyBasedRendering.cpp">
+      <Filter>Render</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -88,12 +91,6 @@
     <ClInclude Include="Pipeline\Shader.h">
       <Filter>Pipeline</Filter>
     </ClInclude>
-    <ClInclude Include="Pipeline\ShaderSource.h">
-      <Filter>Pipeline</Filter>
-    </ClInclude>
-    <ClInclude Include="Pipeline\PiplineUniform.h">
-      <Filter>Pipeline</Filter>
-    </ClInclude>
     <ClInclude Include="Pipeline\PipelineVertex.h">
       <Filter>Pipeline</Filter>
     </ClInclude>
@@ -109,6 +106,18 @@
     </ClInclude>
     <ClInclude Include="Geometry\Quad.h">
       <Filter>Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="Pipeline\PipelineUniform.h">
+      <Filter>Pipeline</Filter>
+    </ClInclude>
+    <ClInclude Include="Pipeline\ShaderSrc.h">
+      <Filter>Pipeline</Filter>
+    </ClInclude>
+    <ClInclude Include="Render\PhysicallyBasedRendering.h">
+      <Filter>Render</Filter>
+    </ClInclude>
+    <ClInclude Include="Render\IRenderer.h">
+      <Filter>Render</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -126,6 +135,9 @@
     </Filter>
     <Filter Include="Pipeline">
       <UniqueIdentifier>{0ca40c0a-364b-4e3e-823c-1386529f52fa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Render">
+      <UniqueIdentifier>{7ede5e99-c079-4a0b-8909-9c2ba9934247}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
