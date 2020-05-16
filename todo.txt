@@ -1,13 +1,25 @@
-Pull-out setup code for shaders from RenderSystem to Engine
-    - an update functor must be created for directionalLight.cpp and pointLight.cpp
+Math
+* Vec<T>
+* Transform
+* Line
+* Ray
+* Rect
+* Cube
+* AARect
+* AACube
 
-Load model colours
+* Remove glm once the above is done
+* Consider where these need to be used throughout codebase (graphics shapes)
 
-Clean up dll interfaces to engine
+Core
+* Node
+* container<Node>
+* Node will need a transform to be sorted by
 
-Add colour class
+Graphics
 
-Rename glsl (shader files) "color" -> "colour"! (and code)
+* Delete engine and shaders, keep utility that has come out of this
+* Add diagnostics early
+* Focus on true bounce lighting (ray-tracing)
 
-Create component system, that's where node.h will live
-This should live in the Managers.dll
+* Remove image library and only load model colours to start with
