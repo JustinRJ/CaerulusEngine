@@ -1,15 +1,16 @@
 #pragma once
 
 #include "Light.h"
+#include "Graphics/Pipeline/PipelineUniform.h"
 
 namespace Graphics
 {
     namespace Light
     {
-        class PointLight : public Light, public PipelineUniform
+        class PointLight : public Light, public PipeLine::PipelineUniform
         {
         public:
-            PointLight(std::shared_ptr<Shader> shader, std::shared_ptr<Camera> camera);
+            PointLight(std::shared_ptr<PipeLine::Shader> shader, std::shared_ptr<Resource::Camera> camera);
             virtual ~PointLight() = default;
 
             const vec3& GetPosition() const;

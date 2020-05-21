@@ -4,8 +4,7 @@
 
 #include <glew.h>
 #include <vector>
-
-#include "../../Core/Interface/NonCopyable.h"
+#include "Core/Interface/NonCopyable.h"
 
 namespace Graphics
 {

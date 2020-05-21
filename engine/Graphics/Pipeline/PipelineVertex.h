@@ -4,10 +4,8 @@
 
 #include <glew.h>
 #include <string>
-#include "../../Core/Math/Math.h"
-#include "../../Core/Interface/NonCopyable.h"
+#include "Core/Interface/NonCopyable.h"
 
-using namespace Core::Math;
 namespace Graphics
 {
     namespace PipeLine

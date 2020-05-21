@@ -1,8 +1,8 @@
 #pragma once
 
-#include "../Manager.h"
+#include "Managers/Manager.h"
 #include "TextureManager.h"
-#include "../../Graphics/Resource/Material.h"
+#include "Graphics/Resource/Material.h"
 
 namespace Managers
 {

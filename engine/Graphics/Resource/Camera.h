@@ -2,15 +2,13 @@
 
 #define CAERULUS_GRAPHICS __declspec(dllexport)
 
-#include "../../Core/Math/Transform.h"
-#include "../../Core/Interface/NonCopyable.h"
+#include "Core/Math/Transform.h"
+#include "Core/Interface/NonCopyable.h"
 
 namespace Graphics
 {
     namespace Resource
     {
-        using namespace Core::Math;
-
         class CAERULUS_GRAPHICS Camera : public Core::Interface::NonCopyable
         {
         public:
@@ -47,7 +45,7 @@ namespace Graphics
             void SetISO(float iso);
 
             void Translate(const vec3& translation, bool translateY = true);
-            void Rotate(const vec3& eulerDelta, const vec3& forcedUp = UnitUp());
+            void Rotate(const vec3& eulerDelta, const vec3& forcedUp = Core::Math::UnitUp());
 
         private:
             float m_degFOV;
@@ -59,7 +57,7 @@ namespace Graphics
             float m_shutterSpeed;
             float m_ISO;
             mat4 m_proj;
-            Transform m_view;
+            Core::Math::Transform m_view;
         };
     }
 }

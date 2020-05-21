@@ -1,9 +1,36 @@
 #include "stdafx.h"
 
 #include "GraphicsEngine.h"
-#include "../Core/Time/Timer.h"
-#include "../Core/Math/Math.h"
-#include "../Core/Logging/Log.h"
+#include "Core/Time/Timer.h"
+#include "Core/Math/Math.h"
+#include "Core/Logging/Log.h"
+
+#include "Render/IRenderer.h"
+
+#include "Window/GLWindow.h"
+
+#include "PipeLine/Shader.h"
+
+#include "Lighting/PointLight.h"
+#include "Lighting/DirectionalLight.h"
+
+#include "Geometry/Quad.h"
+#include "Geometry/Cube.h"
+
+#include "Resource/Model.h"
+#include "Resource/Camera.h"
+#include "Resource/Texture.h"
+#include "Resource/Material.h"
+
+namespace
+{
+    using namespace Graphics::Render;
+    using namespace Graphics::Light;
+    using namespace Graphics::Window;
+    using namespace Graphics::PipeLine;
+    using namespace Graphics::Geometry;
+    using namespace Graphics::Resource;
+}
 
 namespace Graphics
 {

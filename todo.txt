@@ -1,7 +1,6 @@
 General
 * Use pimpl pattern to avoid engine having dependencies on eternal projects
-* Add project include dir to include path, remove ../ from include paths
-* Forward declares, where can they be used?
+* Add project name to stadafx to remove false intellisense error
 
 Core
 * Node

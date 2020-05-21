@@ -5,8 +5,8 @@
 #include <map>
 #include <vector>
 #include <string>
-#include "../../Core/Logging/Log.h"
-#include "../../Core/Interface/NonCopyable.h"
+#include "Core/Logging/Log.h"
+#include "Core/Interface/NonCopyable.h"
 
 namespace Managers
 {

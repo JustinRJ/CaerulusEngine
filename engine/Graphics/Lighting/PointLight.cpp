@@ -2,6 +2,14 @@
 
 #include "PointLight.h"
 #include <string>
+#include "Graphics/PipeLine/Shader.h"
+#include "Graphics/Resource/Camera.h"
+
+namespace
+{
+    using namespace Graphics::PipeLine;
+    using namespace Graphics::Resource;
+}
 
 namespace Graphics
 {

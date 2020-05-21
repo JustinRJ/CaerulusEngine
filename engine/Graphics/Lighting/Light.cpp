@@ -1,6 +1,14 @@
 #include "stdafx.h"
 
 #include "Light.h"
+#include "Graphics/PipeLine/Shader.h"
+#include "Graphics/Resource/Camera.h"
+
+namespace
+{
+    using namespace Graphics::PipeLine;
+    using namespace Graphics::Resource;
+}
 
 namespace Graphics
 {

@@ -1,7 +1,7 @@
 #pragma once
 
-#include "../Manager.h"
-#include "../../Graphics/PipeLine/ShaderSrc.h"
+#include "Managers/Manager.h"
+#include "Graphics/PipeLine/ShaderSrc.h"
 
 namespace Managers
 {

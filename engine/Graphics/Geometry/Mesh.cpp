@@ -6,13 +6,11 @@ namespace Graphics
 {
     namespace Geometry
     {
-        Mesh::Mesh(std::vector<Vertex>& vertices, std::vector<GLuint>& indices, const std::string& materialName) :
-            m_vertices(*new std::vector<Vertex>()),
-            m_indices(*new std::vector<GLuint>()),
+        Mesh::Mesh(const std::vector<Vertex>& vertices, const std::vector<GLuint>& indices, const std::string& materialName) :
+            m_vertices(vertices),
+            m_indices(indices),
             m_materialName(materialName)
         {
-            m_vertices = vertices;
-            m_indices = indices;
             SetVertices();
         }
 

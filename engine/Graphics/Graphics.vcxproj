@@ -104,7 +104,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;GRAPHICS_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\dependencies\glew-2.1.0\include\;$(SolutionDir)..\dependencies\glfw-3.2.1\include\;$(SolutionDir)..\dependencies\glm-0.9.9.0\include\;$(SolutionDir)..\dependencies\stb_image-2.20\include\;$(SolutionDir)..\dependencies\tinyobjloader-1.0.0\include\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir);$(SolutionDir)..\dependencies\glew-2.1.0\include\;$(SolutionDir)..\dependencies\glfw-3.2.1\include\;$(SolutionDir)..\dependencies\glm-0.9.9.0\include\;$(SolutionDir)..\dependencies\stb_image-2.20\include\;$(SolutionDir)..\dependencies\tinyobjloader-1.0.0\include\</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4251</DisableSpecificWarnings>
     </ClCompile>
     <Link>
@@ -131,7 +131,7 @@ echo DA | xcopy /E "$(SolutionDir)..\dependencies\glfw-3.2.1\bin\$(Configuration
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;GRAPHICS_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\dependencies\glew-2.1.0\include\;$(SolutionDir)..\dependencies\glfw-3.2.1\include\;$(SolutionDir)..\dependencies\glm-0.9.9.0\include\;$(SolutionDir)..\dependencies\stb_image-2.20\include\;$(SolutionDir)..\dependencies\tinyobjloader-1.0.0\include\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir);$(SolutionDir)..\dependencies\glew-2.1.0\include\;$(SolutionDir)..\dependencies\glfw-3.2.1\include\;$(SolutionDir)..\dependencies\glm-0.9.9.0\include\;$(SolutionDir)..\dependencies\stb_image-2.20\include\;$(SolutionDir)..\dependencies\tinyobjloader-1.0.0\include\</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4251</DisableSpecificWarnings>
     </ClCompile>
     <Link>
@@ -156,7 +156,7 @@ echo DA | xcopy /E "$(SolutionDir)..\dependencies\glfw-3.2.1\bin\$(Configuration
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;GRAPHICS_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\dependencies\glew-2.1.0\include\;$(SolutionDir)..\dependencies\glfw-3.2.1\include\;$(SolutionDir)..\dependencies\glm-0.9.9.0\include\;$(SolutionDir)..\dependencies\stb_image-2.20\include\;$(SolutionDir)..\dependencies\tinyobjloader-1.0.0\include\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir);$(SolutionDir)..\dependencies\glew-2.1.0\include\;$(SolutionDir)..\dependencies\glfw-3.2.1\include\;$(SolutionDir)..\dependencies\glm-0.9.9.0\include\;$(SolutionDir)..\dependencies\stb_image-2.20\include\;$(SolutionDir)..\dependencies\tinyobjloader-1.0.0\include\</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4251</DisableSpecificWarnings>
     </ClCompile>
     <Link>
@@ -183,7 +183,7 @@ echo DA | xcopy /E "$(SolutionDir)..\dependencies\glfw-3.2.1\bin\$(Configuration
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;GRAPHICS_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)..\dependencies\glew-2.1.0\include\;$(SolutionDir)..\dependencies\glfw-3.2.1\include\;$(SolutionDir)..\dependencies\glm-0.9.9.0\include\;$(SolutionDir)..\dependencies\stb_image-2.20\include\;$(SolutionDir)..\dependencies\tinyobjloader-1.0.0\include\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir);$(SolutionDir)..\dependencies\glew-2.1.0\include\;$(SolutionDir)..\dependencies\glfw-3.2.1\include\;$(SolutionDir)..\dependencies\glm-0.9.9.0\include\;$(SolutionDir)..\dependencies\stb_image-2.20\include\;$(SolutionDir)..\dependencies\tinyobjloader-1.0.0\include\</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4251</DisableSpecificWarnings>
     </ClCompile>
     <Link>

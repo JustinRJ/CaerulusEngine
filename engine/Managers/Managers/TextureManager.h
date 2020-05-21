@@ -1,7 +1,7 @@
 #pragma once
 
-#include "../Manager.h"
-#include "../../Graphics/Resource/Texture.h"
+#include "Managers/Manager.h"
+#include "Graphics/Resource/Texture.h"
 
 namespace Managers
 {

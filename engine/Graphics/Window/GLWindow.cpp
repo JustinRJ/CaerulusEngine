@@ -3,8 +3,9 @@
 #include "GLWindow.h"
 #define GLFW_EXPOSE_NATIVE_WIN32
 #include <glfw3native.h>
-#include "../../Core/Math/Math.h"
-#include "../../Core/Logging/Log.h"
+#include "Core/Math/Math.h"
+#include "Core/Logging/Log.h"
+#include "Graphics/Geometry/Quad.h"
 
 namespace Graphics
 {

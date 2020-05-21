@@ -25,8 +25,6 @@ namespace Graphics
 {
     namespace Resource
     {
-        using namespace Core::Math;
-
         Camera::Camera() :
             m_view(mat4()),
             m_proj(mat4())

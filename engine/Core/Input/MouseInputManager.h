@@ -1,9 +1,9 @@
 #pragma once
 
-#include "InputDefines.h"
 #include <string>
 #include <functional>
-#include "../Interface/ITickable.h"
+#include "InputDefines.h"
+#include "Core/Interface/ITickable.h"
 
 namespace Core
 {

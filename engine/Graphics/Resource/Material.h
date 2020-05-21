@@ -2,10 +2,18 @@
 
 #define CAERULUS_GRAPHICS __declspec(dllexport)
 
-#include "Texture.h"
-#include <vector>
 #include <map>
-#include "../../Core/Interface/NonCopyable.h"
+#include <vector>
+#include <memory>
+#include "Core/Interface/NonCopyable.h"
+
+namespace Graphics
+{
+    namespace Resource
+    {
+        class Texture;
+    }
+}
 
 namespace Graphics
 {

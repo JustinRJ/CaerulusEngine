@@ -2,6 +2,7 @@
 
 #include "ModelManager.h"
 #include <iostream>
+#include "Graphics/Geometry/Mesh.h"
 
 namespace Managers
 {

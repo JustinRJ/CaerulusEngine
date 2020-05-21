@@ -3,7 +3,7 @@
 #define CAERULUS_MANAGERS __declspec(dllexport)
 
 #include "ShaderSrcManager.h"
-#include "../../Graphics/PipeLine/Shader.h"
+#include "Graphics/PipeLine/Shader.h"
 
 namespace Managers
 {

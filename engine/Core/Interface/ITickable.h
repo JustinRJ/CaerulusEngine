@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../Interface/NonCopyable.h"
+#include "Core/Interface/NonCopyable.h"
 
 namespace Core
 {

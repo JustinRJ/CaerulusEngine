@@ -27,7 +27,7 @@ namespace Graphics
         public:
             static const GLfloat s_cubeVertices[];
 
-            Mesh(std::vector<Vertex>& vertices, std::vector<GLuint>& indices, const std::string& materialName);
+            Mesh(const std::vector<Vertex>& vertices, const std::vector<GLuint>& indices, const std::string& materialName);
             virtual ~Mesh() = default;
 
             void Draw(bool wireframe) const override;
@@ -36,9 +36,9 @@ namespace Graphics
         private:
             void SetVertices() override;
 
-            std::vector<Vertex>& m_vertices;
-            std::vector<GLuint>& m_indices;
-            std::string m_materialName;
+            const std::vector<Vertex> m_vertices;
+            const std::vector<GLuint> m_indices;
+            const std::string m_materialName;
 
             GLuint m_EBO;
         };

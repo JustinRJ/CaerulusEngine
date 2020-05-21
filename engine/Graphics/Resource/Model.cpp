@@ -2,9 +2,31 @@
 
 #include "Model.h"
 #include <iostream>
-#include <unordered_map>
 #include <algorithm>
+#include <unordered_map>
 #include <tiny_obj_loader.h>
+#include "Material.h"
+#include "Graphics/Geometry/Mesh.h"
+
+namespace
+{
+    using namespace Graphics::Geometry;
+}
+
+namespace std
+{
+    template<>
+    struct hash<Vertex>
+    {
+        size_t operator()(const Vertex& vertex) const
+        {
+            return
+                ((hash<vec3>()(vertex.Position) ^
+                (hash<vec3>()(vertex.Normal) << 1)) >> 1) ^
+                    (hash<vec2>()(vertex.TexCoords) << 1);
+        }
+    };
+}
 
 namespace Graphics
 {

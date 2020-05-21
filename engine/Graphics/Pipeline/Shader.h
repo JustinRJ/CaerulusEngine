@@ -1,8 +1,14 @@
 #pragma once
 
 #include "PipelineUniform.h"
-#include "ShaderSrc.h"
-#include "../../Core/Math/Math.h"
+
+namespace Graphics
+{
+    namespace PipeLine
+    {
+        class ShaderSrc;
+    }
+}
 
 namespace Graphics
 {

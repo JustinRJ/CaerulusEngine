@@ -2,9 +2,9 @@
 
 #define CAERULUS_MANAGERS __declspec(dllexport)
 
-#include "../Manager.h"
+#include "Managers/Manager.h"
 #include "MaterialManager.h"
-#include "../../Graphics/Resource/Model.h"
+#include "Graphics/Resource/Model.h"
 
 namespace Managers
 {

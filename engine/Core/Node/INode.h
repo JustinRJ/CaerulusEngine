@@ -2,7 +2,7 @@
 
 #define CAERULUS_CORE __declspec(dllexport)
 
-#include "../Interface/NonCopyable.h"
+#include "Core/Interface/NonCopyable.h"
 
 namespace Core
 {

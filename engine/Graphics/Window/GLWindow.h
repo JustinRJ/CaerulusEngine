@@ -2,9 +2,17 @@
 
 #define CAERULUS_GRAPHICS __declspec(dllexport)
 
-#include "Window.h"
-#include "../Geometry/Quad.h"
+#include <glew.h>
 #include <glfw3.h>
+#include "Window.h"
+
+namespace Graphics
+{
+    namespace Geometry
+    {
+        class Quad;
+    }
+}
 
 namespace Graphics
 {

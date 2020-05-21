@@ -5,17 +5,17 @@
 #define GLM_ENABLE_EXPERIMENTAL
 
 #include <glm.hpp>
-#include <gtc/matrix_transform.hpp>
+#include <gtx/hash.hpp>
 #include <gtc/type_ptr.hpp>
 #include <gtx/quaternion.hpp>
-#include <gtx/hash.hpp>
+#include <gtc/matrix_transform.hpp>
+
+using namespace glm;
 
 namespace Core
 {
     namespace Math
     {
-        using namespace glm;
-
         const double PI = std::atan(1.) * 4.;
 
         enum Index
@@ -66,11 +66,11 @@ namespace Core
             return (180. / PI) / degrees;
         }
 
-        inline mat4 CreateTansform(const vec3& translation, const quat& rotation, const vec3& scale)
+        inline mat4 CreateTansform(const vec3& t, const quat& r, const vec3& s)
         {
-            mat4 translateM = translate(mat4(1.0f), translation);
-            mat4 rotateM = mat4_cast(normalize(rotation));
-            mat4 scaleM = glm::scale(mat4(1.0f), scale);
+            mat4 translateM = translate(mat4(1.0f), t);
+            mat4 rotateM = mat4_cast(normalize(r));
+            mat4 scaleM = scale(mat4(1.0f), s);
             return translateM * rotateM * scaleM;
         }
     }

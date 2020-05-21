@@ -1,16 +1,13 @@
 #pragma once
 
-#include "../Pipeline/PipelineVertex.h"
-#include "../../Core/Math/Math.h"
+#include "Graphics/Pipeline/PipelineVertex.h"
+#include "Core/Math/Math.h"
 
 namespace Graphics
 {
     namespace Geometry
     {
-        using namespace PipeLine;
-        using namespace Core::Math;
-
-        class CAERULUS_GRAPHICS Geometry : public PiplineVertex
+        class CAERULUS_GRAPHICS Geometry : public PipeLine::PiplineVertex
         {
         public:
             Geometry();
