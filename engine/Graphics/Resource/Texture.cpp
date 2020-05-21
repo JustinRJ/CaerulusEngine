@@ -10,58 +10,54 @@ namespace Graphics
 {
     namespace Resource
     {
-        Texture::Texture()
-        {
-        }
-
         Texture::~Texture()
         {
-            glDeleteTextures(1, &m_Handle);
+            glDeleteTextures(1, &m_handle);
         }
 
         GLint Texture::GetHandle()
         {
-            return m_Handle;
+            return m_handle;
         }
 
         bool Texture::Load(const char* texPath, bool texFlip)
         {
-            m_Type = GL_TEXTURE_2D;
+            m_type = GL_TEXTURE_2D;
 
             stbi_set_flip_vertically_on_load(texFlip);
 
-            glGenTextures(1, &m_Handle);
+            glGenTextures(1, &m_handle);
             glActiveTexture(GL_TEXTURE0);
-            glBindTexture(GL_TEXTURE_2D, m_Handle);
+            glBindTexture(GL_TEXTURE_2D, m_handle);
             // Request the maximum level of anisotropy the GPU used can support and use it
-            glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &m_AnisoFilterLevel);
-            glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, m_AnisoFilterLevel);
+            glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &m_anisoFilterLevel);
+            glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, m_anisoFilterLevel);
 
             int width, height, numComponents;
             unsigned char* texData = stbi_load(texPath, &width, &height, &numComponents, 0);
 
-            m_Width = width;
-            m_Height = height;
-            m_Components = numComponents;
-            m_Path = texPath;
+            m_width = width;
+            m_height = height;
+            m_components = numComponents;
+            m_path = texPath;
 
             if (texData)
             {
                 if (numComponents == 1)
                 {
-                    m_Format = GL_RED;
+                    m_format = GL_RED;
                 }
                 else if (numComponents == 3)
                 {
-                    m_Format = GL_RGB;
+                    m_format = GL_RGB;
                 }
                 else if (numComponents == 4)
                 {
-                    m_Format = GL_RGBA;
+                    m_format = GL_RGBA;
                 }
-                m_InternalFormat = m_Format;
+                m_internalFormat = m_format;
 
-                glTexImage2D(GL_TEXTURE_2D, 0, m_InternalFormat, m_Width, m_Height, 0, m_Format, GL_UNSIGNED_BYTE, texData);
+                glTexImage2D(GL_TEXTURE_2D, 0, m_internalFormat, m_width, m_height, 0, m_format, GL_UNSIGNED_BYTE, texData);
 
                 glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
                 glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
@@ -86,39 +82,39 @@ namespace Graphics
 
         bool Texture::LoadHDR(const char* texPath, bool texFlip)
         {
-            m_Type = GL_TEXTURE_2D;
+            m_type = GL_TEXTURE_2D;
 
             stbi_set_flip_vertically_on_load(texFlip);
 
-            glGenTextures(1, &m_Handle);
+            glGenTextures(1, &m_handle);
             glActiveTexture(GL_TEXTURE0);
-            glBindTexture(GL_TEXTURE_2D, m_Handle);
+            glBindTexture(GL_TEXTURE_2D, m_handle);
 
             if (stbi_is_hdr(texPath))
             {
                 int width, height, numComponents;
                 float* texData = stbi_loadf(texPath, &width, &height, &numComponents, 0);
 
-                m_Width = width;
-                m_Height = height;
-                m_Components = numComponents;
-                m_Path = texPath;
+                m_width = width;
+                m_height = height;
+                m_components = numComponents;
+                m_path = texPath;
 
                 if (texData)
                 {
                     // Need a higher precision format for HDR to not lose informations, thus 32bits floating point
                     if (numComponents == 3)
                     {
-                        m_InternalFormat = GL_RGB32F;
-                        m_Format = GL_RGB;
+                        m_internalFormat = GL_RGB32F;
+                        m_format = GL_RGB;
                     }
                     else if (numComponents == 4)
                     {
-                        m_InternalFormat = GL_RGBA32F;
-                        m_Format = GL_RGBA;
+                        m_internalFormat = GL_RGBA32F;
+                        m_format = GL_RGBA;
                     }
 
-                    glTexImage2D(GL_TEXTURE_2D, 0, m_InternalFormat, m_Width, m_Height, 0, m_Format, GL_FLOAT, texData);
+                    glTexImage2D(GL_TEXTURE_2D, 0, m_internalFormat, m_width, m_height, 0, m_format, GL_FLOAT, texData);
 
                     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
                     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
@@ -147,35 +143,35 @@ namespace Graphics
 
         void Texture::CreateHDR(GLuint width, GLuint height, GLenum format, GLenum internalFormat, GLenum type, GLenum minFilter)
         {
-            m_Type = GL_TEXTURE_2D;
+            m_type = GL_TEXTURE_2D;
 
-            glGenTextures(1, &m_Handle);
+            glGenTextures(1, &m_handle);
             glActiveTexture(GL_TEXTURE0);
-            glBindTexture(GL_TEXTURE_2D, m_Handle);
+            glBindTexture(GL_TEXTURE_2D, m_handle);
 
-            m_Width = width;
-            m_Height = height;
-            m_Format = format;
-            m_InternalFormat = internalFormat;
+            m_width = width;
+            m_height = height;
+            m_format = format;
+            m_internalFormat = internalFormat;
 
             if (format == GL_RED)
             {
-                m_Components = 1;
+                m_components = 1;
             }
             else if (format == GL_RG)
             {
-                m_Components = 2;
+                m_components = 2;
             }
             else if (format == GL_RGB)
             {
-                m_Components = 3;
+                m_components = 3;
             }
             else if (format == GL_RGBA)
             {
-                m_Components = 4;
+                m_components = 4;
             }
 
-            glTexImage2D(GL_TEXTURE_2D, 0, m_InternalFormat, m_Width, m_Height, 0, m_Format, GL_FLOAT, nullptr);
+            glTexImage2D(GL_TEXTURE_2D, 0, m_internalFormat, m_width, m_height, 0, m_format, GL_FLOAT, nullptr);
 
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
@@ -189,36 +185,36 @@ namespace Graphics
 
         void Texture::CreateCube(GLuint width, GLenum format, GLenum internalFormat, GLenum type, GLenum minFilter)
         {
-            m_Type = GL_TEXTURE_CUBE_MAP;
+            m_type = GL_TEXTURE_CUBE_MAP;
 
-            glGenTextures(1, &m_Handle);
+            glGenTextures(1, &m_handle);
             glActiveTexture(GL_TEXTURE0);
-            glBindTexture(m_Type, m_Handle);
+            glBindTexture(m_type, m_handle);
 
             for (GLuint i = 0; i < 6; ++i)
             {
-                if (m_Width == 0 && m_Height == 0 && m_Components == 0)
+                if (m_width == 0 && m_height == 0 && m_components == 0)
                 {
-                    m_Width = width;
-                    m_Height = width;
-                    m_Format = format;
-                    m_InternalFormat = internalFormat;
+                    m_width = width;
+                    m_height = width;
+                    m_format = format;
+                    m_internalFormat = internalFormat;
                 }
 
                 if (format == GL_RED)
                 {
-                    m_Components = 1;
+                    m_components = 1;
                 }
                 else if (format == GL_RGB)
                 {
-                    m_Components = 3;
+                    m_components = 3;
                 }
                 else if (format == GL_RGBA)
                 {
-                    m_Components = 4;
+                    m_components = 4;
                 }
 
-                glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, m_InternalFormat, m_Width, m_Height, 0, m_Format, type, nullptr);
+                glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, m_internalFormat, m_width, m_height, 0, m_format, type, nullptr);
             }
 
             glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -227,33 +223,33 @@ namespace Graphics
             glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
             glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
 
-            glBindTexture(m_Type, 0);
+            glBindTexture(m_type, 0);
         }
 
         GLuint Texture::GetWidth() const
         {
-            return m_Width;
+            return m_width;
         }
 
         GLuint Texture::GetHeight() const
         {
-            return m_Height;
+            return m_height;
         }
 
         const std::string& Texture::GetPath() const
         {
-            return m_Path;
+            return m_path;
         }
 
         void Texture::Bind() const
         {
-            glBindTexture(m_Type, m_Handle);
+            glBindTexture(m_type, m_handle);
         }
 
         void Texture::ComputeMipmap()
         {
-            glBindTexture(m_Type, m_Handle);
-            glGenerateMipmap(m_Type);
+            glBindTexture(m_type, m_handle);
+            glGenerateMipmap(m_type);
         }
     }
 }

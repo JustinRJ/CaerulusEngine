@@ -19,11 +19,11 @@ namespace Core
             Timer(bool start = false);
             virtual ~Timer() = default;
 
-            virtual void Start();
-            virtual void Stop();
+            virtual void Start() final;
+            virtual void Stop() final;
 
-            virtual float Total();
-            virtual float Delta();
+            virtual float Total() final;
+            virtual float Delta() final;
 
             Time StartTime;
             Time EndTime;
@@ -33,11 +33,11 @@ namespace Core
             time_t NanoTime();
             time_t Frequency();
 
-            bool m_Running;
-            float m_DeltaTime;
-            float m_Multiplier;
-            time_t m_Frequency;
-            time_t m_TimeLastFrame;
+            bool m_running;
+            float m_deltaTime;
+            float m_multiplier;
+            time_t m_frequency;
+            time_t m_timeLastFrame;
         };
     }
 }

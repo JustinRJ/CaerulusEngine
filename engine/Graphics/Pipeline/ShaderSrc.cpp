@@ -10,20 +10,20 @@ namespace Graphics
     namespace PipeLine
     {
         ShaderSrc::ShaderSrc(ShaderType type, const std::string& path) :
-            m_Type(type),
-            m_IsCompiled(false),
-            m_Path(path)
+            m_type(type),
+            m_isCompiled(false),
+            m_path(path)
         {
         }
 
         ShaderSrc::~ShaderSrc()
         {
-            glDeleteShader(m_Handle);
+            glDeleteShader(m_handle);
         }
 
         bool ShaderSrc::IsCompiled() const
         {
-            return m_IsCompiled;
+            return m_isCompiled;
         }
 
         void ShaderSrc::Load()
@@ -36,7 +36,7 @@ namespace Graphics
 
             try
             {
-                shaderFile.open(m_Path);
+                shaderFile.open(m_path);
                 std::stringstream shaderStream;
                 shaderStream << shaderFile.rdbuf();
                 code = shaderStream.str();
@@ -59,28 +59,28 @@ namespace Graphics
             GLchar infoLog[logSize];
             GLint isCompileSuccess;
 
-            m_Handle = glCreateShader(m_Type);
-            glShaderSource(m_Handle, 1, &shaderCode, NULL);
-            glCompileShader(m_Handle);
-            glGetShaderiv(m_Handle, GL_COMPILE_STATUS, &isCompileSuccess);
+            m_handle = glCreateShader(m_type);
+            glShaderSource(m_handle, 1, &shaderCode, NULL);
+            glCompileShader(m_handle);
+            glGetShaderiv(m_handle, GL_COMPILE_STATUS, &isCompileSuccess);
 
             if (!isCompileSuccess)
             {
                 using Core::Logging::Log;
-                glGetShaderInfoLog(m_Handle, logSize, NULL, infoLog);
-                Log::LogError("Shader " + std::string(m_Path) + "compilation failed!", infoLog);
+                glGetShaderInfoLog(m_handle, logSize, NULL, infoLog);
+                Log::LogError("Shader " + std::string(m_path) + "compilation failed!", infoLog);
             }
             else
             {
                 // Find uniforms
                 SetUniforms(source);
-                m_IsCompiled = true;
+                m_isCompiled = true;
             }
         }
 
         GLuint ShaderSrc::GetHandle() const
         {
-            return m_Handle;
+            return m_handle;
         }
 
         void ShaderSrc::SetUniforms(const std::string& source)
@@ -98,7 +98,7 @@ namespace Graphics
             };
 
             using namespace Core::Logging;
-            Log::LogMessage("\t\tShaderType: " + shaderTypeToString(m_Type));
+            Log::LogMessage("\t\tShaderType: " + shaderTypeToString(m_type));
 
             size_t offset = 0U;
             bool searchForUniforms = true;
@@ -111,8 +111,8 @@ namespace Graphics
                     auto semicolonAfterName = source.find(";", spaceBeforeName);
                     std::string unfiformName = std::string(source.c_str() + spaceBeforeName, source.c_str() + semicolonAfterName);
                     offset = semicolonAfterName;
-                    m_Uniforms.push_back(unfiformName);
-                    Log::LogMessage("\t\tUniform " + std::to_string(m_Uniforms.size()) + ": " + unfiformName);
+                    m_uniforms.push_back(unfiformName);
+                    Log::LogMessage("\t\tUniform " + std::to_string(m_uniforms.size()) + ": " + unfiformName);
                 }
                 else
                 {
@@ -123,7 +123,7 @@ namespace Graphics
 
         const std::vector<std::string>& ShaderSrc::GetUniforms() const
         {
-            return m_Uniforms;
+            return m_uniforms;
         }
     }
 }

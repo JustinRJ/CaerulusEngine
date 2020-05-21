@@ -3,6 +3,7 @@
 #define CAERULUS_GRAPHICS __declspec(dllexport)
 
 #include <string>
+#include "../../Core/Interface/NonCopyable.h"
 
 namespace Graphics
 {
@@ -46,10 +47,10 @@ namespace Graphics
             }
         };
 
-        class CAERULUS_GRAPHICS Window
+        class CAERULUS_GRAPHICS Window : public Core::Interface::NonCopyable
         {
         public:
-            Window();
+            Window() = default;
             virtual ~Window() = default;
 
             virtual const State& GetActiveState() const;
@@ -63,8 +64,8 @@ namespace Graphics
         protected:
             virtual bool Compare(const State& state) const;
 
-            State m_ActiveState;
-            State m_NewState;
+            State m_activeState;
+            State m_newState;
         };
     }
 }

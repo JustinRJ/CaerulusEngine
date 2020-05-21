@@ -1,7 +1,7 @@
 #pragma once
 
 #include "../Pipeline/PipelineVertex.h"
-#include "../../Core/Math/MathHelper.h"
+#include "../../Core/Math/Math.h"
 
 namespace Graphics
 {
@@ -19,12 +19,11 @@ namespace Graphics
 
             virtual void Draw(bool wireframe) const = 0;
 
-
             void SetTransform(const mat4& transform);
             const mat4& GetTransform() const;
 
         protected:
-            mat4 m_Transform;
+            mat4 m_transform;
         };
     }
 }

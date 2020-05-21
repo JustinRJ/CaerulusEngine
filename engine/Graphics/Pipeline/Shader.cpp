@@ -7,9 +7,9 @@ namespace Graphics
 {
     namespace PipeLine
     {
-        Shader::Shader(const ShaderSrc& vertex, const ShaderSrc& fragment) :
-            m_Vertex(vertex),
-            m_Fragment(fragment)
+        Shader::Shader(std::shared_ptr<ShaderSrc> vertex, std::shared_ptr<ShaderSrc> fragment) :
+            m_vertex(vertex),
+            m_fragment(fragment)
         {
         }
 
@@ -19,33 +19,33 @@ namespace Graphics
             const unsigned int logSize = 512;
             // Shader Program Compilation
             GLchar infoLog[logSize];
-            m_Handle = glCreateProgram();
-            glAttachShader(m_Handle, m_Vertex.GetHandle());
-            glAttachShader(m_Handle, m_Fragment.GetHandle());
-            glLinkProgram(m_Handle);
+            m_handle = glCreateProgram();
+            glAttachShader(m_handle, m_vertex->GetHandle());
+            glAttachShader(m_handle, m_fragment->GetHandle());
+            glLinkProgram(m_handle);
 
             GLint isLinkSuccessful = false;
-            glGetProgramiv(m_Handle, GL_LINK_STATUS, &isLinkSuccessful);
+            glGetProgramiv(m_handle, GL_LINK_STATUS, &isLinkSuccessful);
 
             if (!isLinkSuccessful)
             {
-                glGetProgramInfoLog(m_Handle, logSize, NULL, infoLog);
+                glGetProgramInfoLog(m_handle, logSize, NULL, infoLog);
                 Log::LogError("Shader program linking failed!", infoLog);
                 return false;
             }
 
-            m_IsLinked = true;
+            m_isLinked = true;
             return true;
         }
 
         GLuint Shader::GetHandle() const
         {
-            return m_Handle;
+            return m_handle;
         }
 
         bool Shader::IsLinked() const
         {
-            return m_IsLinked;
+            return m_isLinked;
         }
     }
 }

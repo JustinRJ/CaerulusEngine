@@ -18,6 +18,6 @@ namespace Managers
         bool Load(const std::string& name, const std::string& modelPath, const std::string& materialPath = "");
 
     private:
-        MaterialManager& m_MaterialManager;
+        MaterialManager& m_materialManager;
     };
 }

@@ -14,22 +14,22 @@ namespace Graphics
 
         const vec3& PointLight::GetPosition() const
         {
-            return m_Position;
+            return m_position;
         }
 
         float PointLight::GetRadius() const
         {
-            return m_Radius;
+            return m_radius;
         }
 
         void PointLight::SetPosition(const vec3& pos)
         {
-            m_Position = pos;
+            m_position = pos;
         }
 
         void PointLight::SetRadius(float radius)
         {
-            m_Radius = radius;
+            m_radius = radius;
         }
     }
 }

@@ -4,16 +4,18 @@
 
 #include <glew.h>
 #include <string>
+#include "../../Core/Interface/NonCopyable.h"
 
 namespace Graphics
 {
     namespace Resource
     {
-        class CAERULUS_GRAPHICS Texture
+        // TODO - break texture out into different impl. for each load function
+        class CAERULUS_GRAPHICS Texture : Core::Interface::NonCopyable
         {
         public:
-            Texture();
-            ~Texture();
+            Texture() = default;
+            virtual ~Texture();
 
             void Bind() const;
             GLint GetHandle();
@@ -31,16 +33,16 @@ namespace Graphics
             const std::string& GetPath() const;
 
         private:
-            std::string m_Path;
-            GLfloat m_AnisoFilterLevel;
-            GLuint m_Handle;
-            GLuint m_Width;
-            GLuint m_Height;
-            GLuint m_Components;
+            std::string m_path;
+            GLfloat m_anisoFilterLevel;
+            GLuint m_handle;
+            GLuint m_width;
+            GLuint m_height;
+            GLuint m_components;
 
-            GLenum m_Type;
-            GLenum m_InternalFormat;
-            GLenum m_Format;
+            GLenum m_type;
+            GLenum m_internalFormat;
+            GLenum m_format;
         };
     }
 }

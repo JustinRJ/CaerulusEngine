@@ -9,20 +9,16 @@ namespace Graphics
     namespace Resource
     {
         Material::Material(const std::string& name, const std::string& path) :
-            m_Name(name),
-            m_Path(path),
-            m_TextureNames(),
-            m_Textures(std::vector<std::shared_ptr<Texture>>(MaterialType::Size))
+            m_name(name),
+            m_path(path),
+            m_textureNames(),
+            m_textures(std::vector<std::shared_ptr<Texture>>(MaterialType::Size))
         {
-            m_Textures[Albedo] = nullptr;
-            m_Textures[Normal] = nullptr;
-            m_Textures[Roughness] = nullptr;
-            m_Textures[Metallic] = nullptr;
-            m_Textures[AO] = nullptr;
-        }
-
-        Material::~Material()
-        {
+            m_textures[Albedo] = nullptr;
+            m_textures[Normal] = nullptr;
+            m_textures[Roughness] = nullptr;
+            m_textures[Metallic] = nullptr;
+            m_textures[AO] = nullptr;
         }
 
         void Material::LoadMaterialTexturesNames(unsigned int materialIndex, std::istream& is)
@@ -32,19 +28,19 @@ namespace Graphics
             tinyobj::LoadMtl(&materialNames, &materials, &is);
             is.seekg(0, is.beg);
 
-            m_Name = materials.at(materialIndex).name;
+            m_name = materials.at(materialIndex).name;
 
-            // todo - Fix mapping
-            m_TextureNames[Albedo] = materials.at(materialIndex).diffuse_texname;
-            m_TextureNames[Normal] = materials.at(materialIndex).bump_texname;
-            m_TextureNames[Roughness] = materials.at(materialIndex).specular_highlight_texname;
-            m_TextureNames[Metallic] = materials.at(materialIndex).ambient_texname;
-            m_TextureNames[AO] = "";
+            // TODO - Fix mapping
+            m_textureNames[Albedo] = materials.at(materialIndex).diffuse_texname;
+            m_textureNames[Normal] = materials.at(materialIndex).bump_texname;
+            m_textureNames[Roughness] = materials.at(materialIndex).specular_highlight_texname;
+            m_textureNames[Metallic] = materials.at(materialIndex).ambient_texname;
+            m_textureNames[AO] = "";
         }
 
         std::shared_ptr<Texture> Material::GetTexture(MaterialType materialType) const
         {
-            return m_Textures.at(materialType);
+            return m_textures.at(materialType);
         }
 
         void Material::SetTexture(std::shared_ptr<Texture> texture, MaterialType materialType)
@@ -56,34 +52,34 @@ namespace Graphics
             }
             else
             {
-                m_Textures[materialType] = texture;
+                m_textures[materialType] = texture;
             }
         }
 
         void Material::Bind() const
         {
             glActiveTexture(GL_TEXTURE0);
-            m_Textures.at(Albedo) ? m_Textures.at(Albedo)->Bind() : glBindTexture(GL_TEXTURE_2D, 0);
+            m_textures.at(Albedo) ? m_textures.at(Albedo)->Bind() : glBindTexture(GL_TEXTURE_2D, 0);
             glActiveTexture(GL_TEXTURE1);
-            m_Textures.at(Normal) ? m_Textures.at(Normal)->Bind() : glBindTexture(GL_TEXTURE_2D, 0);
+            m_textures.at(Normal) ? m_textures.at(Normal)->Bind() : glBindTexture(GL_TEXTURE_2D, 0);
             glActiveTexture(GL_TEXTURE2);
-            m_Textures.at(Roughness) ? m_Textures.at(Roughness)->Bind() : glBindTexture(GL_TEXTURE_2D, 0);
+            m_textures.at(Roughness) ? m_textures.at(Roughness)->Bind() : glBindTexture(GL_TEXTURE_2D, 0);
             glActiveTexture(GL_TEXTURE3);
-            m_Textures.at(Metallic)? m_Textures.at(Metallic)->Bind() : glBindTexture(GL_TEXTURE_2D, 0);
+            m_textures.at(Metallic)? m_textures.at(Metallic)->Bind() : glBindTexture(GL_TEXTURE_2D, 0);
             glActiveTexture(GL_TEXTURE4);
-            m_Textures.at(AO) ? m_Textures.at(AO)->Bind() : glBindTexture(GL_TEXTURE_2D, 0);
+            m_textures.at(AO) ? m_textures.at(AO)->Bind() : glBindTexture(GL_TEXTURE_2D, 0);
             glActiveTexture(GL_TEXTURE5);
             glBindTexture(GL_TEXTURE_2D, 0);
         }
 
         const std::map<MaterialType, std::string>& Material::GetTextureNames() const
         {
-            return m_TextureNames;
+            return m_textureNames;
         }
 
         const std::string& Material::GetName() const
         {
-            return m_Name;
+            return m_name;
         }
 
         std::vector<std::string> Material::GetFileMaterialNames(std::istream& is)

@@ -4,14 +4,17 @@
 
 #include <string>
 #include <iostream>
+#include "../Interface/NonCopyable.h"
 
 namespace Core
 {
     namespace Logging
     {
-        class CAERULUS_CORE Log
+        class CAERULUS_CORE Log : public Interface::NonCopyable
         {
         public:
+            Log() = delete;
+            virtual ~Log() = delete;
 
             static void LogInDebug(const char* debug)
             {

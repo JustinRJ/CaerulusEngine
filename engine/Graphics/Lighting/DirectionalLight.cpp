@@ -14,12 +14,12 @@ namespace Graphics
 
         const vec3& DirectionalLight::GetDirection() const
         {
-            return m_Direction;
+            return m_direction;
         }
 
         void DirectionalLight::SetDirection(const vec3& direction)
         {
-            m_Direction = direction;
+            m_direction = direction;
         }
     }
 }

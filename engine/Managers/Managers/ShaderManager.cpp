@@ -4,7 +4,7 @@
 namespace Managers
 {
     ShaderManager::ShaderManager(ShaderSrcManager& shaderStageManager) :
-        m_ShaderStageManager(shaderStageManager)
+        m_shaderStageManager(shaderStageManager)
     {}
 
     bool ShaderManager::Load(const std::string& name, const std::string& vertexPath, const std::string& fragmentPath)
@@ -17,12 +17,12 @@ namespace Managers
         }
 
         Log::LogMessage("Loading shader with name " + name + ":");
-        m_ShaderStageManager.Load(vertexPath, Vertex);
-        m_ShaderStageManager.Load(fragmentPath, Fragment);
+        m_shaderStageManager.Load(vertexPath, Vertex);
+        m_shaderStageManager.Load(fragmentPath, Fragment);
 
         auto s = std::make_shared<Shader>(
-            *m_ShaderStageManager.Get(vertexPath),
-            *m_ShaderStageManager.Get(fragmentPath));
+            m_shaderStageManager.Get(vertexPath),
+            m_shaderStageManager.Get(fragmentPath));
 
         if (s->Link())
         {

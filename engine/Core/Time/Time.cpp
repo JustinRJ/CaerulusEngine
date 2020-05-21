@@ -31,7 +31,7 @@ namespace Core
         }
 
         Time::Time(bool update) :
-            m_Time(0)
+            m_time(0)
         {
             if (update)
             {
@@ -41,17 +41,17 @@ namespace Core
 
         void Time::Update()
         {
-            time(&m_Time);
+            time(&m_time);
         }
 
         time_t Time::GetTime() const
         {
-            return m_Time;
+            return m_time;
         }
 
         void Time::Increment(time_t time)
         {
-            m_Time += time;
+            m_time += time;
         }
     }
 }

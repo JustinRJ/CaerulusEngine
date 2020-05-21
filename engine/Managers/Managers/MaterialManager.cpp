@@ -6,7 +6,7 @@
 namespace Managers
 {
     MaterialManager::MaterialManager(TextureManager& textureManager) :
-        m_TextureManager(textureManager)
+        m_textureManager(textureManager)
     {
     }
 
@@ -62,8 +62,8 @@ namespace Managers
                         std::string textureName(newTextureIt.second);
                         textureName.erase(textureName.rfind("."));
 
-                        m_TextureManager.Load(textureName, std::string(generalPath + "/" + newTextureIt.second));
-                        newMaterial->SetTexture(m_TextureManager.Get(textureName), newTextureIt.first);
+                        m_textureManager.Load(textureName, std::string(generalPath + "/" + newTextureIt.second));
+                        newMaterial->SetTexture(m_textureManager.Get(textureName), newTextureIt.first);
                     }
                 }
                 Insert(newMaterial->GetName(), newMaterial);

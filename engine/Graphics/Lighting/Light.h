@@ -3,6 +3,7 @@
 #include "../Pipeline/PipelineUniform.h"
 #include "../PipeLine/Shader.h"
 #include "../Resource/Camera.h"
+#include "../../Core/Interface/NonCopyable.h"
 
 namespace Graphics
 {
@@ -12,7 +13,7 @@ namespace Graphics
         using namespace Resource;
         using namespace Core::Math;
 
-        class Light
+        class Light : public Core::Interface::NonCopyable
         {
         public:
 
@@ -26,9 +27,9 @@ namespace Graphics
             std::shared_ptr<Camera> GetCamera() const;
 
         protected:
-            vec4 m_Colour = vec4(1.0f, 1.0f, 1.0f, 1.0f);
-            std::shared_ptr<Shader> m_Shader;
-            std::shared_ptr<Camera> m_Camera;
+            vec4 m_colour = vec4(1.0f, 1.0f, 1.0f, 1.0f);
+            std::shared_ptr<Shader> m_shader;
+            std::shared_ptr<Camera> m_camera;
         };
     }
 }

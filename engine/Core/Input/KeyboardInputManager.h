@@ -1,9 +1,9 @@
 #pragma once
 
 #include "InputDefines.h"
-#include <functional>
 #include <map>
 #include <string>
+#include <functional>
 #include "../Interface/ITickable.h"
 
 namespace Core
@@ -29,11 +29,11 @@ namespace Core
                 glfwSetWindowUserPointer(window->GetGLFWWindow(), this);
             };
 
-            ~KeyboardInputManager() = default;
+            virtual ~KeyboardInputManager() = default;
 
             void Reset() override
             {
-                m_KeyBindingMap.clear();
+                m_keyBindingMap.clear();
             }
 
             void PreUpdate(float deltaTime) override
@@ -53,7 +53,7 @@ namespace Core
                 newBinding.Callback = callback;
                 newBinding.Name = name;
 
-                m_KeyBindingMap.insert(std::make_pair(key, newBinding));
+                m_keyBindingMap.insert(std::make_pair(key, newBinding));
 
                 glfwSetKeyCallback(window->GetGLFWWindow(), [](GLFWwindow* windowI, int keyI, int scancodeI, int actionI, int modeI)
                 {
@@ -71,7 +71,7 @@ namespace Core
             bool Invoke(const std::string& name, Modifier mod = Modifier::None)
             {
                 bool invoked = false;
-                for (auto& bindingMap : m_KeyBindingMap)
+                for (auto& bindingMap : m_keyBindingMap)
                 {
                     if (name.compare(bindingMap.second.Name) == 0)
                     { 
@@ -86,12 +86,12 @@ namespace Core
 
             std::map<int, Action>& GetKeyDataMap()
             {
-                return m_KeyDataMap;
+                return m_keyDataMap;
             }
 
             std::multimap<int, KeyBinding>& GetKeyBindingMap()
             {
-                return m_KeyBindingMap;
+                return m_keyBindingMap;
             }
 
             void SetModifier(Modifier mod)
@@ -101,7 +101,7 @@ namespace Core
 
             void UpdateActionState()
             {
-                for (auto& keyDataPair : m_KeyDataMap)
+                for (auto& keyDataPair : m_keyDataMap)
                 {
                     if (keyDataPair.second == Action::Press)
                     {
@@ -116,12 +116,12 @@ namespace Core
 
             void InvokeCallbacks()
             {
-                for (auto& bindingPair : m_KeyBindingMap)
+                for (auto& bindingPair : m_keyBindingMap)
                 {
                     int key = bindingPair.first;
-                    if (m_KeyDataMap.find(key) != m_KeyDataMap.end())
+                    if (m_keyDataMap.find(key) != m_keyDataMap.end())
                     {
-                        Action action = m_KeyDataMap.at(key);
+                        Action action = m_keyDataMap.at(key);
                         Action targetAction = bindingPair.second.TargetAction;
 
                         if (action == targetAction && action != Action::Unknown)
@@ -133,8 +133,8 @@ namespace Core
             }
 
             Modifier m_currentModifier;
-            std::map<int, Action> m_KeyDataMap;
-            std::multimap<int, KeyBinding> m_KeyBindingMap;
+            std::map<int, Action> m_keyDataMap;
+            std::multimap<int, KeyBinding> m_keyBindingMap;
         };
     }
 }

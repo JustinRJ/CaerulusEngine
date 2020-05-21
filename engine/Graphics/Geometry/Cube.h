@@ -9,7 +9,7 @@ namespace Graphics
         class CAERULUS_GRAPHICS Cube : public Geometry
         {
         public:
-            static const GLfloat s_CubeVertices[];
+            static const GLfloat s_cubeVertices[];
 
             Cube();
             Cube(const mat4& transform);

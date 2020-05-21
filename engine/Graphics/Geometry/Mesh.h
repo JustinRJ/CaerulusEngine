@@ -25,7 +25,7 @@ namespace Graphics
         class CAERULUS_GRAPHICS Mesh : public Geometry
         {
         public:
-            static const GLfloat s_CubeVertices[];
+            static const GLfloat s_cubeVertices[];
 
             Mesh(std::vector<Vertex>& vertices, std::vector<GLuint>& indices, const std::string& materialName);
             virtual ~Mesh() = default;
@@ -36,9 +36,9 @@ namespace Graphics
         private:
             void SetVertices() override;
 
-            std::vector<Vertex>& m_Vertices;
-            std::vector<GLuint>& m_Indices;
-            std::string m_MaterialName;
+            std::vector<Vertex>& m_vertices;
+            std::vector<GLuint>& m_indices;
+            std::string m_materialName;
 
             GLuint m_EBO;
         };

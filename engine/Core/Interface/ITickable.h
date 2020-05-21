@@ -1,12 +1,12 @@
 #pragma once
 
-#define CAERULUS_CORE __declspec(dllexport)
+#include "../Interface/NonCopyable.h"
 
 namespace Core
 {
     namespace Interface
     {
-        class CAERULUS_CORE ITickable
+        class CAERULUS_CORE ITickable : public Interface::NonCopyable
         {
         public:
 

@@ -2,16 +2,16 @@
 
 #include "PipelineUniform.h"
 #include "ShaderSrc.h"
-#include "../../Core/Math/MathHelper.h"
+#include "../../Core/Math/Math.h"
 
 namespace Graphics
 {
     namespace PipeLine
     {
-        class CAERULUS_GRAPHICS Shader : public PipelineUniform<Shader>
+        class CAERULUS_GRAPHICS Shader : public PipelineUniform
         {
         public:
-            Shader(const ShaderSrc& vertex, const ShaderSrc& fragment);
+            Shader(std::shared_ptr<ShaderSrc> vertex, std::shared_ptr<ShaderSrc> fragment);
             virtual ~Shader() = default;
 
             bool Link();
@@ -19,9 +19,9 @@ namespace Graphics
             GLuint GetHandle() const;
 
         private:
-            bool m_IsLinked;
-            ShaderSrc m_Vertex;
-            ShaderSrc m_Fragment;
+            bool m_isLinked;
+            std::shared_ptr<ShaderSrc> m_vertex;
+            std::shared_ptr<ShaderSrc> m_fragment;
         };
     }
 }

@@ -6,7 +6,7 @@ namespace Graphics
 {
     namespace Light
     {
-        class PointLight : public Light, public PipelineUniform<PointLight>
+        class PointLight : public Light, public PipelineUniform
         {
         public:
             PointLight(std::shared_ptr<Shader> shader, std::shared_ptr<Camera> camera);
@@ -19,8 +19,8 @@ namespace Graphics
             void SetRadius(float radius);
 
         protected:
-            vec3 m_Position;
-            float m_Radius;
+            vec3 m_position;
+            float m_radius;
         };
     }
 }

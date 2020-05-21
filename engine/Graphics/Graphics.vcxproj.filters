@@ -52,9 +52,6 @@
     <ClCompile Include="Pipeline\ShaderSrc.cpp">
       <Filter>Pipeline</Filter>
     </ClCompile>
-    <ClCompile Include="Render\PhysicallyBasedRendering.cpp">
-      <Filter>Render</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -112,9 +109,6 @@
     </ClInclude>
     <ClInclude Include="Pipeline\ShaderSrc.h">
       <Filter>Pipeline</Filter>
-    </ClInclude>
-    <ClInclude Include="Render\PhysicallyBasedRendering.h">
-      <Filter>Render</Filter>
     </ClInclude>
     <ClInclude Include="Render\IRenderer.h">
       <Filter>Render</Filter>

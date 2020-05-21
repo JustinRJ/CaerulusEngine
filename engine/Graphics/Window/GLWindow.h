@@ -18,10 +18,10 @@ namespace Graphics
             GLWindow(const std::string& title, int x, int y, int bits, bool fullscreen = false);
             virtual ~GLWindow() = default;
 
-            virtual void Apply() override;
-            virtual void Focus() override;
-            virtual void SwapBuffer() const override;
-            virtual void* GetHandle() const override;
+            void Apply() override;
+            void Focus() override;
+            void SwapBuffer() const override;
+            void* GetHandle() const override;
 
             GLFWwindow* GetGLFWWindow() const;
 
@@ -34,9 +34,9 @@ namespace Graphics
             void CenterCursor();
         private:
 
-            GLFWwindow* m_Window;
-            std::shared_ptr<Quad> m_Quad;
-            bool m_LockedCursor;
+            GLFWwindow* m_window;
+            std::shared_ptr<Quad> m_quad;
+            bool m_lockedCursor;
         };
     }
 }

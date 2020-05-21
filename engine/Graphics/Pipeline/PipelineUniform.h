@@ -4,46 +4,25 @@
 
 #include <glew.h>
 #include <string>
-#include "../../Core/Math/MathHelper.h"
+#include <functional>
+#include "../../Core/Math/Math.h"
+#include "../../Core/Interface/NonCopyable.h"
 
-using namespace Core::Math;
 namespace Graphics
 {
     namespace PipeLine
     {
-        template <class T>
-        class CAERULUS_GRAPHICS PipelineUniform
+        using namespace Core::Math;
+
+        class CAERULUS_GRAPHICS PipelineUniform : public Core::Interface::NonCopyable
         {
         public:
-            virtual void SetUniforms()
-            {
-                if (auto t = dynamic_cast<T*>(this))
-                {
-                    m_SetUniforms(*t);
-                }
-            }
-
-            virtual void UpdateUniforms()
-            {
-                if (auto t = dynamic_cast<T*>(this))
-                {
-                    m_UpdateUniforms(*t);
-                }
-            }
-
-            virtual void SetUniformsCallback(std::function<void(T&)> setUniforms)
-            {
-                m_SetUniforms = setUniforms;
-            }
-
-            virtual void UpdateUniformsCallback(std::function<void(T&)> updateUniforms)
-            {
-                m_UpdateUniforms = updateUniforms;
-            }
+            PipelineUniform() = default;
+            virtual ~PipelineUniform() = default;
 
             virtual void Bind()
             {
-                glUseProgram(m_Handle);
+                glUseProgram(m_handle);
             }
 
             virtual void Unbind()
@@ -54,49 +33,47 @@ namespace Graphics
             void Set1i(const std::string& name, GLint value)
             {
                 Bind();
-                glUniform1i(glGetUniformLocation(m_Handle, name.c_str()), value);
+                glUniform1i(glGetUniformLocation(m_handle, name.c_str()), value);
             }
 
             void Set1f(const std::string& name, GLfloat value)
             {
                 Bind();
-                glUniform1f(glGetUniformLocation(m_Handle, name.c_str()), value);
+                glUniform1f(glGetUniformLocation(m_handle, name.c_str()), value);
             }
 
             void Set2f(const std::string& name, fvec2 value)
             {
                 Bind();
-                glUniform2fv(glGetUniformLocation(m_Handle, name.c_str()), 1, value_ptr(value));
+                glUniform2fv(glGetUniformLocation(m_handle, name.c_str()), 1, value_ptr(value));
             }
 
             void Set3f(const std::string& name, fvec3 value)
             {
                 Bind();
-                glUniform3fv(glGetUniformLocation(m_Handle, name.c_str()), 1, value_ptr(value));
+                glUniform3fv(glGetUniformLocation(m_handle, name.c_str()), 1, value_ptr(value));
             }
 
-            void Set4f(const std::string & name, fvec4 value)
+            void Set4f(const std::string& name, fvec4 value)
             {
                 Bind();
-                glUniform4fv(glGetUniformLocation(m_Handle, name.c_str()), 1, value_ptr(value));
+                glUniform4fv(glGetUniformLocation(m_handle, name.c_str()), 1, value_ptr(value));
             }
 
-            void SetMat3fv(const std::string & name, mat3 value, GLboolean transpose = GL_FALSE)
+            void SetMat3fv(const std::string& name, mat3 value, GLboolean transpose = GL_FALSE)
             {
                 Bind();
-                glUniformMatrix3fv(glGetUniformLocation(m_Handle, name.c_str()), 1, transpose, value_ptr(value));
+                glUniformMatrix3fv(glGetUniformLocation(m_handle, name.c_str()), 1, transpose, value_ptr(value));
             }
 
-            void SetMat4fv(const std::string & name, mat4 value, GLboolean transpose = GL_FALSE)
+            void SetMat4fv(const std::string& name, mat4 value, GLboolean transpose = GL_FALSE)
             {
                 Bind();
-                glUniformMatrix4fv(glGetUniformLocation(m_Handle, name.c_str()), 1, transpose, value_ptr(value));
+                glUniformMatrix4fv(glGetUniformLocation(m_handle, name.c_str()), 1, transpose, value_ptr(value));
             }
 
         protected:
-            GLuint m_Handle;
-            std::function<void(T&)> m_SetUniforms = {};
-            std::function<void(T&)> m_UpdateUniforms = {};
+            GLuint m_handle;
         };
     }
 }

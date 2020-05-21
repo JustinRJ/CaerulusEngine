@@ -17,6 +17,6 @@ namespace Managers
         bool Load(const std::string& name, const std::string& vertexPath, const std::string& fragmentPath);
 
     private:
-        ShaderSrcManager& m_ShaderStageManager;
+        ShaderSrcManager& m_shaderStageManager;
     };
 }

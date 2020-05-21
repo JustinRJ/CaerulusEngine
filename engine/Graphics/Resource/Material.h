@@ -5,6 +5,7 @@
 #include "Texture.h"
 #include <vector>
 #include <map>
+#include "../../Core/Interface/NonCopyable.h"
 
 namespace Graphics
 {
@@ -20,12 +21,12 @@ namespace Graphics
             Size = 5
         };
 
-        class CAERULUS_GRAPHICS Material
+        class CAERULUS_GRAPHICS Material : public Core::Interface::NonCopyable
         {
 
         public:
             Material(const std::string& name, const std::string& path = "");
-            ~Material();
+            virtual ~Material() = default;
             void Bind() const;
 
             std::shared_ptr<Texture> GetTexture(MaterialType materialType) const;
@@ -39,10 +40,10 @@ namespace Graphics
             const std::string& GetName() const;
 
         private:
-            std::string m_Name;
-            std::string m_Path;
-            std::map<MaterialType, std::string> m_TextureNames;
-            std::vector<std::shared_ptr<Texture>> m_Textures;
+            std::string m_name;
+            std::string m_path;
+            std::map<MaterialType, std::string> m_textureNames;
+            std::vector<std::shared_ptr<Texture>> m_textures;
         };
     }
 }

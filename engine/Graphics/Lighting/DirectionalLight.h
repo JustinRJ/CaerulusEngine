@@ -6,7 +6,7 @@ namespace Graphics
 {
     namespace Light
     {
-        class DirectionalLight : public Light, public PipelineUniform<DirectionalLight>
+        class DirectionalLight : public Light, public PipelineUniform
         {
         public:
             DirectionalLight(std::shared_ptr<Shader> shader, std::shared_ptr<Camera> camera);
@@ -16,7 +16,7 @@ namespace Graphics
             void SetDirection(const vec3& direction);
 
         protected:
-            vec3 m_Direction;
+            vec3 m_direction;
         };
     }
 }

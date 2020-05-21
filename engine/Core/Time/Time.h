@@ -21,12 +21,12 @@ namespace Core
             Time(bool update = true);
             virtual ~Time() = default;
 
-            virtual void Update();
-            virtual void Increment(time_t time);
-            virtual time_t GetTime() const;
+            virtual void Update() final;
+            virtual void Increment(time_t time) final;
+            virtual time_t GetTime() const final;
 
         private:
-            time_t m_Time;
+            time_t m_time;
         };
     }
 }

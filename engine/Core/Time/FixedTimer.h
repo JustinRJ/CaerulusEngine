@@ -12,14 +12,14 @@ namespace Core
         {
         public:
 
-            FixedTimer();
+            FixedTimer() = default;
             virtual ~FixedTimer() = default;
 
             float Fixed(float fixed);
 
         private:
 
-            float m_AccumulatedTime;
+            float m_accumulatedTime = 0.0f;
         };
     }
 }

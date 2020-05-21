@@ -2,11 +2,13 @@
 
 #define CAERULUS_CORE __declspec(dllexport)
 
+#include "../Interface/NonCopyable.h"
+
 namespace Core
 {
-    namespace Interface
+    namespace Node
     {
-        class CAERULUS_CORE INode
+        class CAERULUS_CORE INode : Interface::NonCopyable
         {
         public:
 

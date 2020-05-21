@@ -12,21 +12,19 @@ namespace Graphics
     {
         Model::Model(
             const std::string& path) :
-            m_IsLoaded(false),
-            m_Path(path),
-            m_Meshes(*new std::vector<Mesh>()),
-            m_Materials(std::vector<std::shared_ptr<Material>>())
+            m_isLoaded(false),
+            m_path(path)
         {
             tinyobj::attrib_t attrib;
             std::vector<tinyobj::shape_t> shapes;
             std::vector<tinyobj::material_t> materials;
             std::string error;
 
-            std::string generalPath = m_Path;
-            generalPath.erase(m_Path.find_last_of('/'));
+            std::string generalPath = m_path;
+            generalPath.erase(m_path.find_last_of('/'));
             generalPath.append("/");
 
-            if (!tinyobj::LoadObj(&attrib, &shapes, &materials, &error, m_Path.c_str(), generalPath.c_str()))
+            if (!tinyobj::LoadObj(&attrib, &shapes, &materials, &error, m_path.c_str(), generalPath.c_str()))
             {
                 throw std::runtime_error(error);
             }
@@ -50,7 +48,7 @@ namespace Graphics
 
                     if (materialName != prevMaterialName && prevMaterialName != "")
                     {
-                        m_Meshes.push_back(Mesh(vertices, indices, prevMaterialName));
+                        m_meshes.push_back(std::make_shared<Mesh>(vertices, indices, prevMaterialName));
                         vertices.clear();
                         indices.clear();
                     }
@@ -87,27 +85,23 @@ namespace Graphics
 
                     if (f == shape.mesh.num_face_vertices.size() - 1)
                     {
-                        m_Meshes.push_back(Mesh(vertices, indices, materialName));
+                        m_meshes.push_back(std::make_shared<Mesh>(vertices, indices, materialName));
                     }
                     prevMaterialName = materialName;
                 }
             }
-            m_IsLoaded = true;
-        }
-
-        Model::~Model()
-        {
+            m_isLoaded = true;
         }
 
         void Model::Draw(bool wireframe, std::shared_ptr<Material> defaultMaterial) const
         {
-            for (GLuint i = 0; i < m_Meshes.size(); ++i)
+            for (GLuint i = 0; i < m_meshes.size(); ++i)
             {
-                if (i < m_Materials.size())
+                if (i < m_materials.size())
                 {
-                    if (m_Materials.at(i))
+                    if (m_materials.at(i))
                     {
-                        m_Materials.at(i)->Bind();
+                        m_materials.at(i)->Bind();
                         DrawMesh(wireframe, i);
                     }
                     else if (defaultMaterial)
@@ -121,27 +115,27 @@ namespace Graphics
 
         void Model::DrawMesh(bool wireframe, unsigned int mesh) const
         {
-            m_Meshes.at(mesh).Draw(wireframe);
+            m_meshes.at(mesh)->Draw(wireframe);
         }
 
-        const std::vector<Mesh>& Model::GetMeshes() const
+        const std::vector<std::shared_ptr<Mesh>>& Model::GetMeshes() const
         {
-            return m_Meshes;
+            return m_meshes;
         }
 
         bool Model::IsLoaded() const
         {
-            return m_IsLoaded;
+            return m_isLoaded;
         }
 
         const std::vector<std::shared_ptr<Material>>& Model::GetMaterials() const
         {
-            return m_Materials;
+            return m_materials;
         }
 
         void Model::SetMaterials(std::vector<std::shared_ptr<Material>> materials)
         {
-            m_Materials = materials;
+            m_materials = materials;
         }
     }
 }

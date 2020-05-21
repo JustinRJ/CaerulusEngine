@@ -18,6 +18,6 @@ namespace Managers
         bool Load(const std::string& path);
 
     private:
-        TextureManager& m_TextureManager;
+        TextureManager& m_textureManager;
     };
 }

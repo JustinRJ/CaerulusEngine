@@ -19,11 +19,11 @@ namespace Core
         }
 
         Timer::Timer(bool start) :
-            m_Running(false),
-            m_DeltaTime(0.0f),
-            m_Multiplier(0.0f),
-            m_Frequency(0),
-            m_TimeLastFrame(0),
+            m_running(false),
+            m_deltaTime(0.0f),
+            m_multiplier(0.0f),
+            m_frequency(0),
+            m_timeLastFrame(0),
             StartTime(false),
             EndTime(false)
         {
@@ -35,55 +35,55 @@ namespace Core
 
         void Timer::Start()
         {
-            if (m_Running == false)
+            if (m_running == false)
             {
-                m_Running = true;
-                m_DeltaTime = 0.0f;
-                m_Frequency = Frequency();
-                m_Multiplier = (1.0f / m_Frequency);
-                m_TimeLastFrame = NanoTime();
+                m_running = true;
+                m_deltaTime = 0.0f;
+                m_frequency = Frequency();
+                m_multiplier = (1.0f / m_frequency);
+                m_timeLastFrame = NanoTime();
                 StartTime.Update();
             }
         }
 
         float Timer::Total()
         {
-            if (m_Running)
+            if (m_running)
             {
-                m_DeltaTime = (NanoTime() - m_TimeLastFrame) * m_Multiplier;
+                m_deltaTime = (NanoTime() - m_timeLastFrame) * m_multiplier;
             }
             else
             {
                 Start();
             }
 
-            return m_DeltaTime;
+            return m_deltaTime;
         }
 
         float Timer::Delta()
         {
-            if (m_Running)
+            if (m_running)
             {
                 time_t currentTime = NanoTime();
-                time_t diffTime = currentTime - m_TimeLastFrame;
-                m_TimeLastFrame = currentTime;
+                time_t diffTime = currentTime - m_timeLastFrame;
+                m_timeLastFrame = currentTime;
 
-                m_DeltaTime = diffTime * m_Multiplier;
+                m_deltaTime = diffTime * m_multiplier;
             }
             else
             {
                 Start();
             }
 
-            return m_DeltaTime;
+            return m_deltaTime;
         }
 
         void Timer::Stop()
         {
-            if (m_Running)
+            if (m_running)
             {
                 EndTime.Update();
-                m_Running = false;
+                m_running = false;
             }
         }
 

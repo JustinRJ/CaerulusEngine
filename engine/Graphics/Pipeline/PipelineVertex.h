@@ -4,16 +4,19 @@
 
 #include <glew.h>
 #include <string>
-#include "../../Core/Math/MathHelper.h"
+#include "../../Core/Math/Math.h"
+#include "../../Core/Interface/NonCopyable.h"
 
 using namespace Core::Math;
 namespace Graphics
 {
     namespace PipeLine
     {
-        class CAERULUS_GRAPHICS PiplineVertex
+        class CAERULUS_GRAPHICS PiplineVertex : public Core::Interface::NonCopyable
         {
         public:
+            PiplineVertex() = default;
+            virtual ~PiplineVertex() = default;
 
             virtual void SetVertices()
             {

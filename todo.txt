@@ -1,25 +1,15 @@
-Math
-* Vec<T>
-* Transform
-* Line
-* Ray
-* Rect
-* Cube
-* AARect
-* AACube
-
-* Remove glm once the above is done
-* Consider where these need to be used throughout codebase (graphics shapes)
+General
+* Use pimpl pattern to avoid engine having dependencies on eternal projects
+* Add project include dir to include path, remove ../ from include paths
+* Forward declares, where can they be used?
 
 Core
 * Node
-* container<Node>
+* octree<Node>
 * Node will need a transform to be sorted by
 
 Graphics
 
-* Delete engine and shaders, keep utility that has come out of this
 * Add diagnostics early
 * Focus on true bounce lighting (ray-tracing)
-
-* Remove image library and only load model colours to start with
+* consider using gltf instead of tinyobj, standardizes asset values

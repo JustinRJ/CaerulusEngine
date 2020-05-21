@@ -6,7 +6,7 @@
 namespace Managers
 {
     ModelManager::ModelManager(MaterialManager& materialManager) :
-        m_MaterialManager(materialManager)
+        m_materialManager(materialManager)
     {
     }
 
@@ -31,11 +31,11 @@ namespace Managers
         }
 
         std::vector<std::shared_ptr<Material>> newModelMaterials;
-        if (m_MaterialManager.Load(tempMaterialPath))
+        if (m_materialManager.Load(tempMaterialPath))
         {
             for (auto& mesh : newModel->GetMeshes())
             {
-                newModelMaterials.push_back(m_MaterialManager.Get(mesh.GetMaterialName()));
+                newModelMaterials.push_back(m_materialManager.Get(mesh->GetMaterialName()));
             }
         }
         newModel->SetMaterials(newModelMaterials);

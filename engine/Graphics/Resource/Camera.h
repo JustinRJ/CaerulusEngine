@@ -2,7 +2,8 @@
 
 #define CAERULUS_GRAPHICS __declspec(dllexport)
 
-#include "../../Core/Math/MathHelper.h"
+#include "../../Core/Math/Transform.h"
+#include "../../Core/Interface/NonCopyable.h"
 
 namespace Graphics
 {
@@ -10,11 +11,12 @@ namespace Graphics
     {
         using namespace Core::Math;
 
-        class CAERULUS_GRAPHICS Camera
+        class CAERULUS_GRAPHICS Camera : public Core::Interface::NonCopyable
         {
         public:
 
             Camera();
+            virtual ~Camera() = default;
 
             const mat4& GetViewMatrix() const;
             const mat4& GetProjMatrix() const;
@@ -45,21 +47,19 @@ namespace Graphics
             void SetISO(float iso);
 
             void Translate(const vec3& translation, bool translateY = true);
-            void Rotate(const vec3& eulerDelta, const vec3& forcedUp = MathHelper::UnitUp());
-
-            void GetProjViewModel(mat4& out) const;
+            void Rotate(const vec3& eulerDelta, const vec3& forcedUp = UnitUp());
 
         private:
-            float m_DegFOV;
-            float m_Aspect;
-            float m_Near;
-            float m_Far;
+            float m_degFOV;
+            float m_aspect;
+            float m_near;
+            float m_far;
 
-            float m_Aperture;
-            float m_ShutterSpeed;
+            float m_aperture;
+            float m_shutterSpeed;
             float m_ISO;
-            mat4 m_View;
-            mat4 m_Proj;
+            mat4 m_proj;
+            Transform m_view;
         };
     }
 }

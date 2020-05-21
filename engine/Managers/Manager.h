@@ -6,11 +6,12 @@
 #include <vector>
 #include <string>
 #include "../../Core/Logging/Log.h"
+#include "../../Core/Interface/NonCopyable.h"
 
 namespace Managers
 {
     template <class T>
-    class CAERULUS_MANAGERS Manager
+    class CAERULUS_MANAGERS Manager : public Core::Interface::NonCopyable
     {
     public:
 
@@ -22,7 +23,7 @@ namespace Managers
             using namespace Core::Logging;
             if (IsLoaded(key))
             {
-                return m_ManagedMap.at(key);
+                return m_managedMap.at(key);
             }
             Log::LogInDebug("Managed object " + key + " not found!");
             return nullptr;
@@ -30,13 +31,13 @@ namespace Managers
 
         bool Remove(const std::string& key)
         {
-            delete m_ManagedMap.at(key);
-            return m_ManagedMap.erase(key) > 0;
+            delete m_managedMap.at(key);
+            return m_managedMap.erase(key) > 0;
         }
 
         bool IsLoaded(const std::string& key) const
         {
-            if (m_ManagedMap.find(key) != m_ManagedMap.end())
+            if (m_managedMap.find(key) != m_managedMap.end())
             {
                 return true;
             }
@@ -49,9 +50,9 @@ namespace Managers
         {
             if (value)
             {
-                m_ManagedMap.insert(std::make_pair(key, value));
+                m_managedMap.insert(std::make_pair(key, value));
             }
         }
-        std::map<const std::string, std::shared_ptr<T>> m_ManagedMap;
+        std::map<const std::string, std::shared_ptr<T>> m_managedMap;
     };
 }

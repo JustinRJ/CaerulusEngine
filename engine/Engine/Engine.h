@@ -8,14 +8,13 @@
 #include "../Core/Time/FPSLimiter.h"
 #include "../Core/Time/FixedTimer.h"
 #include "../Core/Interface/ITickable.h"
+#include "../Core/Interface/NonCopyable.h"
 
 #include "../Managers/Managers/TextureManager.h"
 #include "../Managers/Managers/MaterialManager.h"
 #include "../Managers/Managers/ModelManager.h"
 #include "../Managers/Managers/ShaderManager.h"
 #include "../Managers/Managers/ShaderSrcManager.h"
-
-#include "../Graphics/Render/PhysicallyBasedRendering.h"
 
 using namespace Core::Time;
 using namespace Core::Input;
@@ -25,12 +24,12 @@ using namespace Graphics::Window;
 using namespace Graphics::Render;
 using namespace Managers;
 
-// TODO - turn engine into an interface to whole engine
-class Engine
+class Engine : public NonCopyable
 {
 public:
 
     Engine(int argc, char** argv);
+    virtual ~Engine() = default;
 
     void Run();
 
@@ -42,34 +41,33 @@ private:
 
     void Tick();
 
-    int m_ArgCount;
-    char** m_ArgValue;
+    int m_argCount;
+    char** m_argValue;
 
-    bool m_Running = false;
+    bool m_running = false;
 
-    float m_DeltaTime = 0.0f;
-    float m_FixedTime = 0.0f;
-    float m_FPSLimit = 1.0f / 144.0f;
-    float m_NormalSpeed = 150.0f;
-    float m_SprintSpeed = 300.0f;
-    double m_MouseSensitivity = 50.0;
+    float m_deltaTime = 0.0f;
+    float m_fixedTime = 0.0f;
+    float m_fpsLimit = 1.0f / 144.0f;
+    float m_normalSpeed = 150.0f;
+    float m_sprintSpeed = 300.0f;
+    double m_mouseSensitivity = 50.0;
 
-    std::unique_ptr<FPSLimiter> m_FPSLimiter;
-    std::unique_ptr<FixedTimer> m_FixedTimer;
+    std::unique_ptr<FPSLimiter> m_fpsLimiter;
+    std::unique_ptr<FixedTimer> m_fixedTimer;
 
-    std::shared_ptr<Camera> m_Camera;
-    std::shared_ptr<GLWindow> m_Window;
-    std::shared_ptr<GraphicsEngine> m_GraphicsEngine;
-    std::shared_ptr<KeyboardInputManager> m_KeyboardInputManager;
-    std::shared_ptr<MouseInputManager> m_MouseInputManager;
+    std::shared_ptr<Camera> m_camera;
+    std::shared_ptr<GLWindow> m_window;
 
-    std::vector<std::shared_ptr<ITickable>> m_Tickable;
+    std::shared_ptr<GraphicsEngine> m_graphicsEngine;
+    std::shared_ptr<KeyboardInputManager> m_keyboardInputManager;
+    std::shared_ptr<MouseInputManager> m_mouseInputManager;
 
-    TextureManager m_TextureManager;
-    MaterialManager m_MaterialManager;
-    ModelManager m_ModelManager;
-    ShaderSrcManager m_ShaderSrcManager;
-    ShaderManager m_ShaderManager;
+    std::vector<std::shared_ptr<ITickable>> m_tickable;
 
-    std::shared_ptr<PhysicallyBasedRendering> m_RendererPBR;
+    TextureManager m_textureManager;
+    MaterialManager m_materialManager;
+    ModelManager m_modelManager;
+    ShaderSrcManager m_shaderSrcManager;
+    ShaderManager m_shaderManager;
 };

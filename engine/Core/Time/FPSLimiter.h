@@ -12,14 +12,14 @@ namespace Core
         {
         public:
 
-            FPSLimiter();
+            FPSLimiter() = default;
             virtual ~FPSLimiter() = default;
 
             float Delta(float frameLimit);
 
         private:
 
-            float m_FrameTime;
+            float m_frameTime = 0.0f;
         };
     }
 }

@@ -73,7 +73,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
     <OutDir>$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(Platform)\</OutDir>
-    <IntDir>$(SolutionDir)$(MSBuildProjectName)\temp\$(Configuration)\$(Platform)\</IntDir>
+    <IntDir>$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(Platform)\temp\</IntDir>
     <CustomBuildAfterTargets>
     </CustomBuildAfterTargets>
     <TargetName>Caerulus_$(ProjectName)</TargetName>
@@ -81,7 +81,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
     <OutDir>$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(Platform)\</OutDir>
-    <IntDir>$(SolutionDir)$(MSBuildProjectName)\temp\$(Configuration)\$(Platform)\</IntDir>
+    <IntDir>$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(Platform)\temp\</IntDir>
     <CustomBuildAfterTargets>
     </CustomBuildAfterTargets>
     <TargetName>Caerulus_$(ProjectName)</TargetName>
@@ -89,7 +89,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(Platform)\</OutDir>
-    <IntDir>$(SolutionDir)$(MSBuildProjectName)\temp\$(Configuration)\$(Platform)\</IntDir>
+    <IntDir>$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(Platform)\temp\</IntDir>
     <CustomBuildAfterTargets>
     </CustomBuildAfterTargets>
     <TargetName>Caerulus_$(ProjectName)</TargetName>
@@ -97,7 +97,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(Platform)\</OutDir>
-    <IntDir>$(SolutionDir)$(MSBuildProjectName)\temp\$(Configuration)\$(Platform)\</IntDir>
+    <IntDir>$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(Platform)\temp\</IntDir>
     <CustomBuildAfterTargets>
     </CustomBuildAfterTargets>
     <TargetName>Caerulus_$(ProjectName)</TargetName>

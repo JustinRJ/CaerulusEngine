@@ -2,11 +2,13 @@
 
 #define CAERULUS_GRAPHICS __declspec(dllexport)
 
+#include "../../Core/Interface/NonCopyable.h"
+
 namespace Graphics
 {
     namespace Render
     {
-        class CAERULUS_GRAPHICS IRenderer
+        class CAERULUS_GRAPHICS IRenderer : public Core::Interface::NonCopyable
         {
         public:
             virtual void FlushErrors() = 0;

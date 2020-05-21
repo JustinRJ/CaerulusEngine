@@ -1,8 +1,8 @@
 #pragma once
 
 #include "InputDefines.h"
-#include <functional>
 #include <string>
+#include <functional>
 #include "../Interface/ITickable.h"
 
 namespace Core
@@ -31,12 +31,12 @@ namespace Core
         public:
 
             MouseInputManager(std::shared_ptr<GLWindow> window) :
-                m_Window(window)
+                m_window(window)
             {
-                glfwSetInputMode(m_Window->GetGLFWWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+                glfwSetInputMode(m_window->GetGLFWWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
             };
 
-            ~MouseInputManager() = default;
+            virtual ~MouseInputManager() = default;
 
             void Reset() override
             {
@@ -57,27 +57,27 @@ namespace Core
                 dragBinding.Callback = callback;
                 dragBinding.Name = name;
 
-                m_DragBindingMap.push_back(dragBinding);
+                m_dragBindingMap.push_back(dragBinding);
             }
 
             DragData GetDragData() const
             {
-                return m_DragData;
+                return m_dragData;
             }
 
         private:
-            DragData m_DragData;
-            std::vector<DragBinding> m_DragBindingMap;
-            std::shared_ptr<GLWindow> m_Window;
+            DragData m_dragData;
+            std::vector<DragBinding> m_dragBindingMap;
+            std::shared_ptr<GLWindow> m_window;
 
             void UpdateMouseDrag()
             {
                 double xpos, ypos;
-                glfwGetCursorPos(m_Window->GetGLFWWindow(), &xpos, &ypos);
-                double deltaX = xpos - (m_Window->GetActiveState().Width / 2);
-                double deltaY = ypos - (m_Window->GetActiveState().Height / 2);
+                glfwGetCursorPos(m_window->GetGLFWWindow(), &xpos, &ypos);
+                double deltaX = xpos - (m_window->GetActiveState().Width / 2);
+                double deltaY = ypos - (m_window->GetActiveState().Height / 2);
 
-                for (auto& dragBindingPair : m_DragBindingMap)
+                for (auto& dragBindingPair : m_dragBindingMap)
                 {
                     dragBindingPair.Callback(DragData({ xpos, ypos, deltaX, deltaY }));
                 }

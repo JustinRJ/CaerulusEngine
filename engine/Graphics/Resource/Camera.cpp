@@ -28,20 +28,20 @@ namespace Graphics
         using namespace Core::Math;
 
         Camera::Camera() :
-            m_View(mat4()),
-            m_Proj(mat4())
+            m_view(mat4()),
+            m_proj(mat4())
         {
             SetFOV(CAMERA_INIT_FOV);
             SetAspect(CAMERA_INIT_ASPECT);
             SetNear(CAMERA_INIT_NEAR);
             SetFar(CAMERA_INIT_FAR);
 
-            m_View = lookAt(
+            m_view = lookAt(
                 CAMERA_INIT_POSITION,
                 CAMERA_INIT_FORWARD + CAMERA_INIT_POSITION,
                 CAMERA_INIT_UP);
 
-            m_Proj = perspective(
+            m_proj = perspective(
                 radians(CAMERA_INIT_FOV),
                 CAMERA_INIT_ASPECT,
                 CAMERA_INIT_NEAR,
@@ -54,146 +54,140 @@ namespace Graphics
 
         void Camera::Translate(const vec3& translation, bool translateY)
         {
-            vec3 tempPos(m_View[X][W], m_View[Y][W], m_View[Z][W]);
-            tempPos += normalize(vec3(m_View[X][X], translateY ? m_View[X][Z] : 0.0f, m_View[Z][X])) * translation.x;
+            mat4& view = m_view.GetMatrix();
+            vec3 tempPos(view[X][W], view[Y][W], view[Z][W]);
+            tempPos += normalize(vec3(view[X][X], translateY ? view[X][Z] : 0.0f, view[Z][X])) * translation.x;
             if (translateY)
             {
-                tempPos += normalize(vec3(m_View[X][Y], m_View[Y][Y], m_View[Z][Y])) * translation.y;
+                tempPos += normalize(vec3(view[X][Y], view[Y][Y], view[Z][Y])) * translation.y;
             }
-            tempPos += normalize(vec3(m_View[X][Z], translateY ? m_View[Y][Z] : 0.0f, m_View[Z][Z])) * translation.z;
-            m_View *= translate(mat4(1.0f), -tempPos);
+            tempPos += normalize(vec3(view[X][Z], translateY ? view[Y][Z] : 0.0f, view[Z][Z])) * translation.z;
+            view *= translate(mat4(1.0f), -tempPos);
         }
 
         void Camera::Rotate(const vec3& eulerDelta, const vec3& forcedUp)
         {
-            mat4 model = inverse(m_View);
-            quat orig_rot = normalize(quat_cast(model));
+            Transform model = inverse(m_view.GetMatrix());
+            quat orig_rot = normalize(quat_cast(model.GetMatrix()));
 
             bool force = l1Norm(forcedUp) > 0.0f;
 
-            quat yaw = angleAxis(radians(-eulerDelta.x), force ? forcedUp : MathHelper::UpVector(orig_rot));
-            quat pitch = angleAxis(radians(-eulerDelta.y), MathHelper::RightVector(orig_rot));
-            quat roll = angleAxis(radians(eulerDelta.z), MathHelper::ForwardVector(orig_rot));
+            quat yaw = angleAxis(radians(-eulerDelta.x), force ? forcedUp : UpVector(orig_rot));
+            quat pitch = angleAxis(radians(-eulerDelta.y), RightVector(orig_rot));
+            quat roll = angleAxis(radians(eulerDelta.z), ForwardVector(orig_rot));
             quat rotation = yaw * pitch * roll * orig_rot;
 
             if (force)
             {
-                float dotVal = dot(MathHelper::UpVector(normalize(rotation)), forcedUp) - CAMERA_CORRECTION;
+                float dotVal = dot(UpVector(normalize(rotation)), forcedUp) - CAMERA_CORRECTION;
                 if (dotVal < 0.0f)
                 {
                     float adjustment = (acosf(dotVal) - half_pi<float>())
-                        * (dot(forcedUp, MathHelper::ForwardVector(rotation)) < 0.0f ? 1.0f : -1.0f);
+                        * (dot(forcedUp, ForwardVector(rotation)) < 0.0f ? 1.0f : -1.0f);
 
-                    rotation = angleAxis(adjustment, MathHelper::RightVector(rotation)) * rotation;
+                    rotation = angleAxis(adjustment, RightVector(rotation)) * rotation;
                 }
             }
 
-            mat4 temp = mat4_cast(rotation);
+            Transform temp = mat4_cast(rotation);
 
-            MathHelper::SetAxis(temp, MathHelper::GetAxis(model, Index::W), Index::W);
+            temp.SetAxis(model.GetAxis(Index::W), Index::W);
 
-            m_View = inverse(temp);
-        }
-
-        void Camera::GetProjViewModel(mat4 & out) const
-        {
-            mat4 cameraTransform;
-            MathHelper::CreateTansform(cameraTransform, GetPosition(), GetForward(), vec3(1.0f));
-            out = m_Proj * m_View * cameraTransform;
+            m_view = inverse(temp.GetMatrix());
         }
 
         const mat4& Camera::GetViewMatrix() const
         {
-            return m_View;
+            return m_view.GetMatrix();
         }
 
         const mat4& Camera::GetProjMatrix() const
         {
-            return m_Proj;
+            return m_proj;
         }
 
         vec3 Camera::GetPosition() const
         {
-            return MathHelper::GetTranslation(m_View);
+            return m_view.GetTranslation();
         }
 
         vec3 Camera::GetForward() const
         {
-            return MathHelper::GetColumn(m_View, Index::Z);
+            return m_view.GetColumn(Index::Z);
         }
 
         vec3 Camera::GetUp() const
         {
-            return MathHelper::GetColumn(m_View, Index::Y);
+            return m_view.GetColumn(Index::Y);
         }
 
         float Camera::GetFOV() const
         {
-            return m_DegFOV;
+            return m_degFOV;
         }
 
         float Camera::GetAspect() const
         {
-            return m_Aspect;
+            return m_aspect;
         }
 
         float Camera::GetNear() const
         {
-            return m_Near;
+            return m_near;
         }
 
         float Camera::GetFar() const
         {
-            return m_Far;
+            return m_far;
         }
 
         void Camera::SetPosition(const vec3& position)
         {
-            MathHelper::SetTranslation(m_View, position);
+            m_view.SetTranslation(position);
         }
 
         void Camera::SetForward(const vec3& forward)
         {
-            MathHelper::SetColumn(m_View, forward, Index::Z);
+            m_view.SetColumn(forward, Index::Z);
         }
 
         void Camera::SetUp(const vec3& up)
         {
-            MathHelper::SetColumn(m_View, up, Index::Y);
+            m_view.SetColumn(up, Index::Y);
         }
 
         void Camera::SetFOV(float fov)
         {
-            m_DegFOV = fov;
-            m_Proj = perspective(m_DegFOV, m_Aspect, m_Near, m_Far);
+            m_degFOV = fov;
+            m_proj = perspective(m_degFOV, m_aspect, m_near, m_far);
         }
 
         void Camera::SetAspect(float aspect)
         {
-            m_Aspect = aspect;
-            m_Proj = perspective(m_DegFOV, m_Aspect, m_Near, m_Far);
+            m_aspect = aspect;
+            m_proj = perspective(m_degFOV, m_aspect, m_near, m_far);
         }
 
         void Camera::SetNear(float nearP)
         {
-            m_Near = nearP;
-            m_Proj = perspective(m_DegFOV, m_Aspect, m_Near, m_Far);
+            m_near = nearP;
+            m_proj = perspective(m_degFOV, m_aspect, m_near, m_far);
         }
 
         void Camera::SetFar(float farP)
         {
-            m_Far = farP;
-            m_Proj = perspective(m_DegFOV, m_Aspect, m_Near, m_Far);
+            m_far = farP;
+            m_proj = perspective(m_degFOV, m_aspect, m_near, m_far);
         }
 
         float Camera::GetAperture() const
         {
-            return m_Aperture;
+            return m_aperture;
         }
 
         float Camera::GetShutterSpeed() const
         {
-            return m_ShutterSpeed;
+            return m_shutterSpeed;
         }
 
         float Camera::GetISO() const
@@ -203,12 +197,12 @@ namespace Graphics
 
         void Camera::SetAperture(float aperture)
         {
-            m_Aperture = aperture;
+            m_aperture = aperture;
         }
 
         void Camera::SetShutterSpeed(float shutterSpeed)
         {
-            m_ShutterSpeed = shutterSpeed;
+            m_shutterSpeed = shutterSpeed;
         }
 
         void Camera::SetISO(float iso)

@@ -5,6 +5,8 @@
 #include <glew.h>
 #include <vector>
 
+#include "../../Core/Interface/NonCopyable.h"
+
 namespace Graphics
 {
     namespace PipeLine
@@ -16,11 +18,11 @@ namespace Graphics
             Geometry = GL_GEOMETRY_SHADER
         };
 
-        class CAERULUS_GRAPHICS ShaderSrc
+        class CAERULUS_GRAPHICS ShaderSrc : public Core::Interface::NonCopyable
         {
         public:
             ShaderSrc(ShaderType type, const std::string& path);
-            ~ShaderSrc();
+            virtual ~ShaderSrc();
 
             void Load();
             bool IsCompiled() const;
@@ -33,11 +35,11 @@ namespace Graphics
             void Compile(const std::string& source);
             void SetUniforms(const std::string& source);
 
-            bool m_IsCompiled;
-            GLuint m_Handle;
-            ShaderType m_Type;
-            const std::string m_Path;
-            std::vector<std::string> m_Uniforms;
+            bool m_isCompiled;
+            GLuint m_handle;
+            ShaderType m_type;
+            const std::string m_path;
+            std::vector<std::string> m_uniforms;
         };
     }
 }
