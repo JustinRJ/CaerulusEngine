@@ -19,6 +19,9 @@
     <Filter Include="Node">
       <UniqueIdentifier>{0ce5a568-d535-4192-abf7-d5cc83aafbcb}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Utility">
+      <UniqueIdentifier>{f99a3857-fbd8-4939-a644-aad5533a0dcb}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp" />
@@ -106,6 +109,21 @@
     </ClInclude>
     <ClInclude Include="Interface\NonCopyable.h">
       <Filter>Interface</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\Sphere.h">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\Circle.h">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\Camera.h">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\Frustrum.h">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="Utility\Sync.h">
+      <Filter>Utility</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

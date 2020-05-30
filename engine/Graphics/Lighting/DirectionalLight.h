@@ -10,7 +10,7 @@ namespace Graphics
         class DirectionalLight : public Light, public PipeLine::PipelineUniform
         {
         public:
-            DirectionalLight(std::shared_ptr<PipeLine::Shader> shader, std::shared_ptr<Resource::Camera> camera);
+            DirectionalLight(std::shared_ptr<PipeLine::Shader> shader, std::shared_ptr<Core::Math::Camera> camera);
             virtual ~DirectionalLight() = default;
 
             const vec3& GetDirection() const;

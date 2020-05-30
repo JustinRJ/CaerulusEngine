@@ -18,9 +18,6 @@
     <ClCompile Include="Lighting\Light.cpp">
       <Filter>Light</Filter>
     </ClCompile>
-    <ClCompile Include="Resource\Camera.cpp">
-      <Filter>Resource</Filter>
-    </ClCompile>
     <ClCompile Include="Window\GLWindow.cpp">
       <Filter>Window</Filter>
     </ClCompile>
@@ -69,9 +66,6 @@
     </ClInclude>
     <ClInclude Include="Lighting\DirectionalLight.h">
       <Filter>Light</Filter>
-    </ClInclude>
-    <ClInclude Include="Resource\Camera.h">
-      <Filter>Resource</Filter>
     </ClInclude>
     <ClInclude Include="Window\GLWindow.h">
       <Filter>Window</Filter>

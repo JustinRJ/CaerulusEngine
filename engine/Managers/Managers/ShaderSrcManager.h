@@ -9,7 +9,7 @@ namespace Managers
     class CAERULUS_MANAGERS ShaderSrcManager : public Manager<ShaderSrc>
     {
     public:
-        ShaderSrcManager();
+        ShaderSrcManager() = default;
         virtual ~ShaderSrcManager() = default;
 
         bool Load(const std::string& path, ShaderType type);

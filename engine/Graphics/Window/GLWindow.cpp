@@ -7,6 +7,14 @@
 #include "Core/Logging/Log.h"
 #include "Graphics/Geometry/Quad.h"
 
+namespace
+{
+    void CloseWindowCallback(GLFWwindow* window)
+    {
+        exit(1);
+    }
+}
+
 namespace Graphics
 {
     namespace Window
@@ -21,10 +29,11 @@ namespace Graphics
                 Log::LogError("Failed to init GLFW!");
                 exit(1);
             }
-
+            glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
             Window::Set(title, x, y, bits, fullscreen);
             Apply();
             CenterCursor();
+            glfwSetWindowCloseCallback(m_window, CloseWindowCallback);
         }
 
         void* GLWindow::GetHandle() const

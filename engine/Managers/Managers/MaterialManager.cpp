@@ -23,7 +23,7 @@ namespace Managers
         auto m = std::make_shared<Material>(name);
         for (int i = 0; i < MaterialType::Size; ++i)
         {
-            m->SetTexture(material.at(i), static_cast<MaterialType>(i));
+            m->SetTexture(material[i], static_cast<MaterialType>(i));
         }
 
         Insert(name, m);
@@ -42,13 +42,13 @@ namespace Managers
             auto materialNamesInFile = Material::GetFileMaterialNames(is);
             for (unsigned int i = 0; i < materialNamesInFile.size(); ++i)
             {
-                if (IsLoaded(materialNamesInFile.at(i)))
+                if (IsLoaded(materialNamesInFile[i]))
                 {
-                    Log::LogInDebug("Material with name " + materialNamesInFile.at(i) + " already loaded or created");
+                    Log::LogInDebug("Material with name " + materialNamesInFile[i] + " already loaded or created");
                     break;
                 }
 
-                Log::LogMessage("Loading material " + materialNamesInFile.at(i) + " with path " + path);
+                Log::LogMessage("Loading material " + materialNamesInFile[i] + " with path " + path);
                 auto newMaterial = std::make_shared<Material>("", path);
                 newMaterial->LoadMaterialTexturesNames(i, is);
 

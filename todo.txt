@@ -2,6 +2,9 @@ General
 * Use pimpl pattern to avoid engine having dependencies on eternal projects
 * Add project name to stadafx to remove false intellisense error
 
+* Create frustrum class in math, camera will use this as well as graphics engine
+* Implement thread class with async as basis
+
 Core
 * Node
 * octree<Node>
@@ -12,3 +15,7 @@ Graphics
 * Add diagnostics early
 * Focus on true bounce lighting (ray-tracing)
 * consider using gltf instead of tinyobj, standardizes asset values
+
+Managers
+
+* Add async to each Load function for managers, this will allow all resources to be loaded in real time!

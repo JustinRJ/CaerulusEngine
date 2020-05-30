@@ -12,12 +12,12 @@ namespace Core
             Transform() = default;
             ~Transform() = default;
 
-            Transform(const mat4& m)
-                : m_T(m)
+            Transform(const mat4& m) :
+                m_T(m)
             {}
 
-            Transform(const Transform& t)
-                : m_T(t.m_T)
+            Transform(const Transform& t) :
+                m_T(t.m_T)
             {}
 
             Transform operator=(const Transform& t)

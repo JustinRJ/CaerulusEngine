@@ -10,7 +10,11 @@ namespace Graphics
     {
         class Shader;
     }
-    namespace Resource
+}
+
+namespace Core
+{
+    namespace Math
     {
         class Camera;
     }
@@ -23,19 +27,19 @@ namespace Graphics
         class Light : public Core::Interface::NonCopyable
         {
         public:
-            Light(std::shared_ptr<PipeLine::Shader> shader, std::shared_ptr<Resource::Camera> camera);
+            Light(std::shared_ptr<PipeLine::Shader> shader, std::shared_ptr<Core::Math::Camera> camera);
             virtual ~Light() = default;
 
             void SetColour(const vec4& colour);
             const vec4& GetColour() const;
 
             std::shared_ptr<PipeLine::Shader> GetShader() const;
-            std::shared_ptr<Resource::Camera> GetCamera() const;
+            std::shared_ptr<Core::Math::Camera> GetCamera() const;
 
         protected:
             vec4 m_colour = vec4(1.0f, 1.0f, 1.0f, 1.0f);
             std::shared_ptr<PipeLine::Shader> m_shader;
-            std::shared_ptr<Resource::Camera> m_camera;
+            std::shared_ptr<Core::Math::Camera> m_camera;
         };
     }
 }

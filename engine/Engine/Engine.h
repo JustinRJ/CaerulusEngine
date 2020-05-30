@@ -20,6 +20,10 @@ namespace Core
     {
         class ITickable;
     }
+    namespace Math
+    {
+        class Camera;
+    }
 }
 
 namespace Graphics
@@ -29,11 +33,6 @@ namespace Graphics
     namespace Window
     {
         class GLWindow;
-    }
-
-    namespace Resource
-    {
-        class Camera;
     }
 }
 
@@ -55,9 +54,9 @@ public:
 
     void Run();
 
-    virtual void InitInput();
-    virtual void InitScene();
-    virtual void InitRenderer();
+    void InitInput();
+    void InitScene();
+    void InitRenderer();
 
 private:
 
@@ -80,7 +79,7 @@ private:
     std::shared_ptr<Core::Input::MouseInputManager> m_mouseInputManager;
     std::shared_ptr<Core::Input::KeyboardInputManager> m_keyboardInputManager;
 
-    std::shared_ptr<Graphics::Resource::Camera> m_camera;
+    std::shared_ptr<Core::Math::Camera> m_camera;
     std::shared_ptr<Graphics::Window::GLWindow> m_window;
     std::shared_ptr<Graphics::GraphicsEngine> m_graphicsEngine;
 

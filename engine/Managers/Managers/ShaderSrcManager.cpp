@@ -4,9 +4,6 @@
 
 namespace Managers
 {
-    ShaderSrcManager::ShaderSrcManager()
-    {}
-
     bool ShaderSrcManager::Load(const std::string& path, ShaderType type)
     {
         using namespace Core::Logging;

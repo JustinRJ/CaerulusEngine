@@ -11,13 +11,13 @@ namespace Graphics
         Geometry::Geometry() :
             m_transform(mat4())
         {
-            SetVertices();
+            Init();
         }
 
         Geometry::Geometry(const mat4& transform) :
             m_transform(mat4(transform))
         {
-            SetVertices();
+            Init();
         }
 
         void Geometry::SetTransform(const mat4& transform)

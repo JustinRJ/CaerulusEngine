@@ -18,12 +18,12 @@ namespace Graphics
             PipelineUniform() = default;
             virtual ~PipelineUniform() = default;
 
-            virtual void Bind()
+            void Bind()
             {
                 glUseProgram(m_handle);
             }
 
-            virtual void Unbind()
+            void Unbind()
             {
                 glUseProgram(0);
             }

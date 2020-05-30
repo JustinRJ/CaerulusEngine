@@ -217,7 +217,6 @@ echo DA | xcopy /E "$(SolutionDir)..\dependencies\glfw-3.2.1\bin\$(Configuration
     <ClInclude Include="Pipeline\ShaderSrc.h" />
     <ClInclude Include="GraphicsEngine.h" />
     <ClInclude Include="Render\IRenderer.h" />
-    <ClInclude Include="Resource\Camera.h" />
     <ClInclude Include="Resource\Material.h" />
     <ClInclude Include="Resource\Model.h" />
     <ClInclude Include="Resource\Texture.h" />
@@ -238,7 +237,6 @@ echo DA | xcopy /E "$(SolutionDir)..\dependencies\glfw-3.2.1\bin\$(Configuration
     <ClCompile Include="Pipeline\Shader.cpp" />
     <ClCompile Include="Pipeline\ShaderSrc.cpp" />
     <ClCompile Include="GraphicsEngine.cpp" />
-    <ClCompile Include="Resource\Camera.cpp" />
     <ClCompile Include="Resource\Material.cpp" />
     <ClCompile Include="Resource\Model.cpp" />
     <ClCompile Include="Resource\Texture.cpp" />

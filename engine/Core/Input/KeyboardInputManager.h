@@ -121,7 +121,7 @@ namespace Core
                     int key = bindingPair.first;
                     if (m_keyDataMap.find(key) != m_keyDataMap.end())
                     {
-                        Action action = m_keyDataMap.at(key);
+                        Action action = m_keyDataMap[key];
                         Action targetAction = bindingPair.second.TargetAction;
 
                         if (action == targetAction && action != Action::Unknown)

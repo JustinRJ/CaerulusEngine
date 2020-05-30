@@ -31,17 +31,17 @@ namespace Managers
 
         bool Remove(const std::string& key)
         {
-            delete m_managedMap.at(key);
-            return m_managedMap.erase(key) > 0;
+            if (IsLoaded(key))
+            {
+                delete m_managedMap[key];
+                return m_managedMap.erase(key) > 0;
+            }
+            return false;
         }
 
         bool IsLoaded(const std::string& key) const
         {
-            if (m_managedMap.find(key) != m_managedMap.end())
-            {
-                return true;
-            }
-            return false;
+            return m_managedMap.find(key) != m_managedMap.end();
         }
 
     protected:

@@ -19,11 +19,11 @@ namespace Core
             Timer(bool start = false);
             virtual ~Timer() = default;
 
-            virtual void Start() final;
-            virtual void Stop() final;
+            void Start();
+            void Stop();
 
-            virtual float Total() final;
-            virtual float Delta() final;
+            float Total();
+            float Delta();
 
             Time StartTime;
             Time EndTime;

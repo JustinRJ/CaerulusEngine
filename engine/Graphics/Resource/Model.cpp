@@ -65,7 +65,7 @@ namespace Graphics
                     int firstMeshesFaceMaterialID = shape.mesh.material_ids[f];
                     if (firstMeshesFaceMaterialID != -1)
                     {
-                        materialName = materials.at(firstMeshesFaceMaterialID).name;
+                        materialName = materials[firstMeshesFaceMaterialID].name;
                     }
 
                     if (materialName != prevMaterialName && prevMaterialName != "")
@@ -121,9 +121,9 @@ namespace Graphics
             {
                 if (i < m_materials.size())
                 {
-                    if (m_materials.at(i))
+                    if (m_materials[i])
                     {
-                        m_materials.at(i)->Bind();
+                        m_materials[i]->Bind();
                         DrawMesh(wireframe, i);
                     }
                     else if (defaultMaterial)
@@ -137,7 +137,7 @@ namespace Graphics
 
         void Model::DrawMesh(bool wireframe, unsigned int mesh) const
         {
-            m_meshes.at(mesh)->Draw(wireframe);
+            m_meshes[mesh]->Draw(wireframe);
         }
 
         const std::vector<std::shared_ptr<Mesh>>& Model::GetMeshes() const

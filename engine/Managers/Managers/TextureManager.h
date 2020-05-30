@@ -9,7 +9,7 @@ namespace Managers
     class CAERULUS_MANAGERS TextureManager : public Manager<Texture>
     {
     public:
-        TextureManager();
+        TextureManager() = default;
         virtual ~TextureManager() = default;
 
         bool Load(const std::string& name, const std::string& path, bool HDR = false);

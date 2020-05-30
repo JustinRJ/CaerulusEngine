@@ -16,20 +16,20 @@ namespace Graphics
             PiplineVertex() = default;
             virtual ~PiplineVertex() = default;
 
-            virtual void SetVertices()
+            void Init()
             {
                 glGenVertexArrays(1, &m_VAO);
                 glGenBuffers(1, &m_VBO);
                 glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
             };
 
-            virtual void Bind() const
+            void Bind() const
             {
                 glBindVertexArray(m_VAO);
                 glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
             }
 
-            virtual void Unbind() const
+            void Unbind() const
             {
                 glBindVertexArray(0);
             }
@@ -47,6 +47,9 @@ namespace Graphics
         protected:
             GLuint m_VAO = 0;
             GLuint m_VBO = 0;
+
+        private:
+            virtual void SetVertices() = 0;
         };
     }
 }

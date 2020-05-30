@@ -21,9 +21,9 @@ namespace Core
             Time(bool update = true);
             virtual ~Time() = default;
 
-            virtual void Update() final;
-            virtual void Increment(time_t time) final;
-            virtual time_t GetTime() const final;
+            void Update();
+            void Increment(time_t time);
+            time_t GetTime() const;
 
         private:
             time_t m_time;

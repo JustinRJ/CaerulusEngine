@@ -3,12 +3,12 @@
 #include "DirectionalLight.h"
 #include <string>
 #include "Graphics/PipeLine/Shader.h"
-#include "Graphics/Resource/Camera.h"
+#include "Core/Math/Camera.h"
 
 namespace
 {
+    using namespace Core::Math;
     using namespace Graphics::PipeLine;
-    using namespace Graphics::Resource;
 }
 
 namespace Graphics

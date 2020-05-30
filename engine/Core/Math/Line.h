@@ -15,7 +15,7 @@ namespace Core
             Line(vec3 start, vec3 end) :
                 m_start(start),
                 m_end(end),
-                m_direction(end - start),
+                m_direction(normalize(end - start)),
                 m_length(m_direction.length())
             {}
 
@@ -39,6 +39,11 @@ namespace Core
             const vec3& Direction() const
             {
                 return m_direction;
+            }
+
+            double Length() const
+            {
+                return m_length;
             }
 
             vec3 GetOrthogonalPoint(const vec3& point) const

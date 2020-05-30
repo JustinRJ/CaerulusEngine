@@ -3,10 +3,10 @@
 #include "Engine.h"
 #include <iostream>
 #include "Core/Logging/Log.h"
+#include "Core/Math/Camera.h"
 
 #include "Graphics/GraphicsEngine.h"
 #include "Graphics/Window/GLWindow.h"
-#include "Graphics/Resource/Camera.h"
 
 #include "Core/Input/MouseInputManager.h"
 #include "Core/Input/KeyboardInputManager.h"
@@ -14,6 +14,7 @@
 #include "Core/Time/FixedTimer.h"
 #include "Core/Interface/ITickable.h"
 #include "Core/Interface/NonCopyable.h"
+#include "Core/Math/Camera.h"
 
 #include "Managers/Managers/TextureManager.h"
 #include "Managers/Managers/MaterialManager.h"
@@ -23,11 +24,10 @@
 
 namespace
 {
+    using namespace Core::Math;
     using namespace Core::Time;
     using namespace Core::Input;
-    using namespace Core::Interface;
     using namespace Graphics;
-    using namespace Graphics::Window;
     using namespace Managers;
 }
 
@@ -40,7 +40,7 @@ Engine::Engine(int argc, char** argv) :
 
     m_camera = std::make_shared<Camera>();
     m_window = std::make_shared<GLWindow>("Caerulus", 1280, 1024, 32, false);
-    m_graphicsEngine = std::make_shared<GraphicsEngine>(m_window, m_camera);
+    m_graphicsEngine = std::make_shared<GraphicsEngine>(m_window, m_camera, m_modelManager, m_shaderManager);
 
     m_keyboardInputManager = std::make_shared<KeyboardInputManager>(m_window);
     m_mouseInputManager = std::make_shared<MouseInputManager>(m_window);
@@ -137,9 +137,6 @@ void Engine::InitInput()
 
 void Engine::InitScene()
 {
-    // Shaderball model
-    m_modelManager->Load("shaderBall", "assets/models/shaderBall.obj");
-
     // Gold textures
     m_textureManager->Load("goldAlbedo", "assets/textures/pbr/gold/gold_albedo.png");
     m_textureManager->Load("goldNormal", "assets/textures/pbr/gold/gold_normal.png");
@@ -156,9 +153,12 @@ void Engine::InitScene()
     gold[AO] = m_textureManager->Get("goldAO");
     m_materialManager->Create("gold", gold);
 
-    // set models materials
+    // Shaderball model
+    m_modelManager->Load("shaderBall", "assets/models/shaderBall.obj");
+
+    // Set material to model
     auto model1 = m_modelManager->Get("shaderBall");
-    // create a vector of size 1 containing the gold material to apply to the single mesh
+    // Create a vector of size 1 containing the gold material to apply to the single mesh
     model1->SetMaterials(std::vector<std::shared_ptr<Material>>({ m_materialManager->Get("gold") }));
 }
 

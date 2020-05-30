@@ -10,7 +10,7 @@ namespace Graphics
         class PointLight : public Light, public PipeLine::PipelineUniform
         {
         public:
-            PointLight(std::shared_ptr<PipeLine::Shader> shader, std::shared_ptr<Resource::Camera> camera);
+            PointLight(std::shared_ptr<PipeLine::Shader> shader, std::shared_ptr<Core::Math::Camera> camera);
             virtual ~PointLight() = default;
 
             const vec3& GetPosition() const;

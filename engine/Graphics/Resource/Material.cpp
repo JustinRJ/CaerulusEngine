@@ -29,19 +29,19 @@ namespace Graphics
             tinyobj::LoadMtl(&materialNames, &materials, &is);
             is.seekg(0, is.beg);
 
-            m_name = materials.at(materialIndex).name;
+            m_name = materials[materialIndex].name;
 
             // TODO - Fix mapping
-            m_textureNames[Albedo] = materials.at(materialIndex).diffuse_texname;
-            m_textureNames[Normal] = materials.at(materialIndex).bump_texname;
-            m_textureNames[Roughness] = materials.at(materialIndex).specular_highlight_texname;
-            m_textureNames[Metallic] = materials.at(materialIndex).ambient_texname;
+            m_textureNames[Albedo] = materials[materialIndex].diffuse_texname;
+            m_textureNames[Normal] = materials[materialIndex].bump_texname;
+            m_textureNames[Roughness] = materials[materialIndex].specular_highlight_texname;
+            m_textureNames[Metallic] = materials[materialIndex].ambient_texname;
             m_textureNames[AO] = "";
         }
 
         std::shared_ptr<Texture> Material::GetTexture(MaterialType materialType) const
         {
-            return m_textures.at(materialType);
+            return m_textures[materialType];
         }
 
         void Material::SetTexture(std::shared_ptr<Texture> texture, MaterialType materialType)
@@ -60,15 +60,15 @@ namespace Graphics
         void Material::Bind() const
         {
             glActiveTexture(GL_TEXTURE0);
-            m_textures.at(Albedo) ? m_textures.at(Albedo)->Bind() : glBindTexture(GL_TEXTURE_2D, 0);
+            m_textures[Albedo] ? m_textures[Albedo]->Bind() : glBindTexture(GL_TEXTURE_2D, 0);
             glActiveTexture(GL_TEXTURE1);
-            m_textures.at(Normal) ? m_textures.at(Normal)->Bind() : glBindTexture(GL_TEXTURE_2D, 0);
+            m_textures[Normal] ? m_textures[Normal]->Bind() : glBindTexture(GL_TEXTURE_2D, 0);
             glActiveTexture(GL_TEXTURE2);
-            m_textures.at(Roughness) ? m_textures.at(Roughness)->Bind() : glBindTexture(GL_TEXTURE_2D, 0);
+            m_textures[Roughness] ? m_textures[Roughness]->Bind() : glBindTexture(GL_TEXTURE_2D, 0);
             glActiveTexture(GL_TEXTURE3);
-            m_textures.at(Metallic)? m_textures.at(Metallic)->Bind() : glBindTexture(GL_TEXTURE_2D, 0);
+            m_textures[Metallic] ? m_textures[Metallic]->Bind() : glBindTexture(GL_TEXTURE_2D, 0);
             glActiveTexture(GL_TEXTURE4);
-            m_textures.at(AO) ? m_textures.at(AO)->Bind() : glBindTexture(GL_TEXTURE_2D, 0);
+            m_textures[AO] ? m_textures[AO]->Bind() : glBindTexture(GL_TEXTURE_2D, 0);
             glActiveTexture(GL_TEXTURE5);
             glBindTexture(GL_TEXTURE_2D, 0);
         }

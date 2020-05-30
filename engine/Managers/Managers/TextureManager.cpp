@@ -4,10 +4,6 @@
 
 namespace Managers
 {
-    TextureManager::TextureManager()
-    {
-    }
-
     bool TextureManager::Load(const std::string& name, const std::string& path, bool HDR)
     {
         using namespace Core::Logging;
