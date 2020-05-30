@@ -117,7 +117,7 @@ void Engine::InitInput()
     using namespace Core::Math;
     using namespace Core::Input;
     m_keyboardInputManager->AddWindowKeyCallback(m_window, GLFW_KEY_ESCAPE, Action::Release, [=](Modifier) { m_running = false; });
-    m_keyboardInputManager->AddWindowKeyCallback(m_window, GLFW_KEY_TAB, Action::Release, [&](Modifier) { m_window->ToggleLockedCursor(); });
+    m_keyboardInputManager->AddWindowKeyCallback(m_window, GLFW_KEY_X, Action::Release, [&](Modifier) { m_window->ToggleLockedCursor(); });
 
     m_keyboardInputManager->AddWindowKeyCallback(m_window, GLFW_KEY_A, Action::Hold, [&](Modifier m) { m_camera->Translate(UnitRight() * -m_deltaTime * (m == Modifier::Shift ? m_sprintSpeed : m_normalSpeed), false); });
     m_keyboardInputManager->AddWindowKeyCallback(m_window, GLFW_KEY_D, Action::Hold, [&](Modifier m) { m_camera->Translate(UnitRight()  * m_deltaTime * (m == Modifier::Shift ? m_sprintSpeed : m_normalSpeed), false); });
