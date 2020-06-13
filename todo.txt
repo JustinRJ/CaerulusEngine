@@ -2,8 +2,13 @@ General
 * Use pimpl pattern to avoid engine having dependencies on eternal projects
 * Add project name to stadafx to remove false intellisense error
 
-* Create frustrum class in math, camera will use this as well as graphics engine
 * Implement thread class with async as basis
+
+* Create visitor class for all possible intersects (Lines, Rects, Circles, Cubes, Frustrum, etc)
+
+* Create a file called data.json which contains what to load in the scene,
+* when a build occurs it will copy into the bin, which you can then edit,
+* even write to, to edit the scene, then commit later
 
 Core
 * Node

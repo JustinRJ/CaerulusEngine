@@ -6,7 +6,7 @@ namespace Core
 {
     namespace Math
     {
-        class CAERULUS_CORE Line
+        class Line
         {
         public:
             Line() = delete;
@@ -16,14 +16,21 @@ namespace Core
                 m_start(start),
                 m_end(end),
                 m_direction(normalize(end - start)),
-                m_length(m_direction.length())
+                m_length(length(end - start))
             {}
 
             Line(const Line& line) :
                 m_start(line.m_start),
                 m_end(line.m_end),
                 m_direction(line.m_direction),
-                m_length(m_direction.length())
+                m_length(line.m_length)
+            {}
+
+            Line(Line&& line) :
+                m_start(std::move(line.m_start)),
+                m_end(std::move(line.m_end)),
+                m_direction(std::move(line.m_direction)),
+                m_length(std::move(line.m_length))
             {}
 
             const vec3& Start() const
@@ -41,7 +48,7 @@ namespace Core
                 return m_direction;
             }
 
-            double Length() const
+            float Length() const
             {
                 return m_length;
             }
@@ -55,7 +62,7 @@ namespace Core
             bool IsPointOrthogonal(const vec3& point) const
             {
                 const vec3 startToPoint = m_start - point;
-                const double pointProjectedOntoLine = dot(startToPoint, m_direction);
+                const float pointProjectedOntoLine = dot(startToPoint, m_direction);
 
                 if (pointProjectedOntoLine >= 0 && pointProjectedOntoLine <= m_length)
                 {
@@ -86,7 +93,7 @@ namespace Core
             const vec3 m_start;
             const vec3 m_end;
             const vec3 m_direction;
-            const double m_length;
+            const float m_length;
         };
     }
 }

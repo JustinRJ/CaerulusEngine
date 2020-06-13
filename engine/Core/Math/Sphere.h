@@ -6,13 +6,13 @@ namespace Core
 {
     namespace Math
     {
-        class CAERULUS_CORE Sphere
+        class Sphere
         {
         public:
             Sphere() = delete;
             ~Sphere() = default;
 
-            Sphere(vec3 pos, double radius) :
+            Sphere(vec3 pos, float radius) :
                 m_radius(radius),
                 m_pos(pos)
             {}
@@ -22,17 +22,39 @@ namespace Core
                 m_pos(sphere.m_pos)
             {}
 
-            bool IsPointInside(vec3 point) const
+            Sphere(Sphere&& sphere) :
+                m_radius(std::move(sphere.m_radius)),
+                m_pos(std::move(sphere.m_pos))
+            {}
+
+            Sphere& operator=(const Sphere& sphere)
             {
-                return (m_pos - point).length() <= m_radius;
+                m_radius = sphere.m_radius;
+                m_pos = sphere.m_pos;
+                return *this;
             }
 
-            double Radius() const
+            bool IsPointInside(vec3 point) const
+            {
+                return length(m_pos - point) <= m_radius;
+            }
+
+            bool IsIntersecting(const Sphere& sphere) const
+            {
+                return length(m_pos - sphere.Position()) <= m_radius + sphere.Radius();
+            }
+
+            bool IsIntersecting(const Circle& circle) const
+            {
+                return length(m_pos - vec3(circle.Position(), m_pos.z)) <= m_radius + circle.Radius();
+            }
+
+            float Radius() const
             {
                 return m_radius;
             }
 
-            double& Radius()
+            float& Radius()
             {
                 return m_radius;
             }
@@ -48,7 +70,7 @@ namespace Core
             }
 
         private:
-            double m_radius;
+            float m_radius;
             vec3 m_pos;
         };
     }

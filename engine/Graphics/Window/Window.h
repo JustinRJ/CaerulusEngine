@@ -56,6 +56,7 @@ namespace Graphics
             virtual const State& GetActiveState() const;
             virtual void Set(const std::string& title, int x, int y, int bits, bool fullscreen = false);
 
+            virtual void Update() = 0;
             virtual void Apply() = 0;
             virtual void Focus() = 0;
             virtual void SwapBuffer() const = 0;

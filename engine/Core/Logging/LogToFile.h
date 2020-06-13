@@ -1,7 +1,5 @@
 #pragma once
 
-#define CAERULUS_CORE __declspec(dllexport)
-
 #include <string>
 #include <iostream>
 #include "Core/Interface/NonCopyable.h"
@@ -10,7 +8,7 @@ namespace Core
 {
     namespace Logging
     {
-        class CAERULUS_CORE LogToFile : public Interface::NonCopyable
+        class LogToFile : public Interface::NonCopyable
         {
         public:
             LogToFile() = delete;

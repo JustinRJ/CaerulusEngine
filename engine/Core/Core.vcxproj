@@ -112,7 +112,7 @@
       <AdditionalLibraryDirectories>$(SolutionDir)..\dependencies\glfw-3.2.1\lib\$(Configuration)\$(Platform)\;</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
-      <Command>echo DA | xcopy /E "$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(Platform)\*.dll" "$(SolutionDir)..\bin\$(Configuration)\$(Platform)"</Command>
+      <Command>echo DA | xcopy "$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(Platform)\*.dll" "$(SolutionDir)..\bin\$(Configuration)\$(Platform)"</Command>
       <Message>
       </Message>
     </PostBuildEvent>
@@ -138,7 +138,7 @@
       <AdditionalLibraryDirectories>$(SolutionDir)..\dependencies\glfw-3.2.1\lib\$(Configuration)\$(Platform)\;</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
-      <Command>echo DA | xcopy /E "$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(Platform)\*.dll" "$(SolutionDir)..\bin\$(Configuration)\$(Platform)"</Command>
+      <Command>echo DA | xcopy "$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(Platform)\*.dll" "$(SolutionDir)..\bin\$(Configuration)\$(Platform)"</Command>
       <Message>
       </Message>
     </PostBuildEvent>
@@ -168,7 +168,7 @@
       <AdditionalLibraryDirectories>$(SolutionDir)..\dependencies\glfw-3.2.1\lib\$(Configuration)\$(Platform)\;</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
-      <Command>echo DA | xcopy /E "$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(Platform)\*.dll" "$(SolutionDir)..\bin\$(Configuration)\$(Platform)"</Command>
+      <Command>echo DA | xcopy "$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(Platform)\*.dll" "$(SolutionDir)..\bin\$(Configuration)\$(Platform)"</Command>
       <Message>
       </Message>
     </PostBuildEvent>
@@ -198,7 +198,7 @@
       <AdditionalLibraryDirectories>$(SolutionDir)..\dependencies\glfw-3.2.1\lib\$(Configuration)\$(Platform)\;</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
-      <Command>echo DA | xcopy /E "$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(Platform)\*.dll" "$(SolutionDir)..\bin\$(Configuration)\$(Platform)"</Command>
+      <Command>echo DA | xcopy "$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(Platform)\*.dll" "$(SolutionDir)..\bin\$(Configuration)\$(Platform)"</Command>
       <Message>
       </Message>
     </PostBuildEvent>
@@ -213,6 +213,7 @@
     <ClInclude Include="Interface\ISerializable.h" />
     <ClInclude Include="Interface\ITickable.h" />
     <ClInclude Include="Interface\NonCopyable.h" />
+    <ClInclude Include="Interface\NonMovable.h" />
     <ClInclude Include="Logging\Log.h" />
     <ClInclude Include="Logging\LogToFile.h" />
     <ClInclude Include="Math\AACube.h" />
@@ -238,7 +239,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp" />
-    <ClCompile Include="Node\Node.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>

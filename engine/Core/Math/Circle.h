@@ -6,33 +6,50 @@ namespace Core
 {
     namespace Math
     {
-        class CAERULUS_CORE Circle
+        class Circle
         {
         public:
             Circle() = delete;
             ~Circle() = default;
 
-            Circle(vec2 pos, double radius) :
+            Circle(vec2 pos, float radius) :
                 m_radius(radius),
                 m_pos(pos)
             {}
 
-            Circle(const Circle& sphere) :
-                m_radius(sphere.m_radius),
-                m_pos(sphere.m_pos)
+            Circle(const Circle& circle) :
+                m_radius(circle.m_radius),
+                m_pos(circle.m_pos)
             {}
+
+            Circle(Circle&& circle) :
+                m_radius(std::move(circle.m_radius)),
+                m_pos(std::move(circle.m_pos))
+            {}
+
+            Circle& operator=(const Circle& circle)
+            {
+                m_radius = circle.m_radius;
+                m_pos = circle.m_pos;
+                return *this;
+            }
 
             bool IsPointInside(vec2 point) const
             {
-                return (m_pos - point).length() <= m_radius;
+                return length(m_pos - point) <= m_radius;
             }
 
-            double Radius() const
+            bool IsIntersecting(const Circle& circle) const
+            {
+                return length(m_pos - circle.Position()) <= m_radius + circle.Radius();
+            }
+
+            float Radius() const
             {
                 return m_radius;
             }
 
-            double& Radius()
+            float& Radius()
             {
                 return m_radius;
             }
@@ -48,7 +65,7 @@ namespace Core
             }
 
         private:
-            double m_radius;
+            float m_radius;
             vec2 m_pos;
         };
     }

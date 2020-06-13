@@ -6,7 +6,7 @@ namespace Core
 {
     namespace Math
     {
-        class CAERULUS_CORE Ray
+        class Ray
         {
         public:
             Ray() = delete;
@@ -20,6 +20,11 @@ namespace Core
             Ray(const Ray& ray) :
                 m_origin(ray.m_origin),
                 m_direction(ray.m_direction)
+            {}
+
+            Ray(Ray&& ray) :
+                m_origin(std::move(ray.m_origin)),
+                m_direction(std::move(ray.m_direction))
             {}
 
             const vec3& Origin() const

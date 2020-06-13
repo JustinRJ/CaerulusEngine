@@ -49,6 +49,9 @@
     <ClCompile Include="Pipeline\ShaderSrc.cpp">
       <Filter>Pipeline</Filter>
     </ClCompile>
+    <ClCompile Include="Render\VoxelRenderer.cpp">
+      <Filter>Render</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -105,6 +108,9 @@
       <Filter>Pipeline</Filter>
     </ClInclude>
     <ClInclude Include="Render\IRenderer.h">
+      <Filter>Render</Filter>
+    </ClInclude>
+    <ClInclude Include="Render\VoxelRenderer.h">
       <Filter>Render</Filter>
     </ClInclude>
   </ItemGroup>

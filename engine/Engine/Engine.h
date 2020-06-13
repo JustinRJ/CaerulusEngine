@@ -34,6 +34,11 @@ namespace Graphics
     {
         class GLWindow;
     }
+
+    namespace Render
+    {
+        class VoxelRenderer;
+    }
 }
 
 namespace Managers
@@ -72,7 +77,7 @@ private:
     float m_fpsLimit = 1.0f / 144.0f;
     float m_normalSpeed = 150.0f;
     float m_sprintSpeed = 300.0f;
-    double m_mouseSensitivity = 50.0;
+    float m_mouseSensitivity = 50.0f;
 
     std::shared_ptr<Core::Time::FPSLimiter> m_fpsLimiter;
     std::shared_ptr<Core::Time::FixedTimer> m_fixedTimer;
@@ -81,6 +86,7 @@ private:
 
     std::shared_ptr<Core::Math::Camera> m_camera;
     std::shared_ptr<Graphics::Window::GLWindow> m_window;
+    std::shared_ptr<Graphics::Render::VoxelRenderer> m_voxelRenderer;
     std::shared_ptr<Graphics::GraphicsEngine> m_graphicsEngine;
 
     std::vector<std::shared_ptr<Core::Interface::ITickable>> m_tickable;

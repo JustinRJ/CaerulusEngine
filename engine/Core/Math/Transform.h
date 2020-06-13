@@ -6,7 +6,7 @@ namespace Core
 {
     namespace Math
     {
-        class CAERULUS_CORE Transform
+        class Transform
         {
         public:
             Transform() = default;
@@ -16,13 +16,17 @@ namespace Core
                 m_T(m)
             {}
 
-            Transform(const Transform& t) :
-                m_T(t.m_T)
+            Transform(const Transform& transform) :
+                m_T(transform.m_T)
             {}
 
-            Transform operator=(const Transform& t)
+            Transform(Transform&& transform) :
+                m_T(std::move(transform.m_T))
+            {}
+
+            Transform& operator=(const Transform& transform)
             {
-                m_T = t.m_T;
+                m_T = transform.m_T;
                 return *this;
             }
 
@@ -110,15 +114,15 @@ namespace Core
             {
                 if (rotation.y != 0.0f)
                 {
-                    m_T = rotate(m_T, radians(rotation.y), UnitRight());
+                    m_T = rotate(m_T, radians(rotation.y), UnitRight);
                 }
                 if (rotation.x != 0.0f)
                 {
-                    m_T = rotate(m_T, radians(rotation.x), UnitUp());
+                    m_T = rotate(m_T, radians(rotation.x), UnitUp);
                 }
                 if (rotation.z != 0.0f)
                 {
-                    m_T = rotate(m_T, radians(rotation.z), UnitForward());
+                    m_T = rotate(m_T, radians(rotation.z), UnitForward);
                 }
             }
 
@@ -143,11 +147,6 @@ namespace Core
                 outScale = GetScale();
                 outRotation = GetRotation();
                 outTranlastion = GetTranslation();
-            }
-
-            vec3 TransformVector(const vec3& vector) const
-            {
-                return vec3(vec4(vector.x, vector.y, vector.z, 1.0f) * transpose(m_T));
             }
 
             void SetAxis(const vec3& axis, Index axisIndex)

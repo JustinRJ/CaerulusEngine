@@ -26,6 +26,7 @@ namespace Graphics
             GLWindow(const std::string& title, int x, int y, int bits, bool fullscreen = false);
             virtual ~GLWindow() = default;
 
+            void Update() override;
             void Apply() override;
             void Focus() override;
             void SwapBuffer() const override;
@@ -36,7 +37,6 @@ namespace Graphics
             void SetQuad(std::shared_ptr<Quad> quad);
             std::shared_ptr<Quad> GetQuad() const;
             
-            void Update();
             void ToggleLockedCursor();
             bool IsCursorLocked() const;
             void CenterCursor();

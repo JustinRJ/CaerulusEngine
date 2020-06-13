@@ -7,7 +7,7 @@ namespace Core
 {
     namespace Math
     {
-        class CAERULUS_CORE Sync : public Interface::NonCopyable
+        class Sync : public Interface::NonCopyable
         {
         public:
             Sync() = delete;

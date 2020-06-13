@@ -38,9 +38,6 @@
     <ClCompile Include="Time\FixedTimer.cpp">
       <Filter>Time</Filter>
     </ClCompile>
-    <ClCompile Include="Node\Node.cpp">
-      <Filter>Node</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -124,6 +121,9 @@
     </ClInclude>
     <ClInclude Include="Utility\Sync.h">
       <Filter>Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="Interface\NonMovable.h">
+      <Filter>Interface</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

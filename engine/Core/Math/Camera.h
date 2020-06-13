@@ -1,37 +1,40 @@
 #pragma once
 
-#define CAERULUS_GRAPHICS __declspec(dllexport)
-
+#include "Frustrum.h"
 #include "Transform.h"
 
 namespace Core
 {
     namespace Math
     {
-        class CAERULUS_GRAPHICS Camera
+        class Camera
         {
         public:
 
-            Camera(const vec3& position, const vec3& forward, const vec3& up = Math::UnitUp())
-            {
-                Camera();
-                m_view = lookAt(position, forward + position, up);
-            }
+            Camera() = delete;
+            ~Camera() = default;
 
-            Camera()
-            {
-                m_degFOV = 54.0f;
-                m_aspect = (16.0f / 9.0f);
-                m_near = 1.0f;
-                m_far = 1000.0f;
-                m_aperture = 16.0f;
-                m_shutterSpeed = 0.5f;
-                m_ISO = 1000.0f;
-                m_view = lookAt(vec3(0, 0, 0), UnitForward(), UnitUp());
-                m_proj = perspective(radians(m_degFOV), m_aspect, m_near, m_far);
-            }
+            Camera(const vec3& position, const vec3& forward, const vec3& up = Math::UnitUp) :
+                m_proj(perspective(radians(54.0f), (16.0f / 9.0f), 1.0f, 1000.0f)),
+                m_view(lookAt(position, position + forward, up))
+            {}
 
-            virtual ~Camera() = default;
+            Camera(const Camera& camera) :
+                m_proj(camera.m_proj),
+                m_view(camera.m_view)
+            {}
+
+            Camera(Camera&& camera) :
+                m_proj(std::move(camera.m_proj)),
+                m_view(std::move(camera.m_view))
+            {}
+
+            Camera& operator=(const Camera& camera)
+            {
+                m_proj = camera.m_proj;
+                m_view = camera.m_view;
+                return *this;
+            }
 
             void Translate(const vec3& translation, bool translateY = true)
             {
@@ -46,7 +49,7 @@ namespace Core
                 view *= translate(mat4(1.0f), -tempPos);
             }
 
-            void Rotate(const vec3& eulerDelta, const vec3& forcedUp = Core::Math::UnitUp())
+            void Rotate(const vec3& eulerDelta, const vec3& forcedUp = Core::Math::UnitUp)
             {
                 Transform model = inverse(m_view.GetMatrix());
                 quat orig_rot = normalize(quat_cast(model.GetMatrix()));
@@ -78,12 +81,12 @@ namespace Core
                 m_view = inverse(temp.GetMatrix());
             }
 
-            const mat4& GetViewMatrix() const
+            const  Core::Math::Transform& GetTransform() const
             {
-                return m_view.GetMatrix();
+                return m_view;
             }
 
-            const mat4& GetProjMatrix() const
+            const Core::Math::Frustrum& GetFrustrum() const
             {
                 return m_proj;
             }
@@ -103,41 +106,6 @@ namespace Core
                 return m_view.GetColumn(Index::Y);
             }
 
-            float GetFOV() const
-            {
-                return m_degFOV;
-            }
-
-            float GetAspect() const
-            {
-                return m_aspect;
-            }
-
-            float GetNear() const
-            {
-                return m_near;
-            }
-
-            float GetFar() const
-            {
-                return m_far;
-            }
-
-            float GetAperture() const
-            {
-                return m_aperture;
-            }
-
-            float GetShutterSpeed() const
-            {
-                return m_shutterSpeed;
-            }
-
-            float GetISO() const
-            {
-                return m_ISO;
-            }
-
             void SetPosition(const vec3& position)
             {
                 m_view.SetTranslation(position);
@@ -153,64 +121,9 @@ namespace Core
                 m_view.SetColumn(up, Index::Y);
             }
 
-            void SetPerspective(float fov, float aspect, float n, float f)
-            {
-                m_degFOV = fov;
-                m_aspect = aspect;
-                m_near = n;
-                m_far = f;
-                m_proj = perspective(radians(m_degFOV), m_aspect, m_near, m_far);
-            }
-
-            void SetFOV(float fov)
-            {
-                m_degFOV = fov;
-                m_proj = perspective(radians(m_degFOV), m_aspect, m_near, m_far);
-            }
-
-            void SetAspect(float aspect)
-            {
-                m_aspect = aspect;
-                m_proj = perspective(radians(m_degFOV), m_aspect, m_near, m_far);
-            }
-
-            void SetNear(float nearP)
-            {
-                m_near = nearP;
-                m_proj = perspective(radians(m_degFOV), m_aspect, m_near, m_far);
-            }
-
-            void SetFar(float farP)
-            {
-                m_far = farP;
-                m_proj = perspective(radians(m_degFOV), m_aspect, m_near, m_far);
-            }
-
-            void SetAperture(float aperture)
-            {
-                m_aperture = aperture;
-            }
-
-            void SetShutterSpeed(float shutterSpeed)
-            {
-                m_shutterSpeed = shutterSpeed;
-            }
-
-            void SetISO(float iso)
-            {
-                m_ISO = iso;
-            }
-
         private:
-            float m_degFOV;
-            float m_aspect;
-            float m_near;
-            float m_far;
 
-            float m_aperture;
-            float m_shutterSpeed;
-            float m_ISO;
-            mat4 m_proj;
+            Core::Math::Frustrum m_proj;
             Core::Math::Transform m_view;
         };
     }

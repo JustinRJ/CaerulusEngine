@@ -129,7 +129,8 @@
     </CustomBuildStep>
     <PostBuildEvent>
       <Command>echo DA | xcopy /E "$(SolutionDir)..\assets" "$(SolutionDir)..\bin\$(Configuration)\$(Platform)\assets"
-echo DA | xcopy /E "$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(Platform)\*.exe" "$(SolutionDir)..\bin\$(Configuration)\$(Platform)"</Command>
+echo DA | xcopy /E "$(SolutionDir)..\data" "$(SolutionDir)..\bin\$(Configuration)\$(Platform)\data"
+echo DA | xcopy "$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(Platform)\*.exe" "$(SolutionDir)..\bin\$(Configuration)\$(Platform)"</Command>
       <Message>
       </Message>
     </PostBuildEvent>
@@ -165,7 +166,8 @@ echo DA | xcopy /E "$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(P
     </CustomBuildStep>
     <PostBuildEvent>
       <Command>echo DA | xcopy /E "$(SolutionDir)..\assets" "$(SolutionDir)..\bin\$(Configuration)\$(Platform)\assets"
-echo DA | xcopy /E "$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(Platform)\*.exe" "$(SolutionDir)..\bin\$(Configuration)\$(Platform)"</Command>
+echo DA | xcopy /E "$(SolutionDir)..\data" "$(SolutionDir)..\bin\$(Configuration)\$(Platform)\data"
+echo DA | xcopy "$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(Platform)\*.exe" "$(SolutionDir)..\bin\$(Configuration)\$(Platform)"</Command>
       <Message>
       </Message>
     </PostBuildEvent>
@@ -205,7 +207,8 @@ echo DA | xcopy /E "$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(P
     </CustomBuildStep>
     <PostBuildEvent>
       <Command>echo DA | xcopy /E "$(SolutionDir)..\assets" "$(SolutionDir)..\bin\$(Configuration)\$(Platform)\assets"
-echo DA | xcopy /E "$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(Platform)\*.exe" "$(SolutionDir)..\bin\$(Configuration)\$(Platform)"</Command>
+echo DA | xcopy /E "$(SolutionDir)..\data" "$(SolutionDir)..\bin\$(Configuration)\$(Platform)\data"
+echo DA | xcopy "$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(Platform)\*.exe" "$(SolutionDir)..\bin\$(Configuration)\$(Platform)"</Command>
       <Message>
       </Message>
     </PostBuildEvent>
@@ -245,7 +248,8 @@ echo DA | xcopy /E "$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(P
     </CustomBuildStep>
     <PostBuildEvent>
       <Command>echo DA | xcopy /E "$(SolutionDir)..\assets" "$(SolutionDir)..\bin\$(Configuration)\$(Platform)\assets"
-echo DA | xcopy /E "$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(Platform)\*.exe" "$(SolutionDir)..\bin\$(Configuration)\$(Platform)"</Command>
+echo DA | xcopy /E "$(SolutionDir)..\data" "$(SolutionDir)..\bin\$(Configuration)\$(Platform)\data"
+echo DA | xcopy "$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(Platform)\*.exe" "$(SolutionDir)..\bin\$(Configuration)\$(Platform)"</Command>
       <Message>
       </Message>
     </PostBuildEvent>

@@ -120,7 +120,7 @@
 echo DA | xcopy /E "$(SolutionDir)..\dependencies\glfw-3.2.1\bin\$(Configuration)\$(Platform)\glfw3.dll" "$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(Platform)\"</Command>
     </PreBuildEvent>
     <PostBuildEvent>
-      <Command>echo DA | xcopy /E "$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(Platform)\*.dll" "$(SolutionDir)..\bin\$(Configuration)\$(Platform)"</Command>
+      <Command>echo DA | xcopy "$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(Platform)\*.dll" "$(SolutionDir)..\bin\$(Configuration)\$(Platform)"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -145,7 +145,7 @@ echo DA | xcopy /E "$(SolutionDir)..\dependencies\glfw-3.2.1\bin\$(Configuration
 echo DA | xcopy /E "$(SolutionDir)..\dependencies\glfw-3.2.1\bin\$(Configuration)\$(Platform)\glfw3.dll" "$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(Platform)\"</Command>
     </PreBuildEvent>
     <PostBuildEvent>
-      <Command>echo DA | xcopy /E "$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(Platform)\*.dll" "$(SolutionDir)..\bin\$(Configuration)\$(Platform)"</Command>
+      <Command>echo DA | xcopy "$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(Platform)\*.dll" "$(SolutionDir)..\bin\$(Configuration)\$(Platform)"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -170,7 +170,7 @@ echo DA | xcopy /E "$(SolutionDir)..\dependencies\glfw-3.2.1\bin\$(Configuration
 echo DA | xcopy /E "$(SolutionDir)..\dependencies\glfw-3.2.1\bin\$(Configuration)\$(Platform)\glfw3.dll" "$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(Platform)\"</Command>
     </PreBuildEvent>
     <PostBuildEvent>
-      <Command>echo DA | xcopy /E "$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(Platform)\*.dll" "$(SolutionDir)..\bin\$(Configuration)\$(Platform)"</Command>
+      <Command>echo DA | xcopy "$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(Platform)\*.dll" "$(SolutionDir)..\bin\$(Configuration)\$(Platform)"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -199,7 +199,7 @@ echo DA | xcopy /E "$(SolutionDir)..\dependencies\glfw-3.2.1\bin\$(Configuration
 echo DA | xcopy /E "$(SolutionDir)..\dependencies\glfw-3.2.1\bin\$(Configuration)\$(Platform)\glfw3.dll" "$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(Platform)\"</Command>
     </PreBuildEvent>
     <PostBuildEvent>
-      <Command>echo DA | xcopy /E "$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(Platform)\*.dll" "$(SolutionDir)..\bin\$(Configuration)\$(Platform)"</Command>
+      <Command>echo DA | xcopy "$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(Platform)\*.dll" "$(SolutionDir)..\bin\$(Configuration)\$(Platform)"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -217,6 +217,7 @@ echo DA | xcopy /E "$(SolutionDir)..\dependencies\glfw-3.2.1\bin\$(Configuration
     <ClInclude Include="Pipeline\ShaderSrc.h" />
     <ClInclude Include="GraphicsEngine.h" />
     <ClInclude Include="Render\IRenderer.h" />
+    <ClInclude Include="Render\VoxelRenderer.h" />
     <ClInclude Include="Resource\Material.h" />
     <ClInclude Include="Resource\Model.h" />
     <ClInclude Include="Resource\Texture.h" />
@@ -237,6 +238,7 @@ echo DA | xcopy /E "$(SolutionDir)..\dependencies\glfw-3.2.1\bin\$(Configuration
     <ClCompile Include="Pipeline\Shader.cpp" />
     <ClCompile Include="Pipeline\ShaderSrc.cpp" />
     <ClCompile Include="GraphicsEngine.cpp" />
+    <ClCompile Include="Render\VoxelRenderer.cpp" />
     <ClCompile Include="Resource\Material.cpp" />
     <ClCompile Include="Resource\Model.cpp" />
     <ClCompile Include="Resource\Texture.cpp" />

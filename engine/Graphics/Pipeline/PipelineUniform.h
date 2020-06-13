@@ -4,7 +4,6 @@
 
 #include <glew.h>
 #include <string>
-#include <functional>
 #include "Core/Math/Math.h"
 #include "Core/Interface/NonCopyable.h"
 

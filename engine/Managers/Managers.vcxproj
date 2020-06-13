@@ -119,7 +119,7 @@
       <Command>echo DA | xcopy /E "$(SolutionDir)..\dependencies\glew-2.1.0\bin\$(Configuration)\$(Platform)\glew32.dll" "$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(Platform)\"</Command>
     </PreBuildEvent>
     <PostBuildEvent>
-      <Command>echo DA | xcopy /E "$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(Platform)\*.dll" "$(SolutionDir)..\bin\$(Configuration)\$(Platform)"</Command>
+      <Command>echo DA | xcopy "$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(Platform)\*.dll" "$(SolutionDir)..\bin\$(Configuration)\$(Platform)"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -143,7 +143,7 @@
       <Command>echo DA | xcopy /E "$(SolutionDir)..\dependencies\glew-2.1.0\bin\$(Configuration)\$(Platform)\glew32.dll" "$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(Platform)\"</Command>
     </PreBuildEvent>
     <PostBuildEvent>
-      <Command>echo DA | xcopy /E "$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(Platform)\*.dll" "$(SolutionDir)..\bin\$(Configuration)\$(Platform)"</Command>
+      <Command>echo DA | xcopy "$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(Platform)\*.dll" "$(SolutionDir)..\bin\$(Configuration)\$(Platform)"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -167,7 +167,7 @@
       <Command>echo DA | xcopy /E "$(SolutionDir)..\dependencies\glew-2.1.0\bin\$(Configuration)\$(Platform)\glew32.dll" "$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(Platform)\"</Command>
     </PreBuildEvent>
     <PostBuildEvent>
-      <Command>echo DA | xcopy /E "$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(Platform)\*.dll" "$(SolutionDir)..\bin\$(Configuration)\$(Platform)"</Command>
+      <Command>echo DA | xcopy "$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(Platform)\*.dll" "$(SolutionDir)..\bin\$(Configuration)\$(Platform)"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -195,7 +195,7 @@
       <Command>echo DA | xcopy /E "$(SolutionDir)..\dependencies\glew-2.1.0\bin\$(Configuration)\$(Platform)\glew32.dll" "$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(Platform)\"</Command>
     </PreBuildEvent>
     <PostBuildEvent>
-      <Command>echo DA | xcopy /E "$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(Platform)\*.dll" "$(SolutionDir)..\bin\$(Configuration)\$(Platform)"</Command>
+      <Command>echo DA | xcopy "$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(Platform)\*.dll" "$(SolutionDir)..\bin\$(Configuration)\$(Platform)"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>

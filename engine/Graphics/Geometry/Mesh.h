@@ -25,8 +25,6 @@ namespace Graphics
         class CAERULUS_GRAPHICS Mesh : public Geometry
         {
         public:
-            static const GLfloat s_cubeVertices[];
-
             Mesh(const std::vector<Vertex>& vertices, const std::vector<GLuint>& indices, const std::string& materialName);
             virtual ~Mesh() = default;
 
