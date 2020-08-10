@@ -12,8 +12,8 @@ namespace Core
             Frustrum() = delete;
             ~Frustrum() = default;
 
-            Frustrum(float fov, float aspect, float n, float f) :
-                m_degFOV(fov),
+            Frustrum(float degFOV, float aspect, float n, float f) :
+                m_degFOV(degFOV),
                 m_aspect(aspect),
                 m_near(n),
                 m_far(f),
@@ -26,10 +26,6 @@ namespace Core
 
             Frustrum(const Frustrum& frustrum) :
                 m_P(frustrum.m_P)
-            {}
-
-            Frustrum(Frustrum&& frustrum) :
-                m_P(std::move(frustrum.m_P))
             {}
 
             Frustrum& operator=(const Frustrum& frustrum)
@@ -58,28 +54,23 @@ namespace Core
                 return m_far;
             }
 
-            mat4& GetMatrix()
-            {
-                return m_P;
-            }
-
             const mat4& GetMatrix() const
             {
                 return m_P;
             }
 
-            void SetPerspective(float fov, float aspect, float n, float f)
+            void SetPerspective(float degFOV, float aspect, float n, float f)
             {
-                m_degFOV = fov;
+                m_degFOV = degFOV;
                 m_aspect = aspect;
                 m_near = n;
                 m_far = f;
                 m_P = perspective(radians(m_degFOV), m_aspect, m_near, m_far);
             }
 
-            void SetFOV(float fov)
+            void SetDegFOV(float degFOV)
             {
-                m_degFOV = fov;
+                m_degFOV = degFOV;
                 m_P = perspective(radians(m_degFOV), m_aspect, m_near, m_far);
             }
 

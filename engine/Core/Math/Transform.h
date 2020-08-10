@@ -20,10 +20,6 @@ namespace Core
                 m_T(transform.m_T)
             {}
 
-            Transform(Transform&& transform) :
-                m_T(std::move(transform.m_T))
-            {}
-
             Transform& operator=(const Transform& transform)
             {
                 m_T = transform.m_T;

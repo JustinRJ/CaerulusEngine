@@ -19,23 +19,14 @@
     <Filter Include="Node">
       <UniqueIdentifier>{0ce5a568-d535-4192-abf7-d5cc83aafbcb}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Utility">
-      <UniqueIdentifier>{f99a3857-fbd8-4939-a644-aad5533a0dcb}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="stdafx.cpp" />
-    <ClCompile Include="Time\FPSLimiter.cpp">
-      <Filter>Time</Filter>
-    </ClCompile>
     <ClCompile Include="Time\Time.cpp">
       <Filter>Time</Filter>
     </ClCompile>
     <ClCompile Include="Time\Timer.cpp">
-      <Filter>Time</Filter>
-    </ClCompile>
-    <ClCompile Include="Time\FixedTimer.cpp">
       <Filter>Time</Filter>
     </ClCompile>
   </ItemGroup>
@@ -118,9 +109,6 @@
     </ClInclude>
     <ClInclude Include="Math\Frustrum.h">
       <Filter>Math</Filter>
-    </ClInclude>
-    <ClInclude Include="Utility\Sync.h">
-      <Filter>Utility</Filter>
     </ClInclude>
     <ClInclude Include="Interface\NonMovable.h">
       <Filter>Interface</Filter>

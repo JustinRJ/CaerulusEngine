@@ -1,8 +1,6 @@
 #include "stdafx.h"
 
 #include "ShaderSrc.h"
-#include <fstream>
-#include <sstream>
 #include "Core/Logging/Log.h"
 
 namespace Graphics

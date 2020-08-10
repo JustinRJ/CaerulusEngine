@@ -235,7 +235,6 @@
     <ClInclude Include="Time\FPSLimiter.h" />
     <ClInclude Include="Time\Time.h" />
     <ClInclude Include="Time\Timer.h" />
-    <ClInclude Include="Utility\Sync.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp" />
@@ -245,8 +244,6 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="Time\FixedTimer.cpp" />
-    <ClCompile Include="Time\FPSLimiter.cpp" />
     <ClCompile Include="Time\Time.cpp" />
     <ClCompile Include="Time\Timer.cpp" />
   </ItemGroup>

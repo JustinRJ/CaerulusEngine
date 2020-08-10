@@ -1,10 +1,6 @@
 #include "stdafx.h"
 
 #include "Model.h"
-#include <iostream>
-#include <algorithm>
-#include <unordered_map>
-#include <tiny_obj_loader.h>
 #include "Material.h"
 #include "Graphics/Geometry/Mesh.h"
 

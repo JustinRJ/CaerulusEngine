@@ -1,7 +1,6 @@
 #include "stdafx.h"
 
 #include "PointLight.h"
-#include <string>
 #include "Graphics/PipeLine/Shader.h"
 #include "Core/Math/Camera.h"
 

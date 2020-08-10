@@ -1,9 +1,6 @@
 #include "stdafx.h"
 
 #include "VoxelRenderer.h"
-#define STBVOX_CONFIG_MODE 0
-#define STB_VOXEL_RENDER_IMPLEMENTATION
-#include "stb_voxel_render.h"
 
 #include "Core/Math/Camera.h"
 #include "Graphics/Window/GLWindow.h"

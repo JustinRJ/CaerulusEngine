@@ -2,8 +2,6 @@
 
 #define CAERULUS_GRAPHICS __declspec(dllexport)
 
-#include <vector>
-#include <memory>
 #include "Core/Interface/NonCopyable.h"
 
 namespace Graphics

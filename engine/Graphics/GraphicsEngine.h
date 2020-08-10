@@ -2,7 +2,6 @@
 
 #define CAERULUS_GRAPHICS __declspec(dllexport)
 
-#include <memory>
 #include "Core/Interface/ITickable.h"
 
 namespace Graphics

@@ -1,7 +1,6 @@
 #include "stdafx.h"
 
 #include "Material.h"
-#include <tiny_obj_loader.h>
 #include "Texture.h"
 #include "Core/Logging/Log.h"
 

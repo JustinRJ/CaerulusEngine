@@ -2,8 +2,6 @@
 
 #define CAERULUS_GRAPHICS __declspec(dllexport)
 
-#include <glew.h>
-#include <string>
 #include "Core/Math/Math.h"
 #include "Core/Interface/NonCopyable.h"
 
@@ -11,6 +9,7 @@ namespace Graphics
 {
     namespace PipeLine
     {
+        using namespace Core::Math;
         class CAERULUS_GRAPHICS PipelineUniform : public Core::Interface::NonCopyable
         {
         public:

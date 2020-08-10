@@ -1,7 +1,5 @@
 #pragma once
 
-#include <string>
-#include <functional>
 #include "InputDefines.h"
 #include "Core/Interface/ITickable.h"
 
@@ -51,7 +49,7 @@ namespace Core
 
             void FixedUpdate(float fixedTime) override {}
 
-            void AddDragMouseCallback(std::shared_ptr<GLWindow> window, std::function<void(DragData)> callback, std::string name = "")
+            void AddDragMouseCallback(std::shared_ptr<GLWindow> window, std::function<void(DragData)> callback, const std::string& name = "")
             {
                 DragBinding dragBinding;
                 dragBinding.Callback = callback;

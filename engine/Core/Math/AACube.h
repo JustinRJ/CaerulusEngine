@@ -1,6 +1,5 @@
 #pragma once
 
-#include <vector>
 #include "Math.h"
 
 namespace Core
@@ -23,11 +22,6 @@ namespace Core
                 m_max(cube.m_max)
             {}
 
-            AACube(AACube&& cube) :
-                m_min(std::move(cube.m_min)),
-                m_max(std::move(cube.m_max))
-            {}
-
             AACube& operator=(const AACube& cube)
             {
                 m_min = cube.m_min;
@@ -35,7 +29,7 @@ namespace Core
                 return *this;
             }
 
-            bool IsPointInside(vec3 point) const
+            bool IsPointInside(const vec3& point) const
             {
                 return 
                     point.x >= m_min.x && point.y >= m_min.y && point.z >= m_min.z &&

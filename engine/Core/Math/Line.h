@@ -26,13 +26,6 @@ namespace Core
                 m_length(line.m_length)
             {}
 
-            Line(Line&& line) :
-                m_start(std::move(line.m_start)),
-                m_end(std::move(line.m_end)),
-                m_direction(std::move(line.m_direction)),
-                m_length(std::move(line.m_length))
-            {}
-
             const vec3& Start() const
             {
                 return m_start;

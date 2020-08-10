@@ -1,7 +1,6 @@
 #include "stdafx.h"
 
 #include "Engine.h"
-#include <iostream>
 
 #include "Graphics/GraphicsEngine.h"
 #include "Graphics/Window/GLWindow.h"
@@ -137,7 +136,8 @@ void Engine::InitInput()
     {
         if (m_window->IsCursorLocked())
         {
-            m_camera->Rotate(vec3(dd.DeltaX * m_deltaTime * m_mouseSensitivity, dd.DeltaY * m_deltaTime * m_mouseSensitivity, 0.0f));
+            float rotateMultiplier = m_deltaTime * m_mouseSensitivity;
+            m_camera->Rotate(vec3(dd.DeltaX * rotateMultiplier, dd.DeltaY * rotateMultiplier, 0.0f));
         }
     });
 }

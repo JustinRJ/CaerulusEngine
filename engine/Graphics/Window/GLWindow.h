@@ -2,8 +2,6 @@
 
 #define CAERULUS_GRAPHICS __declspec(dllexport)
 
-#include <glew.h>
-#include <glfw3.h>
 #include "Window.h"
 
 namespace Graphics

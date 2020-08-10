@@ -1,6 +1,5 @@
 #pragma once
 
-#include <algorithm>
 #include "AARect.h"
 
 namespace Core
@@ -22,11 +21,6 @@ namespace Core
             Rect(const Rect& rect) :
                 m_T(rect.m_T),
                 m_aa(rect.m_aa)
-            {}
-
-            Rect(Rect&& rect) :
-                m_T(std::move(rect.m_T)),
-                m_aa(std::move(rect.m_aa))
             {}
 
             Rect& operator=(const Rect& rect)
@@ -86,9 +80,8 @@ namespace Core
 
             std::vector<vec2> GetNormals() const
             {
-                std::vector<vec2> corners = GetCorners();
                 std::vector<vec2> normals(4);
-
+                std::vector<vec2> corners = GetCorners();
                 vec2 v0 = normalize(corners[0] - corners[1]);
                 vec2 v1 = normalize(corners[1] + corners[2]);
                 vec2 v2 = normalize(corners[2] - corners[3]);

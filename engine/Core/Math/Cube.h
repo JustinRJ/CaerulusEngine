@@ -1,6 +1,5 @@
 #pragma once
 
-#include <algorithm>
 #include "AACube.h"
 #include "Transform.h"
 
@@ -23,11 +22,6 @@ namespace Core
             Cube(const Cube& cube) :
                 m_T(cube.m_T),
                 m_aa(cube.m_aa)
-            {}
-
-            Cube(Cube&& cube) :
-                m_T(std::move(cube.m_T)),
-                m_aa(std::move(cube.m_aa))
             {}
 
             Cube& operator=(const Cube& cube)
@@ -84,8 +78,8 @@ namespace Core
 
             std::vector<vec3> GetNormals() const
             {
-                std::vector<vec3> corners = GetCorners();
                 std::vector<vec3> normals(6);
+                std::vector<vec3> corners = GetCorners();
                 normals[0] = normalize(cross(corners[0] + corners[1], corners[0] + corners[3]));
                 normals[1] = normalize(cross(corners[0] + corners[4], corners[0] + corners[1]));
                 normals[2] = normalize(cross(corners[5] + corners[1], corners[5] + corners[6]));

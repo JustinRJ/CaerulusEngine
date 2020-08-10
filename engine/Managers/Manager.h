@@ -2,9 +2,6 @@
 
 #define CAERULUS_MANAGERS __declspec(dllexport)
 
-#include <map>
-#include <vector>
-#include <string>
 #include "Core/Logging/Log.h"
 #include "Core/Interface/NonCopyable.h"
 

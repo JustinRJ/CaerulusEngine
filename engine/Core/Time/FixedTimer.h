@@ -1,21 +1,30 @@
 #pragma once
 
-#define CAERULUS_CORE __declspec(dllexport)
-
 #include "Timer.h"
 
 namespace Core
 {
     namespace Time
     {
-        class CAERULUS_CORE FixedTimer : public Timer
+        class FixedTimer : public Timer
         {
         public:
 
             FixedTimer() = default;
             virtual ~FixedTimer() = default;
 
-            float Fixed(float fixed);
+            float Fixed(float fixed)
+            {
+                m_accumulatedTime += Timer::Delta();
+                unsigned int count = 0;
+                while (m_accumulatedTime >= fixed)
+                {
+                    m_accumulatedTime -= fixed;
+                    count++;
+                }
+
+                return fixed * count;
+            }
 
         private:
 

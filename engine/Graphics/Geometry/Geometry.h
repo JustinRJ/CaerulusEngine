@@ -7,6 +7,7 @@ namespace Graphics
 {
     namespace Geometry
     {
+        using namespace Core::Math;
         class CAERULUS_GRAPHICS Geometry : public PipeLine::PiplineVertex
         {
         public:

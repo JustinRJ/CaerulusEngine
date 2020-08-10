@@ -1,7 +1,6 @@
 #include "stdafx.h"
 
 #include "MaterialManager.h"
-#include <fstream>
 
 namespace Managers
 {

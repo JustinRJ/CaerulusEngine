@@ -1,8 +1,5 @@
 #pragma once
 
-#include <map>
-#include <string>
-#include <functional>
 #include "InputDefines.h"
 #include "Core/Interface/ITickable.h"
 
@@ -46,7 +43,7 @@ namespace Core
 
             void FixedUpdate(float fixedTime) override {}
 
-            void AddWindowKeyCallback(std::shared_ptr<GLWindow> window, int key, Action action, std::function<void(Modifier)> callback, std::string name = "")
+            void AddWindowKeyCallback(std::shared_ptr<GLWindow> window, int key, Action action, std::function<void(Modifier)> callback, const std::string& name = "")
             {
                 KeyBinding newBinding;
                 newBinding.TargetAction = action;

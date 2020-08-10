@@ -14,7 +14,7 @@ namespace Core
             Camera() = delete;
             ~Camera() = default;
 
-            Camera(const vec3& position, const vec3& forward, const vec3& up = Math::UnitUp) :
+            Camera(const vec3& position, const vec3& forward, const vec3& up = UnitUp) :
                 m_proj(perspective(radians(54.0f), (16.0f / 9.0f), 1.0f, 1000.0f)),
                 m_view(lookAt(position, position + forward, up))
             {}
@@ -22,11 +22,6 @@ namespace Core
             Camera(const Camera& camera) :
                 m_proj(camera.m_proj),
                 m_view(camera.m_view)
-            {}
-
-            Camera(Camera&& camera) :
-                m_proj(std::move(camera.m_proj)),
-                m_view(std::move(camera.m_view))
             {}
 
             Camera& operator=(const Camera& camera)
@@ -49,7 +44,7 @@ namespace Core
                 view *= translate(mat4(1.0f), -tempPos);
             }
 
-            void Rotate(const vec3& eulerDelta, const vec3& forcedUp = Core::Math::UnitUp)
+            void Rotate(const vec3& eulerDelta, const vec3& forcedUp = UnitUp)
             {
                 Transform model = inverse(m_view.GetMatrix());
                 quat orig_rot = normalize(quat_cast(model.GetMatrix()));
@@ -81,12 +76,12 @@ namespace Core
                 m_view = inverse(temp.GetMatrix());
             }
 
-            const  Core::Math::Transform& GetTransform() const
+            const Transform& GetTransform() const
             {
                 return m_view;
             }
 
-            const Core::Math::Frustrum& GetFrustrum() const
+            const Frustrum& GetFrustrum() const
             {
                 return m_proj;
             }
@@ -123,8 +118,8 @@ namespace Core
 
         private:
 
-            Core::Math::Frustrum m_proj;
-            Core::Math::Transform m_view;
+            Frustrum m_proj;
+            Transform m_view;
         };
     }
 }

@@ -1,6 +1,5 @@
 #pragma once
 
-#include <memory>
 #include "Core/Math/Math.h"
 #include "Core/Interface/NonCopyable.h"
 
@@ -24,6 +23,7 @@ namespace Graphics
 {
     namespace Light
     {
+        using namespace Core::Math;
         class Light : public Core::Interface::NonCopyable
         {
         public:

@@ -22,11 +22,6 @@ namespace Core
                 m_pos(circle.m_pos)
             {}
 
-            Circle(Circle&& circle) :
-                m_radius(std::move(circle.m_radius)),
-                m_pos(std::move(circle.m_pos))
-            {}
-
             Circle& operator=(const Circle& circle)
             {
                 m_radius = circle.m_radius;

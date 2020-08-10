@@ -1,7 +1,6 @@
 #pragma once
 
 #include "INode.h"
-#include <list>
 #include "Core/Math/Transform.h"
 
 namespace Core

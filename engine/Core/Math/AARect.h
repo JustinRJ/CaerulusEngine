@@ -1,6 +1,5 @@
 #pragma once
 
-#include <vector>
 #include "Math.h"
 
 namespace Core
@@ -23,11 +22,6 @@ namespace Core
                 m_max(rect.m_max)
             {}
 
-            AARect(AARect&& rect) :
-                m_min(std::move(rect.m_min)),
-                m_max(std::move(rect.m_max))
-            {}
-
             AARect& operator=(const AARect& rect)
             {
                 m_min = rect.m_min;
@@ -35,7 +29,7 @@ namespace Core
                 return *this;
             }
 
-            bool IsPointInside(vec2 point) const
+            bool IsPointInside(const vec2& point) const
             {
                 return 
                     point.x >= m_min.x && point.y >= m_min.y &&
@@ -87,7 +81,7 @@ namespace Core
                 std::vector<vec2> normals(4);
                 normals[0] = vec2(-1.f, 0.f);
                 normals[1] = vec2(0.f, 1.f);
-                normals[2] = vec2(0.f, 1.f);
+                normals[2] = vec2(1.f, 0.f);
                 normals[3] = vec2(0.f, -1.f);
                 return normals;
             }

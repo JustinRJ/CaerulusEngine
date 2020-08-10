@@ -1,19 +1,11 @@
 #pragma once
 
-#define GLM_ENABLE_EXPERIMENTAL
-
-#include <glm.hpp>
-#include <gtx/hash.hpp>
-#include <gtc/type_ptr.hpp>
-#include <gtx/quaternion.hpp>
-#include <gtc/matrix_transform.hpp>
-
-using namespace glm;
-
 namespace Core
 {
     namespace Math
     {
+        using namespace glm;
+
         const double PI = std::atan(1.f) * 4.f;
 
         const vec3 UnitUp = vec3(0.f, 1.f, 0.f);

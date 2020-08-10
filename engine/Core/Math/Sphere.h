@@ -22,11 +22,6 @@ namespace Core
                 m_pos(sphere.m_pos)
             {}
 
-            Sphere(Sphere&& sphere) :
-                m_radius(std::move(sphere.m_radius)),
-                m_pos(std::move(sphere.m_pos))
-            {}
-
             Sphere& operator=(const Sphere& sphere)
             {
                 m_radius = sphere.m_radius;

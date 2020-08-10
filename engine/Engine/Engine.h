@@ -1,7 +1,5 @@
 #pragma once
 
-#include <memory>
-#include <vector>
 #include "Core/Interface/NonCopyable.h"
 
 namespace Core
