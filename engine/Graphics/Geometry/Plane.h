@@ -1,24 +1,51 @@
 #pragma once
 
-#include "Geometry.h"
+#include "Graphics/Pipeline/VertexArray.h"
+#include "Graphics/Pipeline/VertexBuffer.h"
+#include "Graphics/Pipeline/IndexBuffer.h"
 
 namespace Graphics
 {
     namespace Geometry
     {
-        class CAERULUS_GRAPHICS Plane : public Geometry
+        const static GLfloat s_PlaneVertices[] =
+        {
+            -0.5, 0., -0.5, // bottom left 
+             0.5, 0., -0.5, // bottom right
+             0.5, 0.,  0.5, // top right   
+            -0.5, 0.,  0.5  // top left    
+        };
+
+        const static GLuint s_PlaneIndices[] =
+        {
+            0, 3, 2,    0, 1, 2
+        };
+
+        class Plane
         {
         public:
-            static const GLfloat s_PlaneVertices[];
+            Plane() :
+                m_vertexBuffer(s_PlaneVertices, 4 * 3 * sizeof(GLfloat)),
+                m_indexBuffer(s_PlaneIndices, 6)
+            {
+                PipeLine::VertexBufferLayout layout;
+                layout.Push<float>(3);
+                m_vertexArray.AddBuffer(m_vertexBuffer, layout);
+            }
 
-            Plane();
-            Plane(const mat4& transform);
-            virtual ~Plane() = default;
+            ~Plane() = default;
 
-            void Draw(bool wireframe) const override;
+            void Draw(bool wireframe)
+            {
+                m_vertexArray.Bind();
+                m_indexBuffer.Bind();
+                glDrawElements(wireframe ? GL_LINE_LOOP : GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
+            }
 
         private:
-            void SetVertices() override;
+            PipeLine::VertexArray m_vertexArray;
+            PipeLine::VertexBuffer m_vertexBuffer;
+            PipeLine::IndexBuffer m_indexBuffer;
         };
     }
 }

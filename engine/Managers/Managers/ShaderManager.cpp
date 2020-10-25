@@ -25,7 +25,7 @@ namespace Managers
             m_shaderStageManager.Get(vertexPath),
             m_shaderStageManager.Get(fragmentPath));
 
-        if (s->Link())
+        if (s->IsLinked())
         {
             Insert(name, s);
             return true;

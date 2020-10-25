@@ -15,8 +15,8 @@ namespace Core
             ~Camera() = default;
 
             Camera(const vec3& position, const vec3& forward, const vec3& up = UnitUp) :
-                m_proj(perspective(radians(54.0f), (16.0f / 9.0f), 1.0f, 1000.0f)),
-                m_view(lookAt(position, position + forward, up))
+                m_proj(54.0f, 1.25f, 1.0f, 1000.0f),
+                m_view(lookAt(position, glm::normalize(position + forward), up))
             {}
 
             Camera(const Camera& camera) :
@@ -81,39 +81,19 @@ namespace Core
                 return m_view;
             }
 
+            Transform& GetTransform()
+            {
+                return m_view;
+            }
+
             const Frustrum& GetFrustrum() const
             {
                 return m_proj;
             }
 
-            vec3 GetPosition() const
+            Frustrum& GetFrustrum()
             {
-                return m_view.GetTranslation();
-            }
-
-            vec3 GetForward() const
-            {
-                return m_view.GetColumn(Index::Z);
-            }
-
-            vec3 GetUp() const
-            {
-                return m_view.GetColumn(Index::Y);
-            }
-
-            void SetPosition(const vec3& position)
-            {
-                m_view.SetTranslation(position);
-            }
-
-            void SetForward(const vec3& forward)
-            {
-                m_view.SetColumn(forward, Index::Z);
-            }
-
-            void SetUp(const vec3& up)
-            {
-                m_view.SetColumn(up, Index::Y);
+                return m_proj;
             }
 
         private:

@@ -33,9 +33,9 @@ namespace Graphics
         class GLWindow;
     }
 
-    namespace Render
+    namespace PipeLine
     {
-        class VoxelRenderer;
+        class Renderer;
     }
 }
 
@@ -73,8 +73,8 @@ private:
     float m_deltaTime = 0.0f;
     float m_fixedTime = 0.0f;
     float m_fpsLimit = 1.0f / 144.0f;
-    float m_normalSpeed = 150.0f;
-    float m_sprintSpeed = 300.0f;
+    float m_normalSpeed = 50.0f;
+    float m_sprintSpeed = 100.0f;
     float m_mouseSensitivity = 50.0f;
 
     std::shared_ptr<Core::Time::FPSLimiter> m_fpsLimiter;
@@ -84,7 +84,7 @@ private:
 
     std::shared_ptr<Core::Math::Camera> m_camera;
     std::shared_ptr<Graphics::Window::GLWindow> m_window;
-    std::shared_ptr<Graphics::Render::VoxelRenderer> m_voxelRenderer;
+    std::shared_ptr<Graphics::PipeLine::Renderer> m_renderer;
     std::shared_ptr<Graphics::GraphicsEngine> m_graphicsEngine;
 
     std::vector<std::shared_ptr<Core::Interface::ITickable>> m_tickable;

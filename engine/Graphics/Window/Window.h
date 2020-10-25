@@ -52,8 +52,15 @@ namespace Graphics
             Window() = default;
             virtual ~Window() = default;
 
-            virtual const State& GetActiveState() const;
-            virtual void Set(const std::string& title, int x, int y, int bits, bool fullscreen = false);
+            virtual void Set(const std::string& title, int x, int y, int bits, bool fullscreen)
+            {
+                m_newState = State(title, x, y, bits, fullscreen);
+            }
+
+            virtual const State& GetActiveState() const
+            {
+                return m_activeState;
+            }
 
             virtual void Update() = 0;
             virtual void Apply() = 0;
@@ -62,7 +69,10 @@ namespace Graphics
             virtual void* GetHandle() const = 0;
 
         protected:
-            virtual bool Compare(const State& state) const;
+            virtual bool Compare(const State& state) const
+            {
+                return m_activeState.Compare(m_newState);
+            }
 
             State m_activeState;
             State m_newState;

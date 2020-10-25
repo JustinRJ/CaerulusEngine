@@ -2,20 +2,21 @@
 
 #define CAERULUS_GRAPHICS __declspec(dllexport)
 
-#include "Core/Interface/NonCopyable.h"
+#include "Graphics/Pipeline/IBindable.h"
 
 namespace Graphics
 {
     namespace Resource
     {
         // TODO - break texture out into different impl. for each load function
-        class CAERULUS_GRAPHICS Texture : Core::Interface::NonCopyable
+        class CAERULUS_GRAPHICS Texture : public PipeLine::IBindable
         {
         public:
             Texture() = default;
             virtual ~Texture();
 
-            void Bind() const;
+            void Bind() const override;
+            void Unbind() const override;
             GLint GetHandle();
 
             bool Load(const char* texPath, bool texFlip);

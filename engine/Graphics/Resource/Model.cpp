@@ -66,7 +66,7 @@ namespace Graphics
 
                     if (materialName != prevMaterialName && prevMaterialName != "")
                     {
-                        m_meshes.push_back(std::make_shared<Mesh>(vertices, indices, prevMaterialName));
+                        m_meshes.push_back(std::make_shared<Mesh>(mat4(), vertices, indices, prevMaterialName));
                         vertices.clear();
                         indices.clear();
                     }
@@ -103,7 +103,7 @@ namespace Graphics
 
                     if (f == shape.mesh.num_face_vertices.size() - 1)
                     {
-                        m_meshes.push_back(std::make_shared<Mesh>(vertices, indices, materialName));
+                        m_meshes.push_back(std::make_shared<Mesh>(mat4(), vertices, indices, materialName));
                     }
                     prevMaterialName = materialName;
                 }
@@ -115,18 +115,19 @@ namespace Graphics
         {
             for (GLuint i = 0; i < m_meshes.size(); ++i)
             {
-                if (i < m_materials.size())
+                if (i < m_materials.size() && m_materials[i])
                 {
-                    if (m_materials[i])
-                    {
-                        m_materials[i]->Bind();
-                        DrawMesh(wireframe, i);
-                    }
-                    else if (defaultMaterial)
-                    {
-                        defaultMaterial->Bind();
-                        DrawMesh(wireframe, i);
-                    }
+                    m_materials[i]->Bind();
+                    DrawMesh(wireframe, i);
+                }
+                else if (defaultMaterial)
+                {
+                    defaultMaterial->Bind();
+                    DrawMesh(wireframe, i);
+                }
+                else
+                {
+                    DrawMesh(wireframe, i);
                 }
             }
         }

@@ -1,5 +1,12 @@
 #pragma once
 
+#define GLM_ENABLE_EXPERIMENTAL
+#include <glm.hpp>
+#include <gtx/hash.hpp>
+#include <gtc/type_ptr.hpp>
+#include <gtx/quaternion.hpp>
+#include <gtc/matrix_transform.hpp>
+
 namespace Core
 {
     namespace Math
@@ -9,8 +16,8 @@ namespace Core
         const double PI = std::atan(1.f) * 4.f;
 
         const vec3 UnitUp = vec3(0.f, 1.f, 0.f);
-        const vec3 UnitRight = vec3(0.f, 1.f, 0.f);
-        const vec3 UnitForward = vec3(0.f, 1.f, 0.f);
+        const vec3 UnitRight = vec3(1.f, 0.f, 0.f);
+        const vec3 UnitForward = vec3(0.f, 0.0, -1.f);
 
         enum Index
         {

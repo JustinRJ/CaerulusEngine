@@ -20,10 +20,6 @@ namespace Core
                 m_P(perspective(radians(m_degFOV), m_aspect, m_near, m_far))
             {}
 
-            Frustrum(const mat4& m) :
-                m_P(m)
-            {}
-
             Frustrum(const Frustrum& frustrum) :
                 m_P(frustrum.m_P)
             {}

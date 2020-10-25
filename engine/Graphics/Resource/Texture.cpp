@@ -246,6 +246,11 @@ namespace Graphics
             glBindTexture(m_type, m_handle);
         }
 
+        void Texture::Unbind() const
+        {
+            glBindTexture(m_type, 0);
+        }
+
         void Texture::ComputeMipmap()
         {
             glBindTexture(m_type, m_handle);

@@ -3,21 +3,6 @@
   <ItemGroup>
     <ClCompile Include="stdafx.cpp" />
     <ClCompile Include="dllmain.cpp" />
-    <ClCompile Include="Window\Window.cpp">
-      <Filter>Window</Filter>
-    </ClCompile>
-    <ClCompile Include="Geometry\Geometry.cpp">
-      <Filter>Geometry</Filter>
-    </ClCompile>
-    <ClCompile Include="Lighting\DirectionalLight.cpp">
-      <Filter>Light</Filter>
-    </ClCompile>
-    <ClCompile Include="Lighting\PointLight.cpp">
-      <Filter>Light</Filter>
-    </ClCompile>
-    <ClCompile Include="Lighting\Light.cpp">
-      <Filter>Light</Filter>
-    </ClCompile>
     <ClCompile Include="Window\GLWindow.cpp">
       <Filter>Window</Filter>
     </ClCompile>
@@ -33,33 +18,18 @@
     <ClCompile Include="Pipeline\Shader.cpp">
       <Filter>Pipeline</Filter>
     </ClCompile>
-    <ClCompile Include="Geometry\Mesh.cpp">
-      <Filter>Geometry</Filter>
-    </ClCompile>
     <ClCompile Include="GraphicsEngine.cpp" />
-    <ClCompile Include="Geometry\Cube.cpp">
-      <Filter>Geometry</Filter>
-    </ClCompile>
-    <ClCompile Include="Geometry\Plane.cpp">
-      <Filter>Geometry</Filter>
-    </ClCompile>
-    <ClCompile Include="Geometry\Quad.cpp">
-      <Filter>Geometry</Filter>
-    </ClCompile>
     <ClCompile Include="Pipeline\ShaderSrc.cpp">
       <Filter>Pipeline</Filter>
     </ClCompile>
-    <ClCompile Include="Render\VoxelRenderer.cpp">
-      <Filter>Render</Filter>
+    <ClCompile Include="Pipeline\Renderer.cpp">
+      <Filter>Pipeline</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="Window\Window.h">
       <Filter>Window</Filter>
-    </ClInclude>
-    <ClInclude Include="Geometry\Geometry.h">
-      <Filter>Geometry</Filter>
     </ClInclude>
     <ClInclude Include="Lighting\PointLight.h">
       <Filter>Light</Filter>
@@ -85,9 +55,6 @@
     <ClInclude Include="Pipeline\Shader.h">
       <Filter>Pipeline</Filter>
     </ClInclude>
-    <ClInclude Include="Pipeline\PipelineVertex.h">
-      <Filter>Pipeline</Filter>
-    </ClInclude>
     <ClInclude Include="Geometry\Mesh.h">
       <Filter>Geometry</Filter>
     </ClInclude>
@@ -101,17 +68,29 @@
     <ClInclude Include="Geometry\Quad.h">
       <Filter>Geometry</Filter>
     </ClInclude>
-    <ClInclude Include="Pipeline\PipelineUniform.h">
-      <Filter>Pipeline</Filter>
-    </ClInclude>
     <ClInclude Include="Pipeline\ShaderSrc.h">
       <Filter>Pipeline</Filter>
     </ClInclude>
-    <ClInclude Include="Render\IRenderer.h">
-      <Filter>Render</Filter>
+    <ClInclude Include="Pipeline\IRenderer.h">
+      <Filter>Pipeline</Filter>
     </ClInclude>
-    <ClInclude Include="Render\VoxelRenderer.h">
-      <Filter>Render</Filter>
+    <ClInclude Include="Pipeline\Renderer.h">
+      <Filter>Pipeline</Filter>
+    </ClInclude>
+    <ClInclude Include="Pipeline\VertexBuffer.h">
+      <Filter>Pipeline</Filter>
+    </ClInclude>
+    <ClInclude Include="Pipeline\IndexBuffer.h">
+      <Filter>Pipeline</Filter>
+    </ClInclude>
+    <ClInclude Include="Pipeline\VertexArray.h">
+      <Filter>Pipeline</Filter>
+    </ClInclude>
+    <ClInclude Include="Pipeline\VertexBufferLayout.h">
+      <Filter>Pipeline</Filter>
+    </ClInclude>
+    <ClInclude Include="Pipeline\IBindable.h">
+      <Filter>Pipeline</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -130,8 +109,16 @@
     <Filter Include="Pipeline">
       <UniqueIdentifier>{0ca40c0a-364b-4e3e-823c-1386529f52fa}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Render">
-      <UniqueIdentifier>{7ede5e99-c079-4a0b-8909-9c2ba9934247}</UniqueIdentifier>
+    <Filter Include="Shaders">
+      <UniqueIdentifier>{46838d02-fe10-487c-9d76-f9d2f300fa4f}</UniqueIdentifier>
     </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="assets\shaders\position.frag">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="assets\shaders\position.vert">
+      <Filter>Shaders</Filter>
+    </None>
   </ItemGroup>
 </Project>

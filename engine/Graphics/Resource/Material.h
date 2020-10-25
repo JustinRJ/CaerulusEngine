@@ -2,7 +2,7 @@
 
 #define CAERULUS_GRAPHICS __declspec(dllexport)
 
-#include "Core/Interface/NonCopyable.h"
+#include "Graphics/Pipeline/IBindable.h"
 
 namespace Graphics
 {
@@ -26,13 +26,15 @@ namespace Graphics
             Size = 5
         };
 
-        class CAERULUS_GRAPHICS Material : public Core::Interface::NonCopyable
+        class CAERULUS_GRAPHICS Material : public PipeLine::IBindable
         {
 
         public:
             Material(const std::string& name, const std::string& path = "");
             virtual ~Material() = default;
-            void Bind() const;
+
+            void Bind() const override;
+            void Unbind() const override;
 
             std::shared_ptr<Texture> GetTexture(MaterialType materialType) const;
             void SetTexture(std::shared_ptr<Texture> texture, MaterialType materialType);
@@ -49,6 +51,7 @@ namespace Graphics
             std::string m_path;
             std::map<MaterialType, std::string> m_textureNames;
             std::vector<std::shared_ptr<Texture>> m_textures;
+            // TODO - ptr to shader here
         };
     }
 }

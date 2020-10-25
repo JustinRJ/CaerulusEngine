@@ -120,7 +120,8 @@
 echo DA | xcopy /E "$(SolutionDir)..\dependencies\glfw-3.2.1\bin\$(Configuration)\$(Platform)\glfw3.dll" "$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(Platform)\"</Command>
     </PreBuildEvent>
     <PostBuildEvent>
-      <Command>echo DA | xcopy "$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(Platform)\*.dll" "$(SolutionDir)..\bin\$(Configuration)\$(Platform)"</Command>
+      <Command>echo DA | xcopy /E "$(SolutionDir)$(MSBuildProjectName)\assets" "$(SolutionDir)..\bin\$(Configuration)\$(Platform)\assets"
+echo DA | xcopy "$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(Platform)\*.dll" "$(SolutionDir)..\bin\$(Configuration)\$(Platform)"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -145,7 +146,8 @@ echo DA | xcopy /E "$(SolutionDir)..\dependencies\glfw-3.2.1\bin\$(Configuration
 echo DA | xcopy /E "$(SolutionDir)..\dependencies\glfw-3.2.1\bin\$(Configuration)\$(Platform)\glfw3.dll" "$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(Platform)\"</Command>
     </PreBuildEvent>
     <PostBuildEvent>
-      <Command>echo DA | xcopy "$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(Platform)\*.dll" "$(SolutionDir)..\bin\$(Configuration)\$(Platform)"</Command>
+      <Command>echo DA | xcopy /E "$(SolutionDir)$(MSBuildProjectName)\assets" "$(SolutionDir)..\bin\$(Configuration)\$(Platform)\assets"
+echo DA | xcopy "$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(Platform)\*.dll" "$(SolutionDir)..\bin\$(Configuration)\$(Platform)"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -170,7 +172,8 @@ echo DA | xcopy /E "$(SolutionDir)..\dependencies\glfw-3.2.1\bin\$(Configuration
 echo DA | xcopy /E "$(SolutionDir)..\dependencies\glfw-3.2.1\bin\$(Configuration)\$(Platform)\glfw3.dll" "$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(Platform)\"</Command>
     </PreBuildEvent>
     <PostBuildEvent>
-      <Command>echo DA | xcopy "$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(Platform)\*.dll" "$(SolutionDir)..\bin\$(Configuration)\$(Platform)"</Command>
+      <Command>echo DA | xcopy /E "$(SolutionDir)$(MSBuildProjectName)\assets" "$(SolutionDir)..\bin\$(Configuration)\$(Platform)\assets"
+echo DA | xcopy "$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(Platform)\*.dll" "$(SolutionDir)..\bin\$(Configuration)\$(Platform)"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -199,25 +202,28 @@ echo DA | xcopy /E "$(SolutionDir)..\dependencies\glfw-3.2.1\bin\$(Configuration
 echo DA | xcopy /E "$(SolutionDir)..\dependencies\glfw-3.2.1\bin\$(Configuration)\$(Platform)\glfw3.dll" "$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(Platform)\"</Command>
     </PreBuildEvent>
     <PostBuildEvent>
-      <Command>echo DA | xcopy "$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(Platform)\*.dll" "$(SolutionDir)..\bin\$(Configuration)\$(Platform)"</Command>
+      <Command>echo DA | xcopy /E "$(SolutionDir)$(MSBuildProjectName)\assets" "$(SolutionDir)..\bin\$(Configuration)\$(Platform)\assets"
+echo DA | xcopy "$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(Platform)\*.dll" "$(SolutionDir)..\bin\$(Configuration)\$(Platform)"</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Geometry\Cube.h" />
-    <ClInclude Include="Geometry\Geometry.h" />
     <ClInclude Include="Geometry\Mesh.h" />
     <ClInclude Include="Geometry\Plane.h" />
     <ClInclude Include="Geometry\Quad.h" />
     <ClInclude Include="Lighting\DirectionalLight.h" />
     <ClInclude Include="Lighting\Light.h" />
     <ClInclude Include="Lighting\PointLight.h" />
-    <ClInclude Include="Pipeline\PipelineVertex.h" />
-    <ClInclude Include="Pipeline\PipelineUniform.h" />
+    <ClInclude Include="Pipeline\IBindable.h" />
+    <ClInclude Include="Pipeline\IndexBuffer.h" />
+    <ClInclude Include="Pipeline\IRenderer.h" />
+    <ClInclude Include="Pipeline\Renderer.h" />
     <ClInclude Include="Pipeline\Shader.h" />
     <ClInclude Include="Pipeline\ShaderSrc.h" />
     <ClInclude Include="GraphicsEngine.h" />
-    <ClInclude Include="Render\IRenderer.h" />
-    <ClInclude Include="Render\VoxelRenderer.h" />
+    <ClInclude Include="Pipeline\VertexArray.h" />
+    <ClInclude Include="Pipeline\VertexBuffer.h" />
+    <ClInclude Include="Pipeline\VertexBufferLayout.h" />
     <ClInclude Include="Resource\Material.h" />
     <ClInclude Include="Resource\Model.h" />
     <ClInclude Include="Resource\Texture.h" />
@@ -227,18 +233,10 @@ echo DA | xcopy /E "$(SolutionDir)..\dependencies\glfw-3.2.1\bin\$(Configuration
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp" />
-    <ClCompile Include="Geometry\Cube.cpp" />
-    <ClCompile Include="Geometry\Geometry.cpp" />
-    <ClCompile Include="Geometry\Mesh.cpp" />
-    <ClCompile Include="Geometry\Plane.cpp" />
-    <ClCompile Include="Geometry\Quad.cpp" />
-    <ClCompile Include="Lighting\DirectionalLight.cpp" />
-    <ClCompile Include="Lighting\Light.cpp" />
-    <ClCompile Include="Lighting\PointLight.cpp" />
+    <ClCompile Include="Pipeline\Renderer.cpp" />
     <ClCompile Include="Pipeline\Shader.cpp" />
     <ClCompile Include="Pipeline\ShaderSrc.cpp" />
     <ClCompile Include="GraphicsEngine.cpp" />
-    <ClCompile Include="Render\VoxelRenderer.cpp" />
     <ClCompile Include="Resource\Material.cpp" />
     <ClCompile Include="Resource\Model.cpp" />
     <ClCompile Include="Resource\Texture.cpp" />
@@ -249,12 +247,15 @@ echo DA | xcopy /E "$(SolutionDir)..\dependencies\glfw-3.2.1\bin\$(Configuration
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Window\GLWindow.cpp" />
-    <ClCompile Include="Window\Window.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Core\Core.vcxproj">
       <Project>{8db407dd-297e-43a8-8e82-b0bed40438b4}</Project>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="assets\shaders\position.frag" />
+    <None Include="assets\shaders\position.vert" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

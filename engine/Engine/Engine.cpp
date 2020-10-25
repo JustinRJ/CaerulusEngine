@@ -4,7 +4,7 @@
 
 #include "Graphics/GraphicsEngine.h"
 #include "Graphics/Window/GLWindow.h"
-#include "Graphics/Render/VoxelRenderer.h"
+#include "Graphics/PipeLine/Renderer.h"
 
 #include "Core/Logging/Log.h"
 #include "Core/Math/Camera.h"
@@ -35,7 +35,7 @@ namespace
     using namespace Core::Time;
     using namespace Core::Input;
     using namespace Graphics;
-    using namespace Graphics::Render;
+    using namespace Graphics::PipeLine;
     using namespace Managers;
 }
 
@@ -46,10 +46,10 @@ Engine::Engine(int argc, char** argv) :
     m_fpsLimiter = std::make_unique<FPSLimiter>();
     m_fixedTimer = std::make_unique<FixedTimer>();
 
-    m_camera = std::make_shared<Camera>(vec3(0, 0, 0), Core::Math::UnitForward, Core::Math::UnitUp);
     m_window = std::make_shared<GLWindow>("Caerulus", 1280, 1024, 32, false);
-    m_voxelRenderer = std::make_shared<VoxelRenderer>(m_window, m_camera);
-    m_graphicsEngine = std::make_shared<GraphicsEngine>(m_voxelRenderer, m_modelManager, m_shaderManager);
+    m_camera = std::make_shared<Camera>(vec3(0, 0, 0), Core::Math::UnitForward, Core::Math::UnitUp);
+    m_renderer = std::make_shared<Renderer>();
+    m_graphicsEngine = std::make_shared<GraphicsEngine>(m_renderer);
 
     m_keyboardInputManager = std::make_shared<KeyboardInputManager>(m_window);
     m_mouseInputManager = std::make_shared<MouseInputManager>(m_window);
@@ -100,8 +100,6 @@ void Engine::Tick()
     Log::LogInDebug("DeltaTime: " + std::to_string(m_deltaTime));
     Log::LogInDebug("FixedTime: " + std::to_string(m_fixedTime));
 
-    glfwPollEvents();
-
     for (auto& updatable : m_tickable)
     {
         updatable->PreUpdate(m_deltaTime);
@@ -116,6 +114,8 @@ void Engine::Tick()
     {
         updatable->FixedUpdate(m_fixedTime);
     }
+
+    glfwPollEvents();
 }
 
 void Engine::InitInput()
@@ -124,13 +124,14 @@ void Engine::InitInput()
     using namespace Core::Input;
     m_keyboardInputManager->AddWindowKeyCallback(m_window, GLFW_KEY_ESCAPE, Action::Release, [=](Modifier) { m_running = false; });
     m_keyboardInputManager->AddWindowKeyCallback(m_window, GLFW_KEY_X, Action::Release, [&](Modifier) { m_window->ToggleLockedCursor(); });
+    m_keyboardInputManager->AddWindowKeyCallback(m_window, GLFW_KEY_C, Action::Release, [&](Modifier) { m_graphicsEngine->ToggleWireframe(); });
 
-    m_keyboardInputManager->AddWindowKeyCallback(m_window, GLFW_KEY_A, Action::Hold, [&](Modifier m) { m_camera->Translate(UnitRight   * -m_deltaTime * (m == Modifier::Shift ? m_sprintSpeed : m_normalSpeed), false); });
-    m_keyboardInputManager->AddWindowKeyCallback(m_window, GLFW_KEY_D, Action::Hold, [&](Modifier m) { m_camera->Translate(UnitRight   *  m_deltaTime * (m == Modifier::Shift ? m_sprintSpeed : m_normalSpeed), false); });
-    m_keyboardInputManager->AddWindowKeyCallback(m_window, GLFW_KEY_W, Action::Hold, [&](Modifier m) { m_camera->Translate(UnitForward *  m_deltaTime * (m == Modifier::Shift ? m_sprintSpeed : m_normalSpeed)); });
-    m_keyboardInputManager->AddWindowKeyCallback(m_window, GLFW_KEY_S, Action::Hold, [&](Modifier m) { m_camera->Translate(UnitForward * -m_deltaTime * (m == Modifier::Shift ? m_sprintSpeed : m_normalSpeed)); });
-    m_keyboardInputManager->AddWindowKeyCallback(m_window, GLFW_KEY_Q, Action::Hold, [&](Modifier m) { m_camera->Translate(UnitUp      * -m_deltaTime * (m == Modifier::Shift ? m_sprintSpeed : m_normalSpeed)); });
-    m_keyboardInputManager->AddWindowKeyCallback(m_window, GLFW_KEY_E, Action::Hold, [&](Modifier m) { m_camera->Translate(UnitUp      *  m_deltaTime * (m == Modifier::Shift ? m_sprintSpeed : m_normalSpeed)); });
+    m_keyboardInputManager->AddWindowKeyCallback(m_window, GLFW_KEY_A, Action::Hold, [&](Modifier m) { if (m_window->IsCursorLocked()) { m_camera->Translate(UnitRight   * -m_deltaTime * (m == Modifier::Shift ? m_sprintSpeed : m_normalSpeed), false); }});
+    m_keyboardInputManager->AddWindowKeyCallback(m_window, GLFW_KEY_D, Action::Hold, [&](Modifier m) { if (m_window->IsCursorLocked()) { m_camera->Translate(UnitRight   *  m_deltaTime * (m == Modifier::Shift ? m_sprintSpeed : m_normalSpeed), false); }});
+    m_keyboardInputManager->AddWindowKeyCallback(m_window, GLFW_KEY_W, Action::Hold, [&](Modifier m) { if (m_window->IsCursorLocked()) { m_camera->Translate(UnitForward *  m_deltaTime * (m == Modifier::Shift ? m_sprintSpeed : m_normalSpeed)); }});
+    m_keyboardInputManager->AddWindowKeyCallback(m_window, GLFW_KEY_S, Action::Hold, [&](Modifier m) { if (m_window->IsCursorLocked()) { m_camera->Translate(UnitForward * -m_deltaTime * (m == Modifier::Shift ? m_sprintSpeed : m_normalSpeed)); }});
+    m_keyboardInputManager->AddWindowKeyCallback(m_window, GLFW_KEY_Q, Action::Hold, [&](Modifier m) { if (m_window->IsCursorLocked()) { m_camera->Translate(UnitUp      * -m_deltaTime * (m == Modifier::Shift ? m_sprintSpeed : m_normalSpeed)); }});
+    m_keyboardInputManager->AddWindowKeyCallback(m_window, GLFW_KEY_E, Action::Hold, [&](Modifier m) { if (m_window->IsCursorLocked()) { m_camera->Translate(UnitUp      *  m_deltaTime * (m == Modifier::Shift ? m_sprintSpeed : m_normalSpeed)); }});
 
     m_mouseInputManager->AddDragMouseCallback(m_window, [&](DragData dd)
     {
@@ -144,8 +145,15 @@ void Engine::InitInput()
 
 void Engine::InitScene()
 {
+    m_modelManager->Load("shaderBall", "assets/models/shaderball.obj");
+    m_graphicsEngine->SetModels(m_modelManager->GetAll());
 }
 
 void Engine::InitRenderer()
 {
+    m_shaderManager->Load("position", "assets/shaders/position.vert", "assets/shaders/position.frag");
+
+    m_renderer->SetCamera(m_camera);
+    m_renderer->SetWindow(m_window);
+    m_renderer->SetShader(m_shaderManager->Get("position"));
 }

@@ -5,7 +5,6 @@
 #include <glfw3native.h>
 #include "Core/Math/Math.h"
 #include "Core/Logging/Log.h"
-#include "Graphics/Geometry/Quad.h"
 
 namespace
 {
@@ -29,7 +28,6 @@ namespace Graphics
                 Log::LogError("Failed to init GLFW!");
                 exit(1);
             }
-            glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
             Window::Set(title, x, y, bits, fullscreen);
             Apply();
             CenterCursor();
@@ -53,6 +51,10 @@ namespace Graphics
                     m_activeState.Fullscreen ? glfwGetPrimaryMonitor() : nullptr,
                     nullptr);
                 glfwMakeContextCurrent(m_window);
+
+                int width, height;
+                glfwGetFramebufferSize(m_window, &width, &height);
+                glViewport(0, 0, width, height);
             }
         }
 
@@ -99,16 +101,6 @@ namespace Graphics
         bool GLWindow::IsCursorLocked() const
         {
             return m_lockedCursor;
-        }
-
-        std::shared_ptr<Quad> GLWindow::GetQuad() const
-        {
-            return m_quad;
-        }
-
-        void GLWindow::SetQuad(std::shared_ptr<Quad> quad)
-        {
-            m_quad = quad;
         }
     }
 }

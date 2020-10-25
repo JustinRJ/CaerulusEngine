@@ -6,17 +6,8 @@
 
 namespace Graphics
 {
-    namespace Geometry
-    {
-        class Quad;
-    }
-}
-
-namespace Graphics
-{
     namespace Window
     {
-        using namespace Geometry;
         class CAERULUS_GRAPHICS GLWindow : public Window
         {
         public:
@@ -31,9 +22,6 @@ namespace Graphics
             void* GetHandle() const override;
 
             GLFWwindow* GetGLFWWindow() const;
-
-            void SetQuad(std::shared_ptr<Quad> quad);
-            std::shared_ptr<Quad> GetQuad() const;
             
             void ToggleLockedCursor();
             bool IsCursorLocked() const;
@@ -41,7 +29,6 @@ namespace Graphics
         private:
 
             GLFWwindow* m_window;
-            std::shared_ptr<Quad> m_quad;
             bool m_lockedCursor;
         };
     }

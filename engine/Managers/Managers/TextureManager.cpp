@@ -17,11 +17,19 @@ namespace Managers
         auto t = std::make_shared<Texture>();
         if (HDR)
         {
-            t->LoadHDR(path.c_str(), true);
+            bool loaded = t->LoadHDR(path.c_str(), true);
+            if (!loaded)
+            {
+                return false;
+            }
         }
         else
         {
-            t->Load(path.c_str(), true);
+            bool loaded = t->Load(path.c_str(), true);
+            if (!loaded)
+            {
+                return false;
+            }
         }
         Insert(name, t);
         return true;

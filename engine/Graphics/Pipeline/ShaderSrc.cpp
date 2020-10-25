@@ -1,6 +1,7 @@
 #include "stdafx.h"
 
 #include "ShaderSrc.h"
+
 #include "Core/Logging/Log.h"
 
 namespace Graphics
@@ -62,17 +63,17 @@ namespace Graphics
             glCompileShader(m_handle);
             glGetShaderiv(m_handle, GL_COMPILE_STATUS, &isCompileSuccess);
 
-            if (!isCompileSuccess)
-            {
-                using Core::Logging::Log;
-                glGetShaderInfoLog(m_handle, logSize, NULL, infoLog);
-                Log::LogError("Shader " + std::string(m_path) + "compilation failed!", infoLog);
-            }
-            else
+            if (isCompileSuccess)
             {
                 // Find uniforms
                 SetUniforms(source);
                 m_isCompiled = true;
+            }
+            else
+            {
+                using Core::Logging::Log;
+                glGetShaderInfoLog(m_handle, logSize, NULL, infoLog);
+                Log::LogError("Shader " + std::string(m_path) + "compilation failed!", infoLog);
             }
         }
 

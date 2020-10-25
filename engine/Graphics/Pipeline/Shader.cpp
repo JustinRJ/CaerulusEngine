@@ -1,8 +1,9 @@
 #include "stdafx.h"
 
 #include "Shader.h"
-#include "Core/Logging/Log.h"
+
 #include "ShaderSrc.h"
+#include "Core/Logging/Log.h"
 
 namespace Graphics
 {
@@ -11,10 +12,6 @@ namespace Graphics
         Shader::Shader(std::shared_ptr<ShaderSrc> vertex, std::shared_ptr<ShaderSrc> fragment) :
             m_vertex(vertex),
             m_fragment(fragment)
-        {
-        }
-
-        bool Shader::Link()
         {
             using Core::Logging::Log;
             const unsigned int logSize = 512;
@@ -32,21 +29,9 @@ namespace Graphics
             {
                 glGetProgramInfoLog(m_handle, logSize, NULL, infoLog);
                 Log::LogError("Shader program linking failed!", infoLog);
-                return false;
             }
 
             m_isLinked = true;
-            return true;
-        }
-
-        GLuint Shader::GetHandle() const
-        {
-            return m_handle;
-        }
-
-        bool Shader::IsLinked() const
-        {
-            return m_isLinked;
         }
     }
 }

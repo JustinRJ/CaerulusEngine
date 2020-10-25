@@ -12,7 +12,7 @@ namespace Managers
     {
     public:
 
-        Manager() {}
+        Manager() = default;
         virtual ~Manager() = default;
 
         std::shared_ptr<T> Get(const std::string& key) const
@@ -24,6 +24,14 @@ namespace Managers
             }
             Log::LogInDebug("Managed object " + key + " not found!");
             return nullptr;
+        }
+
+        std::vector<std::shared_ptr<T>> GetAll() const
+        {
+            std::vector<std::shared_ptr<T>> elements;
+            std::transform(m_managedMap.begin(), m_managedMap.end(),
+                std::back_inserter(elements), [](auto &kv) { return kv.second; });
+            return elements;
         }
 
         bool Remove(const std::string& key)
