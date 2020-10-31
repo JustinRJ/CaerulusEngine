@@ -4,6 +4,14 @@
 
 #include "Window.h"
 
+namespace Core
+{
+    namespace Math
+    {
+        class Camera;
+    }
+}
+
 namespace Graphics
 {
     namespace Window
@@ -11,8 +19,7 @@ namespace Graphics
         class CAERULUS_GRAPHICS GLWindow : public Window
         {
         public:
-
-            GLWindow(const std::string& title, int x, int y, int bits, bool fullscreen = false);
+            GLWindow(std::shared_ptr<Core::Math::Camera> camera, const std::string& title, int x, int y, int bits, bool fullscreen = false);
             virtual ~GLWindow();
 
             void Update() override;
@@ -26,10 +33,11 @@ namespace Graphics
             void ToggleLockedCursor();
             bool IsCursorLocked() const;
             void CenterCursor();
-        private:
 
+        private:
             GLFWwindow* m_window;
             bool m_lockedCursor;
+            std::shared_ptr<Core::Math::Camera> m_camera;
         };
     }
 }

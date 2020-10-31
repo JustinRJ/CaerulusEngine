@@ -15,7 +15,7 @@ namespace Core
 
             Camera(const vec3& position, const vec3& forward, const vec3& up = UnitUp) :
                 m_proj(54.0f, 1.25f, 1.0f, 1000.0f),
-                m_view(lookAt(position, glm::normalize(position + forward), up))
+                m_view(lookAt(position, Core::Math::normalize(position + forward), up))
             {}
 
             Camera(const Camera& camera) :
@@ -96,7 +96,6 @@ namespace Core
             }
 
         private:
-
             Frustrum m_proj;
             Transform m_view;
         };

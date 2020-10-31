@@ -12,8 +12,8 @@ namespace Graphics
             Renderer();
             virtual ~Renderer() = default;
 
-            void Clear(glm::vec4 colour) override;
-            void Draw(const VertexArray& va, const IndexBuffer& ib, const Shader& shader, bool wireframe = false) override;
+            void Clear(Core::Math::vec4 colour) override;
+            void Draw(const VertexArray& va, const IndexBuffer& ib, bool wireframe = false) override;
         };
     }
 }

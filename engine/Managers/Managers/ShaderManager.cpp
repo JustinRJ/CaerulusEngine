@@ -10,7 +10,6 @@ namespace Managers
 
     void ShaderManager::Load(const std::string& name, const std::string& vertexPath, const std::string& fragmentPath)
     {
-        using namespace Core::Logging;
         if (IsLoaded(name))
         {
             Log::LogInDebug("Shader with name " + name + " already loaded");

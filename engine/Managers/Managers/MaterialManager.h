@@ -4,9 +4,13 @@
 #include "TextureManager.h"
 #include "Graphics/Resource/Material.h"
 
-namespace Managers
+namespace
 {
     using namespace Graphics::Resource;
+}
+
+namespace Managers
+{
     class CAERULUS_MANAGERS MaterialManager : public Manager<Material>
     {
     public:

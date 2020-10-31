@@ -47,7 +47,7 @@ namespace Graphics
                 glBindVertexArray(0);
             }
 
-            unsigned int GetHandle() const override
+            unsigned int GetHandle() const
             {
                 return m_handle;
             }

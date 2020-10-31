@@ -9,13 +9,13 @@ namespace Graphics
         class PointLight : public Light
         {
         public:
-            PointLight(std::shared_ptr<Shader> shader, std::shared_ptr<Camera> camera) :
-                Light(shader, camera)
+            PointLight(std::shared_ptr<Pipeline::Shader> shader) :
+                Light(shader)
             {}
 
             virtual ~PointLight() = default;
 
-            const vec3& GetPosition() const
+            const Core::Math::vec3& GetPosition() const
             {
                 return m_position;
             }
@@ -25,7 +25,7 @@ namespace Graphics
                 return m_radius;
             }
 
-            void SetPosition(const vec3& pos)
+            void SetPosition(const Core::Math::vec3& pos)
             {
                 m_position = pos;
             }
@@ -36,7 +36,7 @@ namespace Graphics
             }
 
         private:
-            vec3 m_position;
+            Core::Math::vec3 m_position;
             float m_radius;
         };
     }

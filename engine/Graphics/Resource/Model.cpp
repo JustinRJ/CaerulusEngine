@@ -17,9 +17,9 @@ namespace std
         size_t operator()(const Vertex& vertex) const
         {
             return
-                ((hash<vec3>()(vertex.Position) ^
-                (hash<vec3>()(vertex.Normal) << 1)) >> 1) ^
-                    (hash<vec2>()(vertex.TexCoords) << 1);
+                ((hash<Core::Math::vec3>()(vertex.Position) ^
+                (hash<Core::Math::vec3>()(vertex.Normal) << 1)) >> 1) ^
+                    (hash<Core::Math::vec2>()(vertex.TexCoords) << 1);
         }
     };
 }
@@ -66,7 +66,7 @@ namespace Graphics
 
                     if (materialName != prevMaterialName && prevMaterialName != "")
                     {
-                        m_meshes.push_back(std::make_shared<Mesh>(mat4(), vertices, indices, prevMaterialName));
+                        m_meshes.push_back(std::make_shared<Mesh>(Core::Math::mat4(), vertices, indices, prevMaterialName));
                         vertices.clear();
                         indices.clear();
                     }
@@ -103,7 +103,7 @@ namespace Graphics
 
                     if (f == shape.mesh.num_face_vertices.size() - 1)
                     {
-                        m_meshes.push_back(std::make_shared<Mesh>(mat4(), vertices, indices, materialName));
+                        m_meshes.push_back(std::make_shared<Mesh>(Core::Math::mat4(), vertices, indices, materialName));
                     }
                     prevMaterialName = materialName;
                 }

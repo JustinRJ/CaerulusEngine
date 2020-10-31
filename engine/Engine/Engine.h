@@ -51,7 +51,6 @@ namespace Managers
 class Engine : public Core::Interface::NonCopyable
 {
 public:
-
     Engine(int argc, char** argv);
     virtual ~Engine() = default;
 
@@ -62,13 +61,13 @@ public:
     void InitRenderer();
 
 private:
-
     void Tick();
 
     int m_argCount;
     char** m_argValue;
 
     bool m_running = false;
+    bool m_reset = false;
 
     float m_deltaTime = 0.0f;
     float m_fixedTime = 0.0f;

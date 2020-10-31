@@ -36,27 +36,27 @@ namespace Graphics
 
         void Shader::UpdateUniforms()
         {
-            for (auto const& kv : m_uniformCallbackMap.IntCallbacks)
+            for (auto const& kv : m_uniformCallbackMap.I1Callbacks)
             {
                 Set1i(kv.first, kv.second());
             }
 
-            for (auto const& kv : m_uniformCallbackMap.FloatCallbacks)
+            for (auto const& kv : m_uniformCallbackMap.F1Callbacks)
             {
                 Set1f(kv.first, kv.second());
             }
 
-            for (auto const& kv : m_uniformCallbackMap.Vec2Callbacks)
+            for (auto const& kv : m_uniformCallbackMap.F2Callbacks)
             {
                 Set2f(kv.first, kv.second());
             }
 
-            for (auto const& kv : m_uniformCallbackMap.Vec3Callbacks)
+            for (auto const& kv : m_uniformCallbackMap.F3Callbacks)
             {
                 Set3f(kv.first, kv.second());
             }
 
-            for (auto const& kv : m_uniformCallbackMap.Vec4Callbacks)
+            for (auto const& kv : m_uniformCallbackMap.F4Callbacks)
             {
                 Set4f(kv.first, kv.second());
             }

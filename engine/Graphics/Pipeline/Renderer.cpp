@@ -12,6 +12,8 @@
 
 namespace
 {
+    using namespace Core::Logging;
+
     void GLAPIENTRY OpenGLErrorLogCallback(GLenum source,
             GLenum type,
             GLuint id,
@@ -22,7 +24,6 @@ namespace
     {
         if (severity != GL_DEBUG_SEVERITY_NOTIFICATION)
         {
-            using namespace Core::Logging;
             Log::LogError("OpenGL Error " + std::string(message), "OpenGL Error Code-" + std::to_string(id));
         }
     }
@@ -36,7 +37,6 @@ namespace Graphics
         {
             glewExperimental = true;
 
-            using namespace Core::Logging;
             GLenum error = glGetError();
             if (error != GL_NO_ERROR)
             {
@@ -58,15 +58,14 @@ namespace Graphics
             glDebugMessageCallback(OpenGLErrorLogCallback, 0);
         }
 
-        void Renderer::Clear(glm::vec4 colour)
+        void Renderer::Clear(Core::Math::vec4 colour)
         {
             glClearColor(colour.r, colour.g, colour.b, colour.a);
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         }
 
-        void Renderer::Draw(const VertexArray& va, const IndexBuffer& ib, const Shader& shader, bool wireframe)
+        void Renderer::Draw(const VertexArray& va, const IndexBuffer& ib, bool wireframe)
         {
-            shader.Bind();
             va.Bind();
             ib.Bind();
             glDrawElements(wireframe ? GL_LINE_LOOP : GL_TRIANGLES, static_cast<GLsizei>(ib.GetCount()), GL_UNSIGNED_INT, nullptr);

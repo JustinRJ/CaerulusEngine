@@ -8,13 +8,13 @@ namespace Graphics
     {
         struct UniformCallbackMap
         {
-            std::map<std::string, std::function<GLint()>> IntCallbacks;
-            std::map<std::string, std::function<GLfloat()>> FloatCallbacks;
-            std::map<std::string, std::function<glm::fvec2()>> Vec2Callbacks;
-            std::map<std::string, std::function<glm::fvec3()>> Vec3Callbacks;
-            std::map<std::string, std::function<glm::fvec4()>> Vec4Callbacks;
-            std::map<std::string, std::function<glm::mat3()>> Mat3Callbacks;
-            std::map<std::string, std::function<glm::mat4()>> Mat4Callbacks;
+            std::map<std::string, std::function<GLint()>> I1Callbacks;
+            std::map<std::string, std::function<GLfloat()>> F1Callbacks;
+            std::map<std::string, std::function<Core::Math::fvec2()>> F2Callbacks;
+            std::map<std::string, std::function<Core::Math::fvec3()>> F3Callbacks;
+            std::map<std::string, std::function<Core::Math::fvec4()>> F4Callbacks;
+            std::map<std::string, std::function<Core::Math::mat3()>> Mat3Callbacks;
+            std::map<std::string, std::function<Core::Math::mat4()>> Mat4Callbacks;
         };
     }
 }

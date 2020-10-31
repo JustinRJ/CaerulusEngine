@@ -26,7 +26,6 @@ namespace Graphics
             unsigned int GetHandle() const;
 
         private:
-
             void Compile(const std::string& source);
 
             bool m_isCompiled;

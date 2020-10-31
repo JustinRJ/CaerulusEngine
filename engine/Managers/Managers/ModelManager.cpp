@@ -12,14 +12,12 @@ namespace Managers
 
     void ModelManager::Load(const std::string& name, const std::string& modelPath, const std::string& materialPath)
     {
-        using namespace Core::Logging;
         if (IsLoaded(name))
         {
             Log::LogInDebug("Model with name " + name + " already loaded with path: " + modelPath);
             return;
         }
 
-        using namespace Core::Logging;
         Log::LogMessage("Loading model " + name + " with path: " + modelPath);
         std::shared_ptr<Model> newModel = std::make_shared<Model>(modelPath);
         if (!newModel->IsLoaded())

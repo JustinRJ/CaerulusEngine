@@ -25,7 +25,6 @@ namespace Core
         class KeyboardInputManager : public Interface::ITickable
         {
         public:
-
             KeyboardInputManager(std::shared_ptr<Graphics::Window::GLWindow> window)
             {
                 glfwSetWindowUserPointer(window->GetGLFWWindow(), this);
@@ -33,10 +32,7 @@ namespace Core
 
             virtual ~KeyboardInputManager() = default;
 
-            void Reset() override
-            {
-                m_keyBindingMap.clear();
-            }
+            void Reset() override {}
 
             void PreUpdate(float deltaTime) override
             {
@@ -85,7 +81,6 @@ namespace Core
             }
 
         private:
-
             std::map<int, Action>& GetKeyDataMap()
             {
                 return m_keyDataMap;

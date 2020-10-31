@@ -5,9 +5,13 @@
 #include "ShaderSrcManager.h"
 #include "Graphics/Pipeline/Shader.h"
 
-namespace Managers
+namespace
 {
     using namespace Graphics::Pipeline;
+}
+
+namespace Managers
+{
     class CAERULUS_MANAGERS ShaderManager : public Manager<Shader>
     {
     public:

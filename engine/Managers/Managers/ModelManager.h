@@ -6,9 +6,13 @@
 #include "MaterialManager.h"
 #include "Graphics/Resource/Model.h"
 
-namespace Managers
+namespace
 {
     using namespace Graphics::Resource;
+}
+
+namespace Managers
+{
     class CAERULUS_MANAGERS ModelManager : public Manager<Model>
     {
     public:

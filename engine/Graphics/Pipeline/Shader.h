@@ -28,7 +28,7 @@ namespace Graphics
                 glUseProgram(0);
             }
 
-            unsigned int GetHandle() const override
+            unsigned int GetHandle() const
             {
                 return m_handle;
             }
@@ -48,27 +48,27 @@ namespace Graphics
                 glUniform1f(GetUniformLocation(name), value);
             }
 
-            void Set2f(const std::string& name, glm::fvec2 value)
+            void Set2f(const std::string& name, Core::Math::fvec2 value)
             {
                 glUniform2fv(GetUniformLocation(name), 1, value_ptr(value));
             }
 
-            void Set3f(const std::string& name, const glm::fvec3& value)
+            void Set3f(const std::string& name, const Core::Math::fvec3& value)
             {
                 glUniform3fv(GetUniformLocation(name), 1, value_ptr(value));
             }
 
-            void Set4f(const std::string& name, const glm::fvec4& value)
+            void Set4f(const std::string& name, const Core::Math::fvec4& value)
             {
                 glUniform4fv(GetUniformLocation(name), 1, value_ptr(value));
             }
 
-            void SetMat3fv(const std::string& name, const glm::mat3& value, GLboolean transpose = GL_FALSE)
+            void SetMat3fv(const std::string& name, const Core::Math::mat3& value, GLboolean transpose = GL_FALSE)
             {
                 glUniformMatrix3fv(GetUniformLocation(name), 1, transpose, value_ptr(value));
             }
 
-            void SetMat4fv(const std::string& name, const glm::mat4& value, GLboolean transpose = GL_FALSE)
+            void SetMat4fv(const std::string& name, const Core::Math::mat4& value, GLboolean transpose = GL_FALSE)
             {
                 glUniformMatrix4fv(GetUniformLocation(name), 1, transpose, value_ptr(value));
             }

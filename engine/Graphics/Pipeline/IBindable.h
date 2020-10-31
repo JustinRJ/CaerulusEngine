@@ -14,10 +14,6 @@ namespace Graphics
             virtual void Bind() const {};
             virtual void Bind(unsigned int slot) const {};
             virtual void Unbind() const = 0;
-            virtual unsigned int GetHandle() const
-            {
-                return 0;
-            };
         };
     }
 }

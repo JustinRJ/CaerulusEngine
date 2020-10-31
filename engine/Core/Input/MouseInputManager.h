@@ -32,7 +32,6 @@ namespace Core
         class MouseInputManager : public Interface::ITickable
         {
         public:
-
             MouseInputManager(std::shared_ptr<Graphics::Window::GLWindow> window) :
                 m_window(window)
             {
@@ -41,9 +40,7 @@ namespace Core
 
             virtual ~MouseInputManager() = default;
 
-            void Reset() override
-            {
-            }
+            void Reset() override {}
 
             void PreUpdate(float deltaTime) override
             {

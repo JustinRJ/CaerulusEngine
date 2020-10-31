@@ -6,7 +6,6 @@ namespace Managers
 {
     void TextureManager::Load(const std::string& name, const std::string& path, bool HDR)
     {
-        using namespace Core::Logging;
         if (IsLoaded(name))
         {
             Log::LogInDebug("Texture " + name + " already loaded with path: " + path);

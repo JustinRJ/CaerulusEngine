@@ -2,10 +2,12 @@
 
 #include "GLWindow.h"
 #include "Core/Math/Math.h"
+#include "Core/Math/Camera.h"
 #include "Core/Logging/Log.h"
 
 #define GLFW_EXPOSE_NATIVE_WIN32
 #include <glfw3native.h>
+
 
 namespace
 {
@@ -19,14 +21,14 @@ namespace Graphics
 {
     namespace Window
     {
-        GLWindow::GLWindow(const std::string& title, int x, int y, int bits, bool fullscreen) :
+        GLWindow::GLWindow(std::shared_ptr<Core::Math::Camera> camera, const std::string& title, int x, int y, int bits, bool fullscreen) :
             m_window(nullptr),
-            m_lockedCursor(true)
+            m_lockedCursor(true),
+            m_camera(camera)
         {
             if (!glfwInit())
             {
-                using Core::Logging::Log;
-                Log::LogError("Failed to init GLFW!");
+                Core::Logging::Log::LogError("Failed to init GLFW!");
                 exit(1);
             }
 
@@ -82,6 +84,11 @@ namespace Graphics
 
         void GLWindow::Update()
         {
+            if (m_camera)
+            {
+                m_camera->GetFrustrum().SetAspect(static_cast<float>(GetActiveState().Width) / static_cast<float>(GetActiveState().Height));
+            }
+
             Apply();
             if (m_lockedCursor)
             {

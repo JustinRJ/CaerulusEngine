@@ -1,13 +1,13 @@
 #pragma once
 
-#include "INode.h"
 #include "Core/Math/Transform.h"
+#include "Core/Interface/NonCopyable.h"
 
 namespace Core
 {
     namespace Node
     {
-        class Node : public INode
+        class Node : public Interface::NonCopyable
         {
         public:
             Node()
@@ -29,30 +29,35 @@ namespace Core
                 s_reusableNodeIDs.push_back(m_ID);
             }
 
-            unsigned int GetID() const final
+            unsigned int GetID() const
             {
                 return m_ID;
             }
 
-            unsigned int GetNodeCount() const final
+            unsigned int GetNodeCount() const
             {
                 return s_numEntities;
             }
 
-            const Math::Transform& GetTransform() const final
+            Math::Transform& GetTransform()
             {
                 return m_transform;
             }
 
-            void SwapID(INode& e) final
+            const Math::Transform& GetTransform() const
+            {
+                return m_transform;
+            }
+
+            void SwapID(Node& e)
             {
                 unsigned int temp = m_ID;
                 m_ID = e.GetID();
-                dynamic_cast<Node&>(e).SetID(temp);
+                e.SetID(temp);
             }
 
         private:
-            void SetID(unsigned int id) final
+            void SetID(unsigned int id)
             {
                 m_ID = id;
             }
@@ -69,27 +74,27 @@ namespace Core
         unsigned int Node::s_maxDiscardedNodeIDs = 128;
         std::list<unsigned int> Node::s_reusableNodeIDs;
 
-        bool operator == (const INode &left, const INode &right)
+        bool operator== (const Node &left, const Node &right)
         {
             return left.GetID() == right.GetID();
         }
 
-        bool operator < (const INode &left, const INode &right)
+        bool operator< (const Node &left, const Node &right)
         {
             return left.GetID() < right.GetID();
         }
 
-        bool operator > (const INode &left, const INode &right)
+        bool operator> (const Node &left, const Node &right)
         {
             return right < left;
         }
 
-        bool operator <= (const INode &left, const INode &right)
+        bool operator<= (const Node &left, const Node &right)
         {
             return !(left > right);
         }
 
-        bool operator >= (const INode &left, const INode &right)
+        bool operator>= (const Node &left, const Node &right)
         {
             return !(left < right);
         }

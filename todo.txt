@@ -1,12 +1,6 @@
 General
 * Update Time class to use std::chrono
 
-* Remove protected keyword and use Get functions on parent
-
-* Add ptr to vector of shaders on material
-
-* Add vectors of ["uniformName"] to an associated return for that vector to set the uniform to when the shader is updated
-
 * Use pimpl pattern to avoid engine having dependencies on eternal projects
 
 * Implement thread class with async as basis
@@ -26,7 +20,7 @@ Graphics
 
 * Add diagnostics early
 * Focus on true bounce lighting (ray-tracing)
-* consider using gltf instead of tinyobj, standardizes asset values
+* consider using gltf as well as tinyobj, standardizes asset values
 
 Managers
 

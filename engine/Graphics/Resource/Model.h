@@ -31,11 +31,10 @@ namespace Graphics
             void SetMaterials(std::vector<std::shared_ptr<Material>> materials);
 
         private:
-
             bool m_isLoaded;
             std::string m_path;
-            std::vector<std::shared_ptr<Geometry::Mesh>> m_meshes;
             std::vector<std::shared_ptr<Material>> m_materials;
+            std::vector<std::shared_ptr<Geometry::Mesh>> m_meshes;
         };
     }
 }

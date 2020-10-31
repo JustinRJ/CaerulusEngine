@@ -228,7 +228,6 @@
     <ClInclude Include="Math\Rect.h" />
     <ClInclude Include="Math\Sphere.h" />
     <ClInclude Include="Math\Transform.h" />
-    <ClInclude Include="Node\INode.h" />
     <ClInclude Include="Node\Node.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="Time\FixedTimer.h" />

@@ -9,24 +9,24 @@ namespace Graphics
         class DirectionalLight : public Light
         {
         public:
-            DirectionalLight(std::shared_ptr<Shader> shader, std::shared_ptr<Camera> camera) :
-                Light(shader, camera)
+            DirectionalLight(std::shared_ptr<Pipeline::Shader> shader) :
+                Light(shader)
             {}
 
             virtual ~DirectionalLight() = default;
 
-            const vec3& GetDirection() const
+            const Core::Math::vec3& GetDirection() const
             {
                 return m_direction;
             }
 
-            void SetDirection(const vec3& direction)
+            void SetDirection(const Core::Math::vec3& direction)
             {
                 m_direction = direction;
             }
 
         private:
-            vec3 m_direction;
+            Core::Math::vec3 m_direction;
         };
     }
 }

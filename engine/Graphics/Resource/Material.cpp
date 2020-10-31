@@ -47,8 +47,7 @@ namespace Graphics
         {
             for (unsigned int i = 0; i < m_textures.size(); ++i)
             {
-                std::shared_ptr<Texture> texture = m_textures[i];
-                if (texture)
+                if (std::shared_ptr<Texture> texture = m_textures[i])
                 {
                     texture->Bind(i);
                 }

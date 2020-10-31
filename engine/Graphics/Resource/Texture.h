@@ -16,7 +16,7 @@ namespace Graphics
 
             void Bind(unsigned int slot) const override;
             void Unbind() const override;
-            unsigned int GetHandle() const override;
+            unsigned int GetHandle() const;
 
             void ComputeMipmap();
 

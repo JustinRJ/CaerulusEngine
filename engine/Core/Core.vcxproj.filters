@@ -62,9 +62,6 @@
     <ClInclude Include="Time\FixedTimer.h">
       <Filter>Time</Filter>
     </ClInclude>
-    <ClInclude Include="Node\INode.h">
-      <Filter>Node</Filter>
-    </ClInclude>
     <ClInclude Include="Node\Node.h">
       <Filter>Node</Filter>
     </ClInclude>

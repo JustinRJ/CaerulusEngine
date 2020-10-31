@@ -11,7 +11,6 @@ namespace Managers
 
     void MaterialManager::Create(const std::string& name, const std::vector<std::shared_ptr<Texture>>& textures)
     {
-        using namespace Core::Logging;
         if (IsLoaded(name))
         {
             Log::LogInDebug("Material with name " + name + " already loaded or created");
@@ -26,8 +25,6 @@ namespace Managers
 
     void MaterialManager::Load(const std::string& path)
     {
-        using namespace Core::Logging;
-
         std::filebuf fb;
         fb.open(path.c_str(), std::ios::in);
         if (fb.is_open())

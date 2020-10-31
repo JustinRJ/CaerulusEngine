@@ -5,13 +5,17 @@
 #include "Core/Logging/Log.h"
 #include "Core/Interface/NonCopyable.h"
 
+namespace
+{
+    using namespace Core::Logging;
+}
+
 namespace Managers
 {
     template <class T>
     class CAERULUS_MANAGERS Manager : public Core::Interface::NonCopyable
     {
     public:
-
         Manager() = default;
         virtual ~Manager() = default;
 
@@ -21,7 +25,6 @@ namespace Managers
             {
                 return m_managedMap.at(key);
             }
-            using namespace Core::Logging;
             Log::LogInDebug("Managed object " + key + " not found!");
             return nullptr;
         }
@@ -60,7 +63,6 @@ namespace Managers
         }
 
     protected:
-
         void Insert(const std::string& key, std::shared_ptr<T> value)
         {
             if (value)

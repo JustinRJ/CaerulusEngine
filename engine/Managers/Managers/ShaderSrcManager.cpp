@@ -6,7 +6,6 @@ namespace Managers
 {
     void ShaderSrcManager::Load(const std::string& path, ShaderType type)
     {
-        using namespace Core::Logging;
         if (IsLoaded(path))
         {
             Log::LogInDebug("\tShader stage already loaded with path: " + path);
