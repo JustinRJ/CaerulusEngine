@@ -4,7 +4,7 @@
 
 namespace Graphics
 {
-    namespace PipeLine
+    namespace Pipeline
     {
         class VertexBuffer : public IBindable
         {
@@ -30,6 +30,11 @@ namespace Graphics
             void Unbind() const override
             {
                 glBindBuffer(GL_ARRAY_BUFFER, 0);
+            }
+
+            unsigned int GetHandle() const override
+            {
+                return m_handle;
             }
 
             size_t GetSize() const

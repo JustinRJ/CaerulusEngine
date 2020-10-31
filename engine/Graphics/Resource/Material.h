@@ -6,29 +6,17 @@
 
 namespace Graphics
 {
+    namespace Pipeline
+    {
+        class Shader;
+    }
+
     namespace Resource
     {
         class Texture;
-    }
-}
 
-namespace Graphics
-{
-    namespace Resource
-    {
-        enum MaterialType
+        class CAERULUS_GRAPHICS Material : public Pipeline::IBindable
         {
-            Albedo = 0,
-            Normal = 1,
-            Roughness = 2,
-            Metallic = 3,
-            AO = 4,
-            Size = 5
-        };
-
-        class CAERULUS_GRAPHICS Material : public PipeLine::IBindable
-        {
-
         public:
             Material(const std::string& name, const std::string& path = "");
             virtual ~Material() = default;
@@ -36,22 +24,25 @@ namespace Graphics
             void Bind() const override;
             void Unbind() const override;
 
-            std::shared_ptr<Texture> GetTexture(MaterialType materialType) const;
-            void SetTexture(std::shared_ptr<Texture> texture, MaterialType materialType);
+            const std::vector<std::shared_ptr<Texture>>& GetTextures() const;
+            void SetTextures(const std::vector<std::shared_ptr<Texture>>& textures);
 
-            static std::vector<std::string> GetFileMaterialNames(std::istream& is);
+            void SetShaders(const std::vector<std::shared_ptr<Pipeline::Shader>>& shaders);
+            const std::vector<std::shared_ptr<Pipeline::Shader>>& GetShaders() const;
 
             void LoadMaterialTexturesNames(unsigned int materialIndex, std::istream& is);
-            const std::map<MaterialType, std::string>& GetTextureNames() const;
+            const std::vector<std::string>& GetTextureNames() const;
 
             const std::string& GetName() const;
+
+            static std::vector<std::string> GetFileMaterialNames(std::istream& is);
 
         private:
             std::string m_name;
             std::string m_path;
-            std::map<MaterialType, std::string> m_textureNames;
+            std::vector<std::string> m_textureNames;
             std::vector<std::shared_ptr<Texture>> m_textures;
-            // TODO - ptr to shader here
+            std::vector<std::shared_ptr<Pipeline::Shader>> m_shaders;
         };
     }
 }

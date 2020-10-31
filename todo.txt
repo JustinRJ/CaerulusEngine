@@ -1,6 +1,13 @@
 General
+* Update Time class to use std::chrono
+
+* Remove protected keyword and use Get functions on parent
+
+* Add ptr to vector of shaders on material
+
+* Add vectors of ["uniformName"] to an associated return for that vector to set the uniform to when the shader is updated
+
 * Use pimpl pattern to avoid engine having dependencies on eternal projects
-* Add project name to stadafx to remove false intellisense error
 
 * Implement thread class with async as basis
 

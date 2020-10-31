@@ -14,7 +14,6 @@ namespace Core
         class CAERULUS_CORE Time
         {
         public:
-
             Time(bool update = true);
             virtual ~Time() = default;
 

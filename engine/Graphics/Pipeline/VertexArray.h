@@ -6,7 +6,7 @@
 
 namespace Graphics
 {
-    namespace PipeLine
+    namespace Pipeline
     {
         class VertexArray : public IBindable
         {
@@ -26,10 +26,11 @@ namespace Graphics
                 Bind();
                 vb.Bind();
                 size_t offset = 0;
-                const auto& elements = layout.GetElements();
-                for (unsigned int i = 0; i < elements.size(); i++)
+                const std::vector<VertexBufferElement>& elements = layout.GetElements();
+
+                for (unsigned int i = 0; i < elements.size(); ++i)
                 {
-                    const auto& element = elements[i];
+                    const VertexBufferElement& element = elements[i];
                     glEnableVertexAttribArray(i);
                     glVertexAttribPointer(i, element.Count, element.Type, element.Normalized, layout.GetStride(), (const void*)offset);
                     offset += element.Count * VertexBufferElement::GetSizeOfType(element.Type);
@@ -44,6 +45,11 @@ namespace Graphics
             void Unbind() const override
             {
                 glBindVertexArray(0);
+            }
+
+            unsigned int GetHandle() const override
+            {
+                return m_handle;
             }
 
         private:

@@ -13,9 +13,9 @@ namespace Managers
         MaterialManager(TextureManager& textureManager);
         virtual ~MaterialManager() = default;
 
-        bool Create(const std::string& name, const std::vector<std::shared_ptr<Texture>>& textures);
+        void Create(const std::string& name, const std::vector<std::shared_ptr<Texture>>& textures);
 
-        bool Load(const std::string& path);
+        void Load(const std::string& path);
 
     private:
         TextureManager& m_textureManager;

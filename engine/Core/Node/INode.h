@@ -10,7 +10,6 @@ namespace Core
         class INode : Interface::NonCopyable
         {
         public:
-
             virtual unsigned int GetID() const = 0;
             virtual unsigned int GetNodeCount() const = 0;
             virtual const Math::Transform& GetTransform() const = 0;

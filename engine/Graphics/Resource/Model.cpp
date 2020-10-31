@@ -48,7 +48,7 @@ namespace Graphics
             }
 
             std::unordered_map<Vertex, uint32_t> uniqueVertices;
-            for (const auto& shape : shapes)
+            for (const tinyobj::shape_t& shape : shapes)
             {
                 std::string materialName = "";
                 std::string prevMaterialName = "";
@@ -109,32 +109,6 @@ namespace Graphics
                 }
             }
             m_isLoaded = true;
-        }
-
-        void Model::Draw(bool wireframe, std::shared_ptr<Material> defaultMaterial) const
-        {
-            for (GLuint i = 0; i < m_meshes.size(); ++i)
-            {
-                if (i < m_materials.size() && m_materials[i])
-                {
-                    m_materials[i]->Bind();
-                    DrawMesh(wireframe, i);
-                }
-                else if (defaultMaterial)
-                {
-                    defaultMaterial->Bind();
-                    DrawMesh(wireframe, i);
-                }
-                else
-                {
-                    DrawMesh(wireframe, i);
-                }
-            }
-        }
-
-        void Model::DrawMesh(bool wireframe, unsigned int mesh) const
-        {
-            m_meshes[mesh]->Draw(wireframe);
         }
 
         const std::vector<std::shared_ptr<Mesh>>& Model::GetMeshes() const

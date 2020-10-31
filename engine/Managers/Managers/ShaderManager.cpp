@@ -8,28 +8,30 @@ namespace Managers
         m_shaderStageManager(shaderStageManager)
     {}
 
-    bool ShaderManager::Load(const std::string& name, const std::string& vertexPath, const std::string& fragmentPath)
+    void ShaderManager::Load(const std::string& name, const std::string& vertexPath, const std::string& fragmentPath)
     {
         using namespace Core::Logging;
         if (IsLoaded(name))
         {
             Log::LogInDebug("Shader with name " + name + " already loaded");
-            return false;
+            return;
         }
 
         Log::LogMessage("Loading shader with name " + name + ":");
         m_shaderStageManager.Load(vertexPath, Vertex);
         m_shaderStageManager.Load(fragmentPath, Fragment);
 
-        auto s = std::make_shared<Shader>(
+        std::shared_ptr<Shader> shader = std::make_shared<Shader>(
             m_shaderStageManager.Get(vertexPath),
             m_shaderStageManager.Get(fragmentPath));
 
-        if (s->IsLinked())
+        if (shader->IsLinked())
         {
-            Insert(name, s);
-            return true;
+            Insert(name, shader);
         }
-        return false;
+        else
+        {
+            Log::LogInDebug("Failed to link shader source with name: " + name);
+        }
     }
 }

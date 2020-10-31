@@ -2,31 +2,33 @@
 
 #define CAERULUS_GRAPHICS __declspec(dllexport)
 
-#include "Core/Math/Math.h"
 #include "Core/Logging/Log.h"
 #include "IBindable.h"
+#include "UniformCallbackMap.h"
 
 namespace Graphics
 {
-    namespace PipeLine
+    namespace Pipeline
     {
         class ShaderSrc;
-    }
-}
 
-namespace Graphics
-{
-    using namespace Core::Math;
-
-    namespace PipeLine
-    {
         class CAERULUS_GRAPHICS Shader : public IBindable
         {
         public:
             Shader(std::shared_ptr<ShaderSrc> vertex, std::shared_ptr<ShaderSrc> fragment);
             virtual ~Shader() = default;
 
-            GLuint GetHandle() const
+            void Bind() const override
+            {
+                glUseProgram(m_handle);
+            }
+
+            void Unbind() const override
+            {
+                glUseProgram(0);
+            }
+
+            unsigned int GetHandle() const override
             {
                 return m_handle;
             }
@@ -34,16 +36,6 @@ namespace Graphics
             bool IsLinked() const
             {
                 return m_isLinked;
-            }
-
-            void Bind() const
-            {
-                glUseProgram(m_handle);
-            }
-
-            void Unbind() const
-            {
-                glUseProgram(0);
             }
 
             void Set1i(const std::string& name, GLint value)
@@ -56,33 +48,44 @@ namespace Graphics
                 glUniform1f(GetUniformLocation(name), value);
             }
 
-            void Set2f(const std::string& name, fvec2 value)
+            void Set2f(const std::string& name, glm::fvec2 value)
             {
                 glUniform2fv(GetUniformLocation(name), 1, value_ptr(value));
             }
 
-            void Set3f(const std::string& name, fvec3 value)
+            void Set3f(const std::string& name, const glm::fvec3& value)
             {
                 glUniform3fv(GetUniformLocation(name), 1, value_ptr(value));
             }
 
-            void Set4f(const std::string& name, fvec4 value)
+            void Set4f(const std::string& name, const glm::fvec4& value)
             {
                 glUniform4fv(GetUniformLocation(name), 1, value_ptr(value));
             }
 
-            void SetMat3fv(const std::string& name, mat3 value, GLboolean transpose = GL_FALSE)
+            void SetMat3fv(const std::string& name, const glm::mat3& value, GLboolean transpose = GL_FALSE)
             {
                 glUniformMatrix3fv(GetUniformLocation(name), 1, transpose, value_ptr(value));
             }
 
-            void SetMat4fv(const std::string& name, mat4 value, GLboolean transpose = GL_FALSE)
+            void SetMat4fv(const std::string& name, const glm::mat4& value, GLboolean transpose = GL_FALSE)
             {
                 glUniformMatrix4fv(GetUniformLocation(name), 1, transpose, value_ptr(value));
             }
 
-        private:
+            const UniformCallbackMap& GetUniformCallbackMap() const
+            {
+                return m_uniformCallbackMap;
+            }
 
+            UniformCallbackMap& GetUniformCallbackMap()
+            {
+                return m_uniformCallbackMap;
+            }
+
+            void UpdateUniforms();
+
+        private:
             int GetUniformLocation(const std::string& name)
             {
                 if (m_uniformLocationCache.find(name) != m_uniformLocationCache.end())
@@ -106,6 +109,7 @@ namespace Graphics
             std::shared_ptr<ShaderSrc> m_vertex;
             std::shared_ptr<ShaderSrc> m_fragment;
             std::unordered_map<std::string, int> m_uniformLocationCache;
+            UniformCallbackMap m_uniformCallbackMap;
         };
     }
 }

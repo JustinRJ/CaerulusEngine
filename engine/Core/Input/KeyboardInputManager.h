@@ -3,12 +3,18 @@
 #include "InputDefines.h"
 #include "Core/Interface/ITickable.h"
 
+namespace Graphics
+{
+    namespace Window
+    {
+        class GLWindow;
+    }
+}
+
 namespace Core
 {
     namespace Input
     {
-        class Graphics::Window::GLWindow;
-
         struct KeyBinding
         {
             Action TargetAction = Action::Unknown;
@@ -16,12 +22,11 @@ namespace Core
             std::string Name = "";
         };
 
-        using namespace Graphics::Window;
         class KeyboardInputManager : public Interface::ITickable
         {
         public:
 
-            KeyboardInputManager(std::shared_ptr<GLWindow> window)
+            KeyboardInputManager(std::shared_ptr<Graphics::Window::GLWindow> window)
             {
                 glfwSetWindowUserPointer(window->GetGLFWWindow(), this);
             };
@@ -43,7 +48,7 @@ namespace Core
 
             void FixedUpdate(float fixedTime) override {}
 
-            void AddWindowKeyCallback(std::shared_ptr<GLWindow> window, int key, Action action, std::function<void(Modifier)> callback, const std::string& name = "")
+            void AddWindowKeyCallback(std::shared_ptr<Graphics::Window::GLWindow> window, int key, Action action, std::function<void(Modifier)> callback, const std::string& name = "")
             {
                 KeyBinding newBinding;
                 newBinding.TargetAction = action;
@@ -54,7 +59,7 @@ namespace Core
 
                 glfwSetKeyCallback(window->GetGLFWWindow(), [](GLFWwindow* windowI, int keyI, int scancodeI, int actionI, int modeI)
                 {
-                    auto self = static_cast<KeyboardInputManager*>(glfwGetWindowUserPointer(windowI));
+                    KeyboardInputManager* self = static_cast<KeyboardInputManager*>(glfwGetWindowUserPointer(windowI));
                     self->SetModifier(static_cast<Modifier>(modeI));
 
                     if (self->GetKeyBindingMap().find(keyI) != self->GetKeyBindingMap().end())

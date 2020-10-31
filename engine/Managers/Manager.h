@@ -17,11 +17,11 @@ namespace Managers
 
         std::shared_ptr<T> Get(const std::string& key) const
         {
-            using namespace Core::Logging;
             if (IsLoaded(key))
             {
                 return m_managedMap.at(key);
             }
+            using namespace Core::Logging;
             Log::LogInDebug("Managed object " + key + " not found!");
             return nullptr;
         }
@@ -32,6 +32,11 @@ namespace Managers
             std::transform(m_managedMap.begin(), m_managedMap.end(),
                 std::back_inserter(elements), [](auto &kv) { return kv.second; });
             return elements;
+        }
+
+        const std::map<const std::string, std::shared_ptr<T>>& GetMap() const
+        {
+            return m_managedMap;
         }
 
         bool Remove(const std::string& key)
@@ -47,6 +52,11 @@ namespace Managers
         bool IsLoaded(const std::string& key) const
         {
             return m_managedMap.find(key) != m_managedMap.end();
+        }
+
+        void Clear()
+        {
+            m_managedMap.clear();
         }
 
     protected:

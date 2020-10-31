@@ -12,13 +12,8 @@ namespace Graphics
             m_name(name),
             m_path(path),
             m_textureNames(),
-            m_textures(std::vector<std::shared_ptr<Texture>>(MaterialType::Size))
+            m_textures(std::vector<std::shared_ptr<Texture>>())
         {
-            m_textures[Albedo] = nullptr;
-            m_textures[Normal] = nullptr;
-            m_textures[Roughness] = nullptr;
-            m_textures[Metallic] = nullptr;
-            m_textures[AO] = nullptr;
         }
 
         void Material::LoadMaterialTexturesNames(unsigned int materialIndex, std::istream& is)
@@ -31,64 +26,41 @@ namespace Graphics
             m_name = materials[materialIndex].name;
 
             // TODO - Fix mapping
-            m_textureNames[Albedo] = materials[materialIndex].diffuse_texname;
-            m_textureNames[Normal] = materials[materialIndex].bump_texname;
-            m_textureNames[Roughness] = materials[materialIndex].specular_highlight_texname;
-            m_textureNames[Metallic] = materials[materialIndex].ambient_texname;
-            m_textureNames[AO] = "";
+            m_textureNames.push_back(materials[materialIndex].diffuse_texname);
+            m_textureNames.push_back(materials[materialIndex].bump_texname);
+            m_textureNames.push_back(materials[materialIndex].specular_highlight_texname);
+            m_textureNames.push_back(materials[materialIndex].ambient_texname);
+            m_textureNames.push_back("");
         }
 
-        std::shared_ptr<Texture> Material::GetTexture(MaterialType materialType) const
+        const std::vector<std::shared_ptr<Texture>>& Material::GetTextures() const
         {
-            return m_textures[materialType];
+            return m_textures;
         }
 
-        void Material::SetTexture(std::shared_ptr<Texture> texture, MaterialType materialType)
+        void Material::SetTextures(const std::vector<std::shared_ptr<Texture>>& textures)
         {
-            if (materialType > AO)
-            {
-                using Core::Logging::Log;
-                Log::LogError("Texture outside material bounds!");
-            }
-            else
-            {
-                m_textures[materialType] = texture;
-            }
+            m_textures = textures;
         }
 
         void Material::Bind() const
         {
-            glActiveTexture(GL_TEXTURE0);
-            m_textures[Albedo] ? m_textures[Albedo]->Bind() : glBindTexture(GL_TEXTURE_2D, 0);
-            glActiveTexture(GL_TEXTURE1);
-            m_textures[Normal] ? m_textures[Normal]->Bind() : glBindTexture(GL_TEXTURE_2D, 0);
-            glActiveTexture(GL_TEXTURE2);
-            m_textures[Roughness] ? m_textures[Roughness]->Bind() : glBindTexture(GL_TEXTURE_2D, 0);
-            glActiveTexture(GL_TEXTURE3);
-            m_textures[Metallic] ? m_textures[Metallic]->Bind() : glBindTexture(GL_TEXTURE_2D, 0);
-            glActiveTexture(GL_TEXTURE4);
-            m_textures[AO] ? m_textures[AO]->Bind() : glBindTexture(GL_TEXTURE_2D, 0);
-            glActiveTexture(GL_TEXTURE5);
-            glBindTexture(GL_TEXTURE_2D, 0);
+            for (unsigned int i = 0; i < m_textures.size(); ++i)
+            {
+                std::shared_ptr<Texture> texture = m_textures[i];
+                if (texture)
+                {
+                    texture->Bind(i);
+                }
+            }
         }
 
         void Material::Unbind() const
         {
-            glActiveTexture(GL_TEXTURE0);
-            glBindTexture(GL_TEXTURE_2D, 0);
-            glActiveTexture(GL_TEXTURE1);
-            glBindTexture(GL_TEXTURE_2D, 0);
-            glActiveTexture(GL_TEXTURE2);
-            glBindTexture(GL_TEXTURE_2D, 0);
-            glActiveTexture(GL_TEXTURE3);
-            glBindTexture(GL_TEXTURE_2D, 0);
-            glActiveTexture(GL_TEXTURE4);
-            glBindTexture(GL_TEXTURE_2D, 0);
-            glActiveTexture(GL_TEXTURE5);
             glBindTexture(GL_TEXTURE_2D, 0);
         }
 
-        const std::map<MaterialType, std::string>& Material::GetTextureNames() const
+        const std::vector<std::string>& Material::GetTextureNames() const
         {
             return m_textureNames;
         }
@@ -107,11 +79,21 @@ namespace Graphics
             is.seekg(0, is.beg);
             
             std::vector<std::string> actualMaterialNames;
-            for (auto& mat : materials)
+            for (tinyobj::material_t& mat : materials)
             {
                 actualMaterialNames.push_back(mat.name);
             }
             return actualMaterialNames;
+        }
+
+        void Material::SetShaders(const std::vector<std::shared_ptr<Pipeline::Shader>>& shaders)
+        {
+            m_shaders = shaders;
+        }
+
+        const std::vector<std::shared_ptr<Pipeline::Shader>>& Material::GetShaders() const
+        {
+            return m_shaders;
         }
     }
 }

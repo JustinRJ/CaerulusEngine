@@ -4,7 +4,7 @@
 
 #include "Graphics/GraphicsEngine.h"
 #include "Graphics/Window/GLWindow.h"
-#include "Graphics/PipeLine/Renderer.h"
+#include "Graphics/Pipeline/Renderer.h"
 
 #include "Core/Logging/Log.h"
 #include "Core/Math/Camera.h"
@@ -28,14 +28,14 @@
 #include "Core/Math/Line.h"
 #include "Core/Math/Ray.h"
 
-
 namespace
 {
     using namespace Core::Math;
     using namespace Core::Time;
     using namespace Core::Input;
     using namespace Graphics;
-    using namespace Graphics::PipeLine;
+    using namespace Graphics::Window;
+    using namespace Graphics::Pipeline;
     using namespace Managers;
 }
 
@@ -47,9 +47,9 @@ Engine::Engine(int argc, char** argv) :
     m_fixedTimer = std::make_unique<FixedTimer>();
 
     m_window = std::make_shared<GLWindow>("Caerulus", 1280, 1024, 32, false);
-    m_camera = std::make_shared<Camera>(vec3(0, 0, 0), Core::Math::UnitForward, Core::Math::UnitUp);
     m_renderer = std::make_shared<Renderer>();
-    m_graphicsEngine = std::make_shared<GraphicsEngine>(m_renderer);
+    m_camera = std::make_shared<Camera>(vec3(0, 0, 0), Core::Math::UnitForward, Core::Math::UnitUp);
+    m_graphicsEngine = std::make_shared<GraphicsEngine>(m_window, m_renderer, m_camera);
 
     m_keyboardInputManager = std::make_shared<KeyboardInputManager>(m_window);
     m_mouseInputManager = std::make_shared<MouseInputManager>(m_window);
@@ -124,7 +124,7 @@ void Engine::InitInput()
     using namespace Core::Input;
     m_keyboardInputManager->AddWindowKeyCallback(m_window, GLFW_KEY_ESCAPE, Action::Release, [=](Modifier) { m_running = false; });
     m_keyboardInputManager->AddWindowKeyCallback(m_window, GLFW_KEY_X, Action::Release, [&](Modifier) { m_window->ToggleLockedCursor(); });
-    m_keyboardInputManager->AddWindowKeyCallback(m_window, GLFW_KEY_C, Action::Release, [&](Modifier) { m_graphicsEngine->ToggleWireframe(); });
+    m_keyboardInputManager->AddWindowKeyCallback(m_window, GLFW_KEY_C, Action::Release, [&](Modifier) { m_graphicsEngine->SetWireframe(!m_graphicsEngine->GetWireframe()); });
 
     m_keyboardInputManager->AddWindowKeyCallback(m_window, GLFW_KEY_A, Action::Hold, [&](Modifier m) { if (m_window->IsCursorLocked()) { m_camera->Translate(UnitRight   * -m_deltaTime * (m == Modifier::Shift ? m_sprintSpeed : m_normalSpeed), false); }});
     m_keyboardInputManager->AddWindowKeyCallback(m_window, GLFW_KEY_D, Action::Hold, [&](Modifier m) { if (m_window->IsCursorLocked()) { m_camera->Translate(UnitRight   *  m_deltaTime * (m == Modifier::Shift ? m_sprintSpeed : m_normalSpeed), false); }});
@@ -145,15 +145,18 @@ void Engine::InitInput()
 
 void Engine::InitScene()
 {
-    m_modelManager->Load("shaderBall", "assets/models/shaderball.obj");
+    m_modelManager->Load("sponza", "assets/models/Sponza/sponza.obj");
     m_graphicsEngine->SetModels(m_modelManager->GetAll());
+
+    // TODO - Set model's material
+    // material will contain shader as well as shader uniform names (for the texture slots)
 }
 
 void Engine::InitRenderer()
 {
     m_shaderManager->Load("position", "assets/shaders/position.vert", "assets/shaders/position.frag");
 
-    m_renderer->SetCamera(m_camera);
-    m_renderer->SetWindow(m_window);
-    m_renderer->SetShader(m_shaderManager->Get("position"));
+    m_graphicsEngine->SetCamera(m_camera);
+    m_graphicsEngine->SetWindow(m_window);
+    m_graphicsEngine->SetShader(m_shaderManager->Get("position"));
 }

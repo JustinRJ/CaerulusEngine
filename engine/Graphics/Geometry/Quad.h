@@ -28,24 +28,17 @@ namespace Graphics
                 m_vertexBuffer(s_QuadVertices, 4 * 2 * sizeof(GLfloat)),
                 m_indexBuffer(s_QuadIndices, 6)
             {
-                PipeLine::VertexBufferLayout layout;
+                Pipeline::VertexBufferLayout layout;
                 layout.Push<float>(2);
                 m_vertexArray.AddBuffer(m_vertexBuffer, layout);
             }
 
             ~Quad() = default;
 
-            void Draw(bool wireframe)
-            {
-                m_vertexArray.Bind();
-                m_indexBuffer.Bind();
-                glDrawElements(wireframe ? GL_LINE_LOOP : GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
-            }
-
         private:
-            PipeLine::VertexArray m_vertexArray;
-            PipeLine::VertexBuffer m_vertexBuffer;
-            PipeLine::IndexBuffer m_indexBuffer;
+            Pipeline::VertexArray m_vertexArray;
+            Pipeline::VertexBuffer m_vertexBuffer;
+            Pipeline::IndexBuffer m_indexBuffer;
         };
     }
 }

@@ -92,6 +92,9 @@
     <ClInclude Include="Pipeline\IBindable.h">
       <Filter>Pipeline</Filter>
     </ClInclude>
+    <ClInclude Include="Pipeline\UniformCallbackMap.h">
+      <Filter>Pipeline</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Window">

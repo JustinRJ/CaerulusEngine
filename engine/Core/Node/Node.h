@@ -10,7 +10,6 @@ namespace Core
         class Node : public INode
         {
         public:
-
             Node()
             {
                 if (s_reusableNodeIDs.size() < s_maxDiscardedNodeIDs)

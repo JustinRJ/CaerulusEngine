@@ -4,19 +4,26 @@
 
 namespace Managers
 {
-    bool ShaderSrcManager::Load(const std::string& path, ShaderType type)
+    void ShaderSrcManager::Load(const std::string& path, ShaderType type)
     {
         using namespace Core::Logging;
         if (IsLoaded(path))
         {
-            Log::LogInDebug("\tShader stage already loaded with path " + path);
-            return false;
+            Log::LogInDebug("\tShader stage already loaded with path: " + path);
+            return;
         }
 
-        Log::LogMessage("\tLoading shader stage with path " + path);
-        auto ss = std::make_shared<ShaderSrc>(type, path);
-        ss->Load();
-        Insert(path, ss);
-        return true;
+        Log::LogMessage("\tLoading shader stage with path: " + path);
+        std::shared_ptr<ShaderSrc> shaderSource = std::make_shared<ShaderSrc>(type, path);
+        shaderSource->Load();
+
+        if (shaderSource->IsCompiled())
+        {
+            Insert(path, shaderSource);
+        }
+        else
+        {
+            Log::LogInDebug("Failed to compile shader source with path: " + path);
+        }
     }
 }

@@ -14,10 +14,7 @@ namespace Graphics
     {
         class Material;
     }
-}
 
-namespace Graphics
-{
     namespace Resource
     {
         class CAERULUS_GRAPHICS Model : public Core::Interface::NonCopyable
@@ -27,9 +24,6 @@ namespace Graphics
             virtual ~Model() = default;
 
             bool IsLoaded() const;
-
-            void Draw(bool wireframe, std::shared_ptr<Material> defaultMaterial) const;
-            void DrawMesh(bool wireframe, unsigned int mesh) const;
 
             const std::vector<std::shared_ptr<Geometry::Mesh>>& GetMeshes() const;
 

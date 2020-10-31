@@ -9,27 +9,22 @@ namespace Managers
     {
     }
 
-    bool MaterialManager::Create(const std::string& name, const std::vector<std::shared_ptr<Texture>>& material)
+    void MaterialManager::Create(const std::string& name, const std::vector<std::shared_ptr<Texture>>& textures)
     {
         using namespace Core::Logging;
         if (IsLoaded(name))
         {
             Log::LogInDebug("Material with name " + name + " already loaded or created");
-            return false;
+            return;
         }
 
         Log::LogMessage("Creating material " + name);
-        auto m = std::make_shared<Material>(name);
-        for (int i = 0; i < MaterialType::Size; ++i)
-        {
-            m->SetTexture(material[i], static_cast<MaterialType>(i));
-        }
-
-        Insert(name, m);
-        return true;
+        std::shared_ptr<Material> material = std::make_shared<Material>(name);
+        material->SetTextures(textures);
+        Insert(name, material);
     }
 
-    bool MaterialManager::Load(const std::string& path)
+    void MaterialManager::Load(const std::string& path)
     {
         using namespace Core::Logging;
 
@@ -38,7 +33,7 @@ namespace Managers
         if (fb.is_open())
         {
             std::istream is(&fb);
-            auto materialNamesInFile = Material::GetFileMaterialNames(is);
+            std::vector<std::string> materialNamesInFile = Material::GetFileMaterialNames(is);
             for (unsigned int i = 0; i < materialNamesInFile.size(); ++i)
             {
                 if (IsLoaded(materialNamesInFile[i]))
@@ -47,29 +42,29 @@ namespace Managers
                     break;
                 }
 
-                Log::LogMessage("Loading material " + materialNamesInFile[i] + " with path " + path);
-                auto newMaterial = std::make_shared<Material>("", path);
+                Log::LogMessage("Loading material " + materialNamesInFile[i] + " with path: " + path);
+                std::shared_ptr<Material> newMaterial = std::make_shared<Material>("", path);
                 newMaterial->LoadMaterialTexturesNames(i, is);
 
-                for (auto& newTextureIt : newMaterial->GetTextureNames())
+                std::vector<std::shared_ptr<Texture>> textures;
+                for (const std::string& materialName : newMaterial->GetTextureNames())
                 {
-                    if (newTextureIt.second != "")
+                    if (materialName != "")
                     {
                         // general path before material name
                         std::string generalPath = path;
                         generalPath.erase(generalPath.rfind("/"));
-                        std::string textureName(newTextureIt.second);
+                        std::string textureName(materialName);
                         textureName.erase(textureName.rfind("."));
 
-                        m_textureManager.Load(textureName, std::string(generalPath + "/" + newTextureIt.second));
-                        newMaterial->SetTexture(m_textureManager.Get(textureName), newTextureIt.first);
+                        m_textureManager.Load(textureName, std::string(generalPath + "/" + materialName));
+                        textures.push_back(m_textureManager.Get(textureName));
                     }
                 }
+                newMaterial->SetTextures(textures);
                 Insert(newMaterial->GetName(), newMaterial);
             }
             fb.close();
-            return true;
         }
-        return false;
     }
 }

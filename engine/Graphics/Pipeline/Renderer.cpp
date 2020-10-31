@@ -30,7 +30,7 @@ namespace
 
 namespace Graphics
 {
-    namespace PipeLine
+    namespace Pipeline
     {
         Renderer::Renderer()
         {
@@ -58,63 +58,18 @@ namespace Graphics
             glDebugMessageCallback(OpenGLErrorLogCallback, 0);
         }
 
-        void Renderer::Clear()
+        void Renderer::Clear(glm::vec4 colour)
         {
-            glClearColor(m_clearColour.r, m_clearColour.g, m_clearColour.b, m_clearColour.a);
+            glClearColor(colour.r, colour.g, colour.b, colour.a);
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         }
 
-        void Renderer::Draw(const VertexArray& va, const IndexBuffer& ib, const Shader& shader)
+        void Renderer::Draw(const VertexArray& va, const IndexBuffer& ib, const Shader& shader, bool wireframe)
         {
             shader.Bind();
             va.Bind();
             ib.Bind();
-            glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(ib.GetCount()), GL_UNSIGNED_INT, nullptr);
-        }
-
-        void Renderer::SwapBuffer(float deltaTime)
-        {
-            m_window->SwapBuffer();
-        }
-
-        std::shared_ptr<Window::GLWindow> Renderer::GetWindow() const
-        {
-            return m_window;
-        }
-
-        std::shared_ptr<PipeLine::Shader> Renderer::GetShader() const
-        {
-            return m_shader;
-        }
-
-        std::shared_ptr<Core::Math::Camera> Renderer::GetCamera() const
-        {
-            return m_camera;
-        }
-
-        void Renderer::SetWindow(std::shared_ptr<Window::GLWindow> window)
-        {
-            m_window = window;
-        }
-
-        void Renderer::SetShader(std::shared_ptr<PipeLine::Shader> shader)
-        {
-            m_shader = shader;
-        }
-
-        void Renderer::SetCamera(std::shared_ptr<Core::Math::Camera> camera)
-        {
-            m_camera = camera;
-        }
-
-        void Renderer::SetClearColour(glm::vec4 colour)
-        {
-            m_clearColour = colour;
-        }
-
-        glm::vec4 Renderer::GetClearColour() const
-        {
-            return m_clearColour;
+            glDrawElements(wireframe ? GL_LINE_LOOP : GL_TRIANGLES, static_cast<GLsizei>(ib.GetCount()), GL_UNSIGNED_INT, nullptr);
         }
     }
 }

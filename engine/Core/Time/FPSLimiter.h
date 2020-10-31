@@ -9,14 +9,12 @@ namespace Core
         class FPSLimiter : public Timer
         {
         public:
-
             FPSLimiter() = default;
             virtual ~FPSLimiter() = default;
 
             float Delta(float frameLimit)
             {
                 m_frameTime = Timer::Delta();
-
                 if (frameLimit > 0.0f &&
                     m_frameTime > 0.0f &&
                     m_frameTime < frameLimit)
@@ -30,7 +28,6 @@ namespace Core
             }
 
         private:
-
             float m_frameTime = 0.0f;
         };
     }

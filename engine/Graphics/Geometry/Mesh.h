@@ -35,7 +35,7 @@ namespace Graphics
                 m_indices(indices),
                 m_materialName(materialName)
             {
-                PipeLine::VertexBufferLayout layout;
+                Pipeline::VertexBufferLayout layout;
                 layout.Push<float>(3);
                 layout.Push<float>(3);
                 layout.Push<float>(2);
@@ -44,29 +44,22 @@ namespace Graphics
 
             ~Mesh() = default;
 
-            void Draw(bool wireframe) const
-            {
-                m_vertexArray.Bind();
-                m_indexBuffer.Bind();
-                glDrawElements(wireframe ? GL_LINE_LOOP : GL_TRIANGLES, static_cast<GLsizei>(m_indices.size()), GL_UNSIGNED_INT, nullptr);
-            }
-
             const std::string& GetMaterialName() const
             {
                 return m_materialName;
             }
 
-            const PipeLine::VertexArray& GetVertexArray() const
+            const Pipeline::VertexArray& GetVertexArray() const
             {
                 return m_vertexArray;
             }
 
-            const PipeLine::VertexBuffer& GetVertexBuffer() const
+            const Pipeline::VertexBuffer& GetVertexBuffer() const
             {
                 return m_vertexBuffer;
             }
 
-            const PipeLine::IndexBuffer& GetIndexBuffer() const
+            const Pipeline::IndexBuffer& GetIndexBuffer() const
             {
                 return m_indexBuffer;
             }
@@ -76,9 +69,9 @@ namespace Graphics
             const std::vector<GLuint> m_indices;
             const std::string m_materialName;
 
-            PipeLine::VertexArray m_vertexArray;
-            PipeLine::VertexBuffer m_vertexBuffer;
-            PipeLine::IndexBuffer m_indexBuffer;
+            Pipeline::VertexArray m_vertexArray;
+            Pipeline::VertexBuffer m_vertexBuffer;
+            Pipeline::IndexBuffer m_indexBuffer;
         };
     }
 }

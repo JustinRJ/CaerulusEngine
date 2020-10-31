@@ -1,10 +1,11 @@
 #include "stdafx.h"
 
 #include "GLWindow.h"
-#define GLFW_EXPOSE_NATIVE_WIN32
-#include <glfw3native.h>
 #include "Core/Math/Math.h"
 #include "Core/Logging/Log.h"
+
+#define GLFW_EXPOSE_NATIVE_WIN32
+#include <glfw3native.h>
 
 namespace
 {
@@ -28,10 +29,16 @@ namespace Graphics
                 Log::LogError("Failed to init GLFW!");
                 exit(1);
             }
+
             Window::Set(title, x, y, bits, fullscreen);
             Apply();
             CenterCursor();
             glfwSetWindowCloseCallback(m_window, CloseWindowCallback);
+        }
+
+        GLWindow::~GLWindow()
+        {
+            glfwTerminate();
         }
 
         void* GLWindow::GetHandle() const

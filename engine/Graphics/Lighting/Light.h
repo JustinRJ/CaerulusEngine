@@ -3,14 +3,14 @@
 #include "Core/Math/Math.h"
 #include "Core/Math/Camera.h"
 #include "Core/Interface/NonCopyable.h"
-#include "Graphics/PipeLine/Shader.h"
+#include "Graphics/Pipeline/Shader.h"
 
 namespace Graphics
 {
     namespace Light 
     {
         using namespace Core::Math;
-        using namespace Graphics::PipeLine;
+        using namespace Graphics::Pipeline;
 
         class Light : public Core::Interface::NonCopyable
         {
@@ -44,7 +44,7 @@ namespace Graphics
             {}
 
             vec4 m_colour = vec4(1.0f, 1.0f, 1.0f, 1.0f);
-            std::shared_ptr<PipeLine::Shader> m_shader;
+            std::shared_ptr<Pipeline::Shader> m_shader;
             std::shared_ptr<Core::Math::Camera> m_camera;
         };
     }

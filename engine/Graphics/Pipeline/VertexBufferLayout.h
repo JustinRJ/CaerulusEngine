@@ -4,7 +4,7 @@
 
 namespace Graphics
 {
-    namespace PipeLine
+    namespace Pipeline
     {
         struct VertexBufferElement
         {

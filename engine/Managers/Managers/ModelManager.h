@@ -15,7 +15,7 @@ namespace Managers
         ModelManager(MaterialManager& materialManager);
         virtual ~ModelManager() = default;
 
-        bool Load(const std::string& name, const std::string& modelPath, const std::string& materialPath = "");
+        void Load(const std::string& name, const std::string& modelPath, const std::string& materialPath = "");
 
     private:
         MaterialManager& m_materialManager;

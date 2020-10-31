@@ -9,7 +9,6 @@ namespace Core
         class FixedTimer : public Timer
         {
         public:
-
             FixedTimer() = default;
             virtual ~FixedTimer() = default;
 
@@ -22,12 +21,10 @@ namespace Core
                     m_accumulatedTime -= fixed;
                     count++;
                 }
-
                 return fixed * count;
             }
 
         private:
-
             float m_accumulatedTime = 0.0f;
         };
     }

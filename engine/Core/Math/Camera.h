@@ -10,7 +10,6 @@ namespace Core
         class Camera
         {
         public:
-
             Camera() = delete;
             ~Camera() = default;
 

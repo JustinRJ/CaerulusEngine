@@ -3,12 +3,18 @@
 #include "InputDefines.h"
 #include "Core/Interface/ITickable.h"
 
+namespace Graphics
+{
+    namespace Window
+    {
+        class GLWindow;
+    }
+}
+
 namespace Core
 {
     namespace Input
     {
-        class Graphics::Window::GLWindow;
-
         struct DragData
         {
             double X = 0;
@@ -23,12 +29,11 @@ namespace Core
             std::string Name = "";
         };
 
-        using namespace Graphics::Window;
         class MouseInputManager : public Interface::ITickable
         {
         public:
 
-            MouseInputManager(std::shared_ptr<GLWindow> window) :
+            MouseInputManager(std::shared_ptr<Graphics::Window::GLWindow> window) :
                 m_window(window)
             {
                 glfwSetInputMode(m_window->GetGLFWWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
@@ -49,7 +54,7 @@ namespace Core
 
             void FixedUpdate(float fixedTime) override {}
 
-            void AddDragMouseCallback(std::shared_ptr<GLWindow> window, std::function<void(DragData)> callback, const std::string& name = "")
+            void AddDragMouseCallback(std::shared_ptr<Graphics::Window::GLWindow> window, std::function<void(DragData)> callback, const std::string& name = "")
             {
                 DragBinding dragBinding;
                 dragBinding.Callback = callback;
@@ -58,7 +63,7 @@ namespace Core
                 m_dragBindingMap.push_back(dragBinding);
             }
 
-            DragData GetDragData() const
+            const DragData& GetDragData() const
             {
                 return m_dragData;
             }
@@ -66,14 +71,14 @@ namespace Core
         private:
             DragData m_dragData;
             std::vector<DragBinding> m_dragBindingMap;
-            std::shared_ptr<GLWindow> m_window;
+            std::shared_ptr<Graphics::Window::GLWindow> m_window;
 
             void UpdateMouseDrag()
             {
                 double xpos, ypos;
                 glfwGetCursorPos(m_window->GetGLFWWindow(), &xpos, &ypos);
-                double deltaX = xpos - (m_window->GetActiveState().Width / 2);
-                double deltaY = ypos - (m_window->GetActiveState().Height / 2);
+                double deltaX = xpos - (m_window->GetActiveState().Width / 2.);
+                double deltaY = ypos - (m_window->GetActiveState().Height / 2.);
 
                 for (auto& dragBindingPair : m_dragBindingMap)
                 {

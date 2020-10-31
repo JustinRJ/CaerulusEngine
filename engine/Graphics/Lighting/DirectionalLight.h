@@ -25,7 +25,7 @@ namespace Graphics
                 m_direction = direction;
             }
 
-        protected:
+        private:
             vec3 m_direction;
         };
     }

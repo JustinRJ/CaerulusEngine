@@ -6,7 +6,7 @@
 
 namespace Graphics
 {
-    namespace PipeLine
+    namespace Pipeline
     {
         enum ShaderType
         {
@@ -23,20 +23,16 @@ namespace Graphics
 
             void Load();
             bool IsCompiled() const;
-            GLuint GetHandle() const;
-
-            const std::vector<std::string>& GetUniforms() const;
+            unsigned int GetHandle() const;
 
         private:
 
             void Compile(const std::string& source);
-            void SetUniforms(const std::string& source);
 
             bool m_isCompiled;
             GLuint m_handle;
             ShaderType m_type;
             const std::string m_path;
-            std::vector<std::string> m_uniforms;
         };
     }
 }

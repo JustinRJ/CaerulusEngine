@@ -49,7 +49,6 @@ namespace Graphics
         class CAERULUS_GRAPHICS Window : public Core::Interface::NonCopyable
         {
         public:
-            Window() = default;
             virtual ~Window() = default;
 
             virtual void Set(const std::string& title, int x, int y, int bits, bool fullscreen)

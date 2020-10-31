@@ -7,7 +7,7 @@
 
 namespace Graphics
 {
-    namespace PipeLine
+    namespace Pipeline
     {
         Shader::Shader(std::shared_ptr<ShaderSrc> vertex, std::shared_ptr<ShaderSrc> fragment) :
             m_vertex(vertex),
@@ -32,6 +32,44 @@ namespace Graphics
             }
 
             m_isLinked = true;
+        }
+
+        void Shader::UpdateUniforms()
+        {
+            for (auto const& kv : m_uniformCallbackMap.IntCallbacks)
+            {
+                Set1i(kv.first, kv.second());
+            }
+
+            for (auto const& kv : m_uniformCallbackMap.FloatCallbacks)
+            {
+                Set1f(kv.first, kv.second());
+            }
+
+            for (auto const& kv : m_uniformCallbackMap.Vec2Callbacks)
+            {
+                Set2f(kv.first, kv.second());
+            }
+
+            for (auto const& kv : m_uniformCallbackMap.Vec3Callbacks)
+            {
+                Set3f(kv.first, kv.second());
+            }
+
+            for (auto const& kv : m_uniformCallbackMap.Vec4Callbacks)
+            {
+                Set4f(kv.first, kv.second());
+            }
+
+            for (auto const& kv : m_uniformCallbackMap.Mat3Callbacks)
+            {
+                SetMat3fv(kv.first, kv.second());
+            }
+
+            for (auto const& kv : m_uniformCallbackMap.Mat4Callbacks)
+            {
+                SetMat4fv(kv.first, kv.second());
+            }
         }
     }
 }

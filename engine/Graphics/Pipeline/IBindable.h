@@ -6,14 +6,18 @@
 
 namespace Graphics
 {
-    namespace PipeLine
+    namespace Pipeline
     {
         class CAERULUS_GRAPHICS IBindable : public Core::Interface::NonCopyable
         {
         public:
-            virtual void Bind() const = 0;
-
+            virtual void Bind() const {};
+            virtual void Bind(unsigned int slot) const {};
             virtual void Unbind() const = 0;
+            virtual unsigned int GetHandle() const
+            {
+                return 0;
+            };
         };
     }
 }

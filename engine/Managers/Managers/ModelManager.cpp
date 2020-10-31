@@ -10,18 +10,24 @@ namespace Managers
     {
     }
 
-    bool ModelManager::Load(const std::string& name, const std::string& modelPath, const std::string& materialPath)
+    void ModelManager::Load(const std::string& name, const std::string& modelPath, const std::string& materialPath)
     {
         using namespace Core::Logging;
         if (IsLoaded(name))
         {
-            Log::LogInDebug("Model with name " + name + " already loaded with path " + modelPath);
-            return false;
+            Log::LogInDebug("Model with name " + name + " already loaded with path: " + modelPath);
+            return;
         }
 
         using namespace Core::Logging;
-        Log::LogMessage("Loading model " + name + " with path " + modelPath);
-        auto newModel = std::make_shared<Model>(modelPath);
+        Log::LogMessage("Loading model " + name + " with path: " + modelPath);
+        std::shared_ptr<Model> newModel = std::make_shared<Model>(modelPath);
+        if (!newModel->IsLoaded())
+        {
+            Log::LogInDebug("Model with name " + name + " failed to load with path: " + modelPath);
+            return;
+        }
+
         std::string tempMaterialPath(materialPath);
         if (tempMaterialPath == "")
         {
@@ -31,16 +37,15 @@ namespace Managers
         }
 
         std::vector<std::shared_ptr<Material>> newModelMaterials;
-        if (m_materialManager.Load(tempMaterialPath))
+        m_materialManager.Load(tempMaterialPath);
+
+        for (std::shared_ptr<Graphics::Geometry::Mesh> mesh : newModel->GetMeshes())
         {
-            for (auto& mesh : newModel->GetMeshes())
-            {
-                newModelMaterials.push_back(m_materialManager.Get(mesh->GetMaterialName()));
-            }
+            newModelMaterials.push_back(m_materialManager.Get(mesh->GetMaterialName()));
         }
+
         newModel->SetMaterials(newModelMaterials);
 
         Insert(name, newModel);
-        return true;
     }
 }

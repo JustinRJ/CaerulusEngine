@@ -4,34 +4,25 @@
 
 namespace Managers
 {
-    bool TextureManager::Load(const std::string& name, const std::string& path, bool HDR)
+    void TextureManager::Load(const std::string& name, const std::string& path, bool HDR)
     {
         using namespace Core::Logging;
         if (IsLoaded(name))
         {
-            Log::LogInDebug("Texture " + name + " already loaded with path " + path);
-            return false;
+            Log::LogInDebug("Texture " + name + " already loaded with path: " + path);
+            return;
         }
 
-        Log::LogMessage("Loading texture " + name + " with path " + path);
-        auto t = std::make_shared<Texture>();
-        if (HDR)
+        Log::LogMessage("Loading texture " + name + " with path: " + path);
+        std::shared_ptr<Texture> texture = std::make_shared<Texture>(path);
+
+        if (texture->IsLoaded())
         {
-            bool loaded = t->LoadHDR(path.c_str(), true);
-            if (!loaded)
-            {
-                return false;
-            }
+            Insert(name, texture);
         }
         else
         {
-            bool loaded = t->Load(path.c_str(), true);
-            if (!loaded)
-            {
-                return false;
-            }
+            Log::LogInDebug("Failed to load " + name + " texture with path: " + path);
         }
-        Insert(name, t);
-        return true;
     }
 }

@@ -15,7 +15,6 @@ namespace Core
         class CAERULUS_CORE Timer
         {
         public:
-
             Timer(bool start = false);
             virtual ~Timer() = default;
 
@@ -29,7 +28,6 @@ namespace Core
             Time EndTime;
 
         private:
-
             time_t NanoTime();
             time_t Frequency();
 

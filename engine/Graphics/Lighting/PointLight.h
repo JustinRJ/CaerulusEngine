@@ -35,7 +35,7 @@ namespace Graphics
                 m_radius = radius;
             }
 
-        protected:
+        private:
             vec3 m_position;
             float m_radius;
         };

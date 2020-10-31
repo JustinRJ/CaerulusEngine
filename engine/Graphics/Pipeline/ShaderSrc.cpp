@@ -6,7 +6,7 @@
 
 namespace Graphics
 {
-    namespace PipeLine
+    namespace Pipeline
     {
         ShaderSrc::ShaderSrc(ShaderType type, const std::string& path) :
             m_type(type),
@@ -27,7 +27,6 @@ namespace Graphics
 
         void ShaderSrc::Load()
         {
-            // Shaders reading
             std::string code;
             std::ifstream shaderFile;
 
@@ -65,8 +64,6 @@ namespace Graphics
 
             if (isCompileSuccess)
             {
-                // Find uniforms
-                SetUniforms(source);
                 m_isCompiled = true;
             }
             else
@@ -77,52 +74,9 @@ namespace Graphics
             }
         }
 
-        GLuint ShaderSrc::GetHandle() const
+        unsigned int ShaderSrc::GetHandle() const
         {
             return m_handle;
-        }
-
-        void ShaderSrc::SetUniforms(const std::string& source)
-        {
-            auto shaderTypeToString = [&](ShaderType s) -> std::string
-            {
-                if (s == GL_VERTEX_SHADER)
-                    return "Vertex Shader";
-                else if (s == GL_FRAGMENT_SHADER)
-                    return "Fragment Shader";
-                else if (s == GL_GEOMETRY_SHADER)
-                    return "Geometry Shader";
-                else
-                    return "Unknown Shader";
-            };
-
-            using namespace Core::Logging;
-            Log::LogMessage("\t\tShaderType: " + shaderTypeToString(m_type));
-
-            size_t offset = 0U;
-            bool searchForUniforms = true;
-            while (searchForUniforms)
-            {
-                auto spaceBeforeName = source.find("uniform", offset);
-                if (spaceBeforeName != std::string::npos)
-                {
-                    spaceBeforeName = source.find(" ", source.find(" ", spaceBeforeName) + 1);
-                    auto semicolonAfterName = source.find(";", spaceBeforeName);
-                    std::string unfiformName = std::string(source.c_str() + spaceBeforeName, source.c_str() + semicolonAfterName);
-                    offset = semicolonAfterName;
-                    m_uniforms.push_back(unfiformName);
-                    Log::LogMessage("\t\tUniform " + std::to_string(m_uniforms.size()) + ": " + unfiformName);
-                }
-                else
-                {
-                    searchForUniforms = false;
-                }
-            }
-        }
-
-        const std::vector<std::string>& ShaderSrc::GetUniforms() const
-        {
-            return m_uniforms;
         }
     }
 }
