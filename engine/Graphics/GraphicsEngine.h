@@ -29,10 +29,17 @@ namespace Graphics
         class IRenderer;
     }
 
-    namespace Light
+    namespace Lighting
     {
         class Light;
     }
+
+    enum class ShaderPriority
+    {
+        PreProcess,
+        MidProcess,
+        PostProcess
+    };
 
     class CAERULUS_GRAPHICS GraphicsEngine : public Core::Interface::ITickable
     {
@@ -51,16 +58,23 @@ namespace Graphics
         std::shared_ptr<Window::GLWindow> GetWindow() const;
         std::shared_ptr<Pipeline::IRenderer> GetRenderer() const;
         const std::vector<std::shared_ptr<Resource::Model>>& GetModels() const;
-        const std::vector<std::shared_ptr<Light::Light>>& GetLights() const;
+        const std::vector<std::shared_ptr<Lighting::Light>>& GetLights() const;
+        const std::map<ShaderPriority, std::vector<std::shared_ptr<Pipeline::Shader>>>& GetShaders() const;
 
         void SetWireframe(bool wireframe);
         void SetClearColour(const Core::Math::vec4& colour);
         void SetWindow(std::shared_ptr<Window::GLWindow> window);
         void SetRenderer(std::shared_ptr<Pipeline::IRenderer> renderer);
         void SetModels(const std::vector<std::shared_ptr<Resource::Model>>& models);
-        void SetLights(const std::vector<std::shared_ptr<Light::Light>>& lights);
+        void SetLights(const std::vector<std::shared_ptr<Lighting::Light>>& lights);
+        void SetShaders(const std::map<ShaderPriority, std::vector<std::shared_ptr<Pipeline::Shader>>>& shaders);
 
     private:
+
+        void UpdateShaderUniforms(ShaderPriority priority);
+        void UpdateModels();
+        void UpdateLights();
+
         bool m_renderWireframe = false;
         Core::Math::vec4 m_clearColour = Core::Math::vec4(0.2f, 0.3f, 0.3f, 1.0f);
 
@@ -68,6 +82,8 @@ namespace Graphics
         std::shared_ptr<Window::GLWindow> m_window;
 
         std::vector<std::shared_ptr<Resource::Model>> m_models;
-        std::vector<std::shared_ptr<Light::Light>> m_lights;
+        std::vector<std::shared_ptr<Lighting::Light>> m_lights;
+
+        std::map<ShaderPriority, std::vector<std::shared_ptr<Pipeline::Shader>>> m_shaders;
     };
 }

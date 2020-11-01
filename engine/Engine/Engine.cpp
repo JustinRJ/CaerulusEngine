@@ -153,8 +153,6 @@ void Engine::InitInput()
 void Engine::InitRenderer()
 {
     m_shaderManager->Load("position", "assets/shaders/position.vert", "assets/shaders/position.frag");
-
-    m_graphicsEngine->SetWindow(m_window);
 }
 
 void Engine::InitScene()
@@ -162,15 +160,15 @@ void Engine::InitScene()
     m_modelManager->Load("sponza", "assets/models/Sponza/sponza.obj");
     
     std::shared_ptr<Shader> shader = m_shaderManager->Get("position");
-    UniformCallbackMap& positionCallbackMap = shader->GetUniformCallbackMap();
+    UniformCallbackLayout& positionCallbackMap = shader->GetUniformCallbackMap();
 
     static std::shared_ptr<Node> node = std::make_shared<Node>();
     Core::Math::mat4& sponzaModel = node->GetTransform().GetMatrix();
     sponzaModel = translate(mat4(1.0f), vec3(0, 0, -10));
     sponzaModel = scale(sponzaModel, vec3(0.25, 0.25, 0.25));
 
-    positionCallbackMap.F4Callbacks.insert({ "ourColor", []() { return fvec4(0.f, (sin(glfwGetTime()) / 2.0f) + 0.5f, 0.f, 1.0); } });
-    positionCallbackMap.Mat4Callbacks.insert({ "mvp", [&camera = m_camera, &model = sponzaModel]()
+    positionCallbackMap.F4Callbacks.Map.insert({ "ourColor", []() { return fvec4(0.f, (sin(glfwGetTime()) / 2.0f) + 0.5f, 0.f, 1.0); } });
+    positionCallbackMap.Mat4Callbacks.Map.insert({ "mvp", [&camera = m_camera, &model = sponzaModel]()
     {
         return camera->GetFrustrum().GetMatrix() * camera->GetTransform().GetMatrix() * model;
     }});

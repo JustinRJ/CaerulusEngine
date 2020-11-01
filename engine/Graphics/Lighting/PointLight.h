@@ -4,7 +4,7 @@
 
 namespace Graphics
 {
-    namespace Light
+    namespace Lighting
     {
         class PointLight : public Light
         {

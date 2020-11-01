@@ -221,7 +221,7 @@ echo DA | xcopy "$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(Plat
     <ClInclude Include="Pipeline\Shader.h" />
     <ClInclude Include="Pipeline\ShaderSrc.h" />
     <ClInclude Include="GraphicsEngine.h" />
-    <ClInclude Include="Pipeline\UniformCallbackMap.h" />
+    <ClInclude Include="Pipeline\UniformCallbackLayout.h" />
     <ClInclude Include="Pipeline\VertexArray.h" />
     <ClInclude Include="Pipeline\VertexBuffer.h" />
     <ClInclude Include="Pipeline\VertexBufferLayout.h" />

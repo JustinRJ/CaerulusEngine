@@ -10,7 +10,7 @@ namespace Graphics
         class Shader;
     }
 
-    namespace Light 
+    namespace Lighting
     {
         class Light : public Core::Interface::NonCopyable
         {

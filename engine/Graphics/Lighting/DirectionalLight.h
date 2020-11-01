@@ -4,7 +4,7 @@
 
 namespace Graphics
 {
-    namespace Light
+    namespace Lighting
     {
         class DirectionalLight : public Light
         {

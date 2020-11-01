@@ -1,4 +1,6 @@
 General
+* Split into Game and Engine solutions
+
 * Update Time class to use std::chrono
 
 * Use pimpl pattern to avoid engine having dependencies on eternal projects

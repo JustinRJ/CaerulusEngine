@@ -24,11 +24,11 @@
 
 namespace
 {
-    using namespace Graphics::Light;
     using namespace Graphics::Window;
     using namespace Graphics::Resource;
     using namespace Graphics::Pipeline;
     using namespace Graphics::Geometry;
+    using namespace Graphics::Lighting;
 }
 
 namespace Graphics
@@ -51,49 +51,59 @@ namespace Graphics
         {
             m_window->Update();
 
-            for (std::shared_ptr<Model> model : m_models)
+            UpdateShaderUniforms(ShaderPriority::PreProcess);
+            UpdateModels();
+            UpdateShaderUniforms(ShaderPriority::MidProcess);
+            UpdateLights();
+            UpdateShaderUniforms(ShaderPriority::PostProcess);
+
+            m_window->SwapBuffer();
+        }
+    }
+
+    void GraphicsEngine::UpdateModels()
+    {
+        for (std::shared_ptr<Model> model : m_models)
+        {
+            for (unsigned int i = 0; i < model->GetMeshes().size(); ++i)
             {
-                for (unsigned int i = 0; i < model->GetMeshes().size(); ++i)
+                if (std::shared_ptr<Mesh> mesh = model->GetMeshes()[i])
                 {
-                    if (std::shared_ptr<Mesh> mesh = model->GetMeshes()[i])
+                    std::shared_ptr<Material> material = model->GetMaterials()[i];
+
+                    if (material)
                     {
-                        std::shared_ptr<Material> material = model->GetMaterials()[i];
+                        material->Bind();
 
-                        if (material)
+                        for (std::shared_ptr<Shader> shader : material->GetShaders())
                         {
-                            material->Bind();
-
-                            for (std::shared_ptr<Shader> shader : material->GetShaders())
+                            if (shader)
                             {
-                                if (shader)
-                                {
-                                    shader->Bind();
-                                    shader->UpdateUniforms();
-                                }
+                                shader->UpdateUniforms();
                             }
                         }
+                    }
 
-                        m_renderer->Draw(mesh->GetVertexArray(), mesh->GetIndexBuffer(), m_renderWireframe);
+                    m_renderer->Draw(mesh->GetVertexArray(), mesh->GetIndexBuffer(), m_renderWireframe);
 
-                        if (material)
-                        {
-                            material->Unbind();
-                        }
+                    if (material)
+                    {
+                        material->Unbind();
                     }
                 }
             }
+        }
+    }
 
-            for (std::shared_ptr<Light::Light> light : m_lights)
+    void GraphicsEngine::UpdateLights()
+    {
+        for (std::shared_ptr<Light> light : m_lights)
+        {
+            if (std::shared_ptr<Shader> shader = light->GetShader())
             {
-                if (std::shared_ptr<Shader> shader = light->GetShader())
-                {
-                    shader->Bind();
-                    shader->UpdateUniforms();
-                }
+                shader->UpdateUniforms();
             }
         }
-
-        m_window->SwapBuffer();
     }
 
     const Core::Math::vec4& GraphicsEngine::GetClearColour() const
@@ -131,9 +141,28 @@ namespace Graphics
         m_models = models;
     }
 
-    void GraphicsEngine::SetLights(const std::vector<std::shared_ptr<Light::Light>>& lights)
+    void GraphicsEngine::SetLights(const std::vector<std::shared_ptr<Light>>& lights)
     {
         m_lights = lights;
+    }
+
+    void GraphicsEngine::SetShaders(const std::map<ShaderPriority, std::vector<std::shared_ptr<Pipeline::Shader>>>& shaders)
+    {
+        m_shaders = shaders;
+    }
+
+    void GraphicsEngine::UpdateShaderUniforms(ShaderPriority priority)
+    {
+        if (m_shaders.find(priority) != m_shaders.end())
+        {
+            for (std::shared_ptr<Shader> shader : m_shaders.at(priority))
+            {
+                if (shader)
+                {
+                    shader->UpdateUniforms();
+                }
+            }
+        }
     }
 
     const std::vector<std::shared_ptr<Model>>& GraphicsEngine::GetModels() const
@@ -141,9 +170,14 @@ namespace Graphics
         return m_models;
     }
 
-    const std::vector<std::shared_ptr<Light::Light>>& GraphicsEngine::GetLights() const
+    const std::vector<std::shared_ptr<Light>>& GraphicsEngine::GetLights() const
     {
         return m_lights;
+    }
+
+    const std::map<ShaderPriority, std::vector<std::shared_ptr<Pipeline::Shader>>>& GraphicsEngine::GetShaders() const
+    {
+        return m_shaders;
     }
 
     void GraphicsEngine::SetWireframe(bool wireframe)

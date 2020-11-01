@@ -4,7 +4,7 @@
 
 #include "Core/Logging/Log.h"
 #include "IBindable.h"
-#include "UniformCallbackMap.h"
+#include "UniformCallbackLayout.h"
 
 namespace Graphics
 {
@@ -73,12 +73,12 @@ namespace Graphics
                 glUniformMatrix4fv(GetUniformLocation(name), 1, transpose, value_ptr(value));
             }
 
-            const UniformCallbackMap& GetUniformCallbackMap() const
+            const UniformCallbackLayout& GetUniformCallbackMap() const
             {
                 return m_uniformCallbackMap;
             }
 
-            UniformCallbackMap& GetUniformCallbackMap()
+            UniformCallbackLayout& GetUniformCallbackMap()
             {
                 return m_uniformCallbackMap;
             }
@@ -109,7 +109,7 @@ namespace Graphics
             std::shared_ptr<ShaderSrc> m_vertex;
             std::shared_ptr<ShaderSrc> m_fragment;
             std::unordered_map<std::string, int> m_uniformLocationCache;
-            UniformCallbackMap m_uniformCallbackMap;
+            UniformCallbackLayout m_uniformCallbackMap;
         };
     }
 }

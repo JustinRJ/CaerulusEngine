@@ -31,15 +31,6 @@
     <ClInclude Include="Window\Window.h">
       <Filter>Window</Filter>
     </ClInclude>
-    <ClInclude Include="Lighting\PointLight.h">
-      <Filter>Light</Filter>
-    </ClInclude>
-    <ClInclude Include="Lighting\Light.h">
-      <Filter>Light</Filter>
-    </ClInclude>
-    <ClInclude Include="Lighting\DirectionalLight.h">
-      <Filter>Light</Filter>
-    </ClInclude>
     <ClInclude Include="Window\GLWindow.h">
       <Filter>Window</Filter>
     </ClInclude>
@@ -92,7 +83,16 @@
     <ClInclude Include="Pipeline\IBindable.h">
       <Filter>Pipeline</Filter>
     </ClInclude>
-    <ClInclude Include="Pipeline\UniformCallbackMap.h">
+    <ClInclude Include="Lighting\DirectionalLight.h">
+      <Filter>Lighting</Filter>
+    </ClInclude>
+    <ClInclude Include="Lighting\Light.h">
+      <Filter>Lighting</Filter>
+    </ClInclude>
+    <ClInclude Include="Lighting\PointLight.h">
+      <Filter>Lighting</Filter>
+    </ClInclude>
+    <ClInclude Include="Pipeline\UniformCallbackLayout.h">
       <Filter>Pipeline</Filter>
     </ClInclude>
   </ItemGroup>
@@ -106,14 +106,14 @@
     <Filter Include="Geometry">
       <UniqueIdentifier>{b110112b-b640-4295-a305-bdbad6e53c67}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Light">
-      <UniqueIdentifier>{121e4977-eefc-4ca1-af5b-153e61aabb02}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Pipeline">
       <UniqueIdentifier>{0ca40c0a-364b-4e3e-823c-1386529f52fa}</UniqueIdentifier>
     </Filter>
     <Filter Include="Shaders">
       <UniqueIdentifier>{46838d02-fe10-487c-9d76-f9d2f300fa4f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Lighting">
+      <UniqueIdentifier>{121e4977-eefc-4ca1-af5b-153e61aabb02}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
