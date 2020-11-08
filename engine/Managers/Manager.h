@@ -21,9 +21,10 @@ namespace Managers
 
         std::shared_ptr<T> Get(const std::string& key) const
         {
-            if (IsLoaded(key))
+            auto it = m_managedMap.find(key);
+            if (it != m_managedMap.end())
             {
-                return m_managedMap.at(key);
+                return it->second;
             }
             Log::LogInDebug("Managed object " + key + " not found!");
             return nullptr;

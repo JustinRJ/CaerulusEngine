@@ -19,7 +19,13 @@ namespace Managers
 
         Log::LogMessage("Creating material " + name);
         std::shared_ptr<Material> material = std::make_shared<Material>(name);
-        material->SetTextures(textures);
+
+        material->GetMaterialConfig().resize(textures.size());
+        for (unsigned int i = 0; i < textures.size(); ++i)
+        {
+            material->GetMaterialConfig()[i].Texture = textures[i];
+        }
+
         Insert(name, material);
     }
 
@@ -58,7 +64,12 @@ namespace Managers
                         textures.push_back(m_textureManager.Get(textureName));
                     }
                 }
-                newMaterial->SetTextures(textures);
+
+                for (unsigned int i = 0; i < textures.size(); ++i)
+                {
+                    newMaterial->GetMaterialConfig()[i].Texture = textures[i];
+                }
+
                 Insert(newMaterial->GetName(), newMaterial);
             }
             fb.close();

@@ -13,14 +13,14 @@ namespace Graphics
         {
             Core::Math::vec3 Position;
             Core::Math::vec3 Normal;
-            Core::Math::vec2 TexCoords;
+            Core::Math::vec2 TexCoord;
 
             bool operator==(const Vertex& other) const
             {
                 return
                     Position == other.Position &&
                     Normal == other.Normal &&
-                    TexCoords == other.TexCoords;
+                    TexCoord == other.TexCoord;
             }
         };
 

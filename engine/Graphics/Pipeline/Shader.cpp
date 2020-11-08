@@ -33,45 +33,5 @@ namespace Graphics
 
             m_isLinked = true;
         }
-
-        void Shader::UpdateUniforms()
-        {
-            Bind();
-
-            for (auto const& kv : m_uniformCallbackMap.I1Callbacks.Map)
-            {
-                Set1i(kv.first, kv.second());
-            }
-
-            for (auto const& kv : m_uniformCallbackMap.F1Callbacks.Map)
-            {
-                Set1f(kv.first, kv.second());
-            }
-
-            for (auto const& kv : m_uniformCallbackMap.F2Callbacks.Map)
-            {
-                Set2f(kv.first, kv.second());
-            }
-
-            for (auto const& kv : m_uniformCallbackMap.F3Callbacks.Map)
-            {
-                Set3f(kv.first, kv.second());
-            }
-
-            for (auto const& kv : m_uniformCallbackMap.F4Callbacks.Map)
-            {
-                Set4f(kv.first, kv.second());
-            }
-
-            for (auto const& kv : m_uniformCallbackMap.Mat3Callbacks.Map)
-            {
-                SetMat3fv(kv.first, kv.second());
-            }
-
-            for (auto const& kv : m_uniformCallbackMap.Mat4Callbacks.Map)
-            {
-                SetMat4fv(kv.first, kv.second());
-            }
-        }
     }
 }

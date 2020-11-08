@@ -2,6 +2,7 @@
 
 #include "Material.h"
 #include "Texture.h"
+#include "Graphics/Pipeline/Shader.h"
 #include "Core/Logging/Log.h"
 
 namespace Graphics
@@ -10,9 +11,7 @@ namespace Graphics
     {
         Material::Material(const std::string& name, const std::string& path) :
             m_name(name),
-            m_path(path),
-            m_textureNames(),
-            m_textures(std::vector<std::shared_ptr<Texture>>())
+            m_path(path)
         {
         }
 
@@ -25,43 +24,51 @@ namespace Graphics
 
             m_name = materials[materialIndex].name;
 
-            // TODO - Fix mapping
-            m_textureNames.push_back(materials[materialIndex].diffuse_texname);
-            m_textureNames.push_back(materials[materialIndex].bump_texname);
-            m_textureNames.push_back(materials[materialIndex].specular_highlight_texname);
-            m_textureNames.push_back(materials[materialIndex].ambient_texname);
-            m_textureNames.push_back("");
+            m_materialConfigs.resize(7);
+            m_materialConfigs[0].TextureName = materials[materialIndex].ambient_texname;            // map_Ka
+            m_materialConfigs[1].TextureName = materials[materialIndex].diffuse_texname;            // map_Kd
+            m_materialConfigs[2].TextureName = materials[materialIndex].specular_texname;           // map_Ks
+            m_materialConfigs[3].TextureName = materials[materialIndex].specular_highlight_texname; // map_Ns
+            m_materialConfigs[4].TextureName = materials[materialIndex].bump_texname;               // map_bump, bump
+            m_materialConfigs[5].TextureName = materials[materialIndex].displacement_texname;       // disp
+            m_materialConfigs[6].TextureName = materials[materialIndex].alpha_texname;              // map_d
         }
 
-        const std::vector<std::shared_ptr<Texture>>& Material::GetTextures() const
+        const std::vector<Material::MaterialConfig>& Material::GetMaterialConfig() const
         {
-            return m_textures;
+            return m_materialConfigs;
         }
 
-        void Material::SetTextures(const std::vector<std::shared_ptr<Texture>>& textures)
+        std::vector<Material::MaterialConfig>& Material::GetMaterialConfig()
         {
-            m_textures = textures;
+            return m_materialConfigs;
+        }
+
+        void Material::Bind(unsigned int slot) const
+        {
+            if (m_shader && slot < m_materialConfigs.size())
+            {
+                const Material::MaterialConfig& config = m_materialConfigs[slot];
+
+                if (config.Texture && config.UniformName != "")
+                {
+                    config.Texture->Bind(slot);
+                    m_shader->Set1i(config.UniformName, slot);
+                }
+            }
         }
 
         void Material::Bind() const
         {
-            for (unsigned int i = 0; i < m_textures.size(); ++i)
+            for (unsigned int i = 0; i < m_materialConfigs.size(); ++i)
             {
-                if (std::shared_ptr<Texture> texture = m_textures[i])
-                {
-                    texture->Bind(i);
-                }
+                Bind(i);
             }
         }
 
         void Material::Unbind() const
         {
             glBindTexture(GL_TEXTURE_2D, 0);
-        }
-
-        const std::vector<std::string>& Material::GetTextureNames() const
-        {
-            return m_textureNames;
         }
 
         const std::string& Material::GetName() const
@@ -85,14 +92,24 @@ namespace Graphics
             return actualMaterialNames;
         }
 
-        void Material::SetShaders(const std::vector<std::shared_ptr<Pipeline::Shader>>& shaders)
+        std::vector<std::string> Material::GetTextureNames() const
         {
-            m_shaders = shaders;
+            std::vector<std::string> textureNames;
+            for (const auto &config : m_materialConfigs)
+            {
+                textureNames.push_back(config.TextureName);
+            }
+            return textureNames;
         }
 
-        const std::vector<std::shared_ptr<Pipeline::Shader>>& Material::GetShaders() const
+        std::shared_ptr<Pipeline::Shader> Material::GetShader() const
         {
-            return m_shaders;
+            return m_shader;
+        }
+
+        void Material::SetShader(std::shared_ptr<Pipeline::Shader> shader)
+        {
+            m_shader = shader;
         }
     }
 }

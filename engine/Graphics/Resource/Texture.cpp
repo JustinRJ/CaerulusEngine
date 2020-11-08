@@ -71,6 +71,12 @@ namespace Graphics
             return m_path;
         }
 
+        void Texture::Bind() const
+        {
+            glActiveTexture(GL_TEXTURE1);
+            glBindTexture(GL_TEXTURE_2D, m_handle);
+        }
+
         void Texture::Bind(unsigned int slot) const
         {
             glActiveTexture(GL_TEXTURE0 + slot);

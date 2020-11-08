@@ -14,6 +14,7 @@ namespace Graphics
             Texture(const std::string& path);
             virtual ~Texture();
 
+            void Bind() const override;
             void Bind(unsigned int slot) const override;
             void Unbind() const override;
             unsigned int GetHandle() const;

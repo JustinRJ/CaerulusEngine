@@ -69,11 +69,11 @@ namespace Core
             bool Invoke(const std::string& name, Modifier mod = Modifier::None)
             {
                 bool invoked = false;
-                for (auto& bindingMap : m_keyBindingMap)
+                for (const auto& kv : m_keyBindingMap)
                 {
-                    if (name.compare(bindingMap.second.Name) == 0)
+                    if (name.compare(kv.second.Name) == 0)
                     { 
-                        bindingMap.second.Callback(mod);
+                        kv.second.Callback(mod);
                         invoked = true;
                     }
                 }
@@ -113,17 +113,17 @@ namespace Core
 
             void InvokeCallbacks()
             {
-                for (auto& bindingPair : m_keyBindingMap)
+                for (const auto& kv : m_keyBindingMap)
                 {
-                    int key = bindingPair.first;
+                    int key = kv.first;
                     if (m_keyDataMap.find(key) != m_keyDataMap.end())
                     {
                         Action action = m_keyDataMap[key];
-                        Action targetAction = bindingPair.second.TargetAction;
+                        Action targetAction = kv.second.TargetAction;
 
                         if (action == targetAction && action != Action::Unknown)
                         {
-                            bindingPair.second.Callback(m_currentModifier);
+                            kv.second.Callback(m_currentModifier);
                         }
                     }
                 }

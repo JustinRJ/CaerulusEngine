@@ -34,7 +34,7 @@ namespace Graphics
         class Light;
     }
 
-    enum class ShaderPriority
+    enum class ProcessOrder
     {
         PreProcess,
         MidProcess,
@@ -59,7 +59,6 @@ namespace Graphics
         std::shared_ptr<Pipeline::IRenderer> GetRenderer() const;
         const std::vector<std::shared_ptr<Resource::Model>>& GetModels() const;
         const std::vector<std::shared_ptr<Lighting::Light>>& GetLights() const;
-        const std::map<ShaderPriority, std::vector<std::shared_ptr<Pipeline::Shader>>>& GetShaders() const;
 
         void SetWireframe(bool wireframe);
         void SetClearColour(const Core::Math::vec4& colour);
@@ -67,11 +66,13 @@ namespace Graphics
         void SetRenderer(std::shared_ptr<Pipeline::IRenderer> renderer);
         void SetModels(const std::vector<std::shared_ptr<Resource::Model>>& models);
         void SetLights(const std::vector<std::shared_ptr<Lighting::Light>>& lights);
-        void SetShaders(const std::map<ShaderPriority, std::vector<std::shared_ptr<Pipeline::Shader>>>& shaders);
+
+        const std::map<ProcessOrder, std::vector<std::function<void()>>>& GetUniformFunctorMap() const;
+        std::map<ProcessOrder, std::vector<std::function<void()>>>& GetUniformFunctorMap();
 
     private:
 
-        void UpdateShaderUniforms(ShaderPriority priority);
+        void UpdateUniforms(ProcessOrder priority);
         void UpdateModels();
         void UpdateLights();
 
@@ -84,6 +85,6 @@ namespace Graphics
         std::vector<std::shared_ptr<Resource::Model>> m_models;
         std::vector<std::shared_ptr<Lighting::Light>> m_lights;
 
-        std::map<ShaderPriority, std::vector<std::shared_ptr<Pipeline::Shader>>> m_shaders;
+        std::map<ProcessOrder, std::vector<std::function<void()>>> m_uniformFunctorMap;
     };
 }

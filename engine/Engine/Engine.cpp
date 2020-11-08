@@ -128,9 +128,9 @@ void Engine::Tick()
 
 void Engine::InitInput()
 {
+    m_keyboardInputManager->AddWindowKeyCallback(m_window, GLFW_KEY_ESCAPE, Action::Release, [&](Modifier) { m_running = false; });
     m_keyboardInputManager->AddWindowKeyCallback(m_window, GLFW_KEY_X, Action::Release, [&](Modifier)   { m_window->ToggleLockedCursor(); });
-    m_keyboardInputManager->AddWindowKeyCallback(m_window, GLFW_KEY_ESCAPE, Action::Release, [&](Modifier) { if (m_window->IsCursorLocked()) { m_running = false; }});
-    m_keyboardInputManager->AddWindowKeyCallback(m_window, GLFW_KEY_R, Action::Release, [&](Modifier m) { if (m_window->IsCursorLocked()) { m_reset = true; }});
+    m_keyboardInputManager->AddWindowKeyCallback(m_window, GLFW_KEY_R, Action::Release, [&](Modifier)   { if (m_window->IsCursorLocked()) { m_reset = true; }});
     m_keyboardInputManager->AddWindowKeyCallback(m_window, GLFW_KEY_C, Action::Release, [&](Modifier)   { if (m_window->IsCursorLocked()) { m_graphicsEngine->SetWireframe(!m_graphicsEngine->GetWireframe()); }});
 
     m_keyboardInputManager->AddWindowKeyCallback(m_window, GLFW_KEY_A, Action::Hold, [&](Modifier m) { if (m_window->IsCursorLocked()) { m_camera->Translate(UnitRight   * -m_deltaTime * (m == Modifier::Shift ? m_sprintSpeed : m_normalSpeed), false); }});
@@ -153,31 +153,33 @@ void Engine::InitInput()
 void Engine::InitRenderer()
 {
     m_shaderManager->Load("position", "assets/shaders/position.vert", "assets/shaders/position.frag");
+
+    static std::shared_ptr<Node> node = std::make_shared<Node>();
+    Core::Math::mat4& model = node->GetTransform().GetMatrix();
+    model = translate(mat4(1.0f), vec3(0, 0, -10));
+    model = scale(model, vec3(0.25, 0.25, 0.25));
+
+    std::map<ProcessOrder, std::vector<std::function<void()>>>& uniformFunctorMap = m_graphicsEngine->GetUniformFunctorMap();
+    uniformFunctorMap[ProcessOrder::PreProcess].push_back([&]()
+    {
+        std::shared_ptr<Shader> shader = m_shaderManager->Get("position");
+        shader->Bind();
+        shader->SetMat4fv("mvp", m_camera->GetFrustrum().GetMatrix() * m_camera->GetTransform().GetMatrix() * model);
+    });
 }
 
 void Engine::InitScene()
 {
     m_modelManager->Load("sponza", "assets/models/Sponza/sponza.obj");
-    
     std::shared_ptr<Shader> shader = m_shaderManager->Get("position");
-    UniformCallbackLayout& positionCallbackMap = shader->GetUniformCallbackMap();
-
-    static std::shared_ptr<Node> node = std::make_shared<Node>();
-    Core::Math::mat4& sponzaModel = node->GetTransform().GetMatrix();
-    sponzaModel = translate(mat4(1.0f), vec3(0, 0, -10));
-    sponzaModel = scale(sponzaModel, vec3(0.25, 0.25, 0.25));
-
-    positionCallbackMap.F4Callbacks.Map.insert({ "ourColor", []() { return fvec4(0.f, (sin(glfwGetTime()) / 2.0f) + 0.5f, 0.f, 1.0); } });
-    positionCallbackMap.Mat4Callbacks.Map.insert({ "mvp", [&camera = m_camera, &model = sponzaModel]()
-    {
-        return camera->GetFrustrum().GetMatrix() * camera->GetTransform().GetMatrix() * model;
-    }});
 
     for (std::shared_ptr<Material> material : m_modelManager->Get("sponza")->GetMaterials())
     {
         if (material)
         {
-            material->SetShaders({ shader });
+            material->SetShader(shader);
+            Material::MaterialConfig& config = material->GetMaterialConfig()[1];
+            config.UniformName = "u_Texture";
         }
     }
     

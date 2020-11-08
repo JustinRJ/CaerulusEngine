@@ -19,7 +19,7 @@ namespace std
             return
                 ((hash<Core::Math::vec3>()(vertex.Position) ^
                 (hash<Core::Math::vec3>()(vertex.Normal) << 1)) >> 1) ^
-                    (hash<Core::Math::vec2>()(vertex.TexCoords) << 1);
+                    (hash<Core::Math::vec2>()(vertex.TexCoord) << 1);
         }
     };
 }
@@ -83,7 +83,7 @@ namespace Graphics
                             attrib.vertices[3 * idx.vertex_index + 1],
                             attrib.vertices[3 * idx.vertex_index + 2] };
 
-                        vertex.TexCoords = {
+                        vertex.TexCoord = {
                             attrib.texcoords[2 * idx.texcoord_index + 0],
                             attrib.texcoords[2 * idx.texcoord_index + 1] };
 

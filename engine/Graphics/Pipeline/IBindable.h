@@ -11,7 +11,7 @@ namespace Graphics
         class CAERULUS_GRAPHICS IBindable : public Core::Interface::NonCopyable
         {
         public:
-            virtual void Bind() const {};
+            virtual void Bind() const = 0;
             virtual void Bind(unsigned int slot) const {};
             virtual void Unbind() const = 0;
         };

@@ -51,11 +51,11 @@ namespace Graphics
         {
             m_window->Update();
 
-            UpdateShaderUniforms(ShaderPriority::PreProcess);
+            UpdateUniforms(ProcessOrder::PreProcess);
             UpdateModels();
-            UpdateShaderUniforms(ShaderPriority::MidProcess);
+            UpdateUniforms(ProcessOrder::MidProcess);
             UpdateLights();
-            UpdateShaderUniforms(ShaderPriority::PostProcess);
+            UpdateUniforms(ProcessOrder::PostProcess);
 
             m_window->SwapBuffer();
         }
@@ -69,19 +69,15 @@ namespace Graphics
             {
                 if (std::shared_ptr<Mesh> mesh = model->GetMeshes()[i])
                 {
-                    std::shared_ptr<Material> material = model->GetMaterials()[i];
+                    std::shared_ptr<Material> material;
+                    if (i < model->GetMaterials().size())
+                    {
+                        material = model->GetMaterials()[i];
+                    }
 
                     if (material)
                     {
                         material->Bind();
-
-                        for (std::shared_ptr<Shader> shader : material->GetShaders())
-                        {
-                            if (shader)
-                            {
-                                shader->UpdateUniforms();
-                            }
-                        }
                     }
 
                     m_renderer->Draw(mesh->GetVertexArray(), mesh->GetIndexBuffer(), m_renderWireframe);
@@ -101,7 +97,6 @@ namespace Graphics
         {
             if (std::shared_ptr<Shader> shader = light->GetShader())
             {
-                shader->UpdateUniforms();
             }
         }
     }
@@ -146,25 +141,6 @@ namespace Graphics
         m_lights = lights;
     }
 
-    void GraphicsEngine::SetShaders(const std::map<ShaderPriority, std::vector<std::shared_ptr<Pipeline::Shader>>>& shaders)
-    {
-        m_shaders = shaders;
-    }
-
-    void GraphicsEngine::UpdateShaderUniforms(ShaderPriority priority)
-    {
-        if (m_shaders.find(priority) != m_shaders.end())
-        {
-            for (std::shared_ptr<Shader> shader : m_shaders.at(priority))
-            {
-                if (shader)
-                {
-                    shader->UpdateUniforms();
-                }
-            }
-        }
-    }
-
     const std::vector<std::shared_ptr<Model>>& GraphicsEngine::GetModels() const
     {
         return m_models;
@@ -175,11 +151,6 @@ namespace Graphics
         return m_lights;
     }
 
-    const std::map<ShaderPriority, std::vector<std::shared_ptr<Pipeline::Shader>>>& GraphicsEngine::GetShaders() const
-    {
-        return m_shaders;
-    }
-
     void GraphicsEngine::SetWireframe(bool wireframe)
     {
         m_renderWireframe = wireframe;
@@ -188,5 +159,23 @@ namespace Graphics
     bool GraphicsEngine::GetWireframe() const
     {
         return m_renderWireframe;
+    }
+
+    const std::map<ProcessOrder, std::vector<std::function<void()>>>& GraphicsEngine::GetUniformFunctorMap() const
+    {
+        return m_uniformFunctorMap;
+    }
+
+    std::map<ProcessOrder, std::vector<std::function<void()>>>& GraphicsEngine::GetUniformFunctorMap()
+    {
+        return m_uniformFunctorMap;
+    }
+
+    void GraphicsEngine::UpdateUniforms(ProcessOrder priority)
+    {
+        for (const auto& uniformFunctors : m_uniformFunctorMap[priority])
+        {
+            uniformFunctors();
+        }
     }
 }

@@ -66,10 +66,6 @@ namespace Core
             }
 
         private:
-            DragData m_dragData;
-            std::vector<DragBinding> m_dragBindingMap;
-            std::shared_ptr<Graphics::Window::GLWindow> m_window;
-
             void UpdateMouseDrag()
             {
                 double xpos, ypos;
@@ -77,11 +73,15 @@ namespace Core
                 double deltaX = xpos - (m_window->GetActiveState().Width / 2.);
                 double deltaY = ypos - (m_window->GetActiveState().Height / 2.);
 
-                for (auto& dragBindingPair : m_dragBindingMap)
+                for (const DragBinding& dragBinding : m_dragBindingMap)
                 {
-                    dragBindingPair.Callback(DragData({ xpos, ypos, deltaX, deltaY }));
+                    dragBinding.Callback(DragData({ xpos, ypos, deltaX, deltaY }));
                 }
             }
+
+            DragData m_dragData;
+            std::vector<DragBinding> m_dragBindingMap;
+            std::shared_ptr<Graphics::Window::GLWindow> m_window;
         };
     }
 }

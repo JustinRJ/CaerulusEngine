@@ -4,7 +4,7 @@
 
 namespace Managers
 {
-    void TextureManager::Load(const std::string& name, const std::string& path, bool HDR)
+    void TextureManager::Load(const std::string& name, const std::string& path)
     {
         if (IsLoaded(name))
         {

@@ -92,9 +92,6 @@
     <ClInclude Include="Lighting\PointLight.h">
       <Filter>Lighting</Filter>
     </ClInclude>
-    <ClInclude Include="Pipeline\UniformCallbackLayout.h">
-      <Filter>Pipeline</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Window">

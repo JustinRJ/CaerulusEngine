@@ -2,9 +2,9 @@
 
 #define CAERULUS_GRAPHICS __declspec(dllexport)
 
-#include "Core/Logging/Log.h"
 #include "IBindable.h"
-#include "UniformCallbackLayout.h"
+#include "Core/Math/Math.h"
+#include "Core/Logging/Log.h"
 
 namespace Graphics
 {
@@ -73,18 +73,6 @@ namespace Graphics
                 glUniformMatrix4fv(GetUniformLocation(name), 1, transpose, value_ptr(value));
             }
 
-            const UniformCallbackLayout& GetUniformCallbackMap() const
-            {
-                return m_uniformCallbackMap;
-            }
-
-            UniformCallbackLayout& GetUniformCallbackMap()
-            {
-                return m_uniformCallbackMap;
-            }
-
-            void UpdateUniforms();
-
         private:
             int GetUniformLocation(const std::string& name)
             {
@@ -109,7 +97,6 @@ namespace Graphics
             std::shared_ptr<ShaderSrc> m_vertex;
             std::shared_ptr<ShaderSrc> m_fragment;
             std::unordered_map<std::string, int> m_uniformLocationCache;
-            UniformCallbackLayout m_uniformCallbackMap;
         };
     }
 }

@@ -16,6 +16,6 @@ namespace Managers
         TextureManager() = default;
         virtual ~TextureManager() = default;
 
-        void Load(const std::string& name, const std::string& path, bool HDR = false);
+        void Load(const std::string& name, const std::string& path);
     };
 }
