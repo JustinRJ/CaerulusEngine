@@ -4,11 +4,11 @@
 
 #include "Managers/Manager.h"
 #include "MaterialManager.h"
-#include "Graphics/Resource/Model.h"
+#include "Graphics/Geometry/Model.h"
 
 namespace
 {
-    using namespace Graphics::Resource;
+    using namespace Graphics::Geometry;
 }
 
 namespace Managers

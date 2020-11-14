@@ -209,12 +209,12 @@ echo DA | xcopy "$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(Plat
   <ItemGroup>
     <ClInclude Include="Geometry\Cube.h" />
     <ClInclude Include="Geometry\Mesh.h" />
+    <ClInclude Include="Geometry\Model.h" />
     <ClInclude Include="Geometry\Plane.h" />
     <ClInclude Include="Geometry\Quad.h" />
     <ClInclude Include="Lighting\DirectionalLight.h" />
     <ClInclude Include="Lighting\Light.h" />
     <ClInclude Include="Lighting\PointLight.h" />
-    <ClInclude Include="Pipeline\IBindable.h" />
     <ClInclude Include="Pipeline\IndexBuffer.h" />
     <ClInclude Include="Pipeline\IRenderer.h" />
     <ClInclude Include="Pipeline\Renderer.h" />
@@ -224,28 +224,27 @@ echo DA | xcopy "$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(Plat
     <ClInclude Include="Pipeline\VertexArray.h" />
     <ClInclude Include="Pipeline\VertexBuffer.h" />
     <ClInclude Include="Pipeline\VertexBufferLayout.h" />
-    <ClInclude Include="Resource\Material.h" />
-    <ClInclude Include="Resource\Model.h" />
-    <ClInclude Include="Resource\Texture.h" />
     <ClInclude Include="stdafx.h" />
+    <ClInclude Include="Surface\Material.h" />
+    <ClInclude Include="Surface\Texture.h" />
     <ClInclude Include="Window\GLWindow.h" />
     <ClInclude Include="Window\Window.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp" />
+    <ClCompile Include="Geometry\Model.cpp" />
     <ClCompile Include="Pipeline\Renderer.cpp" />
     <ClCompile Include="Pipeline\Shader.cpp" />
     <ClCompile Include="Pipeline\ShaderSrc.cpp" />
     <ClCompile Include="GraphicsEngine.cpp" />
-    <ClCompile Include="Resource\Material.cpp" />
-    <ClCompile Include="Resource\Model.cpp" />
-    <ClCompile Include="Resource\Texture.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="Surface\Material.cpp" />
+    <ClCompile Include="Surface\Texture.cpp" />
     <ClCompile Include="Window\GLWindow.cpp" />
   </ItemGroup>
   <ItemGroup>

@@ -1,12 +1,12 @@
 #pragma once
 
-#include "IBindable.h"
+#include "Core/Interface/NonCopyable.h"
 
 namespace Graphics
 {
     namespace Pipeline
     {
-        class IndexBuffer : public IBindable
+        class IndexBuffer : public Core::Interface::NonCopyable
         {
         public:
             IndexBuffer(const unsigned int* data, size_t count) :
@@ -22,12 +22,12 @@ namespace Graphics
                 glDeleteBuffers(1, &m_handle);
             }
 
-            void Bind() const override
+            void Bind() const
             {
                 glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_handle);
             }
 
-            void Unbind() const override
+            static void Unbind()
             {
                 glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
             }

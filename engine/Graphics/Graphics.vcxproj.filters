@@ -6,15 +6,6 @@
     <ClCompile Include="Window\GLWindow.cpp">
       <Filter>Window</Filter>
     </ClCompile>
-    <ClCompile Include="Resource\Material.cpp">
-      <Filter>Resource</Filter>
-    </ClCompile>
-    <ClCompile Include="Resource\Model.cpp">
-      <Filter>Resource</Filter>
-    </ClCompile>
-    <ClCompile Include="Resource\Texture.cpp">
-      <Filter>Resource</Filter>
-    </ClCompile>
     <ClCompile Include="Pipeline\Shader.cpp">
       <Filter>Pipeline</Filter>
     </ClCompile>
@@ -25,6 +16,15 @@
     <ClCompile Include="Pipeline\Renderer.cpp">
       <Filter>Pipeline</Filter>
     </ClCompile>
+    <ClCompile Include="Geometry\Model.cpp">
+      <Filter>Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="Surface\Material.cpp">
+      <Filter>Surface</Filter>
+    </ClCompile>
+    <ClCompile Include="Surface\Texture.cpp">
+      <Filter>Surface</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -33,15 +33,6 @@
     </ClInclude>
     <ClInclude Include="Window\GLWindow.h">
       <Filter>Window</Filter>
-    </ClInclude>
-    <ClInclude Include="Resource\Material.h">
-      <Filter>Resource</Filter>
-    </ClInclude>
-    <ClInclude Include="Resource\Model.h">
-      <Filter>Resource</Filter>
-    </ClInclude>
-    <ClInclude Include="Resource\Texture.h">
-      <Filter>Resource</Filter>
     </ClInclude>
     <ClInclude Include="Pipeline\Shader.h">
       <Filter>Pipeline</Filter>
@@ -80,9 +71,6 @@
     <ClInclude Include="Pipeline\VertexBufferLayout.h">
       <Filter>Pipeline</Filter>
     </ClInclude>
-    <ClInclude Include="Pipeline\IBindable.h">
-      <Filter>Pipeline</Filter>
-    </ClInclude>
     <ClInclude Include="Lighting\DirectionalLight.h">
       <Filter>Lighting</Filter>
     </ClInclude>
@@ -92,13 +80,19 @@
     <ClInclude Include="Lighting\PointLight.h">
       <Filter>Lighting</Filter>
     </ClInclude>
+    <ClInclude Include="Geometry\Model.h">
+      <Filter>Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="Surface\Material.h">
+      <Filter>Surface</Filter>
+    </ClInclude>
+    <ClInclude Include="Surface\Texture.h">
+      <Filter>Surface</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Window">
       <UniqueIdentifier>{78b8b412-23e9-41a9-a0e4-efd14133da19}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Resource">
-      <UniqueIdentifier>{9ec83860-3c23-4c54-a0a6-22e28240c0df}</UniqueIdentifier>
     </Filter>
     <Filter Include="Geometry">
       <UniqueIdentifier>{b110112b-b640-4295-a305-bdbad6e53c67}</UniqueIdentifier>
@@ -111,6 +105,9 @@
     </Filter>
     <Filter Include="Lighting">
       <UniqueIdentifier>{121e4977-eefc-4ca1-af5b-153e61aabb02}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Surface">
+      <UniqueIdentifier>{9ec83860-3c23-4c54-a0a6-22e28240c0df}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

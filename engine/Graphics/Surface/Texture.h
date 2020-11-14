@@ -2,22 +2,21 @@
 
 #define CAERULUS_GRAPHICS __declspec(dllexport)
 
-#include "Graphics/Pipeline/IBindable.h"
+#include "Core/Interface/NonCopyable.h"
 
 namespace Graphics
 {
-    namespace Resource
+    namespace Surface
     {
-        class CAERULUS_GRAPHICS Texture : public Pipeline::IBindable
+        class CAERULUS_GRAPHICS Texture : public Core::Interface::NonCopyable
         {
         public:
             Texture(const std::string& path);
             virtual ~Texture();
 
-            void Bind() const override;
-            void Bind(unsigned int slot) const override;
-            void Unbind() const override;
             unsigned int GetHandle() const;
+            void Bind(unsigned int slot) const;
+            static void Unbind();
 
             void ComputeMipmap();
 

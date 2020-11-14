@@ -2,9 +2,9 @@
 
 #define CAERULUS_GRAPHICS __declspec(dllexport)
 
-#include "IBindable.h"
 #include "Core/Math/Math.h"
 #include "Core/Logging/Log.h"
+#include "Core/Interface/NonCopyable.h"
 
 namespace Graphics
 {
@@ -12,18 +12,18 @@ namespace Graphics
     {
         class ShaderSrc;
 
-        class CAERULUS_GRAPHICS Shader : public IBindable
+        class CAERULUS_GRAPHICS Shader : public Core::Interface::NonCopyable
         {
         public:
             Shader(std::shared_ptr<ShaderSrc> vertex, std::shared_ptr<ShaderSrc> fragment);
             virtual ~Shader() = default;
 
-            void Bind() const override
+            void Bind() const
             {
                 glUseProgram(m_handle);
             }
 
-            void Unbind() const override
+            static void Unbind()
             {
                 glUseProgram(0);
             }

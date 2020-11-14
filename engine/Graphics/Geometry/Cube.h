@@ -6,6 +6,11 @@
 
 namespace Graphics
 {
+    namespace Surface
+    {
+        class Material;
+    }
+
     namespace Geometry
     {
         const static GLfloat s_CubeVertices[] =
@@ -44,10 +49,22 @@ namespace Graphics
 
             ~Cube() = default;
 
+            std::shared_ptr<Surface::Material> GetMaterial() const
+            {
+                return m_material;
+            }
+
+            void SetMaterial(std::shared_ptr<Surface::Material> material)
+            {
+                m_material = material;
+            }
+
         private:
             Pipeline::VertexArray m_vertexArray;
             Pipeline::VertexBuffer m_vertexBuffer;
             Pipeline::IndexBuffer m_indexBuffer;
+
+            std::shared_ptr<Surface::Material> m_material;
         };
     }
 }

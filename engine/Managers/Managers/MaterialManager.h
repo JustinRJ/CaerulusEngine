@@ -2,11 +2,11 @@
 
 #include "Managers/Manager.h"
 #include "TextureManager.h"
-#include "Graphics/Resource/Material.h"
+#include "Graphics/Surface/Material.h"
 
 namespace
 {
-    using namespace Graphics::Resource;
+    using namespace Graphics::Surface;
 }
 
 namespace Managers

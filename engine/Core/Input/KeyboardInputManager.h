@@ -58,10 +58,10 @@ namespace Core
                     KeyboardInputManager* self = static_cast<KeyboardInputManager*>(glfwGetWindowUserPointer(windowI));
                     self->SetModifier(static_cast<Modifier>(modeI));
 
-                    if (self->GetKeyBindingMap().find(keyI) != self->GetKeyBindingMap().end())
+                    if (self->m_keyBindingMap.find(keyI) != self->m_keyBindingMap.end())
                     {
                         Action action = static_cast<Action>(actionI);
-                        self->GetKeyDataMap()[keyI] = action;
+                        self->m_keyDataMap[keyI] = action;
                     }
                 });
             }
@@ -81,16 +81,6 @@ namespace Core
             }
 
         private:
-            std::map<int, Action>& GetKeyDataMap()
-            {
-                return m_keyDataMap;
-            }
-
-            std::multimap<int, KeyBinding>& GetKeyBindingMap()
-            {
-                return m_keyBindingMap;
-            }
-
             void SetModifier(Modifier mod)
             {
                 m_currentModifier = mod;
@@ -98,15 +88,15 @@ namespace Core
 
             void UpdateActionState()
             {
-                for (auto& keyDataPair : m_keyDataMap)
+                for (auto& kv : m_keyDataMap)
                 {
-                    if (keyDataPair.second == Action::Press)
+                    if (kv.second == Action::Press)
                     {
-                        keyDataPair.second = Action::Hold;
+                        kv.second = Action::Hold;
                     }
-                    else if (keyDataPair.second == Action::Release)
+                    else if (kv.second == Action::Release)
                     {
-                        keyDataPair.second = Action::Unknown;
+                        kv.second = Action::Unknown;
                     }
                 }
             }

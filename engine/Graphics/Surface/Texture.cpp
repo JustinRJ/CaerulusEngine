@@ -8,7 +8,7 @@
 
 namespace Graphics
 {
-    namespace Resource
+    namespace Surface
     {
         Texture::Texture(const std::string& path) : 
             m_path(path),
@@ -25,29 +25,31 @@ namespace Graphics
             {
                 using Core::Logging::Log;
                 Log::LogError("Failed to load texture with path: " + std::string(path));
-                return;
             }
+            else
+            {
+                m_isLoaded = true;
 
-            m_isLoaded = true;
+                glGenTextures(1, &m_handle);
+                glBindTexture(GL_TEXTURE_2D, m_handle);
 
-            glGenTextures(1, &m_handle);
-            glBindTexture(GL_TEXTURE_2D, m_handle);
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+                glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, m_width, m_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, m_localBuffer);
+                glBindTexture(GL_TEXTURE_2D, 0);
 
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, m_width, m_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, m_localBuffer);
-            glBindTexture(GL_TEXTURE_2D, 0);
+                if (m_localBuffer)
+                {
+                    stbi_image_free(m_localBuffer);
+                }
+            }
         }
 
         Texture::~Texture()
         {
-            if (m_localBuffer)
-            {
-                stbi_image_free(m_localBuffer);
-            }
             glDeleteTextures(1, &m_handle);
         }
 
@@ -71,19 +73,13 @@ namespace Graphics
             return m_path;
         }
 
-        void Texture::Bind() const
-        {
-            glActiveTexture(GL_TEXTURE1);
-            glBindTexture(GL_TEXTURE_2D, m_handle);
-        }
-
         void Texture::Bind(unsigned int slot) const
         {
             glActiveTexture(GL_TEXTURE0 + slot);
             glBindTexture(GL_TEXTURE_2D, m_handle);
         }
 
-        void Texture::Unbind() const
+        void Texture::Unbind()
         {
             glBindTexture(GL_TEXTURE_2D, 0);
         }

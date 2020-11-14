@@ -13,7 +13,7 @@ namespace Managers
 
 namespace Graphics
 {
-    namespace Resource
+    namespace Geometry
     {
         class Model;
     }
@@ -57,22 +57,21 @@ namespace Graphics
         const Core::Math::vec4& GetClearColour() const;
         std::shared_ptr<Window::GLWindow> GetWindow() const;
         std::shared_ptr<Pipeline::IRenderer> GetRenderer() const;
-        const std::vector<std::shared_ptr<Resource::Model>>& GetModels() const;
+        const std::vector<std::shared_ptr<Geometry::Model>>& GetModels() const;
         const std::vector<std::shared_ptr<Lighting::Light>>& GetLights() const;
 
         void SetWireframe(bool wireframe);
         void SetClearColour(const Core::Math::vec4& colour);
         void SetWindow(std::shared_ptr<Window::GLWindow> window);
         void SetRenderer(std::shared_ptr<Pipeline::IRenderer> renderer);
-        void SetModels(const std::vector<std::shared_ptr<Resource::Model>>& models);
+        void SetModels(const std::vector<std::shared_ptr<Geometry::Model>>& models);
         void SetLights(const std::vector<std::shared_ptr<Lighting::Light>>& lights);
 
         const std::map<ProcessOrder, std::vector<std::function<void()>>>& GetUniformFunctorMap() const;
-        std::map<ProcessOrder, std::vector<std::function<void()>>>& GetUniformFunctorMap();
+        void AddUniformFunctor(ProcessOrder order, const std::function<void()>& uniformCallback);
 
     private:
-
-        void UpdateUniforms(ProcessOrder priority);
+        void UpdateUniforms(ProcessOrder order);
         void UpdateModels();
         void UpdateLights();
 
@@ -82,7 +81,7 @@ namespace Graphics
         std::shared_ptr<Pipeline::IRenderer> m_renderer;
         std::shared_ptr<Window::GLWindow> m_window;
 
-        std::vector<std::shared_ptr<Resource::Model>> m_models;
+        std::vector<std::shared_ptr<Geometry::Model>> m_models;
         std::vector<std::shared_ptr<Lighting::Light>> m_lights;
 
         std::map<ProcessOrder, std::vector<std::function<void()>>> m_uniformFunctorMap;

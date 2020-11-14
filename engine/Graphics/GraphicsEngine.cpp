@@ -14,9 +14,9 @@
 #include "Graphics/Geometry/Cube.h"
 #include "Graphics/Geometry/Plane.h"
 #include "Graphics/Geometry/Mesh.h"
+#include "Graphics/Geometry/Model.h"
 
-#include "Graphics/Resource/Model.h"
-#include "Graphics/Resource/Material.h"
+#include "Graphics/Surface/Material.h"
 
 #include "Graphics/Lighting/Light.h"
 #include "Graphics/Lighting/PointLight.h"
@@ -25,7 +25,7 @@
 namespace
 {
     using namespace Graphics::Window;
-    using namespace Graphics::Resource;
+    using namespace Graphics::Surface;
     using namespace Graphics::Pipeline;
     using namespace Graphics::Geometry;
     using namespace Graphics::Lighting;
@@ -52,9 +52,13 @@ namespace Graphics
             m_window->Update();
 
             UpdateUniforms(ProcessOrder::PreProcess);
+
             UpdateModels();
+
             UpdateUniforms(ProcessOrder::MidProcess);
+
             UpdateLights();
+
             UpdateUniforms(ProcessOrder::PostProcess);
 
             m_window->SwapBuffer();
@@ -63,28 +67,22 @@ namespace Graphics
 
     void GraphicsEngine::UpdateModels()
     {
-        for (std::shared_ptr<Model> model : m_models)
+        for (std::shared_ptr<Geometry::Model> model : m_models)
         {
-            for (unsigned int i = 0; i < model->GetMeshes().size(); ++i)
+            if (model)
             {
-                if (std::shared_ptr<Mesh> mesh = model->GetMeshes()[i])
+                for (std::shared_ptr<Mesh> mesh : model->GetMeshes())
                 {
-                    std::shared_ptr<Material> material;
-                    if (i < model->GetMaterials().size())
+                    if (mesh)
                     {
-                        material = model->GetMaterials()[i];
-                    }
+                        if (std::shared_ptr<Material> material = mesh->GetMaterial())
+                        {
+                            material->Bind();
+                        }
 
-                    if (material)
-                    {
-                        material->Bind();
-                    }
+                        m_renderer->Draw(mesh->GetVertexArray(), mesh->GetIndexBuffer(), m_renderWireframe);
 
-                    m_renderer->Draw(mesh->GetVertexArray(), mesh->GetIndexBuffer(), m_renderWireframe);
-
-                    if (material)
-                    {
-                        material->Unbind();
+                        Material::Unbind();
                     }
                 }
             }
@@ -166,14 +164,14 @@ namespace Graphics
         return m_uniformFunctorMap;
     }
 
-    std::map<ProcessOrder, std::vector<std::function<void()>>>& GraphicsEngine::GetUniformFunctorMap()
+    void GraphicsEngine::AddUniformFunctor(ProcessOrder order, const std::function<void()>& uniformCallback)
     {
-        return m_uniformFunctorMap;
+        m_uniformFunctorMap[order].push_back(uniformCallback);
     }
 
-    void GraphicsEngine::UpdateUniforms(ProcessOrder priority)
+    void GraphicsEngine::UpdateUniforms(ProcessOrder order)
     {
-        for (const auto& uniformFunctors : m_uniformFunctorMap[priority])
+        for (const std::function<void()>& uniformFunctors : m_uniformFunctorMap[order])
         {
             uniformFunctors();
         }

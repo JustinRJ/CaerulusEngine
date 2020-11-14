@@ -15,35 +15,35 @@ namespace Managers
         if (IsLoaded(name))
         {
             Log::LogInDebug("Model with name " + name + " already loaded with path: " + modelPath);
-            return;
         }
-
-        Log::LogMessage("Loading model " + name + " with path: " + modelPath);
-        std::shared_ptr<Model> newModel = std::make_shared<Model>(modelPath);
-        if (!newModel->IsLoaded())
+        else
         {
-            Log::LogInDebug("Model with name " + name + " failed to load with path: " + modelPath);
-            return;
+            Log::LogMessage("Loading model " + name + " with path: " + modelPath);
+            std::shared_ptr<Model> newModel = std::make_shared<Model>(modelPath);
+            if (!newModel->IsLoaded())
+            {
+                Log::LogInDebug("Model with name " + name + " failed to load with path: " + modelPath);
+            }
+            else
+            {
+                std::string appendedMaterialPath(materialPath);
+                if (appendedMaterialPath == "")
+                {
+                    appendedMaterialPath = modelPath;
+                    appendedMaterialPath.erase(appendedMaterialPath.find_last_of('.'));
+                    appendedMaterialPath.append(".mtl");
+                }
+
+                m_materialManager.Load(appendedMaterialPath);
+
+                for (std::shared_ptr<Graphics::Geometry::Mesh> mesh : newModel->GetMeshes())
+                {
+                    mesh->SetMaterial(m_materialManager.Get(mesh->GetMaterialName()));
+                }
+
+                Insert(name, newModel);
+            }
         }
 
-        std::string tempMaterialPath(materialPath);
-        if (tempMaterialPath == "")
-        {
-            tempMaterialPath = modelPath;
-            tempMaterialPath.erase(tempMaterialPath.find_last_of('.'));
-            tempMaterialPath.append(".mtl");
-        }
-
-        std::vector<std::shared_ptr<Material>> newModelMaterials;
-        m_materialManager.Load(tempMaterialPath);
-
-        for (std::shared_ptr<Graphics::Geometry::Mesh> mesh : newModel->GetMeshes())
-        {
-            newModelMaterials.push_back(m_materialManager.Get(mesh->GetMaterialName()));
-        }
-
-        newModel->SetMaterials(newModelMaterials);
-
-        Insert(name, newModel);
     }
 }

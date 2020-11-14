@@ -7,6 +7,11 @@
 
 namespace Graphics
 {
+    namespace Surface
+    {
+        class Material;
+    }
+
     namespace Geometry
     {
         struct Vertex
@@ -63,6 +68,16 @@ namespace Graphics
                 return m_indexBuffer;
             }
 
+            std::shared_ptr<Surface::Material> GetMaterial() const
+            {
+                return m_material;
+            }
+
+            void SetMaterial(std::shared_ptr<Surface::Material> material)
+            {
+                m_material = material;
+            }
+
         private:
             const std::vector<Vertex> m_vertices;
             const std::vector<GLuint> m_indices;
@@ -71,6 +86,8 @@ namespace Graphics
             Pipeline::VertexArray m_vertexArray;
             Pipeline::VertexBuffer m_vertexBuffer;
             Pipeline::IndexBuffer m_indexBuffer;
+
+            std::shared_ptr<Surface::Material> m_material;
         };
     }
 }

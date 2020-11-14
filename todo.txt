@@ -1,9 +1,11 @@
 General
 * Split into Game and Engine solutions
 
-* Update Time class to use std::chrono
+* Create include directory
 
-* Use pimpl pattern to avoid engine having dependencies on eternal projects
+* Delete Manager DLL, move Manager.h to Core and implement in respective DLLs
+
+* Update Time class to use std::chrono
 
 * Implement thread class with async as basis
 

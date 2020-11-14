@@ -22,8 +22,8 @@
 #include "Managers/Managers/TextureManager.h"
 #include "Managers/Managers/MaterialManager.h"
 #include "Managers/Managers/ModelManager.h"
-#include "Managers/Managers/ShaderManager.h"
 #include "Managers/Managers/ShaderSrcManager.h"
+#include "Managers/Managers/ShaderManager.h"
 
 namespace
 {
@@ -32,10 +32,13 @@ namespace
     using namespace Core::Time;
     using namespace Core::Input;
     using namespace Core::Logging;
+
     using namespace Graphics;
     using namespace Graphics::Window;
+    using namespace Graphics::Surface;
+    using namespace Graphics::Geometry;
     using namespace Graphics::Pipeline;
-    using namespace Graphics::Resource;
+
     using namespace Managers;
 }
 
@@ -101,26 +104,26 @@ void Engine::Tick()
     if (m_reset)
     {
         Log::LogMessage("Resetting...");
-        for (auto& updatable : m_tickable)
+        for (std::shared_ptr<Core::Interface::ITickable> tickable : m_tickable)
         {
-            updatable->Reset();
+            tickable->Reset();
         }
         m_reset = false;
     }
 
-    for (auto& updatable : m_tickable)
+    for (std::shared_ptr<Core::Interface::ITickable> tickable : m_tickable)
     {
-        updatable->PreUpdate(m_deltaTime);
+        tickable->PreUpdate(m_deltaTime);
     }
 
-    for (auto& updatable : m_tickable)
+    for (std::shared_ptr<Core::Interface::ITickable> tickable : m_tickable)
     {
-        updatable->Update(m_deltaTime);
+        tickable->Update(m_deltaTime);
     }
 
-    for (auto& updatable : m_tickable)
+    for (std::shared_ptr<Core::Interface::ITickable> tickable : m_tickable)
     {
-        updatable->FixedUpdate(m_fixedTime);
+        tickable->FixedUpdate(m_fixedTime);
     }
 
     glfwPollEvents();
@@ -159,8 +162,7 @@ void Engine::InitRenderer()
     model = translate(mat4(1.0f), vec3(0, 0, -10));
     model = scale(model, vec3(0.25, 0.25, 0.25));
 
-    std::map<ProcessOrder, std::vector<std::function<void()>>>& uniformFunctorMap = m_graphicsEngine->GetUniformFunctorMap();
-    uniformFunctorMap[ProcessOrder::PreProcess].push_back([&]()
+    m_graphicsEngine->AddUniformFunctor(ProcessOrder::PreProcess, [&]()
     {
         std::shared_ptr<Shader> shader = m_shaderManager->Get("position");
         shader->Bind();
@@ -178,8 +180,7 @@ void Engine::InitScene()
         if (material)
         {
             material->SetShader(shader);
-            Material::MaterialConfig& config = material->GetMaterialConfig()[1];
-            config.UniformName = "u_Texture";
+            material->SetUniform("u_Texture", Material::TextureType::Diffuse);
         }
     }
     

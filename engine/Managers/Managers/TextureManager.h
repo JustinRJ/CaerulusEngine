@@ -1,11 +1,11 @@
 #pragma once
 
 #include "Managers/Manager.h"
-#include "Graphics/Resource/Texture.h"
+#include "Graphics/Surface/Texture.h"
 
 namespace
 {
-    using namespace Graphics::Resource;
+    using namespace Graphics::Surface;
 }
 
 namespace Managers

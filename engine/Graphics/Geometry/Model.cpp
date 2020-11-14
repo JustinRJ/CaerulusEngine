@@ -1,8 +1,8 @@
 #include "stdafx.h"
 
 #include "Model.h"
-#include "Material.h"
-#include "Graphics/Geometry/Mesh.h"
+#include "Mesh.h"
+#include "Graphics/Surface/Material.h"
 
 namespace
 {
@@ -26,7 +26,7 @@ namespace std
 
 namespace Graphics
 {
-    namespace Resource
+    namespace Geometry
     {
         Model::Model(
             const std::string& path) :
@@ -121,14 +121,14 @@ namespace Graphics
             return m_isLoaded;
         }
 
-        const std::vector<std::shared_ptr<Material>>& Model::GetMaterials() const
+        std::vector<std::shared_ptr<Surface::Material>> Model::GetMaterials() const
         {
-            return m_materials;
-        }
-
-        void Model::SetMaterials(std::vector<std::shared_ptr<Material>> materials)
-        {
-            m_materials = materials;
+            std::vector<std::shared_ptr<Surface::Material>> materials;
+            for (std::shared_ptr<Mesh> mesh : m_meshes)
+            {
+                materials.push_back(mesh->GetMaterial());
+            }
+            return materials;
         }
     }
 }

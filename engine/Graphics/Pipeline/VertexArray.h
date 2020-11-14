@@ -1,6 +1,6 @@
 #pragma once
 
-#include "IBindable.h"
+#include "Core/Interface/NonCopyable.h"
 #include "VertexBuffer.h"
 #include "VertexBufferLayout.h"
 
@@ -8,7 +8,7 @@ namespace Graphics
 {
     namespace Pipeline
     {
-        class VertexArray : public IBindable
+        class VertexArray : public Core::Interface::NonCopyable
         {
         public:
             VertexArray()
@@ -37,12 +37,12 @@ namespace Graphics
                 }
             }
 
-            void Bind() const override
+            void Bind() const
             {
                 glBindVertexArray(m_handle);
             }
 
-            void Unbind() const override
+            static void Unbind()
             {
                 glBindVertexArray(0);
             }
