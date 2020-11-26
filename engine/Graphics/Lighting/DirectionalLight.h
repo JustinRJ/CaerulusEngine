@@ -13,7 +13,7 @@ namespace Graphics
                 Light(shader)
             {}
 
-            virtual ~DirectionalLight() = default;
+            ~DirectionalLight() = default;
 
             const Core::Math::vec3& GetDirection() const
             {

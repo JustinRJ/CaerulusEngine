@@ -28,6 +28,7 @@ namespace Graphics
         class CAERULUS_GRAPHICS IRenderer : public Core::Interface::NonCopyable
         {
         public:
+            virtual ~IRenderer() = default;
             virtual void Clear(Core::Math::vec4 colour) = 0;
             virtual void Draw(const VertexArray& va, const IndexBuffer& ib, bool wireframe = false) = 0;
         };

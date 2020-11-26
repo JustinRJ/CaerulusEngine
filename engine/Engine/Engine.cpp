@@ -6,6 +6,7 @@
 #include "Core/Node/Node.h"
 #include "Core/Math/Camera.h"
 #include "Core/Logging/Log.h"
+#include "Core/Logging/LogToFile.h"
 
 #include "Core/Time/FPSLimiter.h"
 #include "Core/Time/FixedTimer.h"
@@ -19,11 +20,11 @@
 #include "Core/Input/MouseInputManager.h"
 #include "Core/Input/KeyboardInputManager.h"
 
-#include "Managers/Managers/TextureManager.h"
-#include "Managers/Managers/MaterialManager.h"
-#include "Managers/Managers/ModelManager.h"
-#include "Managers/Managers/ShaderSrcManager.h"
-#include "Managers/Managers/ShaderManager.h"
+#include "Graphics/Managers/TextureManager.h"
+#include "Graphics/Managers/MaterialManager.h"
+#include "Graphics/Managers/ModelManager.h"
+#include "Graphics/Managers/ShaderSrcManager.h"
+#include "Graphics/Managers/ShaderManager.h"
 
 namespace
 {
@@ -32,14 +33,14 @@ namespace
     using namespace Core::Time;
     using namespace Core::Input;
     using namespace Core::Logging;
+    using namespace Core::Interface;
 
     using namespace Graphics;
     using namespace Graphics::Window;
     using namespace Graphics::Surface;
+    using namespace Graphics::Managers;
     using namespace Graphics::Geometry;
     using namespace Graphics::Pipeline;
-
-    using namespace Managers;
 }
 
 Engine::Engine(int argc, char** argv) :
@@ -98,30 +99,32 @@ void Engine::Run()
 
 void Engine::Tick()
 {
+    using namespace Core::Interface;
+
     Log::LogInDebug("DeltaTime: " + std::to_string(m_deltaTime));
     Log::LogInDebug("FixedTime: " + std::to_string(m_fixedTime));
 
     if (m_reset)
     {
         Log::LogMessage("Resetting...");
-        for (std::shared_ptr<Core::Interface::ITickable> tickable : m_tickable)
+        for (std::shared_ptr<ITickable> tickable : m_tickable)
         {
             tickable->Reset();
         }
         m_reset = false;
     }
 
-    for (std::shared_ptr<Core::Interface::ITickable> tickable : m_tickable)
+    for (std::shared_ptr<ITickable> tickable : m_tickable)
     {
         tickable->PreUpdate(m_deltaTime);
     }
 
-    for (std::shared_ptr<Core::Interface::ITickable> tickable : m_tickable)
+    for (std::shared_ptr<ITickable> tickable : m_tickable)
     {
         tickable->Update(m_deltaTime);
     }
 
-    for (std::shared_ptr<Core::Interface::ITickable> tickable : m_tickable)
+    for (std::shared_ptr<ITickable> tickable : m_tickable)
     {
         tickable->FixedUpdate(m_fixedTime);
     }
@@ -166,7 +169,7 @@ void Engine::InitRenderer()
     {
         std::shared_ptr<Shader> shader = m_shaderManager->Get("position");
         shader->Bind();
-        shader->SetMat4fv("mvp", m_camera->GetFrustrum().GetMatrix() * m_camera->GetTransform().GetMatrix() * model);
+        shader->SetMat4fv("u_MVP", m_camera->GetFrustrum().GetMatrix() * m_camera->GetTransform().GetMatrix() * model);
     });
 }
 

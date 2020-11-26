@@ -10,7 +10,10 @@ namespace Graphics
 {
     namespace Surface
     {
-        Texture::Texture(const std::string& path) : 
+        GLuint Texture::m_boundHandle;
+        GLuint Texture::m_boundSlot;
+
+        Texture::Texture(const std::string& path) :
             m_path(path),
             m_localBuffer(nullptr),
             m_width(0),
@@ -73,15 +76,29 @@ namespace Graphics
             return m_path;
         }
 
-        void Texture::Bind(unsigned int slot) const
+        void Texture::Bind(GLuint slot) const
         {
-            glActiveTexture(GL_TEXTURE0 + slot);
-            glBindTexture(GL_TEXTURE_2D, m_handle);
+            GLuint slotToBind = GL_TEXTURE0 + slot;
+            if (slotToBind != m_boundSlot)
+            {
+                glActiveTexture(slotToBind);
+                m_boundSlot = slotToBind;
+            }
+
+            if (m_boundHandle != m_handle)
+            {
+                glBindTexture(GL_TEXTURE_2D, m_handle);
+                m_boundHandle = m_handle;
+            }
         }
 
-        void Texture::Unbind()
+        void Texture::Unbind() const
         {
-            glBindTexture(GL_TEXTURE_2D, 0);
+            if (m_boundHandle != 0)
+            {
+                glBindTexture(GL_TEXTURE_2D, 0);
+                m_boundHandle = 0;
+            }
         }
 
         void Texture::ComputeMipmap()

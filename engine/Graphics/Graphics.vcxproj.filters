@@ -25,6 +25,30 @@
     <ClCompile Include="Surface\Texture.cpp">
       <Filter>Surface</Filter>
     </ClCompile>
+    <ClCompile Include="Managers\MaterialManager.cpp">
+      <Filter>Managers</Filter>
+    </ClCompile>
+    <ClCompile Include="Managers\ModelManager.cpp">
+      <Filter>Managers</Filter>
+    </ClCompile>
+    <ClCompile Include="Managers\ShaderManager.cpp">
+      <Filter>Managers</Filter>
+    </ClCompile>
+    <ClCompile Include="Managers\ShaderSrcManager.cpp">
+      <Filter>Managers</Filter>
+    </ClCompile>
+    <ClCompile Include="Managers\TextureManager.cpp">
+      <Filter>Managers</Filter>
+    </ClCompile>
+    <ClCompile Include="Pipeline\IndexBuffer.cpp">
+      <Filter>Pipeline</Filter>
+    </ClCompile>
+    <ClCompile Include="Pipeline\VertexArray.cpp">
+      <Filter>Pipeline</Filter>
+    </ClCompile>
+    <ClCompile Include="Pipeline\VertexBuffer.cpp">
+      <Filter>Pipeline</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -89,6 +113,21 @@
     <ClInclude Include="Surface\Texture.h">
       <Filter>Surface</Filter>
     </ClInclude>
+    <ClInclude Include="Managers\MaterialManager.h">
+      <Filter>Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="Managers\ModelManager.h">
+      <Filter>Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="Managers\ShaderManager.h">
+      <Filter>Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="Managers\ShaderSrcManager.h">
+      <Filter>Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="Managers\TextureManager.h">
+      <Filter>Managers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Window">
@@ -108,6 +147,9 @@
     </Filter>
     <Filter Include="Surface">
       <UniqueIdentifier>{9ec83860-3c23-4c54-a0a6-22e28240c0df}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Managers">
+      <UniqueIdentifier>{4e852032-ce2c-42b8-8c01-ffa32ca0039b}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

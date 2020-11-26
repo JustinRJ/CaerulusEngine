@@ -12,11 +12,11 @@ namespace Graphics
         {
         public:
             Texture(const std::string& path);
-            virtual ~Texture();
+            ~Texture();
 
             unsigned int GetHandle() const;
-            void Bind(unsigned int slot) const;
-            static void Unbind();
+            void Bind(GLuint slot) const;
+            void Unbind() const;
 
             void ComputeMipmap();
 
@@ -28,8 +28,11 @@ namespace Graphics
             const std::string& GetPath() const;
 
         private:
-            unsigned int m_handle;
-            std::string m_path;
+            const std::string m_path;
+            GLuint m_handle;
+            static GLuint m_boundHandle;
+            static GLuint m_boundSlot;
+
             unsigned char* m_localBuffer;
             int m_width;
             int m_height;

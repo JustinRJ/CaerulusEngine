@@ -9,6 +9,8 @@ namespace Core
         class CAERULUS_CORE ITickable : public Interface::NonCopyable
         {
         public:
+            virtual ~ITickable() = default;
+
             virtual void PreUpdate(float deltaTime) = 0;
             virtual void Update(float deltaTime) = 0;
             virtual void FixedUpdate(float fixedTime) = 0;

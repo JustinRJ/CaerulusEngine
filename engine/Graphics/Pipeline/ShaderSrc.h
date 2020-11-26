@@ -19,7 +19,7 @@ namespace Graphics
         {
         public:
             ShaderSrc(ShaderType type, const std::string& path);
-            virtual ~ShaderSrc();
+            ~ShaderSrc();
 
             void Load();
             bool IsCompiled() const;

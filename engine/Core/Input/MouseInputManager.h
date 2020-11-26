@@ -38,7 +38,7 @@ namespace Core
                 glfwSetInputMode(m_window->GetGLFWWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
             };
 
-            virtual ~MouseInputManager() = default;
+            ~MouseInputManager() = default;
 
             void Reset() override {}
 

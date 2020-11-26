@@ -30,7 +30,7 @@ namespace Core
                 glfwSetWindowUserPointer(window->GetGLFWWindow(), this);
             };
 
-            virtual ~KeyboardInputManager() = default;
+            ~KeyboardInputManager() = default;
 
             void Reset() override {}
 

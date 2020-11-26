@@ -15,6 +15,11 @@ namespace Graphics
         class Light : public Core::Interface::NonCopyable
         {
         public:
+
+            Light(std::shared_ptr<Pipeline::Shader> shader) :
+                m_shader(shader)
+            {}
+
             virtual ~Light() = default;
 
             const Core::Math::vec4& GetColour() const
@@ -32,12 +37,9 @@ namespace Graphics
                 return m_shader;
             }
 
-        protected:
-            Light(std::shared_ptr<Pipeline::Shader> shader) :
-                m_shader(shader)
-            {}
-
+        private:
             Core::Math::vec4 m_colour = Core::Math::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+
             std::shared_ptr<Pipeline::Shader> m_shader;
         };
     }

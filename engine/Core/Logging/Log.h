@@ -10,7 +10,6 @@ namespace Core
         {
         public:
             Log() = delete;
-            virtual ~Log() = delete;
 
             static void LogInDebug(const char* debug)
             {

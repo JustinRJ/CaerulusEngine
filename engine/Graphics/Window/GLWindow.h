@@ -20,7 +20,7 @@ namespace Graphics
         {
         public:
             GLWindow(std::shared_ptr<Core::Math::Camera> camera, const std::string& title, int x, int y, int bits, bool fullscreen = false);
-            virtual ~GLWindow();
+            ~GLWindow();
 
             void Update() override;
             void Apply() override;

@@ -37,22 +37,22 @@ namespace Graphics
     {
         class Renderer;
     }
-}
 
-namespace Managers
-{
-    class TextureManager;
-    class MaterialManager;
-    class ModelManager;
-    class ShaderSrcManager;
-    class ShaderManager;
+    namespace Managers
+    {
+        class TextureManager;
+        class MaterialManager;
+        class ModelManager;
+        class ShaderSrcManager;
+        class ShaderManager;
+    }
 }
 
 class Engine : public Core::Interface::NonCopyable
 {
 public:
     Engine(int argc, char** argv);
-    virtual ~Engine() = default;
+    ~Engine() = default;
 
     void Run();
 
@@ -88,9 +88,9 @@ private:
 
     std::vector<std::shared_ptr<Core::Interface::ITickable>> m_tickable;
 
-    std::shared_ptr<Managers::TextureManager> m_textureManager;
-    std::shared_ptr<Managers::MaterialManager> m_materialManager;
-    std::shared_ptr<Managers::ModelManager> m_modelManager;
-    std::shared_ptr<Managers::ShaderSrcManager> m_shaderSrcManager;
-    std::shared_ptr<Managers::ShaderManager> m_shaderManager;
+    std::shared_ptr<Graphics::Managers::TextureManager> m_textureManager;
+    std::shared_ptr<Graphics::Managers::MaterialManager> m_materialManager;
+    std::shared_ptr<Graphics::Managers::ModelManager> m_modelManager;
+    std::shared_ptr<Graphics::Managers::ShaderSrcManager> m_shaderSrcManager;
+    std::shared_ptr<Graphics::Managers::ShaderManager> m_shaderManager;
 };

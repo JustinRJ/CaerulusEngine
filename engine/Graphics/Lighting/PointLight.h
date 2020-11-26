@@ -13,7 +13,7 @@ namespace Graphics
                 Light(shader)
             {}
 
-            virtual ~PointLight() = default;
+            ~PointLight() = default;
 
             const Core::Math::vec3& GetPosition() const
             {

@@ -230,6 +230,8 @@
     <ClInclude Include="Math\Transform.h" />
     <ClInclude Include="Node\Node.h" />
     <ClInclude Include="stdafx.h" />
+    <ClInclude Include="Template\Manager.h" />
+    <ClInclude Include="Template\NodeManager.h" />
     <ClInclude Include="Time\FixedTimer.h" />
     <ClInclude Include="Time\FPSLimiter.h" />
     <ClInclude Include="Time\Time.h" />

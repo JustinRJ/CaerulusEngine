@@ -10,7 +10,7 @@ namespace Core
         {
         public:
             NonMovable() = default;
-            ~NonMovable() = default;
+            virtual ~NonMovable() = default;
 
             NonMovable(NonMovable&&) = delete;
             NonMovable& operator=(NonMovable&&) = delete;

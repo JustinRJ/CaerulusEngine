@@ -15,7 +15,7 @@ namespace Core
         {
         public:
             Time(bool update = true);
-            virtual ~Time() = default;
+            ~Time() = default;
 
             void Update();
             void Increment(time_t time);

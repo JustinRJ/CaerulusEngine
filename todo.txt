@@ -3,8 +3,6 @@ General
 
 * Create include directory
 
-* Delete Manager DLL, move Manager.h to Core and implement in respective DLLs
-
 * Update Time class to use std::chrono
 
 * Implement thread class with async as basis

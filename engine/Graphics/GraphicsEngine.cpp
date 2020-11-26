@@ -77,12 +77,13 @@ namespace Graphics
                     {
                         if (std::shared_ptr<Material> material = mesh->GetMaterial())
                         {
-                            material->Bind();
+                            if (std::shared_ptr<Shader> shader = material->GetShader())
+                            {
+                                shader->Bind();
+                                material->Bind();
+                                m_renderer->Draw(mesh->GetVertexArray(), mesh->GetIndexBuffer(), m_renderWireframe);
+                            }
                         }
-
-                        m_renderer->Draw(mesh->GetVertexArray(), mesh->GetIndexBuffer(), m_renderWireframe);
-
-                        Material::Unbind();
                     }
                 }
             }
@@ -157,11 +158,6 @@ namespace Graphics
     bool GraphicsEngine::GetWireframe() const
     {
         return m_renderWireframe;
-    }
-
-    const std::map<ProcessOrder, std::vector<std::function<void()>>>& GraphicsEngine::GetUniformFunctorMap() const
-    {
-        return m_uniformFunctorMap;
     }
 
     void GraphicsEngine::AddUniformFunctor(ProcessOrder order, const std::function<void()>& uniformCallback)

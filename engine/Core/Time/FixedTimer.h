@@ -10,7 +10,7 @@ namespace Core
         {
         public:
             FixedTimer() = default;
-            virtual ~FixedTimer() = default;
+            ~FixedTimer() = default;
 
             float Fixed(float fixed)
             {

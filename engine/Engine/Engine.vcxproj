@@ -279,9 +279,6 @@ echo DA | xcopy "$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(Plat
     <ProjectReference Include="..\Graphics\Graphics.vcxproj">
       <Project>{bb3c7e92-761a-495a-b792-a9f0c5ae0c1a}</Project>
     </ProjectReference>
-    <ProjectReference Include="..\Managers\Managers.vcxproj">
-      <Project>{4e00be06-e30e-4085-a099-08ca81ff44bd}</Project>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -9,8 +9,7 @@ namespace Graphics
 {
     namespace Surface
     {
-        Material::Material(const std::string& name, const std::string& path) :
-            m_name(name),
+        Material::Material(const std::string& path) :
             m_path(path),
             m_textureConfigs(7)
         {
@@ -91,16 +90,6 @@ namespace Graphics
             {
                 Bind(static_cast<TextureType>(i));
             }
-        }
-
-        void Material::Unbind()
-        {
-            glBindTexture(GL_TEXTURE_2D, 0);
-        }
-
-        const std::string& Material::GetName() const
-        {
-            return m_name;
         }
 
         const std::string& Material::GetPath() const

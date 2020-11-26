@@ -5,12 +5,6 @@
 #include "Core/Math/Math.h"
 #include "Core/Interface/ITickable.h"
 
-namespace Managers
-{
-    class ModelManager;
-    class ShaderManager;
-}
-
 namespace Graphics
 {
     namespace Geometry
@@ -67,7 +61,6 @@ namespace Graphics
         void SetModels(const std::vector<std::shared_ptr<Geometry::Model>>& models);
         void SetLights(const std::vector<std::shared_ptr<Lighting::Light>>& lights);
 
-        const std::map<ProcessOrder, std::vector<std::function<void()>>>& GetUniformFunctorMap() const;
         void AddUniformFunctor(ProcessOrder order, const std::function<void()>& uniformCallback);
 
     private:
@@ -78,12 +71,17 @@ namespace Graphics
         bool m_renderWireframe = false;
         Core::Math::vec4 m_clearColour = Core::Math::vec4(0.2f, 0.3f, 0.3f, 1.0f);
 
-        std::shared_ptr<Pipeline::IRenderer> m_renderer;
         std::shared_ptr<Window::GLWindow> m_window;
+        std::shared_ptr<Pipeline::IRenderer> m_renderer;
 
         std::vector<std::shared_ptr<Geometry::Model>> m_models;
         std::vector<std::shared_ptr<Lighting::Light>> m_lights;
 
+        // TODO -
+        // Move callbacks to Shader class
+        // Add more ProcessOrders to execute at different stages of the pipeline, eg - before each model or material
+        // Add ShaderPtr to things that require a callback, eg - Model or Mesh
+        // Remove materials current implemtation, only allows for sampler2d uniforms
         std::map<ProcessOrder, std::vector<std::function<void()>>> m_uniformFunctorMap;
     };
 }

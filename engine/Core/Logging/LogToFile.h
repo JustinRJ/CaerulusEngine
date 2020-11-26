@@ -1,61 +1,45 @@
 #pragma once
 
+#include "Core/Interface/NonMovable.h"
 #include "Core/Interface/NonCopyable.h"
 
 namespace Core
 {
     namespace Logging
     {
-        class LogToFile : public Interface::NonCopyable
+        class LogToFile : public Interface::NonCopyable, public Interface::NonMovable
         {
         public:
             LogToFile() = delete;
-            virtual ~LogToFile() = delete;
 
-            static void LogToFileInDebug(const char* debug)
+            explicit LogToFile(const std::string& path) :
+                log_file(path)
             {
-                // TODO
+                if (!log_file.is_open())
+                {
+                    Log::LogError("Unable to open log file.");
+                }
             }
 
-            static void LogToFileInDebug(const std::string& debug)
+            ~LogToFile()
             {
-                LogToFileInDebug(debug.c_str());
+                log_file.close();
             }
 
-            static void LogMessageToFile(const char* message)
+            template<typename T>
+            void Write(T const& v)
             {
-                // TODO
+                log_file << v;
             }
 
-            static void LogMessageToFile(const std::string& message)
+            template<typename Arg, typename ...Args>
+            void Write(Arg const& arg, Args const&... args)
             {
-                LogMessageToFile(message.c_str());
+                Write(arg);
+                Write(args...);
             }
-
-            static void LogErrorToFile(const char* error)
-            {
-                // TODO
-            }
-
-            static void LogErrorToFile(const std::string& error)
-            {
-                LogMessageToFile(error.c_str());
-            }
-
-            static void LogErrorToFile(const char* message, const char* error)
-            {
-                // TODO
-            }
-
-            static void LogErrorToFile(const std::string& message, const std::string& error)
-            {
-                LogErrorToFile(message.c_str(), error.c_str());
-            }
-
-            static void LogExceptionToFile(const std::string& message, const std::string& exception = "")
-            {
-                // TODO
-            }
+        private:
+            std::ofstream log_file;
         };
     }
 }

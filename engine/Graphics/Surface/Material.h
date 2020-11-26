@@ -29,12 +29,11 @@ namespace Graphics
                 Alpha
             };
 
-            Material(const std::string& name, const std::string& path = "");
-            virtual ~Material() = default;
+            Material(const std::string& path);
+            ~Material() = default;
 
             void Bind() const;
             void Bind(TextureType type) const;
-            static void Unbind();
 
             const std::string& GetName() const;
             const std::string& GetPath() const;
@@ -45,12 +44,12 @@ namespace Graphics
             void SetUniform(const std::string& uniform, TextureType type);
             void SetTexture(std::shared_ptr<Texture> texture, TextureType type);
 
+            // TODO - move to managers
             static std::vector<std::string> GetTextureNamesFromFile(std::istream& is, TextureType type);
             static std::vector<std::string> GetMaterialNamesFromFile(std::istream& is);
 
         private:
-            std::string m_name;
-            std::string m_path;
+            const std::string m_path;
 
             std::shared_ptr<Pipeline::Shader> m_shader;
 

@@ -23,7 +23,7 @@ namespace Core
                 }
             }
 
-            virtual ~Node()
+            ~Node()
             {
                 s_numEntities--;
                 s_reusableNodeIDs.push_back(m_ID);
