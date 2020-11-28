@@ -18,7 +18,7 @@ namespace Graphics
             ~Shader() = default;
 
             void Bind() const;
-            void Unbind() const;
+            static void Unbind();
 
             GLuint GetHandle() const;
             bool IsLinked() const;

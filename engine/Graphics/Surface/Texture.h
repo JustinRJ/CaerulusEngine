@@ -16,7 +16,7 @@ namespace Graphics
 
             unsigned int GetHandle() const;
             void Bind(GLuint slot) const;
-            void Unbind() const;
+            static void Unbind();
 
             void ComputeMipmap();
 

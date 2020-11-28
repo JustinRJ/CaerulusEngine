@@ -45,7 +45,7 @@ namespace Graphics
             }
         }
 
-        void Shader::Unbind() const
+        void Shader::Unbind()
         {
             if (m_boundHandle != 0)
             {

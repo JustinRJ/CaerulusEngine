@@ -30,7 +30,7 @@ namespace Graphics
             }
         }
 
-        void IndexBuffer::Unbind() const
+        void IndexBuffer::Unbind()
         {
             if (m_boundHandle != 0)
             {

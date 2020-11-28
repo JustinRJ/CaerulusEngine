@@ -30,6 +30,7 @@ namespace Graphics
 
             void Bind() const;
             void Bind(TextureType type) const;
+            static void Unbind();
 
             const std::string& GetName() const;
             const std::string& GetPath() const;

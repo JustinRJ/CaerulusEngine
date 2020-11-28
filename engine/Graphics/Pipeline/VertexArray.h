@@ -17,7 +17,7 @@ namespace Graphics
             void AddBuffer(const VertexBuffer& vb, const VertexBufferLayout& layout);
 
             void Bind() const;
-            void Unbind() const;
+            static void Unbind();
 
             GLuint GetHandle() const;
 

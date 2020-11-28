@@ -13,7 +13,7 @@ namespace Graphics
             ~VertexBuffer();
 
             void Bind() const;
-            void Unbind() const;
+            static void Unbind();
 
             GLuint GetHandle() const;
             size_t GetSize() const;

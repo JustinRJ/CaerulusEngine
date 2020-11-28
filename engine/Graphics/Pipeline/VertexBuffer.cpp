@@ -23,12 +23,20 @@ namespace Graphics
 
         void VertexBuffer::Bind() const
         {
-            glBindBuffer(GL_ARRAY_BUFFER, m_handle);
+            if (m_boundHandle != m_handle)
+            {
+                glBindBuffer(GL_ARRAY_BUFFER, m_handle);
+                m_boundHandle = m_handle;
+            }
         }
 
-        void VertexBuffer::Unbind() const
+        void VertexBuffer::Unbind()
         {
-            glBindBuffer(GL_ARRAY_BUFFER, 0);
+            if (m_boundHandle != 0)
+            {
+                glBindBuffer(GL_ARRAY_BUFFER, 0);
+                m_boundHandle = 0;
+            }
         }
 
         GLuint VertexBuffer::GetHandle() const

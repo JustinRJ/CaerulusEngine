@@ -79,6 +79,11 @@ namespace Graphics
             }
         }
 
+        void Material::Unbind()
+        {
+            Texture::Unbind();
+        }
+
         const std::string& Material::GetPath() const
         {
             return m_path;

@@ -43,7 +43,7 @@ namespace Graphics
             }
         }
 
-        void VertexArray::Unbind() const
+        void VertexArray::Unbind()
         {
             if (m_boundHandle != 0)
             {

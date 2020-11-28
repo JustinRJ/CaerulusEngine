@@ -170,39 +170,40 @@ void Engine::InitScene()
 
     m_modelManager->Load("sponza", "assets/models/Sponza/sponza.obj");
 
-    std::shared_ptr<Shader> positionShader = m_shaderManager->Get("position");
-
-    for (std::shared_ptr<Model> model : m_modelManager->GetAll())
+    // Only set shaders and functors for sponza model 
+    if (std::shared_ptr<Model> model = m_modelManager->Get("sponza"))
     {
-        if (model)
+        std::shared_ptr<Shader> positionShader = m_shaderManager->Get("position");
+
+        // Set uniform functor to update each models MVP before it's rendered
+        model->SetUniformFunctor(positionShader, [camera = m_camera, node = sponzaNode](const Shader& shader)
         {
-            // Set uniform functor to update each models MVP before it's rendered
-            model->SetUniformFunctor(positionShader, [camera = m_camera, node = sponzaNode](const Shader& shader)
-            {
-                shader.SetMat4fv("u_MVP", camera->GetFrustrum().GetMatrix() * camera->GetTransform().GetMatrix() * node->GetTransform().GetMatrix());
-            });
+            shader.SetMat4fv("u_MVP", camera->GetFrustrum().GetMatrix() * camera->GetTransform().GetMatrix() * node->GetTransform().GetMatrix());
+        });
 
-            for (std::shared_ptr<Material> material : model->GetMaterials())
+        for (std::shared_ptr<Material> material : model->GetMaterials())
+        {
+            if (material)
             {
-                if (material)
+                // Set uniform functor to update each materials Texture before it's rendered
+                material->SetUniformFunctor(positionShader, [](const Shader& shader)
                 {
-                    // Set uniform functor to update each materials Texture before it's rendered
-                    material->SetUniformFunctor(positionShader, [](const Shader& shader)
-                    {
-                        shader.Set1i("u_Texture", static_cast<GLint>(Material::TextureType::Diffuse));
-                    });
-                }
+                    shader.Set1i("u_Albedo", static_cast<GLint>(Material::TextureType::Diffuse));       // albedo
+                    shader.Set1i("u_Normal", static_cast<GLint>(Material::TextureType::Highlight));     // normal
+                    shader.Set1i("u_Roughness", static_cast<GLint>(Material::TextureType::Specular));   // roughness
+                    shader.Set1i("u_Metallic", static_cast<GLint>(Material::TextureType::Ambient));     // metallic
+                });
             }
-
-            // Can set uniform functor for meshes if required
-            //for (std::shared_ptr<Mesh> mesh : model->GetMeshes())
-            //{
-            //    if (mesh)
-            //    {
-            //        mesh->SetUniformFunctor(nullptr, [](std::shared_ptr<Shader> shader) {});
-            //    }
-            //}
         }
+
+        // Can set uniform functor for meshes if required
+        //for (std::shared_ptr<Mesh> mesh : model->GetMeshes())
+        //{
+        //    if (mesh)
+        //    {
+        //        mesh->SetUniformFunctor(nullptr, [](std::shared_ptr<Shader> shader) {});
+        //    }
+        //}
     }
 
     // Can set uniforms at any stage of the pipeline if required, can be scaled

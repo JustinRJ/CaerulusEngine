@@ -92,7 +92,7 @@ namespace Graphics
             }
         }
 
-        void Texture::Unbind() const
+        void Texture::Unbind()
         {
             if (m_boundHandle != 0)
             {
