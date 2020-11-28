@@ -2,7 +2,6 @@
 
 #include "Material.h"
 #include "Texture.h"
-#include "Graphics/Pipeline/Shader.h"
 #include "Core/Logging/Log.h"
 
 namespace Graphics
@@ -51,35 +50,23 @@ namespace Graphics
             return textureNames;
         }
 
-        void Material::SetUniform(const std::string& uniform, TextureType type)
-        {
-            unsigned int slot = static_cast<unsigned int>(type);
-            if (slot < m_textureConfigs.size())
-            {
-                m_textureConfigs[slot].UniformName = uniform;
-            }
-        }
-
         void Material::SetTexture(std::shared_ptr<Texture> texture, TextureType type)
         {
             unsigned int slot = static_cast<unsigned int>(type);
             if (slot < m_textureConfigs.size())
             {
-                m_textureConfigs[slot].Texture = texture;
+                m_textureConfigs[slot] = texture;
             }
         }
 
         void Material::Bind(TextureType type) const
         {
             unsigned int slot = static_cast<unsigned int>(type);
-            if (m_shader && slot < m_textureConfigs.size())
+            if (slot < m_textureConfigs.size())
             {
-                const Material::TextureConfig& config = m_textureConfigs[slot];
-
-                if (config.Texture && config.UniformName != "")
+                if (std::shared_ptr<Texture> texture = m_textureConfigs[slot])
                 {
-                    config.Texture->Bind(slot);
-                    m_shader->Set1i(config.UniformName, slot);
+                    texture->Bind(slot);
                 }
             }
         }
@@ -97,14 +84,15 @@ namespace Graphics
             return m_path;
         }
 
-        std::shared_ptr<Pipeline::Shader> Material::GetShader() const
+        std::shared_ptr<Texture> Material::GetTexture(TextureType type) const
         {
-            return m_shader;
-        }
-
-        void Material::SetShader(std::shared_ptr<Pipeline::Shader> shader)
-        {
-            m_shader = shader;
+            std::shared_ptr<Texture> texture = nullptr;
+            unsigned int slot = static_cast<unsigned int>(type);
+            if (slot < m_textureConfigs.size())
+            {
+                texture = m_textureConfigs[slot];
+            }
+            return texture;
         }
     }
 }

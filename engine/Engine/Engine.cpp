@@ -159,33 +159,56 @@ void Engine::InitInput()
 void Engine::InitRenderer()
 {
     m_shaderManager->Load("position", "assets/shaders/position.vert", "assets/shaders/position.frag");
-
-    static std::shared_ptr<Node> node = std::make_shared<Node>();
-    Core::Math::mat4& model = node->GetTransform().GetMatrix();
-    model = translate(mat4(1.0f), vec3(0, 0, -10));
-    model = scale(model, vec3(0.25, 0.25, 0.25));
-
-    m_graphicsEngine->AddUniformFunctor(ProcessOrder::PreProcess, [&]()
-    {
-        std::shared_ptr<Shader> shader = m_shaderManager->Get("position");
-        shader->Bind();
-        shader->SetMat4fv("u_MVP", m_camera->GetFrustrum().GetMatrix() * m_camera->GetTransform().GetMatrix() * model);
-    });
 }
 
 void Engine::InitScene()
 {
-    m_modelManager->Load("sponza", "assets/models/Sponza/sponza.obj");
-    std::shared_ptr<Shader> shader = m_shaderManager->Get("position");
+    static std::shared_ptr<Node> sponzaNode = std::make_shared<Node>();
+    Core::Math::mat4& sponzaTransform = sponzaNode->GetTransform().GetMatrix();
+    sponzaTransform = translate(mat4(1.0f), vec3(0, 0, -10));
+    sponzaTransform = scale(sponzaTransform, vec3(0.25, 0.25, 0.25));
 
-    for (std::shared_ptr<Material> material : m_modelManager->Get("sponza")->GetMaterials())
+    m_modelManager->Load("sponza", "assets/models/Sponza/sponza.obj");
+
+    std::shared_ptr<Shader> positionShader = m_shaderManager->Get("position");
+
+    for (std::shared_ptr<Model> model : m_modelManager->GetAll())
     {
-        if (material)
+        if (model)
         {
-            material->SetShader(shader);
-            material->SetUniform("u_Texture", Material::TextureType::Diffuse);
+            // Set uniform functor to update each models MVP before it's rendered
+            model->SetUniformFunctor(positionShader, [camera = m_camera, node = sponzaNode](const Shader& shader)
+            {
+                shader.SetMat4fv("u_MVP", camera->GetFrustrum().GetMatrix() * camera->GetTransform().GetMatrix() * node->GetTransform().GetMatrix());
+            });
+
+            for (std::shared_ptr<Material> material : model->GetMaterials())
+            {
+                if (material)
+                {
+                    // Set uniform functor to update each materials Texture before it's rendered
+                    material->SetUniformFunctor(positionShader, [](const Shader& shader)
+                    {
+                        shader.Set1i("u_Texture", static_cast<GLint>(Material::TextureType::Diffuse));
+                    });
+                }
+            }
+
+            // Can set uniform functor for meshes if required
+            //for (std::shared_ptr<Mesh> mesh : model->GetMeshes())
+            //{
+            //    if (mesh)
+            //    {
+            //        mesh->SetUniformFunctor(nullptr, [](std::shared_ptr<Shader> shader) {});
+            //    }
+            //}
         }
     }
+
+    // Can set uniforms at any stage of the pipeline if required, can be scaled
+    //std::shared_ptr<ShaderUniformFunctor> processhaderUniformFunctor = std::make_shared<ShaderUniformFunctor>();
+    //processhaderUniformFunctor->SetUniformFunctor(nullptr, [](const Shader& shader) {});
+    //m_graphicsEngine->SetProcessUniformFunctor(PipelineProcess::PreProcess, processhaderUniformFunctor);
     
     m_graphicsEngine->SetModels(m_modelManager->GetAll());
 }

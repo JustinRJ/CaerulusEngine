@@ -215,6 +215,7 @@ echo DA | xcopy "$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(Plat
     <ClInclude Include="Lighting\DirectionalLight.h" />
     <ClInclude Include="Lighting\Light.h" />
     <ClInclude Include="Lighting\PointLight.h" />
+    <ClInclude Include="Lighting\SpotLight.h" />
     <ClInclude Include="Managers\MaterialManager.h" />
     <ClInclude Include="Managers\ModelManager.h" />
     <ClInclude Include="Managers\ShaderManager.h" />
@@ -226,6 +227,7 @@ echo DA | xcopy "$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(Plat
     <ClInclude Include="Pipeline\Shader.h" />
     <ClInclude Include="Pipeline\ShaderSrc.h" />
     <ClInclude Include="GraphicsEngine.h" />
+    <ClInclude Include="Pipeline\ShaderUniformFunctor.h" />
     <ClInclude Include="Pipeline\VertexArray.h" />
     <ClInclude Include="Pipeline\VertexBuffer.h" />
     <ClInclude Include="Pipeline\VertexBufferLayout.h" />

@@ -9,10 +9,7 @@ namespace Graphics
         class DirectionalLight : public Light
         {
         public:
-            DirectionalLight(std::shared_ptr<Pipeline::Shader> shader) :
-                Light(shader)
-            {}
-
+            DirectionalLight() = default;
             ~DirectionalLight() = default;
 
             const Core::Math::vec3& GetDirection() const

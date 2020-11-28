@@ -4,7 +4,6 @@
 
 #include "Window/GLWindow.h"
 
-#include "Graphics/Pipeline/Shader.h"
 #include "Graphics/Pipeline/Renderer.h"
 #include "Graphics/Pipeline/VertexArray.h"
 #include "Graphics/Pipeline/VertexBuffer.h"
@@ -35,8 +34,8 @@ namespace Graphics
 {
     GraphicsEngine::GraphicsEngine(std::shared_ptr<GLWindow> window,
         std::shared_ptr<IRenderer> renderer) :
-        m_renderer(renderer),
-        m_window(window)
+        m_window(window),
+        m_renderer(renderer)
     {
     }
     
@@ -50,17 +49,11 @@ namespace Graphics
         if (m_window)
         {
             m_window->Update();
-
-            UpdateUniforms(ProcessOrder::PreProcess);
-
+            InvokePipelineProcessFunctors(PipelineProcess::PreProcess);
             UpdateModels();
-
-            UpdateUniforms(ProcessOrder::MidProcess);
-
+            InvokePipelineProcessFunctors(PipelineProcess::MidProcess);
             UpdateLights();
-
-            UpdateUniforms(ProcessOrder::PostProcess);
-
+            InvokePipelineProcessFunctors(PipelineProcess::PostProcess);
             m_window->SwapBuffer();
         }
     }
@@ -71,18 +64,18 @@ namespace Graphics
         {
             if (model)
             {
+                model->InvokeUniformFunctors();
                 for (std::shared_ptr<Mesh> mesh : model->GetMeshes())
                 {
                     if (mesh)
                     {
+                        mesh->InvokeUniformFunctors();
                         if (std::shared_ptr<Material> material = mesh->GetMaterial())
                         {
-                            if (std::shared_ptr<Shader> shader = material->GetShader())
-                            {
-                                shader->Bind();
-                                material->Bind();
-                                m_renderer->Draw(mesh->GetVertexArray(), mesh->GetIndexBuffer(), m_renderWireframe);
-                            }
+                            material->Bind();
+                            material->InvokeUniformFunctors();
+
+                            m_renderer->Draw(mesh->GetVertexArray(), mesh->GetIndexBuffer(), m_renderWireframe);
                         }
                     }
                 }
@@ -94,9 +87,7 @@ namespace Graphics
     {
         for (std::shared_ptr<Light> light : m_lights)
         {
-            if (std::shared_ptr<Shader> shader = light->GetShader())
-            {
-            }
+            light->InvokeUniformFunctors();
         }
     }
 
@@ -160,16 +151,20 @@ namespace Graphics
         return m_renderWireframe;
     }
 
-    void GraphicsEngine::AddUniformFunctor(ProcessOrder order, const std::function<void()>& uniformCallback)
+    void GraphicsEngine::SetProcessUniformFunctor(PipelineProcess process, std::shared_ptr<ShaderUniformFunctor> functor)
     {
-        m_uniformFunctorMap[order].push_back(uniformCallback);
+        m_shaderProcessFunctors[process] = functor;
     }
 
-    void GraphicsEngine::UpdateUniforms(ProcessOrder order)
+    void GraphicsEngine::InvokePipelineProcessFunctors(PipelineProcess process) const
     {
-        for (const std::function<void()>& uniformFunctors : m_uniformFunctorMap[order])
+        auto it = m_shaderProcessFunctors.find(process);
+        if (it != m_shaderProcessFunctors.end())
         {
-            uniformFunctors();
+            if (std::shared_ptr<Pipeline::ShaderUniformFunctor> shaderFunctor = it->second)
+            {
+                shaderFunctor->InvokeUniformFunctors();
+            }
         }
     }
 }

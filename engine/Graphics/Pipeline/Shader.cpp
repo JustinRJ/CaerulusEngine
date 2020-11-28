@@ -64,42 +64,42 @@ namespace Graphics
             return m_isLinked;
         }
 
-        void Shader::Set1i(const std::string& name, GLint value)
+        void Shader::Set1i(const std::string& name, GLint value) const
         {
             glUniform1i(GetUniformLocation(name), value);
         }
 
-        void Shader::Set1f(const std::string& name, GLfloat value)
+        void Shader::Set1f(const std::string& name, GLfloat value) const
         {
             glUniform1f(GetUniformLocation(name), value);
         }
 
-        void Shader::Set2f(const std::string& name, Core::Math::fvec2 value)
+        void Shader::Set2f(const std::string& name, Core::Math::fvec2 value) const
         {
             glUniform2fv(GetUniformLocation(name), 1, value_ptr(value));
         }
 
-        void Shader::Set3f(const std::string& name, const Core::Math::fvec3& value)
+        void Shader::Set3f(const std::string& name, const Core::Math::fvec3& value) const
         {
             glUniform3fv(GetUniformLocation(name), 1, value_ptr(value));
         }
 
-        void Shader::Set4f(const std::string& name, const Core::Math::fvec4& value)
+        void Shader::Set4f(const std::string& name, const Core::Math::fvec4& value) const
         {
             glUniform4fv(GetUniformLocation(name), 1, value_ptr(value));
         }
 
-        void Shader::SetMat3fv(const std::string& name, const Core::Math::mat3& value, GLboolean transpose)
+        void Shader::SetMat3fv(const std::string& name, const Core::Math::mat3& value, GLboolean transpose) const
         {
             glUniformMatrix3fv(GetUniformLocation(name), 1, transpose, value_ptr(value));
         }
 
-        void Shader::SetMat4fv(const std::string& name, const Core::Math::mat4& value, GLboolean transpose)
+        void Shader::SetMat4fv(const std::string& name, const Core::Math::mat4& value, GLboolean transpose) const
         {
             glUniformMatrix4fv(GetUniformLocation(name), 1, transpose, value_ptr(value));
         }
 
-        int Shader::GetUniformLocation(const std::string& name)
+        int Shader::GetUniformLocation(const std::string& name) const
         {
             if (m_uniformLocationCache.find(name) != m_uniformLocationCache.end())
             {

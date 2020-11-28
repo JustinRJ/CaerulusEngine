@@ -4,6 +4,7 @@
 #include "Graphics/Pipeline/VertexArray.h"
 #include "Graphics/Pipeline/VertexBuffer.h"
 #include "Graphics/Pipeline/IndexBuffer.h"
+#include "Graphics/Pipeline/ShaderUniformFunctor.h"
 
 namespace Graphics
 {
@@ -29,7 +30,7 @@ namespace Graphics
             }
         };
 
-        class Mesh
+        class Mesh : public Pipeline::ShaderUniformFunctor
         {
         public:
             Mesh(const Core::Math::mat4& transform, const std::vector<Vertex>& vertices, const std::vector<GLuint>& indices, const std::string& materialName) :

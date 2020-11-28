@@ -6,20 +6,20 @@ namespace Graphics
 {
     namespace Lighting
     {
-        class PointLight : public Light
+        class SpotLight : public Light
         {
         public:
-            PointLight() = default;
-            ~PointLight() = default;
+            SpotLight() = default;
+            ~SpotLight() = default;
 
-            float GetRadius() const
+            void GetAngle(float angle)
             {
-                return m_radius;
+                m_angle = angle;
             }
 
-            void SetRadius(float radius)
+            float SetAngle() const
             {
-                m_radius = radius;
+                return m_angle;
             }
 
             const Core::Math::vec3& GetPosition() const
@@ -34,7 +34,7 @@ namespace Graphics
 
         private:
             Core::Math::vec3 m_position;
-            float m_radius;
+            float m_angle;
         };
     }
 }

@@ -1,4 +1,6 @@
 General
+* Model & Light must derive from Node
+
 * Split into Game and Engine solutions
 
 * Create include directory

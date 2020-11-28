@@ -2,20 +2,16 @@
 
 #define CAERULUS_GRAPHICS __declspec(dllexport)
 
-#include "Core/Interface/NonCopyable.h"
+#include "Graphics/Pipeline/ShaderUniformFunctor.h"
 
 namespace Graphics
 {
-    namespace Pipeline
-    {
-        class Shader;
-    }
-
     namespace Surface
     {
         class Texture;
 
-        class CAERULUS_GRAPHICS Material : public Core::Interface::NonCopyable
+        class CAERULUS_GRAPHICS Material : public Pipeline::ShaderUniformFunctor
+
         {
         public:
             enum class TextureType : unsigned int
@@ -38,10 +34,7 @@ namespace Graphics
             const std::string& GetName() const;
             const std::string& GetPath() const;
 
-            void SetShader(std::shared_ptr<Pipeline::Shader> shader);
-            std::shared_ptr<Pipeline::Shader> GetShader() const;
-
-            void SetUniform(const std::string& uniform, TextureType type);
+            std::shared_ptr<Texture> GetTexture(TextureType type) const;
             void SetTexture(std::shared_ptr<Texture> texture, TextureType type);
 
             // TODO - move to managers
@@ -50,15 +43,7 @@ namespace Graphics
 
         private:
             const std::string m_path;
-
-            std::shared_ptr<Pipeline::Shader> m_shader;
-
-            struct TextureConfig
-            {
-                std::string UniformName;
-                std::shared_ptr<Texture> Texture;
-            };
-            std::vector<TextureConfig> m_textureConfigs;
+            std::vector<std::shared_ptr<Texture>> m_textureConfigs;
         };
     }
 }

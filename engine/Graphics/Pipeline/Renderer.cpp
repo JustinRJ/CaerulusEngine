@@ -5,7 +5,6 @@
 #include "Core/Math/Math.h"
 #include "Core/Logging/Log.h"
 #include "Graphics/Window/GLWindow.h"
-#include "Graphics/Pipeline/Shader.h"
 #include "Graphics/Pipeline/VertexArray.h"
 #include "Graphics/Pipeline/VertexBuffer.h"
 #include "Graphics/Pipeline/IndexBuffer.h"
