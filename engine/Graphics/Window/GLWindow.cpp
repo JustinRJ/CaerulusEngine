@@ -8,13 +8,9 @@
 #define GLFW_EXPOSE_NATIVE_WIN32
 #include <glfw3native.h>
 
-
-namespace
+void CloseWindowCallback(GLFWwindow* window)
 {
-    void CloseWindowCallback(GLFWwindow* window)
-    {
-        exit(1);
-    }
+    exit(1);
 }
 
 namespace Graphics
@@ -86,7 +82,7 @@ namespace Graphics
         {
             if (m_camera)
             {
-                m_camera->GetFrustrum().SetAspect(static_cast<float>(GetActiveState().Width) / static_cast<float>(GetActiveState().Height));
+                m_camera->GetProjection().SetAspect(static_cast<float>(GetActiveState().Width) / static_cast<float>(GetActiveState().Height));
             }
 
             Apply();

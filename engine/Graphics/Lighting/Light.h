@@ -1,13 +1,13 @@
 #pragma once
 
-#include "Core/Math/Math.h"
+#include "Core/Node/Node.h"
 #include "Graphics/Pipeline/ShaderUniformFunctor.h"
 
 namespace Graphics
 {
     namespace Lighting
     {
-        class Light : public Pipeline::ShaderUniformFunctor
+        class Light : public Core::Node::Node, public Pipeline::ShaderUniformFunctor
         {
         public:
 

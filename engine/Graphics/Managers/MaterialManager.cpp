@@ -41,13 +41,15 @@ namespace Graphics
                 std::vector<std::string> materialNamesInFile = Material::GetMaterialNamesFromFile(is);
                 for (unsigned int i = 0; i < materialNamesInFile.size(); ++i)
                 {
-                    if (IsLoaded(materialNamesInFile[i]))
+                    const std::string name(materialNamesInFile[i]);
+
+                    if (IsLoaded(name))
                     {
-                        Core::Log::LogInDebug("Material with name " + materialNamesInFile[i] + " already loaded or created");
+                        Core::Log::LogInDebug("Material with name " + name + " already loaded or created");
                     }
                     else
                     {
-                        Core::Log::LogMessage("Loading material " + materialNamesInFile[i] + " with path: " + path);
+                        Core::Log::LogMessage("Loading material " + name + " with path: " + path);
 
                         std::shared_ptr<Material> newMaterial = std::make_shared<Material>(path);
 
@@ -67,12 +69,12 @@ namespace Graphics
                             }
                         }
 
-                        for (unsigned int i = 0; i < textures.size(); ++i)
+                        for (unsigned int j = 0; j < textures.size(); ++j)
                         {
-                            newMaterial->SetTexture(textures[i], static_cast<Material::TextureType>(i));
+                            newMaterial->SetTexture(textures[j], static_cast<Material::TextureType>(j));
                         }
 
-                        Insert(materialNamesInFile[i], newMaterial);
+                        Insert(name, newMaterial);
                     }
                 }
                 fb.close();

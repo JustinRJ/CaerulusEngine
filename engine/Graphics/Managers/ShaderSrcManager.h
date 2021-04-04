@@ -12,7 +12,7 @@ namespace Graphics
 {
     namespace Managers
     {
-        class CAERULUS_CORE ShaderSrcManager : public Core::Template::Manager<ShaderSrc>
+        class CAERULUS_GRAPHICS ShaderSrcManager : public Core::Template::Manager<ShaderSrc>
         {
         public:
             ShaderSrcManager() = default;

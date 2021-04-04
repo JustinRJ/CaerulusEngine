@@ -78,14 +78,14 @@ namespace Core
 
             std::vector<vec3> GetNormals() const
             {
-                std::vector<vec3> normals(6);
                 std::vector<vec3> corners = GetCorners();
-                normals[0] = normalize(cross(corners[0] + corners[1], corners[0] + corners[3]));
-                normals[1] = normalize(cross(corners[0] + corners[4], corners[0] + corners[1]));
-                normals[2] = normalize(cross(corners[5] + corners[1], corners[5] + corners[6]));
-                normals[3] = normalize(cross(corners[3] + corners[2], corners[3] + corners[7]));
-                normals[4] = normalize(cross(corners[0] + corners[3], corners[0] + corners[4]));
-                normals[5] = normalize(cross(corners[7] + corners[6], corners[7] + corners[4]));
+                std::vector<vec3> normals {
+                normalize(cross(corners[0] + corners[1], corners[0] + corners[3])),
+                normalize(cross(corners[0] + corners[4], corners[0] + corners[1])),
+                normalize(cross(corners[5] + corners[1], corners[5] + corners[6])),
+                normalize(cross(corners[3] + corners[2], corners[3] + corners[7])),
+                normalize(cross(corners[0] + corners[3], corners[0] + corners[4])),
+                normalize(cross(corners[7] + corners[6], corners[7] + corners[4])) };
                 return normals;
             }
 

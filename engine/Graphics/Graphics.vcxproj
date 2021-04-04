@@ -23,32 +23,32 @@
     <ProjectGuid>{BB3C7E92-761A-495A-B792-A9F0C5AE0C1A}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>Graphics</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.17134.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
@@ -223,7 +223,7 @@ echo DA | xcopy "$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(Plat
     <ClInclude Include="Managers\TextureManager.h" />
     <ClInclude Include="Pipeline\IndexBuffer.h" />
     <ClInclude Include="Pipeline\IRenderer.h" />
-    <ClInclude Include="Pipeline\Renderer.h" />
+    <ClInclude Include="Pipeline\GLRenderer.h" />
     <ClInclude Include="Pipeline\Shader.h" />
     <ClInclude Include="Pipeline\ShaderSrc.h" />
     <ClInclude Include="GraphicsEngine.h" />
@@ -246,7 +246,7 @@ echo DA | xcopy "$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(Plat
     <ClCompile Include="Managers\ShaderSrcManager.cpp" />
     <ClCompile Include="Managers\TextureManager.cpp" />
     <ClCompile Include="Pipeline\IndexBuffer.cpp" />
-    <ClCompile Include="Pipeline\Renderer.cpp" />
+    <ClCompile Include="Pipeline\GLRenderer.cpp" />
     <ClCompile Include="Pipeline\Shader.cpp" />
     <ClCompile Include="Pipeline\ShaderSrc.cpp" />
     <ClCompile Include="GraphicsEngine.cpp" />
@@ -268,8 +268,10 @@ echo DA | xcopy "$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(Plat
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="assets\shaders\position.frag" />
-    <None Include="assets\shaders\position.vert" />
+    <None Include="assets\shaders\basic.frag" />
+    <None Include="assets\shaders\basic.vert" />
+    <None Include="assets\shaders\pbr.frag" />
+    <None Include="assets\shaders\pbr.vert" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

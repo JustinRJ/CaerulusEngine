@@ -79,7 +79,7 @@ namespace Graphics
         void Texture::Bind(GLuint slot) const
         {
             GLuint slotToBind = GL_TEXTURE0 + slot;
-            if (slotToBind != m_boundSlot)
+            if (m_boundSlot != slotToBind)
             {
                 glActiveTexture(slotToBind);
                 m_boundSlot = slotToBind;

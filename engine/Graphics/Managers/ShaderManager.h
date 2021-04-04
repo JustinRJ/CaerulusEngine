@@ -1,6 +1,5 @@
 #pragma once
 
-#define CAERULUS_CORE __declspec(dllexport)
 
 #include "ShaderSrcManager.h"
 #include "Graphics/Pipeline/Shader.h"
@@ -14,7 +13,7 @@ namespace Graphics
 {
     namespace Managers
     {
-        class CAERULUS_CORE ShaderManager : public Core::Template::Manager<Shader>
+        class CAERULUS_GRAPHICS ShaderManager : public Core::Template::Manager<Shader>
         {
         public:
             ShaderManager(ShaderSrcManager& shaderStageManager);

@@ -2,6 +2,7 @@
 
 #include "InputDefines.h"
 #include "Core/Interface/ITickable.h"
+#include "Core/Interface/NonCopyable.h"
 
 namespace Graphics
 {
@@ -22,7 +23,7 @@ namespace Core
             std::string Name = "";
         };
 
-        class KeyboardInputManager : public Interface::ITickable
+        class KeyboardInputManager : public Interface::ITickable, public Interface::NonCopyable
         {
         public:
             KeyboardInputManager(std::shared_ptr<Graphics::Window::GLWindow> window)
@@ -119,7 +120,7 @@ namespace Core
                 }
             }
 
-            Modifier m_currentModifier;
+            Modifier m_currentModifier = Modifier::None;
             std::map<int, Action> m_keyDataMap;
             std::multimap<int, KeyBinding> m_keyBindingMap;
         };

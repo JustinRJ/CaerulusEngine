@@ -33,7 +33,7 @@ namespace Graphics
         class Mesh : public Pipeline::ShaderUniformFunctor
         {
         public:
-            Mesh(const Core::Math::mat4& transform, const std::vector<Vertex>& vertices, const std::vector<GLuint>& indices, const std::string& materialName) :
+            Mesh(const std::vector<Vertex>& vertices, const std::vector<GLuint>& indices, const std::string& materialName) :
                 m_vertexBuffer(&m_vertices[0], sizeof(Vertex) * m_vertices.size()),
                 m_indexBuffer(&m_indices[0], m_indices.size()),
                 m_vertices(vertices),

@@ -75,22 +75,22 @@ namespace Core
                 m_view = inverse(temp.GetMatrix());
             }
 
-            const Transform& GetTransform() const
+            const Transform& GetView() const
             {
                 return m_view;
             }
 
-            Transform& GetTransform()
+            Transform& GetView()
             {
                 return m_view;
             }
 
-            const Frustrum& GetFrustrum() const
+            const Frustrum& GetProjection() const
             {
                 return m_proj;
             }
 
-            Frustrum& GetFrustrum()
+            Frustrum& GetProjection()
             {
                 return m_proj;
             }

@@ -29,8 +29,13 @@ namespace Graphics
         {
         public:
             virtual ~IRenderer() = default;
-            virtual void Clear(Core::Math::vec4 colour) = 0;
-            virtual void Draw(const VertexArray& va, const IndexBuffer& ib, bool wireframe = false) = 0;
+
+            virtual void Clear(Core::Math::vec4 colour) const = 0;
+            virtual void Draw(const VertexArray& va, const IndexBuffer& ib, bool wireframe = false) const = 0;
+
+            virtual void DrawSphere(Core::Math::vec3 position, double radius, Core::Math::vec3 colour) const = 0;
+            virtual void DrawRay(Core::Math::vec3 start, Core::Math::vec3 end, Core::Math::vec3 colour, float lineWidth = 1.0) const = 0;
+            virtual void DrawLine(Core::Math::vec3 point1, Core::Math::vec3 point2, Core::Math::vec3 colour, float lineWidth = 1.0) const = 0;
         };
     }
 }

@@ -1,6 +1,5 @@
 #pragma once
 
-#define CAERULUS_CORE __declspec(dllexport)
 
 #include "MaterialManager.h"
 #include "Graphics/Geometry/Model.h"
@@ -14,7 +13,7 @@ namespace Graphics
 {
     namespace Managers
     {
-        class CAERULUS_CORE ModelManager : public Core::Template::Manager<Model>
+        class CAERULUS_GRAPHICS ModelManager : public Core::Template::Manager<Model>
         {
         public:
             ModelManager(MaterialManager& materialManager);

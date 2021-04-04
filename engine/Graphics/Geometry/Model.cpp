@@ -4,10 +4,8 @@
 #include "Mesh.h"
 #include "Graphics/Surface/Material.h"
 
-namespace
-{
-    using namespace Graphics::Geometry;
-}
+using namespace Core::Math;
+using namespace Graphics::Geometry;
 
 namespace std
 {
@@ -17,9 +15,9 @@ namespace std
         size_t operator()(const Vertex& vertex) const
         {
             return
-                ((hash<Core::Math::vec3>()(vertex.Position) ^
-                (hash<Core::Math::vec3>()(vertex.Normal) << 1)) >> 1) ^
-                    (hash<Core::Math::vec2>()(vertex.TexCoord) << 1);
+                ((hash<vec3>()(vertex.Position) ^
+                (hash<vec3>()(vertex.Normal) << 1)) >> 1) ^
+                    (hash<vec2>()(vertex.TexCoord) << 1);
         }
     };
 }
@@ -32,6 +30,23 @@ namespace Graphics
             const std::string& path) :
             m_isLoaded(false),
             m_path(path)
+        {
+            std::vector<std::vector<Vertex>> vertices;
+            std::vector<std::vector<GLuint>> indices;
+            std::vector<std::string> materialNames;
+
+            LoadModel(vertices, indices, materialNames);
+            //CalculateTangentAndBiTangent(vertices);
+
+            for (unsigned int i = 0; i < vertices.size(); ++i)
+            {
+                m_meshes.push_back(std::make_shared<Mesh>(vertices.at(i), indices.at(i), materialNames.at(i)));
+            }
+
+            m_isLoaded = true;
+        }
+
+        void Model::LoadModel(std::vector<std::vector<Vertex>>& verticesOut, std::vector<std::vector<GLuint>>& indicesOut, std::vector<std::string>& materialNamesOut)
         {
             tinyobj::attrib_t attrib;
             std::vector<tinyobj::shape_t> shapes;
@@ -64,9 +79,11 @@ namespace Graphics
                         materialName = materials[firstMeshesFaceMaterialID].name;
                     }
 
-                    if (materialName != prevMaterialName && prevMaterialName != "")
+                    if (f != 0 && materialName != prevMaterialName)
                     {
-                        m_meshes.push_back(std::make_shared<Mesh>(Core::Math::mat4(), vertices, indices, prevMaterialName));
+                        verticesOut.push_back(vertices);
+                        indicesOut.push_back(indices);
+                        materialNamesOut.push_back(prevMaterialName);
                         vertices.clear();
                         indices.clear();
                     }
@@ -78,19 +95,23 @@ namespace Graphics
 
                         Vertex vertex;
 
-                        vertex.Position = {
+                        Core::Math::vec3 position(
                             attrib.vertices[3 * idx.vertex_index + 0],
                             attrib.vertices[3 * idx.vertex_index + 1],
-                            attrib.vertices[3 * idx.vertex_index + 2] };
+                            attrib.vertices[3 * idx.vertex_index + 2]);
 
-                        vertex.TexCoord = {
+                        Core::Math::vec2 texCoord(
                             attrib.texcoords[2 * idx.texcoord_index + 0],
-                            attrib.texcoords[2 * idx.texcoord_index + 1] };
+                            attrib.texcoords[2 * idx.texcoord_index + 1]);
 
-                        vertex.Normal = {
+                        Core::Math::vec3 normal(
                             attrib.normals[3 * idx.normal_index + 0],
                             attrib.normals[3 * idx.normal_index + 1],
-                            attrib.normals[3 * idx.normal_index + 2] };
+                            attrib.normals[3 * idx.normal_index + 2]);
+
+                        vertex.Position = position;
+                        vertex.TexCoord = texCoord;
+                        vertex.Normal = normal;
 
                         if (uniqueVertices.count(vertex) == 0)
                         {
@@ -103,13 +124,49 @@ namespace Graphics
 
                     if (f == shape.mesh.num_face_vertices.size() - 1)
                     {
-                        m_meshes.push_back(std::make_shared<Mesh>(Core::Math::mat4(), vertices, indices, materialName));
+                        verticesOut.push_back(vertices);
+                        indicesOut.push_back(indices);
+                        materialNamesOut.push_back(materialName);
+                        vertices.clear();
+                        indices.clear();
                     }
                     prevMaterialName = materialName;
                 }
             }
-            m_isLoaded = true;
         }
+
+        //void Model::CalculateTangentAndBiTangent(std::vector<std::vector<Vertex>>& vertices)
+        //{
+        //    for (std::vector<Vertex>& meshVertices : vertices)
+        //    {
+        //        for (unsigned int i = 0; i < meshVertices.size() - 2; i += 3)
+        //        {
+        //            Vertex v1 = meshVertices.at(i);
+        //            Vertex v2 = meshVertices.at(i + 1);
+        //            Vertex v3 = meshVertices.at(i + 2);
+
+        //            vec3 edge1 = v2.Position - v1.Position;
+        //            vec3 edge2 = v3.Position - v1.Position;
+
+        //            vec2 deltaUV1 = v2.TexCoord - v1.TexCoord;
+        //            vec2 deltaUV2 = v3.TexCoord - v1.TexCoord;
+
+        //            GLfloat f = 1.0f / (deltaUV1.x * deltaUV2.y - deltaUV2.x * deltaUV1.y);
+
+        //            vec3 tangent;
+        //            tangent.x = f * (deltaUV2.y * edge1.x - deltaUV1.y * edge2.x);
+        //            tangent.y = f * (deltaUV2.y * edge1.y - deltaUV1.y * edge2.y);
+        //            tangent.z = f * (deltaUV2.y * edge1.z - deltaUV1.y * edge2.z);
+        //            tangent = normalize(tangent);
+
+        //            vec3 biTangent;
+        //            biTangent.x = f * (-deltaUV2.x * edge1.x + deltaUV1.x * edge2.x);
+        //            biTangent.y = f * (-deltaUV2.x * edge1.y + deltaUV1.x * edge2.y);
+        //            biTangent.z = f * (-deltaUV2.x * edge1.z + deltaUV1.x * edge2.z);
+        //            biTangent = normalize(biTangent);
+        //        }
+        //    }
+        //}
 
         const std::vector<std::shared_ptr<Mesh>>& Model::GetMeshes() const
         {

@@ -68,21 +68,21 @@ namespace Core
 
             std::vector<vec2> GetCorners() const
             {
-                std::vector<vec2> corners(4);
-                corners[0] = m_min;
-                corners[1] = vec2(m_min.x, m_max.y);
-                corners[2] = m_max;
-                corners[3] = vec2(m_max.x, m_min.y);
+                std::vector<vec2> corners {
+                m_min,
+                vec2(m_min.x, m_max.y),
+                m_max,
+                vec2(m_max.x, m_min.y) };
                 return corners;
             }
 
             static std::vector<vec2> GetNormals()
             {
-                std::vector<vec2> normals(4);
-                normals[0] = vec2(-1.f, 0.f);
-                normals[1] = vec2(0.f, 1.f);
-                normals[2] = vec2(1.f, 0.f);
-                normals[3] = vec2(0.f, -1.f);
+                std::vector<vec2> normals {
+                vec2(-1.f, 0.f),
+                vec2(0.f, 1.f),
+                vec2(1.f, 0.f),
+                vec2(0.f, -1.f) };
                 return normals;
             }
 

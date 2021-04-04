@@ -1,32 +1,16 @@
 #include "stdafx.h"
 
 #include "Timer.h"
+#include "Time.h"
 
 namespace Core
 {
+    using namespace std::chrono;
+
     namespace Time
     {
-        void SleepMilli(time_t milli)
-        {
-            ::Sleep(static_cast<DWORD>(milli));
-        }
-        void Sleep(time_t sec)
-        {
-            ::Sleep(static_cast<DWORD>(sec * 1000.0));
-        }
-        void Sleep(Time sec)
-        {
-            SleepMilli(static_cast<time_t>(sec.GetTime() * 1000.0));
-        }
-
         Timer::Timer(bool start) :
-            m_running(false),
-            m_deltaTime(0.0f),
-            m_multiplier(0.0f),
-            m_frequency(0),
-            m_timeLastFrame(0),
-            StartTime(false),
-            EndTime(false)
+            m_running(false)
         {
             if (start)
             {
@@ -39,67 +23,43 @@ namespace Core
             if (m_running == false)
             {
                 m_running = true;
-                m_deltaTime = 0.0f;
-                m_frequency = Frequency();
-                m_multiplier = (1.0f / m_frequency);
-                m_timeLastFrame = NanoTime();
-                StartTime.Update();
+                m_lastTimePoint = high_resolution_clock::now();
             }
-        }
-
-        float Timer::Total()
-        {
-            if (m_running)
-            {
-                m_deltaTime = (NanoTime() - m_timeLastFrame) * m_multiplier;
-            }
-            else
-            {
-                Start();
-            }
-
-            return m_deltaTime;
         }
 
         float Timer::Delta()
         {
+            float deltaTime = 0.f;
             if (m_running)
             {
-                time_t currentTime = NanoTime();
-                time_t diffTime = currentTime - m_timeLastFrame;
-                m_timeLastFrame = currentTime;
-
-                m_deltaTime = diffTime * m_multiplier;
+                high_resolution_clock::time_point now = high_resolution_clock::now();
+                deltaTime = duration_cast<duration<float>>(now - m_lastTimePoint).count();
+                m_lastTimePoint = now;
             }
             else
             {
                 Start();
             }
 
-            return m_deltaTime;
+            return deltaTime;
         }
 
         void Timer::Stop()
         {
             if (m_running)
             {
-                EndTime.Update();
                 m_running = false;
             }
         }
 
-        time_t Timer::NanoTime()
+        void Timer::Sleep(time_t sec)
         {
-            LARGE_INTEGER time;
-            QueryPerformanceCounter(&time);
-            return static_cast<time_t>(time.QuadPart);
+            ::Sleep(static_cast<DWORD>(sec * 1000.0));
         }
 
-        time_t Timer::Frequency()
+        void Timer::Sleep(const Time& time)
         {
-            LARGE_INTEGER frequency;
-            QueryPerformanceFrequency(&frequency);
-            return static_cast<time_t>(frequency.QuadPart);
+            ::Sleep(static_cast<DWORD>(time.GetTime() * 1000.0));
         }
     }
 }

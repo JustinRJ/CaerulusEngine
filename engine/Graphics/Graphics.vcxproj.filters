@@ -13,9 +13,6 @@
     <ClCompile Include="Pipeline\ShaderSrc.cpp">
       <Filter>Pipeline</Filter>
     </ClCompile>
-    <ClCompile Include="Pipeline\Renderer.cpp">
-      <Filter>Pipeline</Filter>
-    </ClCompile>
     <ClCompile Include="Geometry\Model.cpp">
       <Filter>Geometry</Filter>
     </ClCompile>
@@ -49,6 +46,9 @@
     <ClCompile Include="Pipeline\VertexBuffer.cpp">
       <Filter>Pipeline</Filter>
     </ClCompile>
+    <ClCompile Include="Pipeline\GLRenderer.cpp">
+      <Filter>Pipeline</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -78,9 +78,6 @@
       <Filter>Pipeline</Filter>
     </ClInclude>
     <ClInclude Include="Pipeline\IRenderer.h">
-      <Filter>Pipeline</Filter>
-    </ClInclude>
-    <ClInclude Include="Pipeline\Renderer.h">
       <Filter>Pipeline</Filter>
     </ClInclude>
     <ClInclude Include="Pipeline\VertexBuffer.h">
@@ -134,6 +131,9 @@
     <ClInclude Include="Pipeline\ShaderUniformFunctor.h">
       <Filter>Pipeline</Filter>
     </ClInclude>
+    <ClInclude Include="Pipeline\GLRenderer.h">
+      <Filter>Pipeline</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Window">
@@ -159,10 +159,16 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <None Include="assets\shaders\position.frag">
+    <None Include="assets\shaders\pbr.frag">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="assets\shaders\position.vert">
+    <None Include="assets\shaders\pbr.vert">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="assets\shaders\basic.frag">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="assets\shaders\basic.vert">
       <Filter>Shaders</Filter>
     </None>
   </ItemGroup>

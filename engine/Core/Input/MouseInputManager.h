@@ -2,6 +2,7 @@
 
 #include "InputDefines.h"
 #include "Core/Interface/ITickable.h"
+#include "Core/Interface/NonCopyable.h"
 
 namespace Graphics
 {
@@ -29,7 +30,7 @@ namespace Core
             std::string Name = "";
         };
 
-        class MouseInputManager : public Interface::ITickable
+        class MouseInputManager : public Interface::ITickable, public Interface::NonCopyable
         {
         public:
             MouseInputManager(std::shared_ptr<Graphics::Window::GLWindow> window) :

@@ -1,11 +1,10 @@
 General
-* Model & Light must derive from Node
+
+* Create Units directory, contain time / rotation / mass / etc
 
 * Split into Game and Engine solutions
 
 * Create include directory
-
-* Update Time class to use std::chrono
 
 * Implement thread class with async as basis
 

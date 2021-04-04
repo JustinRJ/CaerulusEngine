@@ -32,6 +32,9 @@
     <ClCompile Include="Time\Timer.cpp">
       <Filter>Time</Filter>
     </ClCompile>
+    <ClCompile Include="Node\Node.cpp">
+      <Filter>Node</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />

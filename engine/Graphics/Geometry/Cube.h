@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Core/Node/Node.h"
 #include "Graphics/Pipeline/VertexArray.h"
 #include "Graphics/Pipeline/VertexBuffer.h"
 #include "Graphics/Pipeline/IndexBuffer.h"
@@ -35,7 +36,7 @@ namespace Graphics
             4, 7, 6, 4, 5, 6  // back
         };
 
-        class Cube
+        class Cube : public Core::Node::Node
         {
         public:
             Cube() :

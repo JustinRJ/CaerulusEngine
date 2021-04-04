@@ -2,15 +2,11 @@
 
 #define CAERULUS_CORE __declspec(dllexport)
 
-#include "Time.h"
-
 namespace Core
 {
     namespace Time
     {
-        CAERULUS_CORE void Sleep(Time sec);
-        CAERULUS_CORE void Sleep(time_t sec);
-        CAERULUS_CORE void SleepMilli(time_t milli);
+        class Time;
 
         class CAERULUS_CORE Timer
         {
@@ -21,21 +17,14 @@ namespace Core
             void Start();
             void Stop();
 
-            float Total();
             float Delta();
 
-            Time StartTime;
-            Time EndTime;
+            static void Sleep(time_t sec);
+            static void Sleep(const Time& time);
 
         private:
-            time_t NanoTime();
-            time_t Frequency();
-
-            bool m_running;
-            float m_deltaTime;
-            float m_multiplier;
-            time_t m_frequency;
-            time_t m_timeLastFrame;
+            bool m_running = false;
+            std::chrono::high_resolution_clock::time_point m_lastTimePoint;
         };
     }
 }

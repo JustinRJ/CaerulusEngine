@@ -12,7 +12,7 @@ namespace Graphics
 {
     namespace Managers
     {
-        class CAERULUS_CORE TextureManager : public Core::Template::Manager<Texture>
+        class CAERULUS_GRAPHICS TextureManager : public Core::Template::Manager<Texture>
         {
         public:
             TextureManager() = default;

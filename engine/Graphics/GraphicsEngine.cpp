@@ -4,7 +4,7 @@
 
 #include "Window/GLWindow.h"
 
-#include "Graphics/Pipeline/Renderer.h"
+#include "Graphics/Pipeline/GLRenderer.h"
 #include "Graphics/Pipeline/VertexArray.h"
 #include "Graphics/Pipeline/VertexBuffer.h"
 #include "Graphics/Pipeline/IndexBuffer.h"
@@ -21,17 +21,14 @@
 #include "Graphics/Lighting/PointLight.h"
 #include "Graphics/Lighting/DirectionalLight.h"
 
-namespace
-{
-    using namespace Graphics::Window;
-    using namespace Graphics::Surface;
-    using namespace Graphics::Pipeline;
-    using namespace Graphics::Geometry;
-    using namespace Graphics::Lighting;
-}
-
 namespace Graphics
 {
+    using namespace Window;
+    using namespace Surface;
+    using namespace Pipeline;
+    using namespace Geometry;
+    using namespace Lighting;
+
     GraphicsEngine::GraphicsEngine(std::shared_ptr<GLWindow> window,
         std::shared_ptr<IRenderer> renderer) :
         m_window(window),
@@ -49,11 +46,8 @@ namespace Graphics
         if (m_window)
         {
             m_window->Update();
-            InvokePipelineProcessFunctors(PipelineProcess::PreProcess);
             UpdateModels();
-            InvokePipelineProcessFunctors(PipelineProcess::MidProcess);
             UpdateLights();
-            InvokePipelineProcessFunctors(PipelineProcess::PostProcess);
             m_window->SwapBuffer();
         }
     }
@@ -149,22 +143,5 @@ namespace Graphics
     bool GraphicsEngine::GetWireframe() const
     {
         return m_renderWireframe;
-    }
-
-    void GraphicsEngine::SetProcessUniformFunctor(PipelineProcess process, std::shared_ptr<ShaderUniformFunctor> functor)
-    {
-        m_shaderProcessFunctors[process] = functor;
-    }
-
-    void GraphicsEngine::InvokePipelineProcessFunctors(PipelineProcess process) const
-    {
-        auto it = m_shaderProcessFunctors.find(process);
-        if (it != m_shaderProcessFunctors.end())
-        {
-            if (std::shared_ptr<Pipeline::ShaderUniformFunctor> shaderFunctor = it->second)
-            {
-                shaderFunctor->InvokeUniformFunctors();
-            }
-        }
     }
 }

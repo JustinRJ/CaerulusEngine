@@ -10,7 +10,7 @@ namespace Graphics
     {
         Material::Material(const std::string& path) :
             m_path(path),
-            m_textureConfigs(7)
+            m_textures(7)
         {
         }
 
@@ -53,18 +53,18 @@ namespace Graphics
         void Material::SetTexture(std::shared_ptr<Texture> texture, TextureType type)
         {
             unsigned int slot = static_cast<unsigned int>(type);
-            if (slot < m_textureConfigs.size())
+            if (slot < m_textures.size())
             {
-                m_textureConfigs[slot] = texture;
+                m_textures[slot] = texture;
             }
         }
 
         void Material::Bind(TextureType type) const
         {
             unsigned int slot = static_cast<unsigned int>(type);
-            if (slot < m_textureConfigs.size())
+            if (slot < m_textures.size())
             {
-                if (std::shared_ptr<Texture> texture = m_textureConfigs[slot])
+                if (std::shared_ptr<Texture> texture = m_textures[slot])
                 {
                     texture->Bind(slot);
                 }
@@ -73,7 +73,7 @@ namespace Graphics
 
         void Material::Bind() const
         {
-            for (unsigned int i = 0; i < m_textureConfigs.size(); ++i)
+            for (unsigned int i = 0; i < m_textures.size(); ++i)
             {
                 Bind(static_cast<TextureType>(i));
             }
@@ -93,9 +93,9 @@ namespace Graphics
         {
             std::shared_ptr<Texture> texture = nullptr;
             unsigned int slot = static_cast<unsigned int>(type);
-            if (slot < m_textureConfigs.size())
+            if (slot < m_textures.size())
             {
-                texture = m_textureConfigs[slot];
+                texture = m_textures[slot];
             }
             return texture;
         }

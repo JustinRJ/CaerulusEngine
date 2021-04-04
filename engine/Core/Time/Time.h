@@ -6,11 +6,6 @@ namespace Core
 {
     namespace Time
     {
-        CAERULUS_CORE const double MILLISECOND = 1.0 / 1000000.0;
-
-        std::string GetLocalTime(const std::string& format);
-        std::string GetTime(const std::string&, size_t extralength = 20);
-
         class CAERULUS_CORE Time
         {
         public:
@@ -20,6 +15,9 @@ namespace Core
             void Update();
             void Increment(time_t time);
             time_t GetTime() const;
+
+            static std::string GetTime(const std::string& format);
+            static std::string GetLocalTime(const std::string& format);
 
         private:
             time_t m_time;

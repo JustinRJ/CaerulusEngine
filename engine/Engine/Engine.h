@@ -1,9 +1,15 @@
 #pragma once
 
+#define CAERULUS_ENGINE __declspec(dllexport)
+
 #include "Core/Interface/NonCopyable.h"
 
 namespace Core
 {
+    namespace Node
+    {
+        class Node;
+    }
     namespace Time
     {
         class FPSLimiter;
@@ -35,7 +41,7 @@ namespace Graphics
 
     namespace Pipeline
     {
-        class Renderer;
+        class GLRenderer;
     }
 
     namespace Managers
@@ -48,7 +54,7 @@ namespace Graphics
     }
 }
 
-class Engine : public Core::Interface::NonCopyable
+class CAERULUS_ENGINE Engine : public Core::Interface::NonCopyable
 {
 public:
     Engine(int argc, char** argv);
@@ -58,7 +64,7 @@ public:
 
     void InitInput();
     void InitScene();
-    void InitRenderer();
+    void InitGLRenderer();
 
 private:
     void Tick();
@@ -76,6 +82,8 @@ private:
     float m_sprintSpeed = 100.0f;
     float m_mouseSensitivity = 50.0f;
 
+    std::shared_ptr<Core::Node::Node> m_rootNode;
+
     std::shared_ptr<Core::Time::FPSLimiter> m_fpsLimiter;
     std::shared_ptr<Core::Time::FixedTimer> m_fixedTimer;
     std::shared_ptr<Core::Input::MouseInputManager> m_mouseInputManager;
@@ -83,14 +91,14 @@ private:
 
     std::shared_ptr<Core::Math::Camera> m_camera;
     std::shared_ptr<Graphics::Window::GLWindow> m_window;
-    std::shared_ptr<Graphics::Pipeline::Renderer> m_renderer;
+    std::shared_ptr<Graphics::Pipeline::GLRenderer> m_renderer;
     std::shared_ptr<Graphics::GraphicsEngine> m_graphicsEngine;
-
-    std::vector<std::shared_ptr<Core::Interface::ITickable>> m_tickable;
 
     std::shared_ptr<Graphics::Managers::TextureManager> m_textureManager;
     std::shared_ptr<Graphics::Managers::MaterialManager> m_materialManager;
     std::shared_ptr<Graphics::Managers::ModelManager> m_modelManager;
     std::shared_ptr<Graphics::Managers::ShaderSrcManager> m_shaderSrcManager;
     std::shared_ptr<Graphics::Managers::ShaderManager> m_shaderManager;
+
+    std::vector<std::shared_ptr<Core::Interface::ITickable>> m_tickable;
 };

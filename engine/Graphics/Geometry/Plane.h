@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Core/Node/Node.h"
 #include "Graphics/Pipeline/VertexArray.h"
 #include "Graphics/Pipeline/VertexBuffer.h"
 #include "Graphics/Pipeline/IndexBuffer.h"
@@ -26,7 +27,7 @@ namespace Graphics
             0, 3, 2,    0, 1, 2
         };
 
-        class Plane
+        class Plane : public Core::Node::Node
         {
         public:
             Plane() :

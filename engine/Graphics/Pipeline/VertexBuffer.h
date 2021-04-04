@@ -1,12 +1,14 @@
 #pragma once
 
+#define CAERULUS_GRAPHICS __declspec(dllexport)
+
 #include "Core/Interface/NonCopyable.h"
 
 namespace Graphics
 {
     namespace Pipeline
     {
-        class VertexBuffer : public Core::Interface::NonCopyable
+        class CAERULUS_GRAPHICS VertexBuffer : public Core::Interface::NonCopyable
         {
         public:
             VertexBuffer(const void* data, size_t size);

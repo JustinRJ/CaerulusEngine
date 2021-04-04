@@ -15,7 +15,7 @@
 
 #include "Graphics/GraphicsEngine.h"
 #include "Graphics/Window/GLWindow.h"
-#include "Graphics/Pipeline/Renderer.h"
+#include "Graphics/Pipeline/GLRenderer.h"
 
 #include "Core/Input/MouseInputManager.h"
 #include "Core/Input/KeyboardInputManager.h"
@@ -26,50 +26,44 @@
 #include "Graphics/Managers/ShaderSrcManager.h"
 #include "Graphics/Managers/ShaderManager.h"
 
-namespace
-{
-    using namespace Core::Node;
-    using namespace Core::Math;
-    using namespace Core::Time;
-    using namespace Core::Input;
-    using namespace Core::Logging;
-    using namespace Core::Interface;
+using namespace Core::Node;
+using namespace Core::Math;
+using namespace Core::Time;
+using namespace Core::Input;
+using namespace Core::Logging;
+using namespace Core::Interface;
 
-    using namespace Graphics;
-    using namespace Graphics::Window;
-    using namespace Graphics::Surface;
-    using namespace Graphics::Managers;
-    using namespace Graphics::Geometry;
-    using namespace Graphics::Pipeline;
-}
+using namespace Graphics;
+using namespace Graphics::Window;
+using namespace Graphics::Surface;
+using namespace Graphics::Managers;
+using namespace Graphics::Geometry;
+using namespace Graphics::Pipeline;
 
 Engine::Engine(int argc, char** argv) :
     m_argCount(argc),
     m_argValue(argv)
 {
-    m_fpsLimiter = std::make_unique<FPSLimiter>();
-    m_fixedTimer = std::make_unique<FixedTimer>();
-
-    m_camera = std::make_shared<Camera>(vec3(0, 0, 0), UnitForward, UnitUp);
-    m_window = std::make_shared<GLWindow>(m_camera, "Caerulus", 1280, 1024, 32, false);
-    m_renderer = std::make_shared<Renderer>();
-    m_graphicsEngine = std::make_shared<GraphicsEngine>(m_window, m_renderer);
-
-    m_keyboardInputManager = std::make_shared<KeyboardInputManager>(m_window);
-    m_mouseInputManager = std::make_shared<MouseInputManager>(m_window);
+    m_fpsLimiter            = std::make_shared<FPSLimiter>();
+    m_fixedTimer            = std::make_shared<FixedTimer>();
+    m_camera                = std::make_shared<Camera>(vec3(0, 0, 0), UnitForward, UnitUp);
+    m_window                = std::make_shared<GLWindow>(m_camera, "Caerulus", 1280, 1024, 32, false);
+    m_renderer              = std::make_shared<GLRenderer>();
+    m_graphicsEngine        = std::make_shared<GraphicsEngine>(m_window, m_renderer);
+    m_keyboardInputManager  = std::make_shared<KeyboardInputManager>(m_window);
+    m_mouseInputManager     = std::make_shared<MouseInputManager>(m_window);
+    m_textureManager        = std::make_shared<TextureManager>();
+    m_materialManager       = std::make_shared<MaterialManager>(*m_textureManager);
+    m_modelManager          = std::make_shared<ModelManager>(*m_materialManager);
+    m_shaderSrcManager      = std::make_shared<ShaderSrcManager>();
+    m_shaderManager         = std::make_shared<ShaderManager>(*m_shaderSrcManager);
 
     m_tickable.push_back(m_keyboardInputManager);
     m_tickable.push_back(m_mouseInputManager);
     m_tickable.push_back(m_graphicsEngine);
 
-    m_textureManager = std::make_shared<TextureManager>();
-    m_materialManager = std::make_shared<MaterialManager>(*m_textureManager);
-    m_modelManager = std::make_shared<ModelManager>(*m_materialManager);
-    m_shaderSrcManager = std::make_shared<ShaderSrcManager>();
-    m_shaderManager = std::make_shared<ShaderManager>(*m_shaderSrcManager);
-
     InitInput();
-    InitRenderer();
+    InitGLRenderer();
     InitScene();
 }
 
@@ -156,42 +150,60 @@ void Engine::InitInput()
     });
 }
 
-void Engine::InitRenderer()
+void Engine::InitGLRenderer()
 {
-    m_shaderManager->Load("position", "assets/shaders/position.vert", "assets/shaders/position.frag");
+    m_shaderManager->Load("pbr", "assets/shaders/pbr.vert", "assets/shaders/pbr.frag");
 }
 
 void Engine::InitScene()
 {
-    static std::shared_ptr<Node> sponzaNode = std::make_shared<Node>();
-    Core::Math::mat4& sponzaTransform = sponzaNode->GetTransform().GetMatrix();
-    sponzaTransform = translate(mat4(1.0f), vec3(0, 0, -10));
-    sponzaTransform = scale(sponzaTransform, vec3(0.25, 0.25, 0.25));
-
     m_modelManager->Load("sponza", "assets/models/Sponza/sponza.obj");
 
     // Only set shaders and functors for sponza model 
     if (std::shared_ptr<Model> model = m_modelManager->Get("sponza"))
     {
-        std::shared_ptr<Shader> positionShader = m_shaderManager->Get("position");
+        // sponza needs a default ao applied
+        m_textureManager->Load("defaultAO", "assets/textures/defaultAO.obj");
+
+        Core::Math::mat4& sponzaTransform = model->GetTransform().GetMatrix();
+        sponzaTransform = translate(mat4(1.0f), vec3(0, -10, 0));
+        sponzaTransform = scale(sponzaTransform, vec3(0.25, 0.25, 0.25));
+
+        std::shared_ptr<Shader> pbrShader = m_shaderManager->Get("pbr");
 
         // Set uniform functor to update each models MVP before it's rendered
-        model->SetUniformFunctor(positionShader, [camera = m_camera, node = sponzaNode](const Shader& shader)
+        model->SetUniformFunctor(pbrShader, [capturedCamera = m_camera, capturedModel = model](const Shader& shader)
         {
-            shader.SetMat4fv("u_MVP", camera->GetFrustrum().GetMatrix() * camera->GetTransform().GetMatrix() * node->GetTransform().GetMatrix());
+            shader.SetMat4fv("projection",  capturedCamera->GetProjection().GetMatrix());
+            shader.SetMat4fv("view",        capturedCamera->GetView().GetMatrix());
+            shader.SetMat4fv("model",       capturedModel->GetTransform().GetMatrix());
+
+            shader.Set3f("viewPos", capturedCamera->GetView().GetTranslation());
+            shader.Set3f("lightPositions[0]", vec3(-150, 15., 0));
+            shader.Set3f("lightPositions[1]", vec3(0, 15., 0));
+            shader.Set3f("lightPositions[2]", vec3(150, 15., 0));
+            shader.Set3f("lightPositions[3]", vec3(0., 30., 0));
+            shader.Set3f("lightColours[0]", vec3(255, 0, 0));
+            shader.Set3f("lightColours[1]", vec3(0, 255, 0));
+            shader.Set3f("lightColours[2]", vec3(0, 0, 255));
+            shader.Set3f("lightColours[3]", vec3(255, 255, 255));
         });
 
         for (std::shared_ptr<Material> material : model->GetMaterials())
         {
             if (material)
             {
+                // Add to bump map as sponza mapping is wrong
+                material->SetTexture(m_textureManager->Get("defaultAO"), Material::TextureType::Bump);
                 // Set uniform functor to update each materials Texture before it's rendered
-                material->SetUniformFunctor(positionShader, [](const Shader& shader)
+                material->SetUniformFunctor(pbrShader, [](const Shader& shader)
                 {
-                    shader.Set1i("u_Albedo", static_cast<GLint>(Material::TextureType::Diffuse));       // albedo
-                    shader.Set1i("u_Normal", static_cast<GLint>(Material::TextureType::Highlight));     // normal
-                    shader.Set1i("u_Roughness", static_cast<GLint>(Material::TextureType::Specular));   // roughness
-                    shader.Set1i("u_Metallic", static_cast<GLint>(Material::TextureType::Ambient));     // metallic
+                    // Sponza asset has material properties set in the wrong channels
+                    shader.Set1i("albedoMap", static_cast<GLint>(Material::TextureType::Diffuse));       // albedo
+                    shader.Set1i("normalMap", static_cast<GLint>(Material::TextureType::Highlight));     // normal
+                    shader.Set1i("roughnessMap", static_cast<GLint>(Material::TextureType::Specular));   // roughness
+                    shader.Set1i("metallicMap", static_cast<GLint>(Material::TextureType::Ambient));     // metallic
+                    shader.Set1i("aoMap", static_cast<GLint>(Material::TextureType::Bump));              // ao
                 });
             }
         }
@@ -205,11 +217,6 @@ void Engine::InitScene()
         //    }
         //}
     }
-
-    // Can set uniforms at any stage of the pipeline if required, can be scaled
-    //std::shared_ptr<ShaderUniformFunctor> processhaderUniformFunctor = std::make_shared<ShaderUniformFunctor>();
-    //processhaderUniformFunctor->SetUniformFunctor(nullptr, [](const Shader& shader) {});
-    //m_graphicsEngine->SetProcessUniformFunctor(PipelineProcess::PreProcess, processhaderUniformFunctor);
     
     m_graphicsEngine->SetModels(m_modelManager->GetAll());
 }

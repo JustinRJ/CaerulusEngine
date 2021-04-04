@@ -80,18 +80,17 @@ namespace Core
 
             std::vector<vec2> GetNormals() const
             {
-                std::vector<vec2> normals(4);
                 std::vector<vec2> corners = GetCorners();
                 vec2 v0 = normalize(corners[0] - corners[1]);
                 vec2 v1 = normalize(corners[1] + corners[2]);
                 vec2 v2 = normalize(corners[2] - corners[3]);
                 vec2 v3 = normalize(corners[3] + corners[0]);
 
-                normals[0] = vec2(v0.y, v0.x);
-                normals[1] = vec2(v1.y, v1.x);
-                normals[2] = vec2(v2.y, v2.x);
-                normals[3] = vec2(v3.y, v3.x);
-
+                std::vector<vec2> normals {
+                vec2(v0.y, v0.x),
+                vec2(v1.y, v1.x),
+                vec2(v2.y, v2.x),
+                vec2(v3.y, v3.x) };
                 return normals;
             }
 

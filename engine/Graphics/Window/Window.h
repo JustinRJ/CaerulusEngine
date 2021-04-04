@@ -8,7 +8,7 @@ namespace Graphics
 {
     namespace Window
     {
-        struct CAERULUS_GRAPHICS State
+        struct State
         {
             std::string Title;
             int Width;

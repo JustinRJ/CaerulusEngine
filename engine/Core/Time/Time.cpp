@@ -8,9 +8,9 @@ namespace Core
     {
         tm InternalTime;
 
-        std::string GetTime(const std::string& format, size_t extralength)
+        std::string Time::GetTime(const std::string& format)
         {
-            size_t length = strlen(format.c_str()) + extralength;
+            size_t length = strlen(format.c_str());
             char* buffer = new char[length];
             strftime(buffer, length, format.c_str(), &InternalTime);
             std::string outFormat(buffer);
@@ -19,7 +19,7 @@ namespace Core
             return outFormat;
         }
 
-        std::string GetLocalTime(const std::string& format)
+        std::string Time::GetLocalTime(const std::string& format)
         {
             time_t rawTime;
             time(&rawTime);

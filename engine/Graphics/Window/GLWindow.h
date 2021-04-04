@@ -1,7 +1,5 @@
 #pragma once
 
-#define CAERULUS_GRAPHICS __declspec(dllexport)
-
 #include "Window.h"
 
 namespace Core

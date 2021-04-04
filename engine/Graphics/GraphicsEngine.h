@@ -4,6 +4,7 @@
 
 #include "Core/Math/Math.h"
 #include "Core/Interface/ITickable.h"
+#include "Core/Interface/NonCopyable.h"
 
 namespace Graphics
 {
@@ -36,10 +37,9 @@ namespace Graphics
         PostProcess
     };
 
-    class CAERULUS_GRAPHICS GraphicsEngine : public Core::Interface::ITickable
+    class CAERULUS_GRAPHICS GraphicsEngine : public Core::Interface::ITickable, public Core::Interface::NonCopyable
     {
     public:
-
         GraphicsEngine(
             std::shared_ptr<Window::GLWindow> window,
             std::shared_ptr<Pipeline::IRenderer> renderer);
@@ -63,13 +63,9 @@ namespace Graphics
         void SetModels(const std::vector<std::shared_ptr<Geometry::Model>>& models);
         void SetLights(const std::vector<std::shared_ptr<Lighting::Light>>& lights);
 
-        void SetProcessUniformFunctor(PipelineProcess process, std::shared_ptr<Pipeline::ShaderUniformFunctor> functor);
-
     private:
         void UpdateModels();
         void UpdateLights();
-
-        void InvokePipelineProcessFunctors(PipelineProcess process) const;
 
         bool m_renderWireframe = false;
         Core::Math::vec4 m_clearColour = Core::Math::vec4(0.2f, 0.3f, 0.3f, 1.0f);
@@ -79,7 +75,5 @@ namespace Graphics
 
         std::vector<std::shared_ptr<Geometry::Model>> m_models;
         std::vector<std::shared_ptr<Lighting::Light>> m_lights;
-
-        std::map<PipelineProcess, std::shared_ptr<Pipeline::ShaderUniformFunctor>> m_shaderProcessFunctors;
     };
 }
