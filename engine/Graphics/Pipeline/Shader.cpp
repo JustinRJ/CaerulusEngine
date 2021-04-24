@@ -5,6 +5,11 @@
 #include "ShaderSrc.h"
 #include "Core/Logging/Log.h"
 
+namespace
+{
+    using namespace Core::Logging;
+}
+
 namespace Graphics
 {
     namespace Pipeline
@@ -15,10 +20,9 @@ namespace Graphics
             m_vertex(vertex),
             m_fragment(fragment)
         {
-            using Core::Logging::Log;
-            const unsigned int logSize = 512;
+            const unsigned int LogSize = 512;
             // Shader Program Compilation
-            GLchar infoLog[logSize];
+            GLchar infoLog[LogSize];
             m_handle = glCreateProgram();
             glAttachShader(m_handle, m_vertex->GetHandle());
             glAttachShader(m_handle, m_fragment->GetHandle());
@@ -29,11 +33,11 @@ namespace Graphics
 
             if (!isLinkSuccessful)
             {
-                glGetProgramInfoLog(m_handle, logSize, NULL, infoLog);
-                Log::LogError("Shader program linking failed!", infoLog);
+                glGetProgramInfoLog(m_handle, LogSize, NULL, infoLog);
+                LogError("Shader program linking failed!", infoLog);
             }
 
-            m_isLinked = true;
+            m_isLinked = static_cast<bool>(isLinkSuccessful);
         }
 
         void Shader::Bind() const
@@ -110,7 +114,7 @@ namespace Graphics
 
             if (location == -1)
             {
-                Core::Logging::Log::LogInDebug("Shader::GetUniformLocation: " + name + "does not exist!");
+                LogInDebug("Shader::GetUniformLocation: " + name + "does not exist!");
             }
 
             m_uniformLocationCache[name] = location;

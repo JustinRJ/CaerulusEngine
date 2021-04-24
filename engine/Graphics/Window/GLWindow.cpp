@@ -8,9 +8,14 @@
 #define GLFW_EXPOSE_NATIVE_WIN32
 #include <glfw3native.h>
 
-void CloseWindowCallback(GLFWwindow* window)
+namespace
 {
-    exit(1);
+    using namespace Core::Logging;
+
+    void CloseWindowCallback(GLFWwindow* window)
+    {
+        exit(1);
+    }
 }
 
 namespace Graphics
@@ -24,9 +29,14 @@ namespace Graphics
         {
             if (!glfwInit())
             {
-                Core::Logging::Log::LogError("Failed to init GLFW!");
+                LogError("Failed to init GLFW!");
                 exit(1);
             }
+
+            glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+            glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+            glfwWindowHint(GLFW_SAMPLES, 4);
+            glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
             Window::Set(title, x, y, bits, fullscreen);
             Apply();
@@ -82,7 +92,7 @@ namespace Graphics
         {
             if (m_camera)
             {
-                m_camera->GetProjection().SetAspect(static_cast<float>(GetActiveState().Width) / static_cast<float>(GetActiveState().Height));
+                m_camera->GetPerspective().SetAspect(static_cast<float>(GetActiveState().Width) / static_cast<float>(GetActiveState().Height));
             }
 
             Apply();

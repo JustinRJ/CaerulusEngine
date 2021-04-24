@@ -2,6 +2,12 @@
 
 #include "ShaderSrcManager.h"
 
+namespace
+{
+    using namespace Core::Logging;
+    using namespace Graphics::Pipeline;
+}
+
 namespace Graphics
 {
     namespace Managers
@@ -10,11 +16,11 @@ namespace Graphics
         {
             if (IsLoaded(path))
             {
-                Core::Log::LogInDebug("\tShader stage already loaded with path: " + path);
+                LogInDebug("\tShader stage already loaded with path: " + path);
             }
             else
             {
-                Core::Log::LogMessage("\tLoading shader stage with path: " + path);
+                LogMessage("\tLoading shader stage with path: " + path);
                 std::shared_ptr<ShaderSrc> shaderSource = std::make_shared<ShaderSrc>(type, path);
                 shaderSource->Load();
 
@@ -24,7 +30,7 @@ namespace Graphics
                 }
                 else
                 {
-                    Core::Log::LogInDebug("Failed to compile shader source with path: " + path);
+                    LogInDebug("Failed to compile shader source with path: " + path);
                 }
             }
         }

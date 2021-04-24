@@ -16,16 +16,6 @@ namespace Core
                 m_T(m)
             {}
 
-            Transform(const Transform& transform) :
-                m_T(transform.m_T)
-            {}
-
-            Transform& operator=(const Transform& transform)
-            {
-                m_T = transform.m_T;
-                return *this;
-            }
-
             vec3 GetTranslation() const
             {
                 return vec3(
@@ -138,11 +128,11 @@ namespace Core
                     m_T[Z][columnIndex]);
             }
 
-            void Decompose(vec3& outTranlastion, quat& outRotation, vec3& outScale) const
+            void Decompose(vec3& outTranslation, quat& outRotation, vec3& outScale) const
             {
                 outScale = GetScale();
                 outRotation = GetRotation();
-                outTranlastion = GetTranslation();
+                outTranslation = GetTranslation();
             }
 
             void SetAxis(const vec3& axis, Index axisIndex)

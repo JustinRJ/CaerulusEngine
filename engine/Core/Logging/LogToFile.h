@@ -1,13 +1,12 @@
 #pragma once
 
-#include "Core/Interface/NonMovable.h"
 #include "Core/Interface/NonCopyable.h"
 
 namespace Core
 {
     namespace Logging
     {
-        class LogToFile : public Interface::NonCopyable, public Interface::NonMovable
+        class LogToFile : private Interface::NonCopyable
         {
         public:
             LogToFile() = delete;
@@ -17,7 +16,7 @@ namespace Core
             {
                 if (!log_file.is_open())
                 {
-                    Log::LogError("Unable to open log file.");
+                    LogError("Unable to open log file.");
                 }
             }
 

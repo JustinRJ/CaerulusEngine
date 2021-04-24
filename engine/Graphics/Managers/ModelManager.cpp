@@ -3,6 +3,12 @@
 #include "ModelManager.h"
 #include "Graphics/Geometry/Mesh.h"
 
+namespace
+{
+    using namespace Core::Logging;
+    using namespace Graphics::Geometry;
+}
+
 namespace Graphics
 {
     namespace Managers
@@ -16,15 +22,15 @@ namespace Graphics
         {
             if (IsLoaded(name))
             {
-                Core::Log::LogInDebug("Model with name " + name + " already loaded with path: " + modelPath);
+                LogInDebug("Model with name " + name + " already loaded with path: " + modelPath);
             }
             else
             {
-                Core::Log::LogMessage("Loading model " + name + " with path: " + modelPath);
+                LogMessage("Loading model " + name + " with path: " + modelPath);
                 std::shared_ptr<Model> newModel = std::make_shared<Model>(modelPath);
                 if (!newModel->IsLoaded())
                 {
-                    Core::Log::LogInDebug("Model with name " + name + " failed to load with path: " + modelPath);
+                    LogInDebug("Model with name " + name + " failed to load with path: " + modelPath);
                 }
                 else
                 {
@@ -38,7 +44,7 @@ namespace Graphics
 
                     m_materialManager.Load(appendedMaterialPath);
 
-                    for (std::shared_ptr<Graphics::Geometry::Mesh> mesh : newModel->GetMeshes())
+                    for (std::shared_ptr<Mesh> mesh : newModel->GetMeshes())
                     {
                         mesh->SetMaterial(m_materialManager.Get(mesh->GetMaterialName()));
                     }

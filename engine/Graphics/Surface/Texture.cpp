@@ -6,6 +6,11 @@
 #include "stb_image.h"
 #include "Core/Logging/Log.h"
 
+namespace
+{
+    using namespace Core::Logging;
+}
+
 namespace Graphics
 {
     namespace Surface
@@ -13,47 +18,75 @@ namespace Graphics
         GLuint Texture::m_boundHandle;
         GLuint Texture::m_boundSlot;
 
-        Texture::Texture(const std::string& path) :
+        Texture::Texture(const std::string& path, bool isHDR) :
             m_path(path),
-            m_localBuffer(nullptr),
             m_width(0),
             m_height(0),
             m_BPP(0),
             m_isLoaded(false)
         {
-            stbi_set_flip_vertically_on_load(1);
-            m_localBuffer = stbi_load(path.c_str(), &m_width, &m_height, &m_BPP, 4 /*rgba*/);
+            stbi_set_flip_vertically_on_load(true);
+            glGenTextures(1, &m_handle);
+            glBindTexture(GL_TEXTURE_2D, m_handle);
+            m_isLoaded = isHDR ? LoadHDR(path) : Load(path);
+            glBindTexture(GL_TEXTURE_2D, 0);
 
-            if (!m_localBuffer)
+            if (!m_isLoaded)
             {
-                using Core::Logging::Log;
-                Log::LogError("Failed to load texture with path: " + std::string(path));
-            }
-            else
-            {
-                m_isLoaded = true;
-
-                glGenTextures(1, &m_handle);
-                glBindTexture(GL_TEXTURE_2D, m_handle);
-
-                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-
-                glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, m_width, m_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, m_localBuffer);
-                glBindTexture(GL_TEXTURE_2D, 0);
-
-                if (m_localBuffer)
-                {
-                    stbi_image_free(m_localBuffer);
-                }
+                LogError("Failed to load texture with path: " + std::string(path));
             }
         }
 
         Texture::~Texture()
         {
             glDeleteTextures(1, &m_handle);
+        }
+
+        bool Texture::Load(const std::string& path)
+        {
+            bool isLoaded = false;
+            if (unsigned char* data = stbi_load(path.c_str(), &m_width, &m_height, &m_BPP, 0))
+            {
+                GLenum format;
+                if (m_BPP == 1)
+                {
+                    format = GL_RED;
+                }
+                else if (m_BPP == 3)
+                {
+                    format = GL_RGB;
+                }
+                else if (m_BPP == 4)
+                {
+                    format = GL_RGBA;
+                }
+
+                glTexImage2D(GL_TEXTURE_2D, 0, format, m_width, m_height, 0, format, GL_UNSIGNED_BYTE, data);
+                glGenerateMipmap(GL_TEXTURE_2D);
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT /*GL_CLAMP_TO_EDGE*/);
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT /*GL_CLAMP_TO_EDGE*/);
+                stbi_image_free(data);
+                isLoaded = true;
+            }
+            return isLoaded;
+        }
+
+        bool Texture::LoadHDR(const std::string& path)
+        {
+            bool isLoaded = false;
+            if (float* data = stbi_loadf(path.c_str(), &m_width, &m_height, &m_BPP, 0))
+            {
+                glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, m_width, m_height, 0, GL_RGB, GL_FLOAT, data);
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+                glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+                stbi_image_free(data);
+                isLoaded = true;
+            }
+            return isLoaded;
         }
 
         unsigned int Texture::GetHandle() const

@@ -2,7 +2,6 @@
 
 #include "InputDefines.h"
 #include "Core/Interface/ITickable.h"
-#include "Core/Interface/NonCopyable.h"
 
 namespace Graphics
 {
@@ -23,7 +22,7 @@ namespace Core
             std::string Name = "";
         };
 
-        class KeyboardInputManager : public Interface::ITickable, public Interface::NonCopyable
+        class KeyboardInputManager : public Interface::ITickable
         {
         public:
             KeyboardInputManager(std::shared_ptr<Graphics::Window::GLWindow> window)
@@ -57,7 +56,7 @@ namespace Core
                 glfwSetKeyCallback(window->GetGLFWWindow(), [](GLFWwindow* windowI, int keyI, int scancodeI, int actionI, int modeI)
                 {
                     KeyboardInputManager* self = static_cast<KeyboardInputManager*>(glfwGetWindowUserPointer(windowI));
-                    self->SetModifier(static_cast<Modifier>(modeI));
+                    self->m_currentModifier = static_cast<Modifier>(modeI);
 
                     if (self->m_keyBindingMap.find(keyI) != self->m_keyBindingMap.end())
                     {
@@ -82,11 +81,6 @@ namespace Core
             }
 
         private:
-            void SetModifier(Modifier mod)
-            {
-                m_currentModifier = mod;
-            }
-
             void UpdateActionState()
             {
                 for (auto& kv : m_keyDataMap)

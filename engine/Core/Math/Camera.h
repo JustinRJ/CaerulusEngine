@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Frustrum.h"
 #include "Transform.h"
+#include "Perspective.h"
 
 namespace Core
 {
@@ -14,25 +14,13 @@ namespace Core
             ~Camera() = default;
 
             Camera(const vec3& position, const vec3& forward, const vec3& up = UnitUp) :
-                m_proj(54.0f, 1.25f, 1.0f, 1000.0f),
-                m_view(lookAt(position, Core::Math::normalize(position + forward), up))
+                m_transform(lookAt(position, Math::normalize(position + forward), up)),
+                m_perspective(54.0f, 1.25f, 1.0f, 1000.0f)
             {}
-
-            Camera(const Camera& camera) :
-                m_proj(camera.m_proj),
-                m_view(camera.m_view)
-            {}
-
-            Camera& operator=(const Camera& camera)
-            {
-                m_proj = camera.m_proj;
-                m_view = camera.m_view;
-                return *this;
-            }
 
             void Translate(const vec3& translation, bool translateY = true)
             {
-                mat4& view = m_view.GetMatrix();
+                mat4& view = m_transform.GetMatrix();
                 vec3 tempPos(view[X][W], view[Y][W], view[Z][W]);
                 tempPos += normalize(vec3(view[X][X], translateY ? view[X][Z] : 0.0f, view[Z][X])) * translation.x;
                 if (translateY)
@@ -45,8 +33,8 @@ namespace Core
 
             void Rotate(const vec3& eulerDelta, const vec3& forcedUp = UnitUp)
             {
-                Transform model = inverse(m_view.GetMatrix());
-                quat orig_rot = normalize(quat_cast(model.GetMatrix()));
+                Transform transform = inverse(m_transform.GetMatrix());
+                quat orig_rot = normalize(quat_cast(transform.GetMatrix()));
 
                 bool force = l1Norm(forcedUp) > 0.0f;
 
@@ -70,34 +58,34 @@ namespace Core
 
                 Transform temp = mat4_cast(rotation);
 
-                temp.SetAxis(model.GetAxis(Index::W), Index::W);
+                temp.SetAxis(transform.GetAxis(Index::W), Index::W);
 
-                m_view = inverse(temp.GetMatrix());
+                m_transform = inverse(temp.GetMatrix());
             }
 
-            const Transform& GetView() const
+            const Transform& GetTransform() const
             {
-                return m_view;
+                return m_transform;
             }
 
-            Transform& GetView()
+            Transform& GetTransform()
             {
-                return m_view;
+                return m_transform;
             }
 
-            const Frustrum& GetProjection() const
+            const Perspective& GetPerspective() const
             {
-                return m_proj;
+                return m_perspective;
             }
 
-            Frustrum& GetProjection()
+            Perspective& GetPerspective()
             {
-                return m_proj;
+                return m_perspective;
             }
 
         private:
-            Frustrum m_proj;
-            Transform m_view;
+            Transform m_transform;
+            Perspective m_perspective;
         };
     }
 }

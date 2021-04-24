@@ -17,11 +17,6 @@ namespace Core
                 m_direction(normalize(direction))
             {}
 
-            Ray(const Ray& ray) :
-                m_origin(ray.m_origin),
-                m_direction(ray.m_direction)
-            {}
-
             const vec3& Origin() const
             {
                 return m_origin;

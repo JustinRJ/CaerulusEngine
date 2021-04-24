@@ -1,12 +1,12 @@
 #pragma once
 
-#define CAERULUS_CORE __declspec(dllexport)
+#include "Core/Interface/NonCopyable.h"
 
 namespace Core
 {
     namespace Interface
     {
-        class CAERULUS_CORE ISerializable
+        class CAERULUS_CORE ISerializable : private Interface::NonCopyable
         {
         public:
             virtual ~ISerializable() = default;

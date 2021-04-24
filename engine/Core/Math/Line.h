@@ -19,13 +19,6 @@ namespace Core
                 m_length(length(end - start))
             {}
 
-            Line(const Line& line) :
-                m_start(line.m_start),
-                m_end(line.m_end),
-                m_direction(line.m_direction),
-                m_length(line.m_length)
-            {}
-
             const vec3& Start() const
             {
                 return m_start;

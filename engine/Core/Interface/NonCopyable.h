@@ -8,9 +8,9 @@ namespace Core
     {
         class CAERULUS_CORE NonCopyable
         {
-        public:
+        protected:
             NonCopyable() = default;
-            virtual ~NonCopyable() = default;
+            ~NonCopyable() = default;
 
             NonCopyable(const NonCopyable&) = delete;
             NonCopyable& operator=(const NonCopyable&) = delete;

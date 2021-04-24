@@ -22,6 +22,9 @@
     <Filter Include="Template">
       <UniqueIdentifier>{f6e18429-a70b-4610-bd83-95fe99c9f3a7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="File">
+      <UniqueIdentifier>{9c7786df-d3aa-47da-887e-d35b956248bd}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp" />
@@ -110,9 +113,6 @@
     <ClInclude Include="Math\Camera.h">
       <Filter>Math</Filter>
     </ClInclude>
-    <ClInclude Include="Math\Frustrum.h">
-      <Filter>Math</Filter>
-    </ClInclude>
     <ClInclude Include="Interface\NonMovable.h">
       <Filter>Interface</Filter>
     </ClInclude>
@@ -121,6 +121,12 @@
     </ClInclude>
     <ClInclude Include="Template\NodeManager.h">
       <Filter>Template</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\Perspective.h">
+      <Filter>Math</Filter>
+    </ClInclude>
+    <ClInclude Include="File\FileUtility.h">
+      <Filter>File</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

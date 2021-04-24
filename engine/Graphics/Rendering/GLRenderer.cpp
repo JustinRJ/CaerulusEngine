@@ -8,26 +8,30 @@
 #include "Graphics/Pipeline/VertexArray.h"
 #include "Graphics/Pipeline/VertexBuffer.h"
 #include "Graphics/Pipeline/IndexBuffer.h"
+#include "Graphics/Geometry/GPUGeometry.h"
 
-using namespace Core::Logging;
+namespace
+{
+    using namespace Core::Logging;
 
-void GLAPIENTRY OpenGLErrorLogCallback(GLenum source,
+    void GLAPIENTRY OpenGLErrorLogCallback(GLenum source,
         GLenum type,
         GLuint id,
         GLenum severity,
         GLsizei length,
         const GLchar* message,
         const void* userParam)
-{
-    if (severity != GL_DEBUG_SEVERITY_NOTIFICATION)
     {
-        Log::LogError("OpenGL Error " + std::string(message), "OpenGL Error Code-" + std::to_string(id));
+        if (severity != GL_DEBUG_SEVERITY_NOTIFICATION)
+        {
+            LogError("OpenGL Error " + std::string(message), "OpenGL Error Code-" + std::to_string(id));
+        }
     }
 }
 
 namespace Graphics
 {
-    namespace Pipeline
+    namespace Rendering
     {
         GLRenderer::GLRenderer()
         {
@@ -36,19 +40,23 @@ namespace Graphics
             GLenum error = glGetError();
             if (error != GL_NO_ERROR)
             {
-                Log::LogError("OpenGL Error", std::to_string(error));
+                LogError("OpenGL Error", std::to_string(error));
                 exit(1);
             }
 
             if (glewInit() != GLEW_OK)
             {
-                Log::LogError("Failed to init GLEW!");
+                LogError("Failed to init GLEW!");
                 exit(1);
             }
 
             glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
             glEnable(GL_BLEND);
+
             glEnable(GL_DEPTH_TEST);
+            glDepthFunc(GL_LEQUAL);
+            glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
+
             glEnable(GL_DEBUG_OUTPUT);
             glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
             glDebugMessageCallback(OpenGLErrorLogCallback, 0);
@@ -60,11 +68,16 @@ namespace Graphics
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         }
 
-        void GLRenderer::Draw(const VertexArray& va, const IndexBuffer& ib, bool wireframe) const
+        void GLRenderer::Draw(const Pipeline::VertexArray& va, const Pipeline::IndexBuffer& ib, bool wireframe) const
         {
             va.Bind();
             ib.Bind();
             glDrawElements(wireframe ? GL_LINE_LOOP : GL_TRIANGLES, static_cast<GLsizei>(ib.GetCount()), GL_UNSIGNED_INT, nullptr);
+        }
+
+        void GLRenderer::Draw(const Geometry::GPUGeometry& geometry, bool wireframe) const
+        {
+            Draw(geometry.GetVertexArray(), geometry.GetIndexBuffer(), wireframe);
         }
 
         void GLRenderer::DrawSphere(Core::Math::vec3 position, double radius, Core::Math::vec3 colour) const

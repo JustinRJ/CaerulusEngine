@@ -4,10 +4,11 @@
 
 #include "Window/GLWindow.h"
 
-#include "Graphics/Pipeline/GLRenderer.h"
 #include "Graphics/Pipeline/VertexArray.h"
 #include "Graphics/Pipeline/VertexBuffer.h"
 #include "Graphics/Pipeline/IndexBuffer.h"
+
+#include "Graphics/Rendering/GLRenderer.h"
 
 #include "Graphics/Geometry/Quad.h"
 #include "Graphics/Geometry/Cube.h"
@@ -17,6 +18,7 @@
 
 #include "Graphics/Surface/Material.h"
 
+#include "Graphics/Lighting/IBL.h"
 #include "Graphics/Lighting/Light.h"
 #include "Graphics/Lighting/PointLight.h"
 #include "Graphics/Lighting/DirectionalLight.h"
@@ -28,6 +30,7 @@ namespace Graphics
     using namespace Pipeline;
     using namespace Geometry;
     using namespace Lighting;
+    using namespace Rendering;
 
     GraphicsEngine::GraphicsEngine(std::shared_ptr<GLWindow> window,
         std::shared_ptr<IRenderer> renderer) :
@@ -46,8 +49,18 @@ namespace Graphics
         if (m_window)
         {
             m_window->Update();
-            UpdateModels();
+            if (m_renderer)
+            {
+                UpdateModels();
+            }
+
             UpdateLights();
+
+            if (m_IBL)
+            {
+                m_IBL->InvokeUniformFunctors();
+            }
+
             m_window->SwapBuffer();
         }
     }
@@ -69,7 +82,7 @@ namespace Graphics
                             material->Bind();
                             material->InvokeUniformFunctors();
 
-                            m_renderer->Draw(mesh->GetVertexArray(), mesh->GetIndexBuffer(), m_renderWireframe);
+                            m_renderer->Draw(*mesh, m_renderWireframe);
                         }
                     }
                 }
@@ -81,7 +94,10 @@ namespace Graphics
     {
         for (std::shared_ptr<Light> light : m_lights)
         {
-            light->InvokeUniformFunctors();
+            if (light)
+            {
+                light->InvokeUniformFunctors();
+            }
         }
     }
 
@@ -135,6 +151,11 @@ namespace Graphics
         return m_lights;
     }
 
+    std::shared_ptr<Lighting::IBL> GraphicsEngine::GetIBL() const
+    {
+        return m_IBL;
+    }
+
     void GraphicsEngine::SetWireframe(bool wireframe)
     {
         m_renderWireframe = wireframe;
@@ -143,5 +164,10 @@ namespace Graphics
     bool GraphicsEngine::GetWireframe() const
     {
         return m_renderWireframe;
+    }
+
+    void GraphicsEngine::SetIBL(std::shared_ptr<Lighting::IBL> ibl)
+    {
+        m_IBL = ibl;
     }
 }

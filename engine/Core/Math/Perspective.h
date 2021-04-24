@@ -6,28 +6,15 @@ namespace Core
 {
     namespace Math
     {
-        class Frustrum
+        class Perspective
         {
         public:
-            Frustrum() = delete;
-            ~Frustrum() = default;
+            Perspective() = delete;
+            ~Perspective() = default;
 
-            Frustrum(float degFOV, float aspect, float n, float f) :
-                m_degFOV(degFOV),
-                m_aspect(aspect),
-                m_near(n),
-                m_far(f),
-                m_P(perspective(radians(m_degFOV), m_aspect, m_near, m_far))
-            {}
-
-            Frustrum(const Frustrum& frustrum) :
-                m_P(frustrum.m_P)
-            {}
-
-            Frustrum& operator=(const Frustrum& frustrum)
+            Perspective(float degFOV, float aspect, float inear, float ifar)
             {
-                m_P = frustrum.m_P;
-                return *this;
+                SetPerspective(degFOV, aspect, inear, ifar);
             }
 
             float GetFOV() const
@@ -52,40 +39,40 @@ namespace Core
 
             const mat4& GetMatrix() const
             {
-                return m_P;
+                return m_perspective;
             }
 
-            void SetPerspective(float degFOV, float aspect, float n, float f)
+            void SetPerspective(float degFOV, float aspect, float inear, float ifar)
             {
                 m_degFOV = degFOV;
                 m_aspect = aspect;
-                m_near = n;
-                m_far = f;
-                m_P = perspective(radians(m_degFOV), m_aspect, m_near, m_far);
+                m_near = inear;
+                m_far = ifar;
+                m_perspective = perspective(radians(m_degFOV), m_aspect, m_near, m_far);
             }
 
             void SetDegFOV(float degFOV)
             {
                 m_degFOV = degFOV;
-                m_P = perspective(radians(m_degFOV), m_aspect, m_near, m_far);
+                m_perspective = perspective(radians(m_degFOV), m_aspect, m_near, m_far);
             }
 
             void SetAspect(float aspect)
             {
                 m_aspect = aspect;
-                m_P = perspective(radians(m_degFOV), m_aspect, m_near, m_far);
+                m_perspective = perspective(radians(m_degFOV), m_aspect, m_near, m_far);
             }
 
             void SetNear(float nearP)
             {
                 m_near = nearP;
-                m_P = perspective(radians(m_degFOV), m_aspect, m_near, m_far);
+                m_perspective = perspective(radians(m_degFOV), m_aspect, m_near, m_far);
             }
 
             void SetFar(float farP)
             {
                 m_far = farP;
-                m_P = perspective(radians(m_degFOV), m_aspect, m_near, m_far);
+                m_perspective = perspective(radians(m_degFOV), m_aspect, m_near, m_far);
             }
 
         private:
@@ -93,7 +80,7 @@ namespace Core
             float m_aspect;
             float m_near;
             float m_far;
-            mat4 m_P;
+            mat4 m_perspective;
         };
     }
 }

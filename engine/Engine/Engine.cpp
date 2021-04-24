@@ -2,12 +2,11 @@
 
 #include "Engine.h"
 
-#include "Core/Math/Math.h"
 #include "Core/Node/Node.h"
+#include "Core/Math/Math.h"
 #include "Core/Math/Camera.h"
 #include "Core/Logging/Log.h"
 #include "Core/Logging/LogToFile.h"
-
 #include "Core/Time/FPSLimiter.h"
 #include "Core/Time/FixedTimer.h"
 #include "Core/Interface/ITickable.h"
@@ -15,7 +14,7 @@
 
 #include "Graphics/GraphicsEngine.h"
 #include "Graphics/Window/GLWindow.h"
-#include "Graphics/Pipeline/GLRenderer.h"
+#include "Graphics/Rendering/GLRenderer.h"
 
 #include "Core/Input/MouseInputManager.h"
 #include "Core/Input/KeyboardInputManager.h"
@@ -26,19 +25,26 @@
 #include "Graphics/Managers/ShaderSrcManager.h"
 #include "Graphics/Managers/ShaderManager.h"
 
-using namespace Core::Node;
-using namespace Core::Math;
-using namespace Core::Time;
-using namespace Core::Input;
-using namespace Core::Logging;
-using namespace Core::Interface;
+#include "Graphics/Lighting/IBL.h"
 
-using namespace Graphics;
-using namespace Graphics::Window;
-using namespace Graphics::Surface;
-using namespace Graphics::Managers;
-using namespace Graphics::Geometry;
-using namespace Graphics::Pipeline;
+namespace
+{
+    using namespace Core::Node;
+    using namespace Core::Math;
+    using namespace Core::Time;
+    using namespace Core::Input;
+    using namespace Core::Logging;
+    using namespace Core::Interface;
+
+    using namespace Graphics;
+    using namespace Graphics::Window;
+    using namespace Graphics::Surface;
+    using namespace Graphics::Managers;
+    using namespace Graphics::Geometry;
+    using namespace Graphics::Pipeline;
+    using namespace Graphics::Lighting;
+    using namespace Graphics::Rendering;
+}
 
 Engine::Engine(int argc, char** argv) :
     m_argCount(argc),
@@ -82,12 +88,12 @@ void Engine::Run()
     catch (const std::exception& e)
     {
         m_running = false;
-        Log::LogException("Error in Caerulus Engine", e.what());
+        LogException("Error in Caerulus Engine", e.what());
     }
     catch (...)
     {
         m_running = false;
-        Log::LogError("Unknown error in Caerulus Engine");
+        LogError("Unknown error in Caerulus Engine");
     }
 }
 
@@ -95,12 +101,12 @@ void Engine::Tick()
 {
     using namespace Core::Interface;
 
-    Log::LogInDebug("DeltaTime: " + std::to_string(m_deltaTime));
-    Log::LogInDebug("FixedTime: " + std::to_string(m_fixedTime));
+    LogInDebug("DeltaTime: " + std::to_string(m_deltaTime));
+    LogInDebug("FixedTime: " + std::to_string(m_fixedTime));
 
     if (m_reset)
     {
-        Log::LogMessage("Resetting...");
+        LogMessage("Resetting...");
         for (std::shared_ptr<ITickable> tickable : m_tickable)
         {
             tickable->Reset();
@@ -153,6 +159,30 @@ void Engine::InitInput()
 void Engine::InitGLRenderer()
 {
     m_shaderManager->Load("pbr", "assets/shaders/pbr.vert", "assets/shaders/pbr.frag");
+    m_shaderManager->Load("background", "assets/shaders/background.vert", "assets/shaders/background.frag");
+    m_shaderManager->Load("cubemap", "assets/shaders/cubemap.vert", "assets/shaders/equirectangular_to_cubemap.frag");
+
+    std::shared_ptr<Shader> backgroundShader = m_shaderManager->Get("background");
+    std::shared_ptr<Shader> cubemapShader = m_shaderManager->Get("cubemap");
+
+    backgroundShader->Bind();
+    backgroundShader->Set1i("environmentMap", 0);
+    cubemapShader->Bind();
+    cubemapShader->Set1i("equirectangularMap", 0);
+
+    m_textureManager->Load("concrete", "assets/textures/concrete.hdr");
+
+    std::shared_ptr<Lighting::IBL> ibl = std::make_shared<IBL>(cubemapShader, m_textureManager->Get("concrete"), m_renderer);
+    ibl->AddUniformFunctor(backgroundShader, [&](const Shader& shader)
+    {
+        shader.SetMat4fv("projection", m_camera->GetPerspective().GetMatrix());
+        shader.SetMat4fv("view", m_camera->GetTransform().GetMatrix());
+
+        // WIP
+        m_graphicsEngine->GetIBL()->Draw();
+    });
+
+    m_graphicsEngine->SetIBL(ibl);
 }
 
 void Engine::InitScene()
@@ -163,7 +193,7 @@ void Engine::InitScene()
     if (std::shared_ptr<Model> model = m_modelManager->Get("sponza"))
     {
         // sponza needs a default ao applied
-        m_textureManager->Load("defaultAO", "assets/textures/defaultAO.obj");
+        m_textureManager->Load("defaultAO", "assets/textures/defaultAO.png");
 
         Core::Math::mat4& sponzaTransform = model->GetTransform().GetMatrix();
         sponzaTransform = translate(mat4(1.0f), vec3(0, -10, 0));
@@ -172,13 +202,13 @@ void Engine::InitScene()
         std::shared_ptr<Shader> pbrShader = m_shaderManager->Get("pbr");
 
         // Set uniform functor to update each models MVP before it's rendered
-        model->SetUniformFunctor(pbrShader, [capturedCamera = m_camera, capturedModel = model](const Shader& shader)
+        model->AddUniformFunctor(pbrShader, [capturedCamera = m_camera, capturedModel = model](const Shader& shader)
         {
-            shader.SetMat4fv("projection",  capturedCamera->GetProjection().GetMatrix());
-            shader.SetMat4fv("view",        capturedCamera->GetView().GetMatrix());
+            shader.SetMat4fv("projection",  capturedCamera->GetPerspective().GetMatrix());
+            shader.SetMat4fv("view",        capturedCamera->GetTransform().GetMatrix());
             shader.SetMat4fv("model",       capturedModel->GetTransform().GetMatrix());
 
-            shader.Set3f("viewPos", capturedCamera->GetView().GetTranslation());
+            shader.Set3f("viewPos", capturedCamera->GetTransform().GetTranslation());
             shader.Set3f("lightPositions[0]", vec3(-150, 15., 0));
             shader.Set3f("lightPositions[1]", vec3(0, 15., 0));
             shader.Set3f("lightPositions[2]", vec3(150, 15., 0));
@@ -196,7 +226,7 @@ void Engine::InitScene()
                 // Add to bump map as sponza mapping is wrong
                 material->SetTexture(m_textureManager->Get("defaultAO"), Material::TextureType::Bump);
                 // Set uniform functor to update each materials Texture before it's rendered
-                material->SetUniformFunctor(pbrShader, [](const Shader& shader)
+                material->AddUniformFunctor(pbrShader, [](const Shader& shader)
                 {
                     // Sponza asset has material properties set in the wrong channels
                     shader.Set1i("albedoMap", static_cast<GLint>(Material::TextureType::Diffuse));       // albedo
@@ -213,7 +243,7 @@ void Engine::InitScene()
         //{
         //    if (mesh)
         //    {
-        //        mesh->SetUniformFunctor(nullptr, [](std::shared_ptr<Shader> shader) {});
+        //        mesh->AddUniformFunctor(nullptr, [](std::shared_ptr<Shader> shader) {});
         //    }
         //}
     }

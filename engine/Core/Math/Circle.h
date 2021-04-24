@@ -17,18 +17,6 @@ namespace Core
                 m_pos(pos)
             {}
 
-            Circle(const Circle& circle) :
-                m_radius(circle.m_radius),
-                m_pos(circle.m_pos)
-            {}
-
-            Circle& operator=(const Circle& circle)
-            {
-                m_radius = circle.m_radius;
-                m_pos = circle.m_pos;
-                return *this;
-            }
-
             bool IsPointInside(vec2 point) const
             {
                 return length(m_pos - point) <= m_radius;

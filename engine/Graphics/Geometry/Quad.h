@@ -1,17 +1,9 @@
 #pragma once
 
-#include "Core/Node/Node.h"
-#include "Graphics/Pipeline/VertexArray.h"
-#include "Graphics/Pipeline/VertexBuffer.h"
-#include "Graphics/Pipeline/IndexBuffer.h"
+#include "Graphics/Geometry/GPUGeometry.h"
 
 namespace Graphics
 {
-    namespace Surface
-    {
-        class Material;
-    }
-
     namespace Geometry
     {
         const static GLfloat s_QuadVertices[] =
@@ -27,36 +19,18 @@ namespace Graphics
             0, 1, 2,    0, 3, 2
         };
 
-        class Quad : public Core::Node::Node
+        class Quad : public GPUGeometry
         {
         public:
             Quad() :
-                m_vertexBuffer(s_QuadVertices, 4 * 2 * sizeof(GLfloat)),
-                m_indexBuffer(s_QuadIndices, 6)
+                GPUGeometry(s_QuadVertices, 4 * 2 * sizeof(GLfloat), s_QuadIndices, 6)
             {
                 Pipeline::VertexBufferLayout layout;
                 layout.Push<float>(2);
-                m_vertexArray.AddBuffer(m_vertexBuffer, layout);
+                GetVertexArray().AddBuffer(GetVertexBuffer(), layout);
             }
 
             ~Quad() = default;
-
-            std::shared_ptr<Surface::Material> GetMaterial() const
-            {
-                return m_material;
-            }
-
-            void SetMaterial(std::shared_ptr<Surface::Material> material)
-            {
-                m_material = material;
-            }
-
-        private:
-            Pipeline::VertexArray m_vertexArray;
-            Pipeline::VertexBuffer m_vertexBuffer;
-            Pipeline::IndexBuffer m_indexBuffer;
-
-            std::shared_ptr<Surface::Material> m_material;
         };
     }
 }

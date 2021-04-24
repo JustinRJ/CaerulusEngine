@@ -19,17 +19,6 @@ namespace Core
                      TransformVector(m_T.GetMatrix(), s_max))
             {}
 
-            Cube(const Cube& cube) :
-                m_T(cube.m_T),
-                m_aa(cube.m_aa)
-            {}
-
-            Cube& operator=(const Cube& cube)
-            {
-                m_T = cube.m_T;
-                return *this;
-            }
-
             const mat4& GetTransform() const
             {
                 return m_T.GetMatrix();

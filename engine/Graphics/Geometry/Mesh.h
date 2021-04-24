@@ -1,18 +1,9 @@
 #pragma once
 
-#include "Core/Math/Math.h"
-#include "Graphics/Pipeline/VertexArray.h"
-#include "Graphics/Pipeline/VertexBuffer.h"
-#include "Graphics/Pipeline/IndexBuffer.h"
-#include "Graphics/Pipeline/ShaderUniformFunctor.h"
+#include "GPUGeometry.h"
 
 namespace Graphics
 {
-    namespace Surface
-    {
-        class Material;
-    }
-
     namespace Geometry
     {
         struct Vertex
@@ -30,12 +21,11 @@ namespace Graphics
             }
         };
 
-        class Mesh : public Pipeline::ShaderUniformFunctor
+        class Mesh : public GPUGeometry
         {
         public:
             Mesh(const std::vector<Vertex>& vertices, const std::vector<GLuint>& indices, const std::string& materialName) :
-                m_vertexBuffer(&m_vertices[0], sizeof(Vertex) * m_vertices.size()),
-                m_indexBuffer(&m_indices[0], m_indices.size()),
+                GPUGeometry(&vertices[0], sizeof(Vertex)* vertices.size(), &indices[0], indices.size()),
                 m_vertices(vertices),
                 m_indices(indices),
                 m_materialName(materialName)
@@ -44,7 +34,7 @@ namespace Graphics
                 layout.Push<float>(3);
                 layout.Push<float>(3);
                 layout.Push<float>(2);
-                m_vertexArray.AddBuffer(m_vertexBuffer, layout);
+                GetVertexArray().AddBuffer(GetVertexBuffer(), layout);
             }
 
             ~Mesh() = default;
@@ -54,41 +44,10 @@ namespace Graphics
                 return m_materialName;
             }
 
-            const Pipeline::VertexArray& GetVertexArray() const
-            {
-                return m_vertexArray;
-            }
-
-            const Pipeline::VertexBuffer& GetVertexBuffer() const
-            {
-                return m_vertexBuffer;
-            }
-
-            const Pipeline::IndexBuffer& GetIndexBuffer() const
-            {
-                return m_indexBuffer;
-            }
-
-            std::shared_ptr<Surface::Material> GetMaterial() const
-            {
-                return m_material;
-            }
-
-            void SetMaterial(std::shared_ptr<Surface::Material> material)
-            {
-                m_material = material;
-            }
-
         private:
             const std::vector<Vertex> m_vertices;
             const std::vector<GLuint> m_indices;
             const std::string m_materialName;
-
-            Pipeline::VertexArray m_vertexArray;
-            Pipeline::VertexBuffer m_vertexBuffer;
-            Pipeline::IndexBuffer m_indexBuffer;
-
-            std::shared_ptr<Surface::Material> m_material;
         };
     }
 }

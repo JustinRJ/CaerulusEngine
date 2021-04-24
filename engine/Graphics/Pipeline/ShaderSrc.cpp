@@ -4,6 +4,11 @@
 
 #include "Core/Logging/Log.h"
 
+namespace
+{
+    using namespace Core::Logging;
+}
+
 namespace Graphics
 {
     namespace Pipeline
@@ -12,8 +17,7 @@ namespace Graphics
             m_type(type),
             m_isCompiled(false),
             m_path(path)
-        {
-        }
+        {}
 
         ShaderSrc::~ShaderSrc()
         {
@@ -44,8 +48,7 @@ namespace Graphics
             }
             catch (std::ifstream::failure e)
             {
-                using Core::Logging::Log;
-                Log::LogException("Shader program linking failed!", e.what());
+                LogException("Shader program linking failed!", e.what());
             }
         }
 
@@ -68,9 +71,8 @@ namespace Graphics
             }
             else
             {
-                using Core::Logging::Log;
                 glGetShaderInfoLog(m_handle, logSize, NULL, infoLog);
-                Log::LogError("Shader " + std::string(m_path) + "compilation failed!", infoLog);
+                LogError("Shader " + std::string(m_path) + "compilation failed!", infoLog);
             }
         }
 

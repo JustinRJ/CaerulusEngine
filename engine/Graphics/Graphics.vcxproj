@@ -208,11 +208,13 @@ echo DA | xcopy "$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(Plat
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Geometry\Cube.h" />
+    <ClInclude Include="Geometry\GPUGeometry.h" />
     <ClInclude Include="Geometry\Mesh.h" />
     <ClInclude Include="Geometry\Model.h" />
     <ClInclude Include="Geometry\Plane.h" />
     <ClInclude Include="Geometry\Quad.h" />
     <ClInclude Include="Lighting\DirectionalLight.h" />
+    <ClInclude Include="Lighting\IBL.h" />
     <ClInclude Include="Lighting\Light.h" />
     <ClInclude Include="Lighting\PointLight.h" />
     <ClInclude Include="Lighting\SpotLight.h" />
@@ -221,9 +223,8 @@ echo DA | xcopy "$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(Plat
     <ClInclude Include="Managers\ShaderManager.h" />
     <ClInclude Include="Managers\ShaderSrcManager.h" />
     <ClInclude Include="Managers\TextureManager.h" />
+    <ClInclude Include="Pipeline\FrameBuffer.h" />
     <ClInclude Include="Pipeline\IndexBuffer.h" />
-    <ClInclude Include="Pipeline\IRenderer.h" />
-    <ClInclude Include="Pipeline\GLRenderer.h" />
     <ClInclude Include="Pipeline\Shader.h" />
     <ClInclude Include="Pipeline\ShaderSrc.h" />
     <ClInclude Include="GraphicsEngine.h" />
@@ -231,6 +232,8 @@ echo DA | xcopy "$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(Plat
     <ClInclude Include="Pipeline\VertexArray.h" />
     <ClInclude Include="Pipeline\VertexBuffer.h" />
     <ClInclude Include="Pipeline\VertexBufferLayout.h" />
+    <ClInclude Include="Rendering\GLRenderer.h" />
+    <ClInclude Include="Rendering\IRenderer.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="Surface\Material.h" />
     <ClInclude Include="Surface\Texture.h" />
@@ -246,12 +249,12 @@ echo DA | xcopy "$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(Plat
     <ClCompile Include="Managers\ShaderSrcManager.cpp" />
     <ClCompile Include="Managers\TextureManager.cpp" />
     <ClCompile Include="Pipeline\IndexBuffer.cpp" />
-    <ClCompile Include="Pipeline\GLRenderer.cpp" />
     <ClCompile Include="Pipeline\Shader.cpp" />
     <ClCompile Include="Pipeline\ShaderSrc.cpp" />
     <ClCompile Include="GraphicsEngine.cpp" />
     <ClCompile Include="Pipeline\VertexArray.cpp" />
     <ClCompile Include="Pipeline\VertexBuffer.cpp" />
+    <ClCompile Include="Rendering\GLRenderer.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -268,8 +271,12 @@ echo DA | xcopy "$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(Plat
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="assets\shaders\background.frag" />
+    <None Include="assets\shaders\background.vert" />
     <None Include="assets\shaders\basic.frag" />
     <None Include="assets\shaders\basic.vert" />
+    <None Include="assets\shaders\cubemap.vert" />
+    <None Include="assets\shaders\equirectangular_to_cubemap.frag" />
     <None Include="assets\shaders\pbr.frag" />
     <None Include="assets\shaders\pbr.vert" />
   </ItemGroup>

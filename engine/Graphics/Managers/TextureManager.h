@@ -3,16 +3,11 @@
 #include "Core/Template/Manager.h"
 #include "Graphics/Surface/Texture.h"
 
-namespace
-{
-    using namespace Graphics::Surface;
-}
-
 namespace Graphics
 {
     namespace Managers
     {
-        class CAERULUS_GRAPHICS TextureManager : public Core::Template::Manager<Texture>
+        class CAERULUS_GRAPHICS TextureManager : public Core::Template::Manager<Surface::Texture>
         {
         public:
             TextureManager() = default;

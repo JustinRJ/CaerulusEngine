@@ -4,16 +4,11 @@
 #include "MaterialManager.h"
 #include "Graphics/Geometry/Model.h"
 
-namespace
-{
-    using namespace Graphics::Geometry;
-}
-
 namespace Graphics
 {
     namespace Managers
     {
-        class CAERULUS_GRAPHICS ModelManager : public Core::Template::Manager<Model>
+        class CAERULUS_GRAPHICS ModelManager : public Core::Template::Manager<Geometry::Model>
         {
         public:
             ModelManager(MaterialManager& materialManager);

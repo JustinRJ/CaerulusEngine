@@ -13,7 +13,8 @@ namespace Core
     {
         using namespace glm;
 
-        const double PI = std::atan(1.f) * 4.f;
+        const float PIf = std::atan(1.f) * 4.f;
+        const double PI = std::atan(1.) * 4.;
 
         const vec3 UnitUp = vec3(0.f, 1.f, 0.f);
         const vec3 UnitRight = vec3(1.f, 0.f, 0.f);

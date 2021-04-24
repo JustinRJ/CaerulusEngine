@@ -7,12 +7,10 @@
 
 namespace Core
 {
-    using namespace Logging;
-
     namespace Template
     {
         template <class T>
-        class CAERULUS_CORE Manager : public Core::Interface::NonCopyable
+        class CAERULUS_CORE Manager : private Interface::NonCopyable
         {
         public:
             Manager() = default;
@@ -25,7 +23,7 @@ namespace Core
                 {
                     return it->second;
                 }
-                Log::LogInDebug("Managed object " + key + " not found!");
+                Logging::LogInDebug("Managed object " + key + " not found!");
                 return nullptr;
             }
 

@@ -46,8 +46,8 @@
     <ClCompile Include="Pipeline\VertexBuffer.cpp">
       <Filter>Pipeline</Filter>
     </ClCompile>
-    <ClCompile Include="Pipeline\GLRenderer.cpp">
-      <Filter>Pipeline</Filter>
+    <ClCompile Include="Rendering\GLRenderer.cpp">
+      <Filter>Rendering</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -75,9 +75,6 @@
       <Filter>Geometry</Filter>
     </ClInclude>
     <ClInclude Include="Pipeline\ShaderSrc.h">
-      <Filter>Pipeline</Filter>
-    </ClInclude>
-    <ClInclude Include="Pipeline\IRenderer.h">
       <Filter>Pipeline</Filter>
     </ClInclude>
     <ClInclude Include="Pipeline\VertexBuffer.h">
@@ -131,7 +128,19 @@
     <ClInclude Include="Pipeline\ShaderUniformFunctor.h">
       <Filter>Pipeline</Filter>
     </ClInclude>
-    <ClInclude Include="Pipeline\GLRenderer.h">
+    <ClInclude Include="Lighting\IBL.h">
+      <Filter>Lighting</Filter>
+    </ClInclude>
+    <ClInclude Include="Geometry\GPUGeometry.h">
+      <Filter>Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="Rendering\GLRenderer.h">
+      <Filter>Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="Rendering\IRenderer.h">
+      <Filter>Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="Pipeline\FrameBuffer.h">
       <Filter>Pipeline</Filter>
     </ClInclude>
   </ItemGroup>
@@ -157,6 +166,9 @@
     <Filter Include="Managers">
       <UniqueIdentifier>{4e852032-ce2c-42b8-8c01-ffa32ca0039b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Rendering">
+      <UniqueIdentifier>{08d81769-f5b2-4627-a76d-42331781a9fc}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="assets\shaders\pbr.frag">
@@ -169,6 +181,18 @@
       <Filter>Shaders</Filter>
     </None>
     <None Include="assets\shaders\basic.vert">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="assets\shaders\background.frag">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="assets\shaders\background.vert">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="assets\shaders\cubemap.vert">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="assets\shaders\equirectangular_to_cubemap.frag">
       <Filter>Shaders</Filter>
     </None>
   </ItemGroup>

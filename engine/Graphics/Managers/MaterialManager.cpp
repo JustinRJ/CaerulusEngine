@@ -2,24 +2,29 @@
 
 #include "MaterialManager.h"
 
+namespace
+{
+    using namespace Core::Logging;
+    using namespace Graphics::Surface;
+}
+
 namespace Graphics
 {
     namespace Managers
     {
         MaterialManager::MaterialManager(TextureManager& textureManager) :
             m_textureManager(textureManager)
-        {
-        }
+        {}
 
         void MaterialManager::Create(const std::string& name, const std::vector<std::shared_ptr<Texture>>& textures)
         {
             if (IsLoaded(name))
             {
-                Core::Log::LogInDebug("Material with name " + name + " already loaded or created");
+                LogInDebug("Material with name " + name + " already loaded or created");
             }
             else
             {
-                Core::Log::LogMessage("Creating material " + name);
+                LogMessage("Creating material " + name);
                 std::shared_ptr<Material> material = std::make_shared<Material>("");
 
                 for (unsigned int i = 0; i < textures.size(); ++i)
@@ -45,11 +50,11 @@ namespace Graphics
 
                     if (IsLoaded(name))
                     {
-                        Core::Log::LogInDebug("Material with name " + name + " already loaded or created");
+                        LogInDebug("Material with name " + name + " already loaded or created");
                     }
                     else
                     {
-                        Core::Log::LogMessage("Loading material " + name + " with path: " + path);
+                        LogMessage("Loading material " + name + " with path: " + path);
 
                         std::shared_ptr<Material> newMaterial = std::make_shared<Material>(path);
 

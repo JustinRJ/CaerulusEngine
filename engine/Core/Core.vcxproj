@@ -207,6 +207,7 @@
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="File\FileUtility.h" />
     <ClInclude Include="Input\InputDefines.h" />
     <ClInclude Include="Input\KeyboardInputManager.h" />
     <ClInclude Include="Input\MouseInputManager.h" />
@@ -221,9 +222,9 @@
     <ClInclude Include="Math\Camera.h" />
     <ClInclude Include="Math\Circle.h" />
     <ClInclude Include="Math\Cube.h" />
-    <ClInclude Include="Math\Frustrum.h" />
     <ClInclude Include="Math\Line.h" />
     <ClInclude Include="Math\Math.h" />
+    <ClInclude Include="Math\Perspective.h" />
     <ClInclude Include="Math\Ray.h" />
     <ClInclude Include="Math\Rect.h" />
     <ClInclude Include="Math\Sphere.h" />

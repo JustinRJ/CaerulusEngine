@@ -18,18 +18,6 @@ namespace Core
                      TransformVector(m_T, s_max))
             {}
 
-            Rect(const Rect& rect) :
-                m_T(rect.m_T),
-                m_aa(rect.m_aa)
-            {}
-
-            Rect& operator=(const Rect& rect)
-            {
-                m_T = rect.m_T;
-                m_aa = rect.m_aa;
-                return *this;
-            }
-
             const mat3& GetTransform() const
             {
                 return m_T;

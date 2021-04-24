@@ -2,6 +2,12 @@
 
 #include "ShaderManager.h"
 
+namespace
+{
+    using namespace Core::Logging;
+    using namespace Graphics::Pipeline;
+}
+
 namespace Graphics
 {
     namespace Managers
@@ -14,11 +20,11 @@ namespace Graphics
         {
             if (IsLoaded(name))
             {
-                Core::Log::LogInDebug("Shader with name " + name + " already loaded");
+                LogInDebug("Shader with name " + name + " already loaded");
             }
             else
             {
-                Core::Log::LogMessage("Loading shader with name " + name + ":");
+                LogMessage("Loading shader with name " + name + ":");
                 m_shaderStageManager.Load(vertexPath, Vertex);
                 m_shaderStageManager.Load(fragmentPath, Fragment);
 
@@ -32,7 +38,7 @@ namespace Graphics
                 }
                 else
                 {
-                    Core::Log::LogInDebug("Failed to link shader source with name: " + name);
+                    LogInDebug("Failed to link shader source with name: " + name);
                 }
             }
         }

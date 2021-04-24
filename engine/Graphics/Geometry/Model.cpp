@@ -4,8 +4,11 @@
 #include "Mesh.h"
 #include "Graphics/Surface/Material.h"
 
-using namespace Core::Math;
-using namespace Graphics::Geometry;
+namespace
+{
+    using namespace Core::Math;
+    using namespace Graphics::Geometry;
+}
 
 namespace std
 {

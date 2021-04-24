@@ -4,16 +4,11 @@
 #include "ShaderSrcManager.h"
 #include "Graphics/Pipeline/Shader.h"
 
-namespace
-{
-    using namespace Graphics::Pipeline;
-}
-
 namespace Graphics
 {
     namespace Managers
     {
-        class CAERULUS_GRAPHICS ShaderManager : public Core::Template::Manager<Shader>
+        class CAERULUS_GRAPHICS ShaderManager : public Core::Template::Manager<Pipeline::Shader>
         {
         public:
             ShaderManager(ShaderSrcManager& shaderStageManager);

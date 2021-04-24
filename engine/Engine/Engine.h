@@ -39,7 +39,7 @@ namespace Graphics
         class GLWindow;
     }
 
-    namespace Pipeline
+    namespace Rendering
     {
         class GLRenderer;
     }
@@ -91,7 +91,7 @@ private:
 
     std::shared_ptr<Core::Math::Camera> m_camera;
     std::shared_ptr<Graphics::Window::GLWindow> m_window;
-    std::shared_ptr<Graphics::Pipeline::GLRenderer> m_renderer;
+    std::shared_ptr<Graphics::Rendering::GLRenderer> m_renderer;
     std::shared_ptr<Graphics::GraphicsEngine> m_graphicsEngine;
 
     std::shared_ptr<Graphics::Managers::TextureManager> m_textureManager;

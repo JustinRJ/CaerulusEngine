@@ -9,11 +9,13 @@ namespace Core
 {
     namespace Node
     {
-        class CAERULUS_CORE Node : public Interface::NonCopyable
+        class CAERULUS_CORE Node : private Interface::NonCopyable
         {
         public:
-            Node(std::shared_ptr<Node> parent = nullptr);
+            Node(std::shared_ptr<Node> parent = nullptr /* Todo */);
             virtual ~Node();
+
+            bool IsRoot() const;
 
             unsigned int GetID() const;
             unsigned int GetNodeCount() const;
@@ -39,7 +41,7 @@ namespace Core
             unsigned int m_ID;
             std::string m_name;
             std::string m_layer;
-            Core::Math::Transform m_transform;
+            Math::Transform m_transform;
 
             Node* m_parent;
             std::vector<Node*> m_children;

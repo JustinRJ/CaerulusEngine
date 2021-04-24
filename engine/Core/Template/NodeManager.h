@@ -8,12 +8,10 @@
 
 namespace Core
 {
-    using namespace Logging;
-
     namespace Template
     {
         template <class T>
-        class CAERULUS_CORE NodeManager : public Core::Interface::NonCopyable
+        class CAERULUS_CORE NodeManager : private Interface::NonCopyable
         {
         public:
             NodeManager() = default;
@@ -26,7 +24,7 @@ namespace Core
                 {
                     return it->second;
                 }
-                Log::LogInDebug("Managed node object with ID" + std::to_string(key->GetID()) + " not found!");
+                Logging::LogInDebug("Managed node object with ID" + std::to_string(key->GetID()) + " not found!");
                 return nullptr;
             }
 

@@ -23,7 +23,7 @@ namespace Graphics
                     case GL_UNSIGNED_INT:   return 8;
 #endif
                 }
-                Core::Logging::Log::LogError("VertexBufferlayout::GetSizeOfType - unsupported type");
+                Core::Logging::LogError("VertexBufferlayout::GetSizeOfType - unsupported type");
                 exit(1);
             }
         };
@@ -37,7 +37,7 @@ namespace Graphics
             template <typename T>
             void Push(unsigned int count)
             {
-                Core::Logging::Log::LogError("VertexBufferlayout::Push - unsupported type");
+                Core::Logging::LogError("VertexBufferlayout::Push - unsupported type");
                 exit(1);
             }
 

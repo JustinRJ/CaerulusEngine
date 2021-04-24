@@ -35,6 +35,12 @@ namespace Core
             s_reusableNodeIDs.push_back(m_ID);
         }
 
+        bool Node::IsRoot() const
+        {
+            return m_parent == nullptr;
+        }
+
+
         unsigned int Node::GetID() const
         {
             return m_ID;

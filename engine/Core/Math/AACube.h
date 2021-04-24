@@ -17,18 +17,6 @@ namespace Core
                 m_max(max)
             {}
 
-            AACube(const AACube& cube) :
-                m_min(cube.m_min),
-                m_max(cube.m_max)
-            {}
-
-            AACube& operator=(const AACube& cube)
-            {
-                m_min = cube.m_min;
-                m_max = cube.m_max;
-                return *this;
-            }
-
             bool IsPointInside(const vec3& point) const
             {
                 return 

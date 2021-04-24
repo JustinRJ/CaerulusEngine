@@ -8,9 +8,9 @@ namespace Core
     {
         class CAERULUS_CORE NonMovable
         {
-        public:
+        protected:
             NonMovable() = default;
-            virtual ~NonMovable() = default;
+            ~NonMovable() = default;
 
             NonMovable(NonMovable&&) = delete;
             NonMovable& operator=(NonMovable&&) = delete;

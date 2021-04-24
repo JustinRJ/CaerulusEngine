@@ -17,18 +17,6 @@ namespace Core
                 m_max(max)
             {}
 
-            AARect(const AARect& rect) :
-                m_min(rect.m_min),
-                m_max(rect.m_max)
-            {}
-
-            AARect& operator=(const AARect& rect)
-            {
-                m_min = rect.m_min;
-                m_max = rect.m_max;
-                return *this;
-            }
-
             bool IsPointInside(const vec2& point) const
             {
                 return 

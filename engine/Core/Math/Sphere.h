@@ -17,18 +17,6 @@ namespace Core
                 m_pos(pos)
             {}
 
-            Sphere(const Sphere& sphere) :
-                m_radius(sphere.m_radius),
-                m_pos(sphere.m_pos)
-            {}
-
-            Sphere& operator=(const Sphere& sphere)
-            {
-                m_radius = sphere.m_radius;
-                m_pos = sphere.m_pos;
-                return *this;
-            }
-
             bool IsPointInside(vec3 point) const
             {
                 return length(m_pos - point) <= m_radius;
