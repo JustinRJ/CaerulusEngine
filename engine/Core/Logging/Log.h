@@ -1,5 +1,10 @@
 #pragma once
 
+#include <string>
+#include <iostream>
+
+#define Debug(x) std::cout << #x << " " << x << std::endl;
+
 namespace Core
 {
     namespace Logging

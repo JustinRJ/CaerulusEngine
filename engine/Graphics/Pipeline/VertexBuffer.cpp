@@ -6,7 +6,7 @@ namespace Graphics
 {
     namespace Pipeline
     {
-        GLuint VertexBuffer::m_boundHandle;
+        GLuint VertexBuffer::m_boundHandle = 0;
 
         VertexBuffer::VertexBuffer(const void* data, size_t size) :
             m_size(size)

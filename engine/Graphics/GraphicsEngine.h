@@ -2,6 +2,9 @@
 
 #define CAERULUS_GRAPHICS __declspec(dllexport)
 
+#include <memory>
+#include <vector>
+
 #include "Core/Math/Math.h"
 #include "Core/Interface/ITickable.h"
 
@@ -20,6 +23,7 @@ namespace Graphics
     namespace Pipeline
     {
         class Shader;
+        class FrameBuffer;
         class ShaderUniformFunctor;
     }
 
@@ -45,6 +49,8 @@ namespace Graphics
         void Update(float deltaTime) override;
         void FixedUpdate(float fixedTime) override {}
         void Reset() override {}
+
+        std::shared_ptr<Pipeline::FrameBuffer> GetFrameBuffer() const;
 
         bool GetWireframe() const;
         const Core::Math::vec4& GetClearColour() const;
@@ -72,7 +78,7 @@ namespace Graphics
         std::shared_ptr<Lighting::IBL> m_IBL;
         std::shared_ptr<Window::GLWindow> m_window;
         std::shared_ptr<Rendering::IRenderer> m_renderer;
-
+        std::shared_ptr<Pipeline::FrameBuffer> m_framebuffer;
         std::vector<std::shared_ptr<Geometry::Model>> m_models;
         std::vector<std::shared_ptr<Lighting::Light>> m_lights;
     };

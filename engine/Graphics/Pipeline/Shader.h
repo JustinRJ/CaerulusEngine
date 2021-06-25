@@ -2,6 +2,10 @@
 
 #define CAERULUS_GRAPHICS __declspec(dllexport)
 
+#include <glew.h>
+#include <memory>
+#include <unordered_map>
+
 #include "Core/Math/Math.h"
 #include "Core/Interface/NonCopyable.h"
 

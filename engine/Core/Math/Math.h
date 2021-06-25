@@ -7,6 +7,8 @@
 #include <gtx/quaternion.hpp>
 #include <gtc/matrix_transform.hpp>
 
+#include <stdint.h>
+
 namespace Core
 {
     namespace Math
@@ -19,14 +21,6 @@ namespace Core
         const vec3 UnitUp = vec3(0.f, 1.f, 0.f);
         const vec3 UnitRight = vec3(1.f, 0.f, 0.f);
         const vec3 UnitForward = vec3(0.f, 0.0, -1.f);
-
-        enum Index
-        {
-            X = 0,
-            Y = 1,
-            Z = 2,
-            W = 3
-        };
 
         inline vec3 UpVector(const quat& q)
         {
@@ -69,6 +63,22 @@ namespace Core
             mat4 rotateM = mat4_cast(normalize(r));
             mat4 scaleM = scale(mat4(1.0f), s);
             return translateM * rotateM * scaleM;
+        }
+
+        // https://en.wikipedia.org/wiki/Fast_inverse_square_root
+        inline float FastInvSqrt(float number)
+        {
+            const float x2 = number * 0.5F;
+            const float threehalfs = 1.5F;
+
+            union
+            {
+                float f;
+                uint32_t i;
+            } conv = { number };
+            conv.i = 0x5f3759df - (conv.i >> 1);
+            conv.f *= threehalfs - (x2 * conv.f * conv.f);
+            return conv.f;
         }
     }
 }

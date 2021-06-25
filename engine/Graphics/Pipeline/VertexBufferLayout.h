@@ -2,6 +2,8 @@
 
 #include "Core/Logging/Log.h"
 
+#include <vector>
+
 namespace Graphics
 {
     namespace Pipeline

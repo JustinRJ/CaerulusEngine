@@ -1,5 +1,7 @@
 #pragma once
 
+#include <vector>
+
 #include "Math.h"
 
 namespace Core
@@ -9,7 +11,7 @@ namespace Core
         class AARect
         {
         public:
-            AARect() = delete;
+            AARect() = default;
             ~AARect() = default;
 
             AARect(const vec2& min, const vec2& max) :
@@ -29,22 +31,22 @@ namespace Core
                 return IsPointInside(rect.m_min) || IsPointInside(rect.m_max);
             }
 
-            vec2& Min()
+            void SetMin(const vec2& min)
+            {
+                m_min = min;
+            }
+
+            const vec2& GetMin() const
             {
                 return m_min;
             }
 
-            const vec2& Min() const
+            void SetMax(const vec2& max)
             {
-                return m_min;
+                m_max = max;
             }
 
-            vec2& Max()
-            {
-                return m_max;
-            }
-
-            const vec2& Max() const
+            const vec2& GetMax() const
             {
                 return m_max;
             }
@@ -62,16 +64,6 @@ namespace Core
                 m_max,
                 vec2(m_max.x, m_min.y) };
                 return corners;
-            }
-
-            static std::vector<vec2> GetNormals()
-            {
-                std::vector<vec2> normals {
-                vec2(-1.f, 0.f),
-                vec2(0.f, 1.f),
-                vec2(1.f, 0.f),
-                vec2(0.f, -1.f) };
-                return normals;
             }
 
         private:

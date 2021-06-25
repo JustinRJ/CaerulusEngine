@@ -2,6 +2,9 @@
 
 #define CAERULUS_ENGINE __declspec(dllexport)
 
+#include <memory>
+#include <vector>
+
 #include "Core/Interface/NonCopyable.h"
 
 namespace Core

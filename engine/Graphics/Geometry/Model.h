@@ -32,7 +32,7 @@ namespace Graphics
 
         private:
             void LoadModel(std::vector<std::vector<Geometry::Vertex>>& verticesOut, std::vector<std::vector<GLuint>>& indicesOut, std::vector<std::string>& materialNamesOut);
-            //void CalculateTangentAndBiTangent(std::vector<std::vector<Geometry::Vertex>>& vertices);
+            void CalculateTangentAndBiTangent(std::vector<std::vector<Geometry::Vertex>>& vertices);
 
             bool m_isLoaded;
             const std::string m_path;

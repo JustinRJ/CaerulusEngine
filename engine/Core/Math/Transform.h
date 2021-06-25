@@ -6,6 +6,14 @@ namespace Core
 {
     namespace Math
     {
+        enum Index
+        {
+            X = 0,
+            Y = 1,
+            Z = 2,
+            W = 3
+        };
+
         class Transform
         {
         public:
@@ -149,9 +157,9 @@ namespace Core
                 m_T[Z][columnIndex] = column.z;
             }
 
-            mat4& GetMatrix()
+            void SetMatrix(mat4& t)
             {
-                return m_T;
+                m_T = t;
             }
 
             const mat4& GetMatrix() const

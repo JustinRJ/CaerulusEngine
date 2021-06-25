@@ -5,10 +5,13 @@
 #include "Core/Node/Node.h"
 #include "Core/Math/Math.h"
 #include "Core/Math/Camera.h"
+
 #include "Core/Logging/Log.h"
 #include "Core/Logging/LogToFile.h"
+
 #include "Core/Time/FPSLimiter.h"
 #include "Core/Time/FixedTimer.h"
+
 #include "Core/Interface/ITickable.h"
 #include "Core/Interface/NonCopyable.h"
 
@@ -27,24 +30,21 @@
 
 #include "Graphics/Lighting/IBL.h"
 
-namespace
-{
-    using namespace Core::Node;
-    using namespace Core::Math;
-    using namespace Core::Time;
-    using namespace Core::Input;
-    using namespace Core::Logging;
-    using namespace Core::Interface;
+using namespace Core::Node;
+using namespace Core::Math;
+using namespace Core::Time;
+using namespace Core::Input;
+using namespace Core::Logging;
+using namespace Core::Interface;
 
-    using namespace Graphics;
-    using namespace Graphics::Window;
-    using namespace Graphics::Surface;
-    using namespace Graphics::Managers;
-    using namespace Graphics::Geometry;
-    using namespace Graphics::Pipeline;
-    using namespace Graphics::Lighting;
-    using namespace Graphics::Rendering;
-}
+using namespace Graphics;
+using namespace Graphics::Window;
+using namespace Graphics::Surface;
+using namespace Graphics::Managers;
+using namespace Graphics::Geometry;
+using namespace Graphics::Pipeline;
+using namespace Graphics::Lighting;
+using namespace Graphics::Rendering;
 
 Engine::Engine(int argc, char** argv) :
     m_argCount(argc),
@@ -158,31 +158,39 @@ void Engine::InitInput()
 
 void Engine::InitGLRenderer()
 {
-    m_shaderManager->Load("pbr", "assets/shaders/pbr.vert", "assets/shaders/pbr.frag");
-    m_shaderManager->Load("background", "assets/shaders/background.vert", "assets/shaders/background.frag");
-    m_shaderManager->Load("cubemap", "assets/shaders/cubemap.vert", "assets/shaders/equirectangular_to_cubemap.frag");
+    m_shaderManager->Load("pbr",        "assets/shaders/pbr.vert",          "assets/shaders/pbr.frag");
+    m_shaderManager->Load("cubemap",    "assets/shaders/cubemap.vert",      "assets/shaders/equirectangular_to_cubemap.frag");
+    m_shaderManager->Load("irradiance", "assets/shaders/cubemap.vert",      "assets/shaders/irradiance_convolution.frag");
+    m_shaderManager->Load("prefilter",  "assets/shaders/cubemap.vert",      "assets/shaders/prefilter.frag");
+    m_shaderManager->Load("brdf",       "assets/shaders/brdf.vert",         "assets/shaders/brdf.frag");
+    m_shaderManager->Load("background", "assets/shaders/background.vert",   "assets/shaders/background.frag");
 
-    std::shared_ptr<Shader> backgroundShader = m_shaderManager->Get("background");
-    std::shared_ptr<Shader> cubemapShader = m_shaderManager->Get("cubemap");
+    Lighting::IBLShaders iblShaders = {
+        m_shaderManager->Get("pbr"),
+        m_shaderManager->Get("cubemap"),
+        m_shaderManager->Get("irradiance"),
+        m_shaderManager->Get("prefilter"),
+        m_shaderManager->Get("brdf"),
+        m_shaderManager->Get("background")
+    };
 
-    backgroundShader->Bind();
-    backgroundShader->Set1i("environmentMap", 0);
-    cubemapShader->Bind();
-    cubemapShader->Set1i("equirectangularMap", 0);
+    m_textureManager->Load("city", "assets/textures/city_ref.hdr");
+    std::shared_ptr<Lighting::IBL> ibl = std::make_shared<IBL>(iblShaders, m_textureManager->Get("city"), m_renderer, m_window, m_camera, m_graphicsEngine->GetFrameBuffer());
 
-    m_textureManager->Load("concrete", "assets/textures/concrete.hdr");
-
-    std::shared_ptr<Lighting::IBL> ibl = std::make_shared<IBL>(cubemapShader, m_textureManager->Get("concrete"), m_renderer);
-    ibl->AddUniformFunctor(backgroundShader, [&](const Shader& shader)
+    ibl->AddUniformFunctor(m_shaderManager->Get("background"), [&](const Shader& shader)
     {
         shader.SetMat4fv("projection", m_camera->GetPerspective().GetMatrix());
         shader.SetMat4fv("view", m_camera->GetTransform().GetMatrix());
 
-        // WIP
         m_graphicsEngine->GetIBL()->Draw();
+    });
+    ibl->AddUniformFunctor(m_shaderManager->Get("brdf"), [&](const Shader& shader)
+    {
+        m_window->Update();
     });
 
     m_graphicsEngine->SetIBL(ibl);
+    Material::SetMaterialTextureSlotOffset(ibl->GetRequiredTextureSlots());
 }
 
 void Engine::InitScene()
@@ -192,23 +200,25 @@ void Engine::InitScene()
     // Only set shaders and functors for sponza model 
     if (std::shared_ptr<Model> model = m_modelManager->Get("sponza"))
     {
-        // sponza needs a default ao applied
+        // Sponza model doesn't have AO textures, add default AO texture
+        // Use completely black texture to disable IBL lighting
         m_textureManager->Load("defaultAO", "assets/textures/defaultAO.png");
+        m_textureManager->Load("white", "assets/textures/white.png");
+        m_textureManager->Load("black", "assets/textures/black.png");
 
-        Core::Math::mat4& sponzaTransform = model->GetTransform().GetMatrix();
+        Core::Math::mat4 sponzaTransform = model->GetTransform().GetMatrix();
         sponzaTransform = translate(mat4(1.0f), vec3(0, -10, 0));
         sponzaTransform = scale(sponzaTransform, vec3(0.25, 0.25, 0.25));
-
-        std::shared_ptr<Shader> pbrShader = m_shaderManager->Get("pbr");
+        model->GetTransform().SetMatrix(sponzaTransform);
 
         // Set uniform functor to update each models MVP before it's rendered
-        model->AddUniformFunctor(pbrShader, [capturedCamera = m_camera, capturedModel = model](const Shader& shader)
+        model->AddUniformFunctor(m_shaderManager->Get("pbr"), [capturedCamera = m_camera, capturedModel = model](const Shader& shader)
         {
             shader.SetMat4fv("projection",  capturedCamera->GetPerspective().GetMatrix());
             shader.SetMat4fv("view",        capturedCamera->GetTransform().GetMatrix());
             shader.SetMat4fv("model",       capturedModel->GetTransform().GetMatrix());
+            shader.Set3f("viewPos",         capturedCamera->GetTransform().GetTranslation());
 
-            shader.Set3f("viewPos", capturedCamera->GetTransform().GetTranslation());
             shader.Set3f("lightPositions[0]", vec3(-150, 15., 0));
             shader.Set3f("lightPositions[1]", vec3(0, 15., 0));
             shader.Set3f("lightPositions[2]", vec3(150, 15., 0));
@@ -224,16 +234,16 @@ void Engine::InitScene()
             if (material)
             {
                 // Add to bump map as sponza mapping is wrong
-                material->SetTexture(m_textureManager->Get("defaultAO"), Material::TextureType::Bump);
+                material->SetTexture(m_textureManager->Get("white"), TextureType::Bump);
                 // Set uniform functor to update each materials Texture before it's rendered
-                material->AddUniformFunctor(pbrShader, [](const Shader& shader)
+                material->AddUniformFunctor(m_shaderManager->Get("pbr"), [](const Shader& shader)
                 {
                     // Sponza asset has material properties set in the wrong channels
-                    shader.Set1i("albedoMap", static_cast<GLint>(Material::TextureType::Diffuse));       // albedo
-                    shader.Set1i("normalMap", static_cast<GLint>(Material::TextureType::Highlight));     // normal
-                    shader.Set1i("roughnessMap", static_cast<GLint>(Material::TextureType::Specular));   // roughness
-                    shader.Set1i("metallicMap", static_cast<GLint>(Material::TextureType::Ambient));     // metallic
-                    shader.Set1i("aoMap", static_cast<GLint>(Material::TextureType::Bump));              // ao
+                    shader.Set1i("albedoMap",       Material::GetTextureSlotForTextureType(TextureType::Diffuse));
+                    shader.Set1i("normalMap",       Material::GetTextureSlotForTextureType(TextureType::Highlight));
+                    shader.Set1i("metallicMap",     Material::GetTextureSlotForTextureType(TextureType::Ambient));
+                    shader.Set1i("roughnessMap",    Material::GetTextureSlotForTextureType(TextureType::Specular));
+                    shader.Set1i("aoMap",           Material::GetTextureSlotForTextureType(TextureType::Bump));
                 });
             }
         }

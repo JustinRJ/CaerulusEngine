@@ -9,42 +9,42 @@ namespace Core
         class Circle
         {
         public:
-            Circle() = delete;
+            Circle() = default;
             ~Circle() = default;
 
-            Circle(vec2 pos, float radius) :
+            Circle(const vec2& pos, float radius) :
                 m_radius(radius),
                 m_pos(pos)
             {}
 
-            bool IsPointInside(vec2 point) const
+            bool IsPointInside(const vec2& point) const
             {
-                return length(m_pos - point) <= m_radius;
+                return length2(m_pos - point) <= std::pow(m_radius, 2);
             }
 
             bool IsIntersecting(const Circle& circle) const
             {
-                return length(m_pos - circle.Position()) <= m_radius + circle.Radius();
+                return length2(m_pos - circle.GetPosition()) <= std::pow(m_radius + circle.GetRadius(), 2);
             }
 
-            float Radius() const
+            float GetRadius() const
             {
                 return m_radius;
             }
 
-            float& Radius()
+            void SetRadius(float radius)
             {
-                return m_radius;
+                m_radius = radius;
             }
 
-            vec2 Position() const
+            const vec2& GetPosition() const
             {
                 return m_pos;
             }
 
-            vec2& Position()
+            void SetPosition(const vec2& pos)
             {
-                return m_pos;
+                m_pos = pos;
             }
 
         private:

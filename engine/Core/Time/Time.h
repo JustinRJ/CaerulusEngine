@@ -2,6 +2,9 @@
 
 #define CAERULUS_CORE __declspec(dllexport)
 
+#include <ctime>
+#include <string>
+
 namespace Core
 {
     namespace Time

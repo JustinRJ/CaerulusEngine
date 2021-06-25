@@ -6,7 +6,7 @@ namespace Graphics
 {
     namespace Pipeline
     {
-        unsigned int VertexArray::m_boundHandle;
+        unsigned int VertexArray::m_boundHandle = 0;
 
         VertexArray::VertexArray()
         {

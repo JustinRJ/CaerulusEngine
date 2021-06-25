@@ -1,13 +1,11 @@
 #include "stdafx.h"
 
 #include "ModelManager.h"
+
 #include "Graphics/Geometry/Mesh.h"
 
-namespace
-{
-    using namespace Core::Logging;
-    using namespace Graphics::Geometry;
-}
+using namespace Core::Logging;
+using namespace Graphics::Geometry;
 
 namespace Graphics
 {

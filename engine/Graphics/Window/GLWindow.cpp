@@ -1,21 +1,19 @@
 #include "stdafx.h"
 
 #include "GLWindow.h"
-#include "Core/Math/Math.h"
-#include "Core/Math/Camera.h"
-#include "Core/Logging/Log.h"
 
 #define GLFW_EXPOSE_NATIVE_WIN32
 #include <glfw3native.h>
 
-namespace
-{
-    using namespace Core::Logging;
+#include "Core/Math/Math.h"
+#include "Core/Math/Camera.h"
+#include "Core/Logging/Log.h"
 
-    void CloseWindowCallback(GLFWwindow* window)
-    {
-        exit(1);
-    }
+using namespace Core::Logging;
+
+void CloseWindowCallback(GLFWwindow* window)
+{
+    exit(1);
 }
 
 namespace Graphics
@@ -38,7 +36,7 @@ namespace Graphics
             glfwWindowHint(GLFW_SAMPLES, 4);
             glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-            Window::Set(title, x, y, bits, fullscreen);
+            IWindow::Set(title, x, y, bits, fullscreen);
             Apply();
             CenterCursor();
             glfwSetWindowCloseCallback(m_window, CloseWindowCallback);
@@ -56,7 +54,7 @@ namespace Graphics
 
         void GLWindow::Apply()
         {
-            if (!Window::Compare(m_newState))
+            if (!IWindow::Compare(m_newState))
             {
                 m_activeState = m_newState;
                 m_window = glfwCreateWindow(

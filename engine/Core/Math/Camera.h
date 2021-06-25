@@ -10,7 +10,7 @@ namespace Core
         class Camera
         {
         public:
-            Camera() = delete;
+            Camera() = default;
             ~Camera() = default;
 
             Camera(const vec3& position, const vec3& forward, const vec3& up = UnitUp) :
@@ -20,15 +20,16 @@ namespace Core
 
             void Translate(const vec3& translation, bool translateY = true)
             {
-                mat4& view = m_transform.GetMatrix();
-                vec3 tempPos(view[X][W], view[Y][W], view[Z][W]);
-                tempPos += normalize(vec3(view[X][X], translateY ? view[X][Z] : 0.0f, view[Z][X])) * translation.x;
+                mat4 view = m_transform.GetMatrix();
+                vec3 temp(view[X][W], view[Y][W], view[Z][W]);
+                temp += normalize(vec3(view[X][X], translateY ? view[X][Z] : 0.0f, view[Z][X])) * translation.x;
                 if (translateY)
                 {
-                    tempPos += normalize(vec3(view[X][Y], view[Y][Y], view[Z][Y])) * translation.y;
+                    temp += normalize(vec3(view[X][Y], view[Y][Y], view[Z][Y])) * translation.y;
                 }
-                tempPos += normalize(vec3(view[X][Z], translateY ? view[Y][Z] : 0.0f, view[Z][Z])) * translation.z;
-                view *= translate(mat4(1.0f), -tempPos);
+                temp += normalize(vec3(view[X][Z], translateY ? view[Y][Z] : 0.0f, view[Z][Z])) * translation.z;
+                view *= translate(mat4(1.0f), -temp);
+                m_transform.SetMatrix(view);
             }
 
             void Rotate(const vec3& eulerDelta, const vec3& forcedUp = UnitUp)

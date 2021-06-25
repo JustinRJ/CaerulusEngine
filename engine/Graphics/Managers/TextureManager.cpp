@@ -1,14 +1,12 @@
 #include "stdafx.h"
 
 #include "TextureManager.h"
+
 #include "Core/File/FileUtility.h"
 
-namespace
-{
-    using namespace Core::File;
-    using namespace Core::Logging;
-    using namespace Graphics::Surface;
-}
+using namespace Core::File;
+using namespace Core::Logging;
+using namespace Graphics::Surface;
 
 namespace Graphics
 {

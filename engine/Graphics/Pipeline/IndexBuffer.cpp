@@ -6,7 +6,7 @@ namespace Graphics
 {
     namespace Pipeline
     {
-        GLuint IndexBuffer::m_boundHandle;
+        GLuint IndexBuffer::m_boundHandle = 0;
 
         IndexBuffer::IndexBuffer(const unsigned int* data, size_t count) :
             m_count(count)

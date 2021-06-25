@@ -77,13 +77,13 @@
     <ClInclude Include="Math\Transform.h">
       <Filter>Math</Filter>
     </ClInclude>
-    <ClInclude Include="Math\AACube.h">
+    <ClInclude Include="Math\AABox.h">
       <Filter>Math</Filter>
     </ClInclude>
     <ClInclude Include="Math\AARect.h">
       <Filter>Math</Filter>
     </ClInclude>
-    <ClInclude Include="Math\Cube.h">
+    <ClInclude Include="Math\Box.h">
       <Filter>Math</Filter>
     </ClInclude>
     <ClInclude Include="Math\Line.h">
@@ -127,6 +127,21 @@
     </ClInclude>
     <ClInclude Include="File\FileUtility.h">
       <Filter>File</Filter>
+    </ClInclude>
+    <ClInclude Include="Template\Cacher.h">
+      <Filter>Template</Filter>
+    </ClInclude>
+    <ClInclude Include="Template\Producer.h">
+      <Filter>Template</Filter>
+    </ClInclude>
+    <ClInclude Include="Interface\Singleton.h">
+      <Filter>Interface</Filter>
+    </ClInclude>
+    <ClInclude Include="Template\Observer.h">
+      <Filter>Template</Filter>
+    </ClInclude>
+    <ClInclude Include="Math\Polygon.h">
+      <Filter>Math</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

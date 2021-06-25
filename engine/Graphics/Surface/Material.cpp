@@ -1,17 +1,27 @@
 #include "stdafx.h"
 
 #include "Material.h"
-#include "Texture.h"
+
+#include <tiny_obj_loader.h>
+
 #include "Core/Logging/Log.h"
+#include "Texture.h"
 
 namespace Graphics
 {
     namespace Surface
     {
+        unsigned int Material::s_materialTextureSlotOffset = 0;
+
         Material::Material(const std::string& path) :
             m_path(path),
             m_textures(7)
         {
+        }
+
+        GLint Material::GetTextureSlotForTextureType(TextureType type)
+        {
+            return static_cast<GLint>(type) + s_materialTextureSlotOffset;
         }
 
         std::vector<std::string> Material::GetMaterialNamesFromFile(std::istream& is)
@@ -66,7 +76,7 @@ namespace Graphics
             {
                 if (std::shared_ptr<Texture> texture = m_textures[slot])
                 {
-                    texture->Bind(slot);
+                    texture->Bind(slot + s_materialTextureSlotOffset);
                 }
             }
         }
@@ -99,5 +109,11 @@ namespace Graphics
             }
             return texture;
         }
+
+        void Material::SetMaterialTextureSlotOffset(unsigned int slotOffset)
+        {
+            s_materialTextureSlotOffset = slotOffset;
+        }
+
     }
 }

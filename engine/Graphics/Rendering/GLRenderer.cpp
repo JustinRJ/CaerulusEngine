@@ -10,22 +10,19 @@
 #include "Graphics/Pipeline/IndexBuffer.h"
 #include "Graphics/Geometry/GPUGeometry.h"
 
-namespace
-{
-    using namespace Core::Logging;
+using namespace Core::Logging;
 
-    void GLAPIENTRY OpenGLErrorLogCallback(GLenum source,
-        GLenum type,
-        GLuint id,
-        GLenum severity,
-        GLsizei length,
-        const GLchar* message,
-        const void* userParam)
+void GLAPIENTRY OpenGLErrorLogCallback(GLenum source,
+    GLenum type,
+    GLuint id,
+    GLenum severity,
+    GLsizei length,
+    const GLchar* message,
+    const void* userParam)
+{
+    if (severity != GL_DEBUG_SEVERITY_NOTIFICATION)
     {
-        if (severity != GL_DEBUG_SEVERITY_NOTIFICATION)
-        {
-            LogError("OpenGL Error " + std::string(message), "OpenGL Error Code-" + std::to_string(id));
-        }
+        LogError("OpenGL Error " + std::string(message), "OpenGL Error Code-" + std::to_string(id));
     }
 }
 
@@ -50,11 +47,12 @@ namespace Graphics
                 exit(1);
             }
 
-            glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
             glEnable(GL_BLEND);
+            glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
             glEnable(GL_DEPTH_TEST);
             glDepthFunc(GL_LEQUAL);
+
             glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
 
             glEnable(GL_DEBUG_OUTPUT);

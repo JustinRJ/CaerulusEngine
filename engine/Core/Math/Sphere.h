@@ -9,47 +9,42 @@ namespace Core
         class Sphere
         {
         public:
-            Sphere() = delete;
+            Sphere() = default;
             ~Sphere() = default;
 
-            Sphere(vec3 pos, float radius) :
+            Sphere(const vec3& pos, float radius) :
                 m_radius(radius),
                 m_pos(pos)
             {}
 
-            bool IsPointInside(vec3 point) const
+            bool IsPointInside(const vec3& point) const
             {
-                return length(m_pos - point) <= m_radius;
+                return length2(m_pos - point) <= std::pow(m_radius, 2);
             }
 
             bool IsIntersecting(const Sphere& sphere) const
             {
-                return length(m_pos - sphere.Position()) <= m_radius + sphere.Radius();
+                return length2(m_pos - sphere.GetPosition()) <= std::pow(m_radius + sphere.GetRadius(), 2);
             }
 
-            bool IsIntersecting(const Circle& circle) const
-            {
-                return length(m_pos - vec3(circle.Position(), m_pos.z)) <= m_radius + circle.Radius();
-            }
-
-            float Radius() const
+            float GetRadius() const
             {
                 return m_radius;
             }
 
-            float& Radius()
+            void SetRadius(float radius)
             {
-                return m_radius;
+                m_radius = radius;
             }
 
-            vec3 Position() const
+            const vec3& GetPosition() const
             {
                 return m_pos;
             }
 
-            vec3& Position()
+            void SetPosition(const vec3& pos)
             {
-                return m_pos;
+                m_pos = pos;
             }
 
         private:

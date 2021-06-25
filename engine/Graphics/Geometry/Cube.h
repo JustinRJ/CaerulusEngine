@@ -8,24 +8,24 @@ namespace Graphics
     {
         const static GLfloat s_CubeVertices[] =
         {
-            -0.5, -0.5, 0.5,  // front bottom left
-             0.5, -0.5, 0.5,  // front bottom right
-             0.5,  0.5, 0.5,  // front top right
-            -0.5,  0.5, 0.5,  // front top left
-            -0.5, -0.5, -0.5, // back bottom left
-             0.5, -0.5, -0.5, // back bottom right
-             0.5,  0.5, -0.5, // back top right
-            -0.5,  0.5, -0.5, // back top left
+           -0.5, -0.5, -0.5,
+            0.5, -0.5, -0.5,
+            0.5,  0.5, -0.5,
+           -0.5,  0.5, -0.5,
+           -0.5, -0.5,  0.5,
+            0.5, -0.5,  0.5,
+            0.5,  0.5,  0.5,
+           -0.5,  0.5,  0.5
         };
 
         const static GLuint s_CubeIndices[] =
         {
-            0, 3, 2, 0, 1, 2, // front
-            4, 0, 1, 4, 5, 1, // left
-            3, 7, 6, 3, 2, 6, // right
-            1, 2, 6, 1, 5, 6, // top
-            1, 2, 3, 1, 0, 3, // bottom
-            4, 7, 6, 4, 5, 6  // back
+            0, 1, 3, 3, 1, 2,
+            1, 5, 2, 2, 5, 6,
+            5, 4, 6, 6, 4, 7,
+            4, 0, 7, 7, 0, 3,
+            3, 2, 7, 7, 2, 6,
+            4, 5, 0, 0, 5, 1
         };
 
         class Cube : public GPUGeometry

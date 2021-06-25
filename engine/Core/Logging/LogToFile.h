@@ -1,5 +1,8 @@
 #pragma once
 
+#include <string>
+#include <fstream>
+
 #include "Core/Interface/NonCopyable.h"
 
 namespace Core

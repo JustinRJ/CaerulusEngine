@@ -2,19 +2,16 @@
 
 #include "Shader.h"
 
-#include "ShaderSrc.h"
 #include "Core/Logging/Log.h"
+#include "ShaderSrc.h"
 
-namespace
-{
-    using namespace Core::Logging;
-}
+using namespace Core::Logging;
 
 namespace Graphics
 {
     namespace Pipeline
     {
-        GLuint Shader::m_boundHandle;
+        GLuint Shader::m_boundHandle = 0;
 
         Shader::Shader(std::shared_ptr<ShaderSrc> vertex, std::shared_ptr<ShaderSrc> fragment) :
             m_vertex(vertex),

@@ -2,6 +2,11 @@
 
 #define CAERULUS_CORE __declspec(dllexport)
 
+#include <list>
+#include <memory>
+#include <string>
+#include <vector>
+
 #include "Core/Math/Transform.h"
 #include "Core/Interface/NonCopyable.h"
 

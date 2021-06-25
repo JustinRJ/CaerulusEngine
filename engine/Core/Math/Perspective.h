@@ -9,7 +9,7 @@ namespace Core
         class Perspective
         {
         public:
-            Perspective() = delete;
+            Perspective() = default;
             ~Perspective() = default;
 
             Perspective(float degFOV, float aspect, float inear, float ifar)

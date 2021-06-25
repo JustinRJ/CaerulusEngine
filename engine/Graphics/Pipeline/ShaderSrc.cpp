@@ -2,12 +2,13 @@
 
 #include "ShaderSrc.h"
 
+#include <glew.h>
+#include <fstream>
+#include <sstream>
+
 #include "Core/Logging/Log.h"
 
-namespace
-{
-    using namespace Core::Logging;
-}
+using namespace Core::Logging;
 
 namespace Graphics
 {

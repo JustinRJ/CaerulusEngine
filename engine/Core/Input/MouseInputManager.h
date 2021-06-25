@@ -1,6 +1,12 @@
 #pragma once
 
 #include "InputDefines.h"
+
+#include <vector>
+#include <memory>
+#include <string>
+#include <functional>
+
 #include "Core/Interface/ITickable.h"
 
 namespace Graphics

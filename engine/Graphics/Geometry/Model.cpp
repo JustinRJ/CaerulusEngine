@@ -1,29 +1,26 @@
 #include "stdafx.h"
 
 #include "Model.h"
+
+#include <tiny_obj_loader.h>
+
 #include "Mesh.h"
 #include "Graphics/Surface/Material.h"
 
-namespace
-{
-    using namespace Core::Math;
-    using namespace Graphics::Geometry;
-}
+using namespace Core::Math;
+using namespace Graphics::Geometry;
 
-namespace std
+template<>
+struct std::hash<Vertex>
 {
-    template<>
-    struct hash<Vertex>
+    size_t operator()(const Vertex& vertex) const
     {
-        size_t operator()(const Vertex& vertex) const
-        {
-            return
-                ((hash<vec3>()(vertex.Position) ^
-                (hash<vec3>()(vertex.Normal) << 1)) >> 1) ^
-                    (hash<vec2>()(vertex.TexCoord) << 1);
-        }
-    };
-}
+        return
+            ((hash<vec3>()(vertex.Position) ^
+            (hash<vec3>()(vertex.Normal) << 1)) >> 1) ^
+                (hash<vec2>()(vertex.TexCoord) << 1);
+    }
+};
 
 namespace Graphics
 {
@@ -138,38 +135,38 @@ namespace Graphics
             }
         }
 
-        //void Model::CalculateTangentAndBiTangent(std::vector<std::vector<Vertex>>& vertices)
-        //{
-        //    for (std::vector<Vertex>& meshVertices : vertices)
-        //    {
-        //        for (unsigned int i = 0; i < meshVertices.size() - 2; i += 3)
-        //        {
-        //            Vertex v1 = meshVertices.at(i);
-        //            Vertex v2 = meshVertices.at(i + 1);
-        //            Vertex v3 = meshVertices.at(i + 2);
+        void Model::CalculateTangentAndBiTangent(std::vector<std::vector<Vertex>>& vertices)
+        {
+            for (std::vector<Vertex>& meshVertices : vertices)
+            {
+                for (unsigned int i = 0; i < meshVertices.size() - 2; i += 3)
+                {
+                    Vertex v1 = meshVertices.at(i);
+                    Vertex v2 = meshVertices.at(i + 1);
+                    Vertex v3 = meshVertices.at(i + 2);
 
-        //            vec3 edge1 = v2.Position - v1.Position;
-        //            vec3 edge2 = v3.Position - v1.Position;
+                    vec3 edge1 = v2.Position - v1.Position;
+                    vec3 edge2 = v3.Position - v1.Position;
 
-        //            vec2 deltaUV1 = v2.TexCoord - v1.TexCoord;
-        //            vec2 deltaUV2 = v3.TexCoord - v1.TexCoord;
+                    vec2 deltaUV1 = v2.TexCoord - v1.TexCoord;
+                    vec2 deltaUV2 = v3.TexCoord - v1.TexCoord;
 
-        //            GLfloat f = 1.0f / (deltaUV1.x * deltaUV2.y - deltaUV2.x * deltaUV1.y);
+                    GLfloat f = 1.0f / (deltaUV1.x * deltaUV2.y - deltaUV2.x * deltaUV1.y);
 
-        //            vec3 tangent;
-        //            tangent.x = f * (deltaUV2.y * edge1.x - deltaUV1.y * edge2.x);
-        //            tangent.y = f * (deltaUV2.y * edge1.y - deltaUV1.y * edge2.y);
-        //            tangent.z = f * (deltaUV2.y * edge1.z - deltaUV1.y * edge2.z);
-        //            tangent = normalize(tangent);
+                    vec3 tangent;
+                    tangent.x = f * (deltaUV2.y * edge1.x - deltaUV1.y * edge2.x);
+                    tangent.y = f * (deltaUV2.y * edge1.y - deltaUV1.y * edge2.y);
+                    tangent.z = f * (deltaUV2.y * edge1.z - deltaUV1.y * edge2.z);
+                    tangent = normalize(tangent);
 
-        //            vec3 biTangent;
-        //            biTangent.x = f * (-deltaUV2.x * edge1.x + deltaUV1.x * edge2.x);
-        //            biTangent.y = f * (-deltaUV2.x * edge1.y + deltaUV1.x * edge2.y);
-        //            biTangent.z = f * (-deltaUV2.x * edge1.z + deltaUV1.x * edge2.z);
-        //            biTangent = normalize(biTangent);
-        //        }
-        //    }
-        //}
+                    vec3 biTangent;
+                    biTangent.x = f * (-deltaUV2.x * edge1.x + deltaUV1.x * edge2.x);
+                    biTangent.y = f * (-deltaUV2.x * edge1.y + deltaUV1.x * edge2.y);
+                    biTangent.z = f * (-deltaUV2.x * edge1.z + deltaUV1.x * edge2.z);
+                    biTangent = normalize(biTangent);
+                }
+            }
+        }
 
         const std::vector<std::shared_ptr<Mesh>>& Model::GetMeshes() const
         {

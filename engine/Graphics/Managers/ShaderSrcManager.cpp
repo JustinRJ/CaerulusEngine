@@ -2,11 +2,8 @@
 
 #include "ShaderSrcManager.h"
 
-namespace
-{
-    using namespace Core::Logging;
-    using namespace Graphics::Pipeline;
-}
+using namespace Core::Logging;
+using namespace Graphics::Pipeline;
 
 namespace Graphics
 {

@@ -238,7 +238,7 @@ echo DA | xcopy "$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(Plat
     <ClInclude Include="Surface\Material.h" />
     <ClInclude Include="Surface\Texture.h" />
     <ClInclude Include="Window\GLWindow.h" />
-    <ClInclude Include="Window\Window.h" />
+    <ClInclude Include="Window\IWindow.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp" />
@@ -248,6 +248,7 @@ echo DA | xcopy "$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(Plat
     <ClCompile Include="Managers\ShaderManager.cpp" />
     <ClCompile Include="Managers\ShaderSrcManager.cpp" />
     <ClCompile Include="Managers\TextureManager.cpp" />
+    <ClCompile Include="Pipeline\FrameBuffer.cpp" />
     <ClCompile Include="Pipeline\IndexBuffer.cpp" />
     <ClCompile Include="Pipeline\Shader.cpp" />
     <ClCompile Include="Pipeline\ShaderSrc.cpp" />

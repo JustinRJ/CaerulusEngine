@@ -2,11 +2,10 @@
 
 #include "MaterialManager.h"
 
-namespace
-{
-    using namespace Core::Logging;
-    using namespace Graphics::Surface;
-}
+#include <fstream>
+
+using namespace Core::Logging;
+using namespace Graphics::Surface;
 
 namespace Graphics
 {
@@ -29,7 +28,7 @@ namespace Graphics
 
                 for (unsigned int i = 0; i < textures.size(); ++i)
                 {
-                    material->SetTexture(textures[i], static_cast<Material::TextureType>(i));
+                    material->SetTexture(textures[i], static_cast<TextureType>(i));
                 }
 
                 Insert(name, material);
@@ -59,7 +58,7 @@ namespace Graphics
                         std::shared_ptr<Material> newMaterial = std::make_shared<Material>(path);
 
                         std::vector<std::shared_ptr<Texture>> textures;
-                        for (const std::string& textureName : Material::GetTextureNamesFromFile(is, static_cast<Material::TextureType>(i)))
+                        for (const std::string& textureName : Material::GetTextureNamesFromFile(is, static_cast<TextureType>(i)))
                         {
                             if (textureName != "")
                             {
@@ -76,7 +75,7 @@ namespace Graphics
 
                         for (unsigned int j = 0; j < textures.size(); ++j)
                         {
-                            newMaterial->SetTexture(textures[j], static_cast<Material::TextureType>(j));
+                            newMaterial->SetTexture(textures[j], static_cast<TextureType>(j));
                         }
 
                         Insert(name, newMaterial);

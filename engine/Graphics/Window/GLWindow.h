@@ -1,6 +1,10 @@
 #pragma once
 
-#include "Window.h"
+#include <memory>
+#include <glew.h>
+#include <glfw3.h>
+
+#include "IWindow.h"
 
 namespace Core
 {
@@ -14,7 +18,7 @@ namespace Graphics
 {
     namespace Window
     {
-        class CAERULUS_GRAPHICS GLWindow : public Window
+        class CAERULUS_GRAPHICS GLWindow : public IWindow
         {
         public:
             GLWindow(std::shared_ptr<Core::Math::Camera> camera, const std::string& title, int x, int y, int bits, bool fullscreen = false);

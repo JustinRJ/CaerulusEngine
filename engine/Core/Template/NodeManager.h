@@ -1,6 +1,8 @@
 #pragma once
 
-#define CAERULUS_CORE __declspec(dllexport)
+#include <map>
+#include <memory>
+#include <vector>
 
 #include "Core/Node/Node.h"
 #include "Core/Logging/Log.h"
@@ -11,7 +13,7 @@ namespace Core
     namespace Template
     {
         template <class T>
-        class CAERULUS_CORE NodeManager : private Interface::NonCopyable
+        class NodeManager : private Interface::NonCopyable
         {
         public:
             NodeManager() = default;
@@ -40,7 +42,6 @@ namespace Core
             {
                 if (IsLoaded(key))
                 {
-                    delete m_managedMap[key];
                     return m_managedMap.erase(key) > 0;
                 }
                 return false;

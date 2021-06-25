@@ -1,7 +1,11 @@
 #include "stdafx.h"
 
 #include "Timer.h"
+
+#include <windows.h>
+
 #include "Time.h"
+
 
 namespace Core
 {

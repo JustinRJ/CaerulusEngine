@@ -9,34 +9,48 @@ namespace Core
         class Line
         {
         public:
-            Line() = delete;
+            Line() = default;
             ~Line() = default;
 
-            Line(vec3 start, vec3 end) :
+            Line(const vec3& start, const vec3& end) :
                 m_start(start),
                 m_end(end),
                 m_direction(normalize(end - start)),
                 m_length(length(end - start))
             {}
 
-            const vec3& Start() const
+            const vec3& GetStart() const
             {
                 return m_start;
             }
 
-            const vec3& End() const
+            const vec3& GetEnd() const
             {
                 return m_end;
             }
 
-            const vec3& Direction() const
+            const vec3& GetDirection() const
             {
                 return m_direction;
             }
 
-            float Length() const
+            float GetLength() const
             {
                 return m_length;
+            }
+
+            void SetStart(const vec3& start)
+            {
+                m_start = start;
+                m_direction = normalize(m_end - m_start);
+                m_length = length(m_end - m_start);
+            }
+
+            void SetEnd(const vec3& end)
+            {
+                m_end = end;
+                m_direction = normalize(m_end - m_start);
+                m_length = length(m_end - m_start);
             }
 
             vec3 GetOrthogonalPoint(const vec3& point) const
@@ -76,10 +90,10 @@ namespace Core
             }
 
         private:
-            const vec3 m_start;
-            const vec3 m_end;
-            const vec3 m_direction;
-            const float m_length;
+            vec3 m_start;
+            vec3 m_end;
+            vec3 m_direction;
+            float m_length;
         };
     }
 }

@@ -2,6 +2,9 @@
 
 #define CAERULUS_GRAPHICS __declspec(dllexport)
 
+#include <string>
+#include <glew.h>
+
 #include "Core/Interface/NonCopyable.h"
 
 namespace Graphics

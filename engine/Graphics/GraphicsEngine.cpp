@@ -4,6 +4,7 @@
 
 #include "Window/GLWindow.h"
 
+#include "Graphics/Pipeline/FrameBuffer.h"
 #include "Graphics/Pipeline/VertexArray.h"
 #include "Graphics/Pipeline/VertexBuffer.h"
 #include "Graphics/Pipeline/IndexBuffer.h"
@@ -37,6 +38,8 @@ namespace Graphics
         m_window(window),
         m_renderer(renderer)
     {
+        m_framebuffer = std::make_shared<Pipeline::FrameBuffer>();
+        m_framebuffer->Init(m_window->GetActiveState().Width, m_window->GetActiveState().Height, 8);
     }
     
     void GraphicsEngine::PreUpdate(float deltaTime)
@@ -49,6 +52,14 @@ namespace Graphics
         if (m_window)
         {
             m_window->Update();
+
+            // TODO - manually calling m_IBL bind is bad
+            // add functionality to ShaderUniform to allow priority of update to be set
+            if (m_IBL)
+            {
+                m_IBL->Bind();
+            }
+
             if (m_renderer)
             {
                 UpdateModels();
@@ -169,5 +180,10 @@ namespace Graphics
     void GraphicsEngine::SetIBL(std::shared_ptr<Lighting::IBL> ibl)
     {
         m_IBL = ibl;
+    }
+
+    std::shared_ptr<Pipeline::FrameBuffer> GraphicsEngine::GetFrameBuffer() const
+    {
+        return m_framebuffer;
     }
 }

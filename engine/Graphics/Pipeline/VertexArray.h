@@ -1,5 +1,7 @@
 #pragma once
 
+#include <glew.h>
+
 #include "Core/Interface/NonCopyable.h"
 #include "VertexBuffer.h"
 #include "VertexBufferLayout.h"
