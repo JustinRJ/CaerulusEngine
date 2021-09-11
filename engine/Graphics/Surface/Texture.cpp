@@ -1,13 +1,13 @@
 #include "stdafx.h"
 
-#include "Texture.h"
+#include "Surface/Texture.h"
 
 #include <glew.h>
 //required before stb_image define
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
-#include "Core/Logging/Log.h"
+#include "Logging/Log.h"
 
 using namespace Core::Logging;
 

@@ -4,25 +4,25 @@
 
 #include "Window/GLWindow.h"
 
-#include "Graphics/Pipeline/FrameBuffer.h"
-#include "Graphics/Pipeline/VertexArray.h"
-#include "Graphics/Pipeline/VertexBuffer.h"
-#include "Graphics/Pipeline/IndexBuffer.h"
+#include "Pipeline/FrameBuffer.h"
+#include "Pipeline/VertexArray.h"
+#include "Pipeline/VertexBuffer.h"
+#include "Pipeline/IndexBuffer.h"
 
-#include "Graphics/Rendering/GLRenderer.h"
+#include "Rendering/GLRenderer.h"
 
-#include "Graphics/Geometry/Quad.h"
-#include "Graphics/Geometry/Cube.h"
-#include "Graphics/Geometry/Plane.h"
-#include "Graphics/Geometry/Mesh.h"
-#include "Graphics/Geometry/Model.h"
+#include "Geometry/Quad.h"
+#include "Geometry/Cube.h"
+#include "Geometry/Plane.h"
+#include "Geometry/Mesh.h"
+#include "Geometry/Model.h"
 
-#include "Graphics/Surface/Material.h"
+#include "Surface/Material.h"
 
-#include "Graphics/Lighting/IBL.h"
-#include "Graphics/Lighting/Light.h"
-#include "Graphics/Lighting/PointLight.h"
-#include "Graphics/Lighting/DirectionalLight.h"
+#include "Lighting/IBL.h"
+#include "Lighting/Light.h"
+#include "Lighting/PointLight.h"
+#include "Lighting/DirectionalLight.h"
 
 namespace Graphics
 {
@@ -33,10 +33,21 @@ namespace Graphics
     using namespace Lighting;
     using namespace Rendering;
 
-    GraphicsEngine::GraphicsEngine(std::shared_ptr<GLWindow> window,
+    GraphicsEngine::GraphicsEngine(
+        const Managers::ShaderManager& shaderManager,
+        const Managers::TextureManager& textureManager,
+        const Managers::MaterialManager& materialManager,
+        const Managers::ModelManager& modelManager,
+        const Managers::PointLightManager& pointLightManager,
+        std::shared_ptr<GLWindow> window,
         std::shared_ptr<IRenderer> renderer) :
         m_window(window),
-        m_renderer(renderer)
+        m_renderer(renderer),
+        m_shaderManager(shaderManager),
+        m_textureManager(textureManager),
+        m_materialManager(materialManager),
+        m_modelManager(modelManager),
+        m_pointLightManager(pointLightManager)
     {
         m_framebuffer = std::make_shared<Pipeline::FrameBuffer>();
         m_framebuffer->Init(m_window->GetActiveState().Width, m_window->GetActiveState().Height, 8);
@@ -78,21 +89,20 @@ namespace Graphics
 
     void GraphicsEngine::UpdateModels()
     {
-        for (std::shared_ptr<Geometry::Model> model : m_models)
+        for (auto it = m_modelManager.GetMap().begin(); it != m_modelManager.GetMap().end(); ++it)
         {
-            if (model)
+            if (it->second)
             {
-                model->InvokeUniformFunctors();
-                for (std::shared_ptr<Mesh> mesh : model->GetMeshes())
+                it->second->InvokeUniformFunctors();
+                for (const std::shared_ptr<Mesh>& mesh : it->second->GetMeshes())
                 {
                     if (mesh)
                     {
                         mesh->InvokeUniformFunctors();
-                        if (std::shared_ptr<Material> material = mesh->GetMaterial())
+                        if (const Material* material = m_materialManager.Get(mesh->GetMaterial()))
                         {
                             material->Bind();
                             material->InvokeUniformFunctors();
-
                             m_renderer->Draw(*mesh, m_renderWireframe);
                         }
                     }
@@ -103,12 +113,9 @@ namespace Graphics
 
     void GraphicsEngine::UpdateLights()
     {
-        for (std::shared_ptr<Light> light : m_lights)
+        for (auto it = m_pointLightManager.GetMap().begin(); it != m_pointLightManager.GetMap().end(); ++it)
         {
-            if (light)
-            {
-                light->InvokeUniformFunctors();
-            }
+            it->second->InvokeUniformFunctors();
         }
     }
 
@@ -140,26 +147,6 @@ namespace Graphics
     void GraphicsEngine::SetRenderer(std::shared_ptr<IRenderer> renderer)
     {
         m_renderer = renderer;
-    }
-
-    void GraphicsEngine::SetModels(const std::vector<std::shared_ptr<Model>>& models)
-    {
-        m_models = models;
-    }
-
-    void GraphicsEngine::SetLights(const std::vector<std::shared_ptr<Light>>& lights)
-    {
-        m_lights = lights;
-    }
-
-    const std::vector<std::shared_ptr<Model>>& GraphicsEngine::GetModels() const
-    {
-        return m_models;
-    }
-
-    const std::vector<std::shared_ptr<Light>>& GraphicsEngine::GetLights() const
-    {
-        return m_lights;
     }
 
     std::shared_ptr<Lighting::IBL> GraphicsEngine::GetIBL() const

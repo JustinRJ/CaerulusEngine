@@ -104,7 +104,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;GRAPHICS_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir);$(SolutionDir)..\dependencies\glew-2.1.0\include\;$(SolutionDir)..\dependencies\glfw-3.2.1\include\;$(SolutionDir)..\dependencies\glm-0.9.9.0\include\;$(SolutionDir)..\dependencies\stb\include\;$(SolutionDir)..\dependencies\tinyobjloader-1.0.0\include\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Graphics\;$(SolutionDir)Graphics\include\;$(SolutionDir)Core\include\;$(SolutionDir)..\dependencies\glew-2.1.0\include\;$(SolutionDir)..\dependencies\glfw-3.2.1\include\;$(SolutionDir)..\dependencies\glm-0.9.9.0\include\;$(SolutionDir)..\dependencies\stb\include\;$(SolutionDir)..\dependencies\tinyobjloader-1.0.0\include\</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4251</DisableSpecificWarnings>
     </ClCompile>
     <Link>
@@ -132,7 +132,7 @@ echo DA | xcopy "$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(Plat
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;GRAPHICS_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir);$(SolutionDir)..\dependencies\glew-2.1.0\include\;$(SolutionDir)..\dependencies\glfw-3.2.1\include\;$(SolutionDir)..\dependencies\glm-0.9.9.0\include\;$(SolutionDir)..\dependencies\stb\include\;$(SolutionDir)..\dependencies\tinyobjloader-1.0.0\include\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Graphics\;$(SolutionDir)Graphics\include\;$(SolutionDir)Core\include\;$(SolutionDir)..\dependencies\glew-2.1.0\include\;$(SolutionDir)..\dependencies\glfw-3.2.1\include\;$(SolutionDir)..\dependencies\glm-0.9.9.0\include\;$(SolutionDir)..\dependencies\stb\include\;$(SolutionDir)..\dependencies\tinyobjloader-1.0.0\include\</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4251</DisableSpecificWarnings>
     </ClCompile>
     <Link>
@@ -158,7 +158,7 @@ echo DA | xcopy "$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(Plat
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;GRAPHICS_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir);$(SolutionDir)..\dependencies\glew-2.1.0\include\;$(SolutionDir)..\dependencies\glfw-3.2.1\include\;$(SolutionDir)..\dependencies\glm-0.9.9.0\include\;$(SolutionDir)..\dependencies\stb\include\;$(SolutionDir)..\dependencies\tinyobjloader-1.0.0\include\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Graphics\;$(SolutionDir)Graphics\include\;$(SolutionDir)Core\include\;$(SolutionDir)..\dependencies\glew-2.1.0\include\;$(SolutionDir)..\dependencies\glfw-3.2.1\include\;$(SolutionDir)..\dependencies\glm-0.9.9.0\include\;$(SolutionDir)..\dependencies\stb\include\;$(SolutionDir)..\dependencies\tinyobjloader-1.0.0\include\</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4251</DisableSpecificWarnings>
     </ClCompile>
     <Link>
@@ -186,7 +186,7 @@ echo DA | xcopy "$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(Plat
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;GRAPHICS_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir);$(SolutionDir)..\dependencies\glew-2.1.0\include\;$(SolutionDir)..\dependencies\glfw-3.2.1\include\;$(SolutionDir)..\dependencies\glm-0.9.9.0\include\;$(SolutionDir)..\dependencies\stb\include\;$(SolutionDir)..\dependencies\tinyobjloader-1.0.0\include\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Graphics\;$(SolutionDir)Graphics\include\;$(SolutionDir)Core\include\;$(SolutionDir)..\dependencies\glew-2.1.0\include\;$(SolutionDir)..\dependencies\glfw-3.2.1\include\;$(SolutionDir)..\dependencies\glm-0.9.9.0\include\;$(SolutionDir)..\dependencies\stb\include\;$(SolutionDir)..\dependencies\tinyobjloader-1.0.0\include\</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4251</DisableSpecificWarnings>
     </ClCompile>
     <Link>
@@ -207,51 +207,53 @@ echo DA | xcopy "$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(Plat
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="Geometry\Cube.h" />
-    <ClInclude Include="Geometry\GPUGeometry.h" />
-    <ClInclude Include="Geometry\Mesh.h" />
-    <ClInclude Include="Geometry\Model.h" />
-    <ClInclude Include="Geometry\Plane.h" />
-    <ClInclude Include="Geometry\Quad.h" />
-    <ClInclude Include="Lighting\DirectionalLight.h" />
-    <ClInclude Include="Lighting\IBL.h" />
-    <ClInclude Include="Lighting\Light.h" />
-    <ClInclude Include="Lighting\PointLight.h" />
-    <ClInclude Include="Lighting\SpotLight.h" />
-    <ClInclude Include="Managers\MaterialManager.h" />
-    <ClInclude Include="Managers\ModelManager.h" />
-    <ClInclude Include="Managers\ShaderManager.h" />
-    <ClInclude Include="Managers\ShaderSrcManager.h" />
-    <ClInclude Include="Managers\TextureManager.h" />
-    <ClInclude Include="Pipeline\FrameBuffer.h" />
-    <ClInclude Include="Pipeline\IndexBuffer.h" />
-    <ClInclude Include="Pipeline\Shader.h" />
-    <ClInclude Include="Pipeline\ShaderSrc.h" />
-    <ClInclude Include="GraphicsEngine.h" />
-    <ClInclude Include="Pipeline\ShaderUniformFunctor.h" />
-    <ClInclude Include="Pipeline\VertexArray.h" />
-    <ClInclude Include="Pipeline\VertexBuffer.h" />
-    <ClInclude Include="Pipeline\VertexBufferLayout.h" />
-    <ClInclude Include="Rendering\GLRenderer.h" />
-    <ClInclude Include="Rendering\IRenderer.h" />
+    <ClInclude Include="include\Geometry\Cube.h" />
+    <ClInclude Include="include\Geometry\GPUGeometry.h" />
+    <ClInclude Include="include\Geometry\Mesh.h" />
+    <ClInclude Include="include\Geometry\Model.h" />
+    <ClInclude Include="include\Geometry\Plane.h" />
+    <ClInclude Include="include\Geometry\Quad.h" />
+    <ClInclude Include="include\GraphicsEngine.h" />
+    <ClInclude Include="include\Lighting\DirectionalLight.h" />
+    <ClInclude Include="include\Lighting\IBL.h" />
+    <ClInclude Include="include\Lighting\Light.h" />
+    <ClInclude Include="include\Lighting\PointLight.h" />
+    <ClInclude Include="include\Lighting\SpotLight.h" />
+    <ClInclude Include="include\Managers\MaterialManager.h" />
+    <ClInclude Include="include\Managers\ModelManager.h" />
+    <ClInclude Include="include\Managers\PointLightManager.h" />
+    <ClInclude Include="include\Managers\ShaderManager.h" />
+    <ClInclude Include="include\Managers\ShaderSourceManager.h" />
+    <ClInclude Include="include\Managers\TextureManager.h" />
+    <ClInclude Include="include\Pipeline\FrameBuffer.h" />
+    <ClInclude Include="include\Pipeline\IndexBuffer.h" />
+    <ClInclude Include="include\Pipeline\Shader.h" />
+    <ClInclude Include="include\Pipeline\ShaderSource.h" />
+    <ClInclude Include="include\Pipeline\ShaderUniformFunctor.h" />
+    <ClInclude Include="include\Pipeline\VertexArray.h" />
+    <ClInclude Include="include\Pipeline\VertexBuffer.h" />
+    <ClInclude Include="include\Pipeline\VertexBufferLayout.h" />
+    <ClInclude Include="include\Rendering\GLRenderer.h" />
+    <ClInclude Include="include\Rendering\IRenderer.h" />
+    <ClInclude Include="include\Surface\Material.h" />
+    <ClInclude Include="include\Surface\Texture.h" />
+    <ClInclude Include="include\Window\GLWindow.h" />
+    <ClInclude Include="include\Window\IWindow.h" />
     <ClInclude Include="stdafx.h" />
-    <ClInclude Include="Surface\Material.h" />
-    <ClInclude Include="Surface\Texture.h" />
-    <ClInclude Include="Window\GLWindow.h" />
-    <ClInclude Include="Window\IWindow.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp" />
-    <ClCompile Include="Geometry\Model.cpp" />
+    <ClCompile Include="include\Geometry\Model.cpp" />
+    <ClCompile Include="Managers\PointLightManager.cpp" />
     <ClCompile Include="Managers\MaterialManager.cpp" />
     <ClCompile Include="Managers\ModelManager.cpp" />
     <ClCompile Include="Managers\ShaderManager.cpp" />
-    <ClCompile Include="Managers\ShaderSrcManager.cpp" />
+    <ClCompile Include="Managers\ShaderSourceManager.cpp" />
     <ClCompile Include="Managers\TextureManager.cpp" />
     <ClCompile Include="Pipeline\FrameBuffer.cpp" />
     <ClCompile Include="Pipeline\IndexBuffer.cpp" />
     <ClCompile Include="Pipeline\Shader.cpp" />
-    <ClCompile Include="Pipeline\ShaderSrc.cpp" />
+    <ClCompile Include="Pipeline\ShaderSource.cpp" />
     <ClCompile Include="GraphicsEngine.cpp" />
     <ClCompile Include="Pipeline\VertexArray.cpp" />
     <ClCompile Include="Pipeline\VertexBuffer.cpp" />

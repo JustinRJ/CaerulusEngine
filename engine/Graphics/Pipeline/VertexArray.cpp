@@ -1,6 +1,6 @@
 #include "stdafx.h"
 
-#include "VertexArray.h"
+#include "Pipeline\VertexArray.h"
 
 namespace Graphics
 {

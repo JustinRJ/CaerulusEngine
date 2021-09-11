@@ -1,7 +1,8 @@
 #include "stdafx.h"
 
+#include "Pipeline\FrameBuffer.h"
+
 #include <sstream>
-#include "FrameBuffer.h"
 
 namespace Graphics
 {
@@ -20,11 +21,11 @@ namespace Graphics
             glGetIntegerv(GL_MAX_SAMPLES, &maxMsaa);
             if (msaa > static_cast<unsigned int>(maxMsaa))
             {
-                m_msaa = maxMsaa;
+                msaa = maxMsaa;
             }
             else if (msaa % 2 != 0)
             {
-                m_msaa--;
+                msaa--;
             }
 
             // reset error message
@@ -52,7 +53,8 @@ namespace Graphics
             glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
             glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
             glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-            glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_TRUE); // automatic mipmap generation included in OpenGL v1.4
+            glGenerateMipmap(GL_TEXTURE_2D);
+
             glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, m_width, m_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
             glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_texId, 0);
 
@@ -490,6 +492,9 @@ namespace Graphics
             case GL_ALPHA:              // 0x1906
                 formatName = "GL_ALPHA";
                 break;
+            case GL_RG:                // 0x8227
+                formatName = "GL_RG";  
+                break;
             case GL_RGB:                // 0x1907
                 formatName = "GL_RGB";
                 break;
@@ -561,6 +566,9 @@ namespace Graphics
                 break;
             case GL_INTENSITY16:        // 0x804D
                 formatName = "GL_INTENSITY16";
+                break;
+            case GL_RG16F:              // 0x822F
+                formatName = "GL_RG16F";
                 break;
             case GL_RGB4:               // 0x804F
                 formatName = "GL_RGB4";

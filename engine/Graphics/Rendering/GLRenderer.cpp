@@ -1,14 +1,14 @@
 #include "stdafx.h"
 
-#include "GLRenderer.h"
+#include "Rendering/GLRenderer.h"
 
-#include "Core/Math/Math.h"
-#include "Core/Logging/Log.h"
-#include "Graphics/Window/GLWindow.h"
-#include "Graphics/Pipeline/VertexArray.h"
-#include "Graphics/Pipeline/VertexBuffer.h"
-#include "Graphics/Pipeline/IndexBuffer.h"
-#include "Graphics/Geometry/GPUGeometry.h"
+#include "Math/Math.h"
+#include "Logging/Log.h"
+#include "Window/GLWindow.h"
+#include "Pipeline/VertexArray.h"
+#include "Pipeline/VertexBuffer.h"
+#include "Pipeline/IndexBuffer.h"
+#include "Geometry/GPUGeometry.h"
 
 using namespace Core::Logging;
 

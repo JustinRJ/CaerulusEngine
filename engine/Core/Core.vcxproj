@@ -102,7 +102,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;CORE_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir);$(SolutionDir)..\dependencies\glm-0.9.9.0\include\;$(SolutionDir)..\dependencies\glfw-3.2.1\include\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Core\;$(SolutionDir)Core\include\;$(SolutionDir)..\dependencies\glm-0.9.9.0\include\;$(SolutionDir)..\dependencies\glfw-3.2.1\include\</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4251</DisableSpecificWarnings>
     </ClCompile>
     <Link>
@@ -128,7 +128,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;CORE_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir);$(SolutionDir)..\dependencies\glm-0.9.9.0\include\;$(SolutionDir)..\dependencies\glfw-3.2.1\include\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Core\;$(SolutionDir)Core\include\;$(SolutionDir)..\dependencies\glm-0.9.9.0\include\;$(SolutionDir)..\dependencies\glfw-3.2.1\include\</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4251</DisableSpecificWarnings>
     </ClCompile>
     <Link>
@@ -156,7 +156,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;CORE_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir);$(SolutionDir)..\dependencies\glm-0.9.9.0\include\;$(SolutionDir)..\dependencies\glfw-3.2.1\include\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Core\;$(SolutionDir)Core\include\;$(SolutionDir)..\dependencies\glm-0.9.9.0\include\;$(SolutionDir)..\dependencies\glfw-3.2.1\include\</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4251</DisableSpecificWarnings>
     </ClCompile>
     <Link>
@@ -186,7 +186,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;CORE_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir);$(SolutionDir)..\dependencies\glm-0.9.9.0\include\;$(SolutionDir)..\dependencies\glfw-3.2.1\include\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Core\;$(SolutionDir)Core\include\;$(SolutionDir)..\dependencies\glm-0.9.9.0\include\;$(SolutionDir)..\dependencies\glfw-3.2.1\include\</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4251</DisableSpecificWarnings>
     </ClCompile>
     <Link>
@@ -207,41 +207,42 @@
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="File\FileUtility.h" />
-    <ClInclude Include="Input\InputDefines.h" />
-    <ClInclude Include="Input\KeyboardInputManager.h" />
-    <ClInclude Include="Input\MouseInputManager.h" />
-    <ClInclude Include="Interface\ISerializable.h" />
-    <ClInclude Include="Interface\ITickable.h" />
-    <ClInclude Include="Interface\NonCopyable.h" />
-    <ClInclude Include="Interface\NonMovable.h" />
-    <ClInclude Include="Interface\Singleton.h" />
-    <ClInclude Include="Logging\Log.h" />
-    <ClInclude Include="Logging\LogToFile.h" />
-    <ClInclude Include="Math\AABox.h" />
-    <ClInclude Include="Math\AARect.h" />
-    <ClInclude Include="Math\Camera.h" />
-    <ClInclude Include="Math\Circle.h" />
-    <ClInclude Include="Math\Box.h" />
-    <ClInclude Include="Math\Line.h" />
-    <ClInclude Include="Math\Math.h" />
-    <ClInclude Include="Math\Perspective.h" />
-    <ClInclude Include="Math\Polygon.h" />
-    <ClInclude Include="Math\Ray.h" />
-    <ClInclude Include="Math\Rect.h" />
-    <ClInclude Include="Math\Sphere.h" />
-    <ClInclude Include="Math\Transform.h" />
-    <ClInclude Include="Node\Node.h" />
+    <ClInclude Include="include\File\FileUtility.h" />
+    <ClInclude Include="include\Input\InputDefines.h" />
+    <ClInclude Include="include\Input\KeyboardInputManager.h" />
+    <ClInclude Include="include\Input\MouseInputManager.h" />
+    <ClInclude Include="include\Interface\ISerializable.h" />
+    <ClInclude Include="include\Interface\ITickable.h" />
+    <ClInclude Include="include\Interface\NonCopyable.h" />
+    <ClInclude Include="include\Interface\NonMovable.h" />
+    <ClInclude Include="include\Interface\Singleton.h" />
+    <ClInclude Include="include\Logging\Log.h" />
+    <ClInclude Include="include\Logging\LogToFile.h" />
+    <ClInclude Include="include\Math\AABox.h" />
+    <ClInclude Include="include\Math\AARect.h" />
+    <ClInclude Include="include\Math\Box.h" />
+    <ClInclude Include="include\Math\Camera.h" />
+    <ClInclude Include="include\Math\Circle.h" />
+    <ClInclude Include="include\Math\Line.h" />
+    <ClInclude Include="include\Math\Math.h" />
+    <ClInclude Include="include\Math\Perspective.h" />
+    <ClInclude Include="include\Math\Polygon.h" />
+    <ClInclude Include="include\Math\Ray.h" />
+    <ClInclude Include="include\Math\Rect.h" />
+    <ClInclude Include="include\Math\Sphere.h" />
+    <ClInclude Include="include\Math\Transform.h" />
+    <ClInclude Include="include\Node\Node.h" />
+    <ClInclude Include="include\Template\Cacher.h" />
+    <ClInclude Include="include\Template\Manager.h" />
+    <ClInclude Include="include\Template\NodeManager.h" />
+    <ClInclude Include="include\Template\NonAssignable.h" />
+    <ClInclude Include="include\Template\Observer.h" />
+    <ClInclude Include="include\Template\Producer.h" />
+    <ClInclude Include="include\Time\FixedTimer.h" />
+    <ClInclude Include="include\Time\FPSLimiter.h" />
+    <ClInclude Include="include\Time\Time.h" />
+    <ClInclude Include="include\Time\Timer.h" />
     <ClInclude Include="stdafx.h" />
-    <ClInclude Include="Template\Cacher.h" />
-    <ClInclude Include="Template\Manager.h" />
-    <ClInclude Include="Template\NodeManager.h" />
-    <ClInclude Include="Template\Observer.h" />
-    <ClInclude Include="Template\Producer.h" />
-    <ClInclude Include="Time\FixedTimer.h" />
-    <ClInclude Include="Time\FPSLimiter.h" />
-    <ClInclude Include="Time\Time.h" />
-    <ClInclude Include="Time\Timer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp" />

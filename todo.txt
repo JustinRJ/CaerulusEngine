@@ -4,8 +4,6 @@ General
 
 * Split into Game and Engine solutions
 
-* Create include directory
-
 * Implement thread class with async as basis
 
 * Create visitor class for all possible intersects (Lines, Rects, Circles, Cubes, Frustrum, etc)

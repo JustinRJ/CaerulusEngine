@@ -2,33 +2,33 @@
 
 #include "Engine.h"
 
-#include "Core/Node/Node.h"
-#include "Core/Math/Math.h"
-#include "Core/Math/Camera.h"
+#include "Node/Node.h"
+#include "Math/Math.h"
+#include "Math/Camera.h"
 
-#include "Core/Logging/Log.h"
-#include "Core/Logging/LogToFile.h"
+#include "Logging/Log.h"
+#include "Logging/LogToFile.h"
 
-#include "Core/Time/FPSLimiter.h"
-#include "Core/Time/FixedTimer.h"
+#include "Time/FPSLimiter.h"
+#include "Time/FixedTimer.h"
 
-#include "Core/Interface/ITickable.h"
-#include "Core/Interface/NonCopyable.h"
+#include "Interface/ITickable.h"
+#include "Interface/NonCopyable.h"
 
-#include "Graphics/GraphicsEngine.h"
-#include "Graphics/Window/GLWindow.h"
-#include "Graphics/Rendering/GLRenderer.h"
+#include "GraphicsEngine.h"
+#include "Window/GLWindow.h"
+#include "Rendering/GLRenderer.h"
 
-#include "Core/Input/MouseInputManager.h"
-#include "Core/Input/KeyboardInputManager.h"
+#include "Input/MouseInputManager.h"
+#include "Input/KeyboardInputManager.h"
 
-#include "Graphics/Managers/TextureManager.h"
-#include "Graphics/Managers/MaterialManager.h"
-#include "Graphics/Managers/ModelManager.h"
-#include "Graphics/Managers/ShaderSrcManager.h"
-#include "Graphics/Managers/ShaderManager.h"
+#include "Managers/TextureManager.h"
+#include "Managers/MaterialManager.h"
+#include "Managers/ModelManager.h"
+#include "Managers/ShaderSourceManager.h"
+#include "Managers/ShaderManager.h"
 
-#include "Graphics/Lighting/IBL.h"
+#include "Lighting/IBL.h"
 
 using namespace Core::Node;
 using namespace Core::Math;
@@ -55,14 +55,17 @@ Engine::Engine(int argc, char** argv) :
     m_camera                = std::make_shared<Camera>(vec3(0, 0, 0), UnitForward, UnitUp);
     m_window                = std::make_shared<GLWindow>(m_camera, "Caerulus", 1280, 1024, 32, false);
     m_renderer              = std::make_shared<GLRenderer>();
-    m_graphicsEngine        = std::make_shared<GraphicsEngine>(m_window, m_renderer);
     m_keyboardInputManager  = std::make_shared<KeyboardInputManager>(m_window);
     m_mouseInputManager     = std::make_shared<MouseInputManager>(m_window);
-    m_textureManager        = std::make_shared<TextureManager>();
-    m_materialManager       = std::make_shared<MaterialManager>(*m_textureManager);
-    m_modelManager          = std::make_shared<ModelManager>(*m_materialManager);
-    m_shaderSrcManager      = std::make_shared<ShaderSrcManager>();
+    m_shaderSrcManager      = std::make_shared<ShaderSourceManager>();
     m_shaderManager         = std::make_shared<ShaderManager>(*m_shaderSrcManager);
+    m_textureManager        = std::make_shared<TextureManager>();
+    m_materialManager       = std::make_shared<MaterialManager>(*m_shaderManager, *m_textureManager);
+    m_modelManager          = std::make_shared<ModelManager>(*m_materialManager);
+    m_pointLightManager     = std::make_shared<PointLightManager>(*m_shaderManager);
+
+    m_graphicsEngine = std::make_shared<GraphicsEngine>(
+        *m_shaderManager, *m_textureManager, *m_materialManager, *m_modelManager, *m_pointLightManager, m_window, m_renderer);
 
     m_tickable.push_back(m_keyboardInputManager);
     m_tickable.push_back(m_mouseInputManager);
@@ -71,6 +74,7 @@ Engine::Engine(int argc, char** argv) :
     InitInput();
     InitGLRenderer();
     InitScene();
+    InitLighting();
 }
 
 void Engine::Run()
@@ -107,24 +111,24 @@ void Engine::Tick()
     if (m_reset)
     {
         LogMessage("Resetting...");
-        for (std::shared_ptr<ITickable> tickable : m_tickable)
+        for (const std::shared_ptr<ITickable>& tickable : m_tickable)
         {
             tickable->Reset();
         }
         m_reset = false;
     }
 
-    for (std::shared_ptr<ITickable> tickable : m_tickable)
+    for (const std::shared_ptr<ITickable>& tickable : m_tickable)
     {
         tickable->PreUpdate(m_deltaTime);
     }
 
-    for (std::shared_ptr<ITickable> tickable : m_tickable)
+    for (const std::shared_ptr<ITickable>& tickable : m_tickable)
     {
         tickable->Update(m_deltaTime);
     }
 
-    for (std::shared_ptr<ITickable> tickable : m_tickable)
+    for (const std::shared_ptr<ITickable>& tickable : m_tickable)
     {
         tickable->FixedUpdate(m_fixedTime);
     }
@@ -146,7 +150,7 @@ void Engine::InitInput()
     m_keyboardInputManager->AddWindowKeyCallback(m_window, GLFW_KEY_Q, Action::Hold, [&](Modifier m) { if (m_window->IsCursorLocked()) { m_camera->Translate(UnitUp      * -m_deltaTime * (m == Modifier::Shift ? m_sprintSpeed : m_normalSpeed)); }});
     m_keyboardInputManager->AddWindowKeyCallback(m_window, GLFW_KEY_E, Action::Hold, [&](Modifier m) { if (m_window->IsCursorLocked()) { m_camera->Translate(UnitUp      *  m_deltaTime * (m == Modifier::Shift ? m_sprintSpeed : m_normalSpeed)); }});
 
-    m_mouseInputManager->AddDragMouseCallback(m_window, [&](DragData dd)
+    m_mouseInputManager->AddDragMouseCallback(m_window, [&](const DragData& dd)
     {
         if (m_window->IsCursorLocked())
         {
@@ -166,31 +170,67 @@ void Engine::InitGLRenderer()
     m_shaderManager->Load("background", "assets/shaders/background.vert",   "assets/shaders/background.frag");
 
     Lighting::IBLShaders iblShaders = {
-        m_shaderManager->Get("pbr"),
-        m_shaderManager->Get("cubemap"),
-        m_shaderManager->Get("irradiance"),
-        m_shaderManager->Get("prefilter"),
-        m_shaderManager->Get("brdf"),
-        m_shaderManager->Get("background")
+        "pbr",
+        "cubemap",
+        "irradiance",
+        "prefilter",
+        "brdf",
+        "background"
     };
 
     m_textureManager->Load("city", "assets/textures/city_ref.hdr");
-    std::shared_ptr<Lighting::IBL> ibl = std::make_shared<IBL>(iblShaders, m_textureManager->Get("city"), m_renderer, m_window, m_camera, m_graphicsEngine->GetFrameBuffer());
+    std::shared_ptr<Lighting::IBL> ibl = std::make_shared<IBL>(*m_shaderManager, *m_textureManager,
+        iblShaders, "city", m_renderer, m_window, m_camera, m_graphicsEngine->GetFrameBuffer());
 
-    ibl->AddUniformFunctor(m_shaderManager->Get("background"), [&](const Shader& shader)
+    ibl->AddUniformFunctor("background", [&](const Shader& shader)
     {
         shader.SetMat4fv("projection", m_camera->GetPerspective().GetMatrix());
         shader.SetMat4fv("view", m_camera->GetTransform().GetMatrix());
 
         m_graphicsEngine->GetIBL()->Draw();
     });
-    ibl->AddUniformFunctor(m_shaderManager->Get("brdf"), [&](const Shader& shader)
+    ibl->AddUniformFunctor("brdf", [&](const Shader& shader)
     {
         m_window->Update();
     });
 
     m_graphicsEngine->SetIBL(ibl);
-    Material::SetMaterialTextureSlotOffset(ibl->GetRequiredTextureSlots());
+}
+
+void Engine::InitLighting()
+{
+    m_pointLightManager->Create("red", vec3(-150, 15., 0), vec3(255, 0, 0));
+    m_pointLightManager->Create("blue", vec3(0, 15., 0), vec3(0, 255, 0));
+    m_pointLightManager->Create("green", vec3(150, 15., 0), vec3(0, 0, 255));
+    m_pointLightManager->Create("white", vec3(0., 30., 0), vec3(255, 255, 255));
+
+    const PointLight* red = m_pointLightManager->Get("red");
+    m_pointLightManager->AddPointLightUniformFunctor("red", "pbr", [capturedLight = red](const Shader& shader)
+    {
+        shader.Set3f("lightPositions[0]", capturedLight->GetPosition());
+        shader.Set3f("lightColours[0]", capturedLight->GetColour());
+    });
+
+    const PointLight* blue = m_pointLightManager->Get("blue");
+    m_pointLightManager->AddPointLightUniformFunctor("blue", "pbr", [capturedLight = blue](const Shader& shader)
+    {
+        shader.Set3f("lightPositions[1]", capturedLight->GetPosition());
+        shader.Set3f("lightColours[1]", capturedLight->GetColour());
+    });
+
+    const PointLight* green = m_pointLightManager->Get("green");
+    m_pointLightManager->AddPointLightUniformFunctor("green", "pbr", [capturedLight = green](const Shader& shader)
+    {
+        shader.Set3f("lightPositions[2]", capturedLight->GetPosition());
+        shader.Set3f("lightColours[2]", capturedLight->GetColour());
+    });
+
+    const PointLight* white = m_pointLightManager->Get("white");
+    m_pointLightManager->AddPointLightUniformFunctor("white", "pbr", [capturedLight = white](const Shader& shader)
+    {
+        shader.Set3f("lightPositions[3]", capturedLight->GetPosition());
+        shader.Set3f("lightColours[3]", capturedLight->GetColour());
+    });
 }
 
 void Engine::InitScene()
@@ -198,7 +238,7 @@ void Engine::InitScene()
     m_modelManager->Load("sponza", "assets/models/Sponza/sponza.obj");
 
     // Only set shaders and functors for sponza model 
-    if (std::shared_ptr<Model> model = m_modelManager->Get("sponza"))
+    if (const Model* model = m_modelManager->Get("sponza"))
     {
         // Sponza model doesn't have AO textures, add default AO texture
         // Use completely black texture to disable IBL lighting
@@ -209,54 +249,38 @@ void Engine::InitScene()
         Core::Math::mat4 sponzaTransform = model->GetTransform().GetMatrix();
         sponzaTransform = translate(mat4(1.0f), vec3(0, -10, 0));
         sponzaTransform = scale(sponzaTransform, vec3(0.25, 0.25, 0.25));
-        model->GetTransform().SetMatrix(sponzaTransform);
+        m_modelManager->SetModelTransform("sponza", sponzaTransform);
 
         // Set uniform functor to update each models MVP before it's rendered
-        model->AddUniformFunctor(m_shaderManager->Get("pbr"), [capturedCamera = m_camera, capturedModel = model](const Shader& shader)
+        m_modelManager->AddModelUniformFunctor("sponza", "pbr", [capturedCamera = m_camera, capturedModel = model](const Shader& shader)
         {
             shader.SetMat4fv("projection",  capturedCamera->GetPerspective().GetMatrix());
             shader.SetMat4fv("view",        capturedCamera->GetTransform().GetMatrix());
             shader.SetMat4fv("model",       capturedModel->GetTransform().GetMatrix());
             shader.Set3f("viewPos",         capturedCamera->GetTransform().GetTranslation());
-
-            shader.Set3f("lightPositions[0]", vec3(-150, 15., 0));
-            shader.Set3f("lightPositions[1]", vec3(0, 15., 0));
-            shader.Set3f("lightPositions[2]", vec3(150, 15., 0));
-            shader.Set3f("lightPositions[3]", vec3(0., 30., 0));
-            shader.Set3f("lightColours[0]", vec3(255, 0, 0));
-            shader.Set3f("lightColours[1]", vec3(0, 255, 0));
-            shader.Set3f("lightColours[2]", vec3(0, 0, 255));
-            shader.Set3f("lightColours[3]", vec3(255, 255, 255));
         });
 
-        for (std::shared_ptr<Material> material : model->GetMaterials())
+        for (const std::string& materialName : model->GetMaterials())
         {
-            if (material)
+            m_materialManager->SetMaterialTexture(materialName, "defaultAO", TextureType::Bump);
+            m_materialManager->AddMaterialUniformFunctor(materialName, "pbr", [](const Shader& shader)
             {
-                // Add to bump map as sponza mapping is wrong
-                material->SetTexture(m_textureManager->Get("white"), TextureType::Bump);
-                // Set uniform functor to update each materials Texture before it's rendered
-                material->AddUniformFunctor(m_shaderManager->Get("pbr"), [](const Shader& shader)
-                {
-                    // Sponza asset has material properties set in the wrong channels
-                    shader.Set1i("albedoMap",       Material::GetTextureSlotForTextureType(TextureType::Diffuse));
-                    shader.Set1i("normalMap",       Material::GetTextureSlotForTextureType(TextureType::Highlight));
-                    shader.Set1i("metallicMap",     Material::GetTextureSlotForTextureType(TextureType::Ambient));
-                    shader.Set1i("roughnessMap",    Material::GetTextureSlotForTextureType(TextureType::Specular));
-                    shader.Set1i("aoMap",           Material::GetTextureSlotForTextureType(TextureType::Bump));
-                });
-            }
+                // Sponza asset has material properties set in the wrong channels
+                shader.Set1i("albedoMap",       Material::GetTextureSlotForTextureType(TextureType::Diffuse));
+                shader.Set1i("normalMap",       Material::GetTextureSlotForTextureType(TextureType::Highlight));
+                shader.Set1i("metallicMap",     Material::GetTextureSlotForTextureType(TextureType::Ambient));
+                shader.Set1i("roughnessMap",    Material::GetTextureSlotForTextureType(TextureType::Specular));
+                shader.Set1i("aoMap",           Material::GetTextureSlotForTextureType(TextureType::Bump));
+            });
         }
 
         // Can set uniform functor for meshes if required
-        //for (std::shared_ptr<Mesh> mesh : model->GetMeshes())
+        //for (const std::shared_ptr<Mesh>& mesh : model->GetMeshes())
         //{
         //    if (mesh)
         //    {
-        //        mesh->AddUniformFunctor(nullptr, [](std::shared_ptr<Shader> shader) {});
+        //        mesh->AddUniformFunctor("", [](std::shared_ptr<Shader> shader) {});
         //    }
         //}
     }
-    
-    m_graphicsEngine->SetModels(m_modelManager->GetAll());
 }

@@ -5,7 +5,7 @@
 #include <memory>
 #include <vector>
 
-#include "Core/Interface/NonCopyable.h"
+#include "Interface/NonCopyable.h"
 
 namespace Core
 {
@@ -52,8 +52,9 @@ namespace Graphics
         class TextureManager;
         class MaterialManager;
         class ModelManager;
-        class ShaderSrcManager;
+        class ShaderSourceManager;
         class ShaderManager;
+        class PointLightManager;
     }
 }
 
@@ -61,12 +62,12 @@ class CAERULUS_ENGINE Engine : public Core::Interface::NonCopyable
 {
 public:
     Engine(int argc, char** argv);
-    ~Engine() = default;
 
     void Run();
 
     void InitInput();
     void InitScene();
+    void InitLighting();
     void InitGLRenderer();
 
 private:
@@ -100,8 +101,9 @@ private:
     std::shared_ptr<Graphics::Managers::TextureManager> m_textureManager;
     std::shared_ptr<Graphics::Managers::MaterialManager> m_materialManager;
     std::shared_ptr<Graphics::Managers::ModelManager> m_modelManager;
-    std::shared_ptr<Graphics::Managers::ShaderSrcManager> m_shaderSrcManager;
+    std::shared_ptr<Graphics::Managers::ShaderSourceManager> m_shaderSrcManager;
     std::shared_ptr<Graphics::Managers::ShaderManager> m_shaderManager;
+    std::shared_ptr<Graphics::Managers::PointLightManager> m_pointLightManager;
 
     std::vector<std::shared_ptr<Core::Interface::ITickable>> m_tickable;
 };

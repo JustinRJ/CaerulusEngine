@@ -1,9 +1,9 @@
 #include "stdafx.h"
 
-#include "Shader.h"
+#include "Pipeline\Shader.h"
 
-#include "Core/Logging/Log.h"
-#include "ShaderSrc.h"
+#include "Logging/Log.h"
+#include "Pipeline\ShaderSource.h"
 
 using namespace Core::Logging;
 
@@ -13,16 +13,18 @@ namespace Graphics
     {
         GLuint Shader::m_boundHandle = 0;
 
-        Shader::Shader(std::shared_ptr<ShaderSrc> vertex, std::shared_ptr<ShaderSrc> fragment) :
+        Shader::Shader(const Managers::ShaderSourceManager& shaderSourceManager,
+            const std::string& vertex, const std::string& fragment) :
             m_vertex(vertex),
-            m_fragment(fragment)
+            m_fragment(fragment),
+            m_shaderSourceManager(shaderSourceManager)
         {
             const unsigned int LogSize = 512;
             // Shader Program Compilation
             GLchar infoLog[LogSize];
             m_handle = glCreateProgram();
-            glAttachShader(m_handle, m_vertex->GetHandle());
-            glAttachShader(m_handle, m_fragment->GetHandle());
+            glAttachShader(m_handle, m_shaderSourceManager.Get(m_vertex)->GetHandle());
+            glAttachShader(m_handle, m_shaderSourceManager.Get(fragment)->GetHandle());
             glLinkProgram(m_handle);
 
             GLint isLinkSuccessful = false;

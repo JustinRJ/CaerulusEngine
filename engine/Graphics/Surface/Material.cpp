@@ -1,11 +1,11 @@
 #include "stdafx.h"
 
-#include "Material.h"
+#include "Surface/Material.h"
 
 #include <tiny_obj_loader.h>
 
-#include "Core/Logging/Log.h"
-#include "Texture.h"
+#include "Logging/Log.h"
+#include "Surface/Texture.h"
 
 namespace Graphics
 {
@@ -13,11 +13,12 @@ namespace Graphics
     {
         unsigned int Material::s_materialTextureSlotOffset = 0;
 
-        Material::Material(const std::string& path) :
+        Material::Material(const Managers::ShaderManager& shaderManager, const Managers::TextureManager& textureManager, const std::string& path) :
+            Pipeline::ShaderUniformFunctor(shaderManager),
             m_path(path),
-            m_textures(7)
-        {
-        }
+            m_textures(7),
+            m_textureManager(textureManager)
+        {}
 
         GLint Material::GetTextureSlotForTextureType(TextureType type)
         {
@@ -49,7 +50,7 @@ namespace Graphics
 
             unsigned int slot = static_cast<unsigned int>(type);
 
-            std::vector<std::string> textureNames(7);
+            std::vector<std::string> textureNames(12);
             textureNames[0] = materials[slot].ambient_texname;            // map_Ka
             textureNames[1] = materials[slot].diffuse_texname;            // map_Kd
             textureNames[2] = materials[slot].specular_texname;           // map_Ks
@@ -57,15 +58,21 @@ namespace Graphics
             textureNames[4] = materials[slot].bump_texname;               // map_bu
             textureNames[5] = materials[slot].displacement_texname;       // disp
             textureNames[6] = materials[slot].alpha_texname;              // map_d
+            textureNames[7] = materials[slot].roughness_texname;          // map_Pr
+            textureNames[8] = materials[slot].metallic_texname;           // map_Pm
+            textureNames[9] = materials[slot].sheen_texname;              // map_Ps
+            textureNames[10] = materials[slot].emissive_texname;          // map_Ke
+            textureNames[11] = materials[slot].normal_texname;            // norm. For normal mapping.
+
             return textureNames;
         }
 
-        void Material::SetTexture(std::shared_ptr<Texture> texture, TextureType type)
+        void Material::SetTexture(const std::string& textureName, TextureType type)
         {
             unsigned int slot = static_cast<unsigned int>(type);
             if (slot < m_textures.size())
             {
-                m_textures[slot] = texture;
+                m_textures[slot] = textureName;
             }
         }
 
@@ -74,7 +81,7 @@ namespace Graphics
             unsigned int slot = static_cast<unsigned int>(type);
             if (slot < m_textures.size())
             {
-                if (std::shared_ptr<Texture> texture = m_textures[slot])
+                if (const Texture* const texture = m_textureManager.Get(m_textures[slot]))
                 {
                     texture->Bind(slot + s_materialTextureSlotOffset);
                 }
@@ -99,15 +106,14 @@ namespace Graphics
             return m_path;
         }
 
-        std::shared_ptr<Texture> Material::GetTexture(TextureType type) const
+        const std::string& Material::GetTexture(TextureType type) const
         {
-            std::shared_ptr<Texture> texture = nullptr;
             unsigned int slot = static_cast<unsigned int>(type);
             if (slot < m_textures.size())
             {
-                texture = m_textures[slot];
+                return m_textures[slot];
             }
-            return texture;
+            throw std::runtime_error("Material.cpp - TextureType not found on material: " + m_path);
         }
 
         void Material::SetMaterialTextureSlotOffset(unsigned int slotOffset)

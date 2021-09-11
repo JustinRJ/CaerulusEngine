@@ -1,29 +1,38 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Math">
-      <UniqueIdentifier>{817f3438-07bb-488c-b0a3-36e19c3706ac}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Logging">
-      <UniqueIdentifier>{24a9ff48-ee4a-4fa7-a783-6de059fef952}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Time">
       <UniqueIdentifier>{b239773a-3c68-4dcc-b557-c23f31324b2b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Interface">
-      <UniqueIdentifier>{002dbe01-4b59-46db-9625-8a7b98485a59}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Input">
-      <UniqueIdentifier>{5ed08db7-aad3-4a58-aba3-c58c4015db59}</UniqueIdentifier>
     </Filter>
     <Filter Include="Node">
       <UniqueIdentifier>{0ce5a568-d535-4192-abf7-d5cc83aafbcb}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Template">
+    <Filter Include="include">
+      <UniqueIdentifier>{3db9cb99-4682-4124-be74-43780f8f91bc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\Node">
+      <UniqueIdentifier>{5606dffc-9f9d-41db-ab92-3a8bfabd660d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\File">
+      <UniqueIdentifier>{9c7786df-d3aa-47da-887e-d35b956248bd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\Input">
+      <UniqueIdentifier>{5ed08db7-aad3-4a58-aba3-c58c4015db59}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\Interface">
+      <UniqueIdentifier>{002dbe01-4b59-46db-9625-8a7b98485a59}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\Logging">
+      <UniqueIdentifier>{24a9ff48-ee4a-4fa7-a783-6de059fef952}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\Math">
+      <UniqueIdentifier>{817f3438-07bb-488c-b0a3-36e19c3706ac}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\Template">
       <UniqueIdentifier>{f6e18429-a70b-4610-bd83-95fe99c9f3a7}</UniqueIdentifier>
     </Filter>
-    <Filter Include="File">
-      <UniqueIdentifier>{9c7786df-d3aa-47da-887e-d35b956248bd}</UniqueIdentifier>
+    <Filter Include="include\Time">
+      <UniqueIdentifier>{0cab583e-751c-4638-ab4e-4d53682f3be1}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -41,107 +50,110 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
-    <ClInclude Include="Time\FPSLimiter.h">
-      <Filter>Time</Filter>
+    <ClInclude Include="include\File\FileUtility.h">
+      <Filter>include\File</Filter>
     </ClInclude>
-    <ClInclude Include="Time\Time.h">
-      <Filter>Time</Filter>
+    <ClInclude Include="include\Input\InputDefines.h">
+      <Filter>include\Input</Filter>
     </ClInclude>
-    <ClInclude Include="Time\Timer.h">
-      <Filter>Time</Filter>
+    <ClInclude Include="include\Input\KeyboardInputManager.h">
+      <Filter>include\Input</Filter>
     </ClInclude>
-    <ClInclude Include="Interface\ISerializable.h">
-      <Filter>Interface</Filter>
+    <ClInclude Include="include\Input\MouseInputManager.h">
+      <Filter>include\Input</Filter>
     </ClInclude>
-    <ClInclude Include="Interface\ITickable.h">
-      <Filter>Interface</Filter>
+    <ClInclude Include="include\Interface\ISerializable.h">
+      <Filter>include\Interface</Filter>
     </ClInclude>
-    <ClInclude Include="Input\InputDefines.h">
-      <Filter>Input</Filter>
+    <ClInclude Include="include\Interface\ITickable.h">
+      <Filter>include\Interface</Filter>
     </ClInclude>
-    <ClInclude Include="Logging\Log.h">
-      <Filter>Logging</Filter>
+    <ClInclude Include="include\Interface\NonCopyable.h">
+      <Filter>include\Interface</Filter>
     </ClInclude>
-    <ClInclude Include="Input\KeyboardInputManager.h">
-      <Filter>Input</Filter>
+    <ClInclude Include="include\Interface\NonMovable.h">
+      <Filter>include\Interface</Filter>
     </ClInclude>
-    <ClInclude Include="Input\MouseInputManager.h">
-      <Filter>Input</Filter>
+    <ClInclude Include="include\Interface\Singleton.h">
+      <Filter>include\Interface</Filter>
     </ClInclude>
-    <ClInclude Include="Time\FixedTimer.h">
-      <Filter>Time</Filter>
+    <ClInclude Include="include\Logging\Log.h">
+      <Filter>include\Logging</Filter>
     </ClInclude>
-    <ClInclude Include="Node\Node.h">
-      <Filter>Node</Filter>
+    <ClInclude Include="include\Logging\LogToFile.h">
+      <Filter>include\Logging</Filter>
     </ClInclude>
-    <ClInclude Include="Math\Transform.h">
-      <Filter>Math</Filter>
+    <ClInclude Include="include\Math\AABox.h">
+      <Filter>include\Math</Filter>
     </ClInclude>
-    <ClInclude Include="Math\AABox.h">
-      <Filter>Math</Filter>
+    <ClInclude Include="include\Math\AARect.h">
+      <Filter>include\Math</Filter>
     </ClInclude>
-    <ClInclude Include="Math\AARect.h">
-      <Filter>Math</Filter>
+    <ClInclude Include="include\Math\Box.h">
+      <Filter>include\Math</Filter>
     </ClInclude>
-    <ClInclude Include="Math\Box.h">
-      <Filter>Math</Filter>
+    <ClInclude Include="include\Math\Camera.h">
+      <Filter>include\Math</Filter>
     </ClInclude>
-    <ClInclude Include="Math\Line.h">
-      <Filter>Math</Filter>
+    <ClInclude Include="include\Math\Circle.h">
+      <Filter>include\Math</Filter>
     </ClInclude>
-    <ClInclude Include="Math\Ray.h">
-      <Filter>Math</Filter>
+    <ClInclude Include="include\Math\Line.h">
+      <Filter>include\Math</Filter>
     </ClInclude>
-    <ClInclude Include="Math\Rect.h">
-      <Filter>Math</Filter>
+    <ClInclude Include="include\Math\Math.h">
+      <Filter>include\Math</Filter>
     </ClInclude>
-    <ClInclude Include="Math\Math.h">
-      <Filter>Math</Filter>
+    <ClInclude Include="include\Math\Perspective.h">
+      <Filter>include\Math</Filter>
     </ClInclude>
-    <ClInclude Include="Logging\LogToFile.h">
-      <Filter>Logging</Filter>
+    <ClInclude Include="include\Math\Polygon.h">
+      <Filter>include\Math</Filter>
     </ClInclude>
-    <ClInclude Include="Interface\NonCopyable.h">
-      <Filter>Interface</Filter>
+    <ClInclude Include="include\Math\Ray.h">
+      <Filter>include\Math</Filter>
     </ClInclude>
-    <ClInclude Include="Math\Sphere.h">
-      <Filter>Math</Filter>
+    <ClInclude Include="include\Math\Rect.h">
+      <Filter>include\Math</Filter>
     </ClInclude>
-    <ClInclude Include="Math\Circle.h">
-      <Filter>Math</Filter>
+    <ClInclude Include="include\Math\Sphere.h">
+      <Filter>include\Math</Filter>
     </ClInclude>
-    <ClInclude Include="Math\Camera.h">
-      <Filter>Math</Filter>
+    <ClInclude Include="include\Math\Transform.h">
+      <Filter>include\Math</Filter>
     </ClInclude>
-    <ClInclude Include="Interface\NonMovable.h">
-      <Filter>Interface</Filter>
+    <ClInclude Include="include\Template\Cacher.h">
+      <Filter>include\Template</Filter>
     </ClInclude>
-    <ClInclude Include="Template\Manager.h">
-      <Filter>Template</Filter>
+    <ClInclude Include="include\Template\Manager.h">
+      <Filter>include\Template</Filter>
     </ClInclude>
-    <ClInclude Include="Template\NodeManager.h">
-      <Filter>Template</Filter>
+    <ClInclude Include="include\Template\NodeManager.h">
+      <Filter>include\Template</Filter>
     </ClInclude>
-    <ClInclude Include="Math\Perspective.h">
-      <Filter>Math</Filter>
+    <ClInclude Include="include\Template\NonAssignable.h">
+      <Filter>include\Template</Filter>
     </ClInclude>
-    <ClInclude Include="File\FileUtility.h">
-      <Filter>File</Filter>
+    <ClInclude Include="include\Template\Observer.h">
+      <Filter>include\Template</Filter>
     </ClInclude>
-    <ClInclude Include="Template\Cacher.h">
-      <Filter>Template</Filter>
+    <ClInclude Include="include\Template\Producer.h">
+      <Filter>include\Template</Filter>
     </ClInclude>
-    <ClInclude Include="Template\Producer.h">
-      <Filter>Template</Filter>
+    <ClInclude Include="include\Node\Node.h">
+      <Filter>include\Node</Filter>
     </ClInclude>
-    <ClInclude Include="Interface\Singleton.h">
-      <Filter>Interface</Filter>
+    <ClInclude Include="include\Time\FixedTimer.h">
+      <Filter>include\Time</Filter>
     </ClInclude>
-    <ClInclude Include="Template\Observer.h">
-      <Filter>Template</Filter>
+    <ClInclude Include="include\Time\FPSLimiter.h">
+      <Filter>include\Time</Filter>
     </ClInclude>
-    <ClInclude Include="Math\Polygon.h">
-      <Filter>Math</Filter>
+    <ClInclude Include="include\Time\Time.h">
+      <Filter>include\Time</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Time\Timer.h">
+      <Filter>include\Time</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

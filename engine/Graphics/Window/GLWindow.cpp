@@ -1,13 +1,13 @@
 #include "stdafx.h"
 
-#include "GLWindow.h"
+#include "Window/GLWindow.h"
 
 #define GLFW_EXPOSE_NATIVE_WIN32
 #include <glfw3native.h>
 
-#include "Core/Math/Math.h"
-#include "Core/Math/Camera.h"
-#include "Core/Logging/Log.h"
+#include "Math/Math.h"
+#include "Math/Camera.h"
+#include "Logging/Log.h"
 
 using namespace Core::Logging;
 
@@ -107,7 +107,7 @@ namespace Graphics
 
         void GLWindow::CenterCursor()
         {
-            glfwSetCursorPos(m_window, m_activeState.Width / 2, m_activeState.Height / 2);
+            glfwSetCursorPos(m_window, m_activeState.Width * 0.5, m_activeState.Height * 0.5);
         }
 
         void GLWindow::ToggleLockedCursor()

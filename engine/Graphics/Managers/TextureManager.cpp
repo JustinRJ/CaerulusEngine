@@ -1,8 +1,8 @@
 #include "stdafx.h"
 
-#include "TextureManager.h"
+#include "Managers/TextureManager.h"
 
-#include "Core/File/FileUtility.h"
+#include "File/FileUtility.h"
 
 using namespace Core::File;
 using namespace Core::Logging;
@@ -12,24 +12,24 @@ namespace Graphics
 {
     namespace Managers
     {
-        void TextureManager::Load(const std::string& name, const std::string& path)
+        void TextureManager::Load(const std::string& textureName, const std::string& path)
         {
-            if (IsLoaded(name))
+            if (IsLoaded(textureName))
             {
-                LogInDebug("Texture " + name + " already loaded with path: " + path);
+                LogInDebug("Texture " + textureName + " already loaded with path: " + path);
             }
             else
             {
-                LogMessage("Loading texture " + name + " with path: " + path);
-                std::shared_ptr<Texture> texture = std::make_shared<Texture>(path, Core::File::GetFileExtension(path) == "hdr");
+                LogMessage("Loading texture " + textureName + " with path: " + path);
+                std::unique_ptr<Texture> texture = std::make_unique<Texture>(path, Core::File::GetFileExtension(path) == "hdr");
 
                 if (texture->IsLoaded())
                 {
-                    Insert(name, texture);
+                    Insert(textureName, std::move(texture));
                 }
                 else
                 {
-                    LogInDebug("Failed to load " + name + " texture with path: " + path);
+                    LogInDebug("Failed to load " + textureName + " texture with path: " + path);
                 }
             }
         }

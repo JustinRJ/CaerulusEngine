@@ -1,6 +1,6 @@
 #include "stdafx.h"
 
-#include "VertexBuffer.h"
+#include "Pipeline\VertexBuffer.h"
 
 namespace Graphics
 {

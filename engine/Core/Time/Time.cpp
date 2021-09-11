@@ -1,6 +1,6 @@
 #include "stdafx.h"
 
-#include "Time.h"
+#include "Time/Time.h"
 
 namespace Core
 {

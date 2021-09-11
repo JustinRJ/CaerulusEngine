@@ -1,6 +1,6 @@
 #include "stdafx.h"
 
-#include "IndexBuffer.h"
+#include "Pipeline\IndexBuffer.h"
 
 namespace Graphics
 {

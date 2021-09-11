@@ -1,6 +1,6 @@
 #include "stdafx.h"
 
-#include "ShaderManager.h"
+#include "Managers/ShaderManager.h"
 
 using namespace Core::Logging;
 using namespace Graphics::Pipeline;
@@ -9,35 +9,38 @@ namespace Graphics
 {
     namespace Managers
     {
-        ShaderManager::ShaderManager(ShaderSrcManager& shaderStageManager) :
-            m_shaderStageManager(shaderStageManager)
+        ShaderManager::ShaderManager(ShaderSourceManager& shaderSourceManager) :
+            m_shaderSourceManager(shaderSourceManager)
         {}
 
-        void ShaderManager::Load(const std::string& name, const std::string& vertexPath, const std::string& fragmentPath)
+        void ShaderManager::Load(const std::string& shaderSourceName, const std::string& vertexPath, const std::string& fragmentPath)
         {
-            if (IsLoaded(name))
+            if (IsLoaded(shaderSourceName))
             {
-                LogInDebug("Shader with name " + name + " already loaded");
+                LogInDebug("Shader with name " + shaderSourceName + " already loaded");
             }
             else
             {
-                LogMessage("Loading shader with name " + name + ":");
-                m_shaderStageManager.Load(vertexPath, Vertex);
-                m_shaderStageManager.Load(fragmentPath, Fragment);
+                LogMessage("Loading shader with name " + shaderSourceName + ":");
+                m_shaderSourceManager.Load(vertexPath, Vertex);
+                m_shaderSourceManager.Load(fragmentPath, Fragment);
 
-                std::shared_ptr<Shader> shader = std::make_shared<Shader>(
-                    m_shaderStageManager.Get(vertexPath),
-                    m_shaderStageManager.Get(fragmentPath));
+                std::unique_ptr<Shader> shader = std::make_unique<Shader>(m_shaderSourceManager, vertexPath, fragmentPath);
 
                 if (shader->IsLinked())
                 {
-                    Insert(name, shader);
+                    Insert(shaderSourceName, std::move(shader));
                 }
                 else
                 {
-                    LogInDebug("Failed to link shader source with name: " + name);
+                    LogInDebug("Failed to link shader source with name: " + shaderSourceName);
                 }
             }
+        }
+
+        ShaderSourceManager& ShaderManager::GetShaderSrcManager()
+        {
+            return m_shaderSourceManager;
         }
     }
 }
