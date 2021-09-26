@@ -48,7 +48,7 @@ namespace Graphics
             }
         };
 
-        class CAERULUS_GRAPHICS IWindow : public Core::Interface::NonCopyable
+        class CAERULUS_GRAPHICS IWindow : Core::Interface::NonCopyable
         {
         public:
             virtual ~IWindow() = default;

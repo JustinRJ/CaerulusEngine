@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Managers/TextureManager.h"
-#include "Pipeline/ShaderUniformFunctor.h"
+#include "Pipeline/ShaderUniformCallback.h"
 
 namespace Graphics
 {
@@ -25,7 +25,7 @@ namespace Graphics
             Normal
         };
 
-        class CAERULUS_GRAPHICS Material : public Pipeline::ShaderUniformFunctor
+        class CAERULUS_GRAPHICS Material : public Pipeline::ShaderUniformCallback
         {
         public:
             Material(const Managers::ShaderManager& shaderManager, const Managers::TextureManager& textureManager, const std::string& path);

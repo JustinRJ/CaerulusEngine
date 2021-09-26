@@ -7,7 +7,7 @@
 #include "Window/GLWindow.h"
 #include "Rendering/IRenderer.h"
 #include "Pipeline/FrameBuffer.h"
-#include "Pipeline/ShaderUniformFunctor.h"
+#include "Pipeline/ShaderUniformCallback.h"
 
 namespace Graphics
 {
@@ -23,10 +23,11 @@ namespace Graphics
             std::string BackgroundShader;
         };
 
-        class IBL : public Pipeline::ShaderUniformFunctor
+        class IBL : public Pipeline::ShaderUniformCallback
         {
         public:
-            IBL(const Managers::ShaderManager& shaderManager,
+            IBL(Core::Node::Node* parent,
+                const Managers::ShaderManager& shaderManager,
                 const Managers::TextureManager& textureManager,
                 const IBLShaders& iblShaders,
                 const std::string& textureName,
@@ -34,8 +35,8 @@ namespace Graphics
                 std::shared_ptr<Window::GLWindow> window,
                 std::shared_ptr<Core::Math::Camera> camera,
                 std::shared_ptr<Pipeline::FrameBuffer> framebuffer) :
-                Pipeline::ShaderUniformFunctor(shaderManager),
-                m_cube(shaderManager),
+                Pipeline::ShaderUniformCallback(shaderManager),
+                m_cube(parent, shaderManager),
                 m_textureName(textureName),
                 m_renderer(renderer)
             {
@@ -58,15 +59,15 @@ namespace Graphics
 
                 // pbr: set up projection and view matrices for capturing data onto the 6 cubemap face directions
                 // ----------------------------------------------------------------------------------------------
-                glm::mat4 captureProjection = glm::perspective(glm::radians(90.0f), 1.0f, 0.1f, 10.0f);
-                glm::mat4 captureViews[] =
+                Core::Math::mat4 captureProjection = Core::Math::perspective(Core::Math::radians(90.0f), 1.0f, 0.1f, 10.0f);
+                Core::Math::mat4 captureViews[] =
                 {
-                    glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f,  0.0f,  0.0f), glm::vec3(0.0f, -1.0f,  0.0f)),
-                    glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(-1.0f,  0.0f,  0.0f), glm::vec3(0.0f, -1.0f,  0.0f)),
-                    glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f,  1.0f,  0.0f), glm::vec3(0.0f,  0.0f,  1.0f)),
-                    glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, -1.0f,  0.0f), glm::vec3(0.0f,  0.0f, -1.0f)),
-                    glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f,  0.0f,  1.0f), glm::vec3(0.0f, -1.0f,  0.0f)),
-                    glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f,  0.0f, -1.0f), glm::vec3(0.0f, -1.0f,  0.0f))
+                    Core::Math::lookAt(Core::Math::vec3(0.0f, 0.0f, 0.0f), Core::Math::vec3(1.0f,  0.0f,  0.0f),  Core::Math::vec3(0.0f, -1.0f,  0.0f)),
+                    Core::Math::lookAt(Core::Math::vec3(0.0f, 0.0f, 0.0f), Core::Math::vec3(-1.0f,  0.0f,  0.0f), Core::Math::vec3(0.0f, -1.0f,  0.0f)),
+                    Core::Math::lookAt(Core::Math::vec3(0.0f, 0.0f, 0.0f), Core::Math::vec3(0.0f,  1.0f,  0.0f),  Core::Math::vec3(0.0f,  0.0f,  1.0f)),
+                    Core::Math::lookAt(Core::Math::vec3(0.0f, 0.0f, 0.0f), Core::Math::vec3(0.0f, -1.0f,  0.0f),  Core::Math::vec3(0.0f,  0.0f, -1.0f)),
+                    Core::Math::lookAt(Core::Math::vec3(0.0f, 0.0f, 0.0f), Core::Math::vec3(0.0f,  0.0f,  1.0f),  Core::Math::vec3(0.0f, -1.0f,  0.0f)),
+                    Core::Math::lookAt(Core::Math::vec3(0.0f, 0.0f, 0.0f), Core::Math::vec3(0.0f,  0.0f, -1.0f),  Core::Math::vec3(0.0f, -1.0f,  0.0f))
                 };
 
                 const Pipeline::Shader* CubemapShader = shaderManager.Get(iblShaders.CubemapShader);
@@ -225,10 +226,10 @@ namespace Graphics
                 PbrShader->Set1i("irradianceMap", 0);
                 PbrShader->Set1i("prefilterMap", 1);
                 PbrShader->Set1i("brdfLUT", 2);
-                PbrShader->SetMat4fv("projection", camera->GetPerspective().GetMatrix());
+                PbrShader->SetMat4fv("projection", camera->GetPerspective());
                 BackgroundShader->Bind();
                 BackgroundShader->Set1i("environmentMap", 0);
-                BackgroundShader->SetMat4fv("projection", camera->GetPerspective().GetMatrix());
+                BackgroundShader->SetMat4fv("projection", camera->GetPerspective());
 
                 glViewport(0, 0, windowWidth, windowHeight);
 

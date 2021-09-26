@@ -104,11 +104,11 @@ namespace Graphics
             }
         }
 
-        void MaterialManager::AddMaterialUniformFunctor(const std::string& materialName, const std::string& shaderName, std::function<void(const Pipeline::Shader& shader)> uniformFunctor)
+        void MaterialManager::AddMaterialUniformCallback(const std::string& materialName, const std::string& shaderName, std::function<void(const Pipeline::Shader& shader)> uniformCallback)
         {
             if (Material* material = GetMutable(materialName))
             {
-                material->AddUniformFunctor(shaderName, uniformFunctor);
+                material->AddUniformCallback(shaderName, uniformCallback);
             }
         }
     }

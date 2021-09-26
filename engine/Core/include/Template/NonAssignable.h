@@ -1,11 +1,13 @@
 #pragma once
 
+#include "Interface\NonCopyable.h"
+
 namespace Core
 {
     namespace Template
     {
         template <class T>
-        class NonAssignable
+        class NonAssignable : Interface::NonCopyable
         {
         public:
             NonAssignable(T* nonAssignable) :

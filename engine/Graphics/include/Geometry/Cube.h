@@ -31,8 +31,8 @@ namespace Graphics
         class Cube : public GPUGeometry
         {
         public:
-            Cube(const Managers::ShaderManager& shaderManager) :
-                GPUGeometry(shaderManager, s_CubeVertices, 8 * 3 * sizeof(GLfloat), s_CubeIndices, 36)
+            Cube(Core::Node::Node* parent, const Managers::ShaderManager& shaderManager) :
+                GPUGeometry(parent, shaderManager, s_CubeVertices, 8 * 3 * sizeof(GLfloat), s_CubeIndices, 36)
             {
                 Pipeline::VertexBufferLayout layout;
                 layout.Push<float>(3);

@@ -12,9 +12,9 @@ namespace Graphics
         public:
             PointLightManager(ShaderManager& shaderManager);
 
-            void Create(const std::string& lightName, const Core::Math::vec3& position, const Core::Math::vec3& colour);
+            void Create(Core::Node::Node* parent, const std::string& lightName, const Core::Math::vec3& position, const Core::Math::vec3& colour);
 
-            void AddPointLightUniformFunctor(const std::string& lightName, const std::string& shaderName, std::function<void(const Pipeline::Shader& shader)> uniformFunctor);
+            void AddPointLightUniformCallback(const std::string& lightName, const std::string& shaderName, std::function<void(const Pipeline::Shader& shader)> uniformCallback);
 
         private:
             ShaderManager& m_shaderManager;

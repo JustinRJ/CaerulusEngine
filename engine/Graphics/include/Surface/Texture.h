@@ -11,7 +11,7 @@ namespace Graphics
 {
     namespace Surface
     {
-        class CAERULUS_GRAPHICS Texture : public Core::Interface::NonCopyable
+        class CAERULUS_GRAPHICS Texture : Core::Interface::NonCopyable
         {
         public:
             Texture(const std::string& path, bool isHDR);

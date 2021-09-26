@@ -67,6 +67,11 @@ Engine::Engine(int argc, char** argv) :
     m_graphicsEngine = std::make_shared<GraphicsEngine>(
         *m_shaderManager, *m_textureManager, *m_materialManager, *m_modelManager, *m_pointLightManager, m_window, m_renderer);
 
+    m_rootNode = std::make_shared<Node>(nullptr);
+    //Transform rootTransform;
+    //rootTransform.Scale(vec3(2.01f, 2.01f, 2.01f));
+    //m_rootNode->SetLocalTransform(rootTransform);
+
     m_tickable.push_back(m_keyboardInputManager);
     m_tickable.push_back(m_mouseInputManager);
     m_tickable.push_back(m_graphicsEngine);
@@ -169,27 +174,20 @@ void Engine::InitGLRenderer()
     m_shaderManager->Load("brdf",       "assets/shaders/brdf.vert",         "assets/shaders/brdf.frag");
     m_shaderManager->Load("background", "assets/shaders/background.vert",   "assets/shaders/background.frag");
 
-    Lighting::IBLShaders iblShaders = {
-        "pbr",
-        "cubemap",
-        "irradiance",
-        "prefilter",
-        "brdf",
-        "background"
-    };
+    Lighting::IBLShaders iblShaders = { "pbr", "cubemap", "irradiance", "prefilter", "brdf", "background" };
 
     m_textureManager->Load("city", "assets/textures/city_ref.hdr");
-    std::shared_ptr<Lighting::IBL> ibl = std::make_shared<IBL>(*m_shaderManager, *m_textureManager,
+    std::shared_ptr<Lighting::IBL> ibl = std::make_shared<IBL>(m_rootNode.get(), *m_shaderManager, *m_textureManager,
         iblShaders, "city", m_renderer, m_window, m_camera, m_graphicsEngine->GetFrameBuffer());
 
-    ibl->AddUniformFunctor("background", [&](const Shader& shader)
+    ibl->AddUniformCallback("background", [&](const Shader& shader)
     {
-        shader.SetMat4fv("projection", m_camera->GetPerspective().GetMatrix());
-        shader.SetMat4fv("view", m_camera->GetTransform().GetMatrix());
+        shader.SetMat4fv("projection", m_camera->GetPerspective());
+        shader.SetMat4fv("view", m_camera->GetTransform());
 
         m_graphicsEngine->GetIBL()->Draw();
     });
-    ibl->AddUniformFunctor("brdf", [&](const Shader& shader)
+    ibl->AddUniformCallback("brdf", [&](const Shader& shader)
     {
         m_window->Update();
     });
@@ -199,34 +197,34 @@ void Engine::InitGLRenderer()
 
 void Engine::InitLighting()
 {
-    m_pointLightManager->Create("red", vec3(-150, 15., 0), vec3(255, 0, 0));
-    m_pointLightManager->Create("blue", vec3(0, 15., 0), vec3(0, 255, 0));
-    m_pointLightManager->Create("green", vec3(150, 15., 0), vec3(0, 0, 255));
-    m_pointLightManager->Create("white", vec3(0., 30., 0), vec3(255, 255, 255));
+    m_pointLightManager->Create(m_rootNode.get(), "red",    vec3(-150, 15., 0), vec3(255, 0, 0));
+    m_pointLightManager->Create(m_rootNode.get(), "blue",   vec3(0, 15., 0),    vec3(0, 255, 0));
+    m_pointLightManager->Create(m_rootNode.get(), "green",  vec3(150, 15., 0),  vec3(0, 0, 255));
+    m_pointLightManager->Create(m_rootNode.get(), "white",  vec3(0., 30., 0),   vec3(255, 255, 255));
 
     const PointLight* red = m_pointLightManager->Get("red");
-    m_pointLightManager->AddPointLightUniformFunctor("red", "pbr", [capturedLight = red](const Shader& shader)
+    m_pointLightManager->AddPointLightUniformCallback("red", "pbr", [capturedLight = red](const Shader& shader)
     {
         shader.Set3f("lightPositions[0]", capturedLight->GetPosition());
         shader.Set3f("lightColours[0]", capturedLight->GetColour());
     });
 
     const PointLight* blue = m_pointLightManager->Get("blue");
-    m_pointLightManager->AddPointLightUniformFunctor("blue", "pbr", [capturedLight = blue](const Shader& shader)
+    m_pointLightManager->AddPointLightUniformCallback("blue", "pbr", [capturedLight = blue](const Shader& shader)
     {
         shader.Set3f("lightPositions[1]", capturedLight->GetPosition());
         shader.Set3f("lightColours[1]", capturedLight->GetColour());
     });
 
     const PointLight* green = m_pointLightManager->Get("green");
-    m_pointLightManager->AddPointLightUniformFunctor("green", "pbr", [capturedLight = green](const Shader& shader)
+    m_pointLightManager->AddPointLightUniformCallback("green", "pbr", [capturedLight = green](const Shader& shader)
     {
         shader.Set3f("lightPositions[2]", capturedLight->GetPosition());
         shader.Set3f("lightColours[2]", capturedLight->GetColour());
     });
 
     const PointLight* white = m_pointLightManager->Get("white");
-    m_pointLightManager->AddPointLightUniformFunctor("white", "pbr", [capturedLight = white](const Shader& shader)
+    m_pointLightManager->AddPointLightUniformCallback("white", "pbr", [capturedLight = white](const Shader& shader)
     {
         shader.Set3f("lightPositions[3]", capturedLight->GetPosition());
         shader.Set3f("lightColours[3]", capturedLight->GetColour());
@@ -235,9 +233,9 @@ void Engine::InitLighting()
 
 void Engine::InitScene()
 {
-    m_modelManager->Load("sponza", "assets/models/Sponza/sponza.obj");
+    m_modelManager->Load(m_rootNode.get(), "sponza", "assets/models/Sponza/sponza.obj");
 
-    // Only set shaders and functors for sponza model 
+    // Only set shaders and unform callback for sponza model 
     if (const Model* model = m_modelManager->Get("sponza"))
     {
         // Sponza model doesn't have AO textures, add default AO texture
@@ -246,40 +244,44 @@ void Engine::InitScene()
         m_textureManager->Load("white", "assets/textures/white.png");
         m_textureManager->Load("black", "assets/textures/black.png");
 
-        Core::Math::mat4 sponzaTransform = model->GetTransform().GetMatrix();
-        sponzaTransform = translate(mat4(1.0f), vec3(0, -10, 0));
-        sponzaTransform = scale(sponzaTransform, vec3(0.25, 0.25, 0.25));
-        m_modelManager->SetModelTransform("sponza", sponzaTransform);
+        Transform sponzaTransform;
+        sponzaTransform.Translate(vec3(0.f, -10.f, 0.f));
+        sponzaTransform.Scale(vec3(0.25f, 0.25f, 0.25f));
+        m_modelManager->SetModelLocalTransform("sponza", sponzaTransform);
 
-        // Set uniform functor to update each models MVP before it's rendered
-        m_modelManager->AddModelUniformFunctor("sponza", "pbr", [capturedCamera = m_camera, capturedModel = model](const Shader& shader)
+        // Set uniform callback to update each models MVP before it's rendered
+        m_modelManager->AddModelUniformCallback("sponza", "pbr", [capturedCamera = m_camera, capturedModel = model](const Shader& shader)
         {
-            shader.SetMat4fv("projection",  capturedCamera->GetPerspective().GetMatrix());
-            shader.SetMat4fv("view",        capturedCamera->GetTransform().GetMatrix());
-            shader.SetMat4fv("model",       capturedModel->GetTransform().GetMatrix());
+            shader.SetMat4fv("projection",  capturedCamera->GetPerspective());
+            shader.SetMat4fv("view",        capturedCamera->GetTransform());
             shader.Set3f("viewPos",         capturedCamera->GetTransform().GetTranslation());
+
+            shader.SetMat4fv("model",       capturedModel->GetWorldTransform());
         });
 
-        for (const std::string& materialName : model->GetMaterials())
+        for (const std::string& materialName : model->GetMaterialNames())
         {
-            m_materialManager->SetMaterialTexture(materialName, "defaultAO", TextureType::Bump);
-            m_materialManager->AddMaterialUniformFunctor(materialName, "pbr", [](const Shader& shader)
+            if (materialName != "")
             {
-                // Sponza asset has material properties set in the wrong channels
-                shader.Set1i("albedoMap",       Material::GetTextureSlotForTextureType(TextureType::Diffuse));
-                shader.Set1i("normalMap",       Material::GetTextureSlotForTextureType(TextureType::Highlight));
-                shader.Set1i("metallicMap",     Material::GetTextureSlotForTextureType(TextureType::Ambient));
-                shader.Set1i("roughnessMap",    Material::GetTextureSlotForTextureType(TextureType::Specular));
-                shader.Set1i("aoMap",           Material::GetTextureSlotForTextureType(TextureType::Bump));
-            });
+                m_materialManager->SetMaterialTexture(materialName, "defaultAO", TextureType::Bump);
+                m_materialManager->AddMaterialUniformCallback(materialName, "pbr", [](const Shader& shader)
+                {
+                    // Sponza asset has material properties set in the wrong channels
+                    shader.Set1i("albedoMap",       Material::GetTextureSlotForTextureType(TextureType::Diffuse));
+                    shader.Set1i("normalMap",       Material::GetTextureSlotForTextureType(TextureType::Highlight));
+                    shader.Set1i("metallicMap",     Material::GetTextureSlotForTextureType(TextureType::Ambient));
+                    shader.Set1i("roughnessMap",    Material::GetTextureSlotForTextureType(TextureType::Specular));
+                    shader.Set1i("aoMap",           Material::GetTextureSlotForTextureType(TextureType::Bump));
+                });
+            }
         }
 
-        // Can set uniform functor for meshes if required
+        // Can set uniform callback for meshes if required
         //for (const std::shared_ptr<Mesh>& mesh : model->GetMeshes())
         //{
         //    if (mesh)
         //    {
-        //        mesh->AddUniformFunctor("", [](std::shared_ptr<Shader> shader) {});
+        //        mesh->AddUniformCallback("", [](std::shared_ptr<Shader> shader) {});
         //    }
         //}
     }

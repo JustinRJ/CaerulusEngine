@@ -6,7 +6,7 @@ namespace Core
 {
     namespace Math
     {
-        enum Index
+        enum class Index
         {
             X = 0,
             Y = 1,
@@ -17,48 +17,59 @@ namespace Core
         class Transform
         {
         public:
-            Transform() = default;
-            ~Transform() = default;
+            Transform() : m_T(1.0f)
+            {}
 
             Transform(const mat4& m) :
                 m_T(m)
             {}
 
+            Transform& operator=(mat4&& mat)
+            {
+                m_T = std::move(mat);
+                return *this;
+            }
+
+            operator const mat4&() const
+            {
+                return m_T;
+            }
+
             vec3 GetTranslation() const
             {
                 return vec3(
-                    m_T[W][X],
-                    m_T[W][Y],
-                    m_T[W][Z]);
+                    m_T[3][0],
+                    m_T[3][1],
+                    m_T[3][2]);
             }
 
             void SetTranslation(const vec3& translation)
             {
-                m_T[W][X] = translation.x;
-                m_T[W][Y] = translation.y;
-                m_T[W][Z] = translation.z;
+                m_T[3][0] = translation.x;
+                m_T[3][1] = translation.y;
+                m_T[3][2] = translation.z;
             }
 
             void Translate(const vec3& translation)
             {
-                m_T[W][X] += translation.x;
-                m_T[W][Y] += translation.y;
-                m_T[W][Z] += translation.z;
+                m_T[3][0] += translation.x;
+                m_T[3][1] += translation.y;
+                m_T[3][2] += translation.z;
             }
 
             vec3 GetScale() const
             {
                 return vec3(
-                    length(GetAxis(X)),
-                    length(GetAxis(Y)),
-                    length(GetAxis(Z)));
+                    length(GetAxis(Index::X)),
+                    length(GetAxis(Index::Y)),
+                    length(GetAxis(Index::Z)));
             }
 
             void Scale(const vec3& scale)
             {
-                m_T[X][X] *= scale.x;
-                m_T[Y][Y] *= scale.y;
-                m_T[Z][Z] *= scale.z;
+                m_T[0][0] *= scale.x;
+                m_T[1][1] *= scale.y;
+                m_T[2][2] *= scale.z;
             }
 
             quat GetRotation() const
@@ -66,28 +77,28 @@ namespace Core
                 vec3 scale = GetScale();
                 vec3 column[] =
                 {
-                    GetAxis(X),
-                    GetAxis(Y),
-                    GetAxis(Z)
+                    GetAxis(Index::X),
+                    GetAxis(Index::Y),
+                    GetAxis(Index::Z)
                 };
 
                 if (scale.x > 0.0f)
                 {
-                    column[X] /= scale.x;
+                    column[0] /= scale.x;
                 }
                 if (scale.y > 0.0f)
                 {
-                    column[Y] /= scale.y;
+                    column[1] /= scale.y;
                 }
                 if (scale.z > 0.0f)
                 {
-                    column[Z] /= scale.z;
+                    column[2] /= scale.z;
                 }
 
                 return quat(mat3(
-                    column[X][X], column[Y][X], column[Z][X],
-                    column[X][Y], column[Y][Y], column[Z][Y],
-                    column[X][Z], column[Y][Z], column[Z][Z]));
+                    column[0][0], column[1][0], column[2][0],
+                    column[0][1], column[1][1], column[2][1],
+                    column[0][2], column[1][2], column[2][2]));
             }
 
             void SetRotation(const quat& rotation)
@@ -95,9 +106,9 @@ namespace Core
                 mat4 scaleM = scale(mat4(1.0f), GetScale());
                 mat4 rotateM = mat4_cast(normalize(rotation));
 
-                for (unsigned int i = X; i < W; ++i)
+                for (unsigned int i = 0; i < 3; ++i)
                 {
-                    for (unsigned int j = X; j < W; ++j)
+                    for (unsigned int j = 0; j < 3; ++j)
                     {
                         m_T[i][j] = (rotateM * scaleM)[i][j];
                     }
@@ -123,17 +134,17 @@ namespace Core
             vec3 GetAxis(Index axisIndex) const
             {
                 return vec3(
-                    m_T[axisIndex][X],
-                    m_T[axisIndex][Y],
-                    m_T[axisIndex][Z]);
+                    m_T[static_cast<unsigned int>(axisIndex)][0],
+                    m_T[static_cast<unsigned int>(axisIndex)][1],
+                    m_T[static_cast<unsigned int>(axisIndex)][2]);
             }
 
             vec3 GetColumn(Index columnIndex) const
             {
                 return vec3(
-                    m_T[X][columnIndex],
-                    m_T[Y][columnIndex],
-                    m_T[Z][columnIndex]);
+                    m_T[0][static_cast<unsigned int>(columnIndex)],
+                    m_T[1][static_cast<unsigned int>(columnIndex)],
+                    m_T[2][static_cast<unsigned int>(columnIndex)]);
             }
 
             void Decompose(vec3& outTranslation, quat& outRotation, vec3& outScale) const
@@ -145,30 +156,40 @@ namespace Core
 
             void SetAxis(const vec3& axis, Index axisIndex)
             {
-                m_T[axisIndex][X] = axis.x;
-                m_T[axisIndex][Y] = axis.y;
-                m_T[axisIndex][Z] = axis.z;
+                m_T[static_cast<unsigned int>(axisIndex)][0] = axis.x;
+                m_T[static_cast<unsigned int>(axisIndex)][1] = axis.y;
+                m_T[static_cast<unsigned int>(axisIndex)][2] = axis.z;
             }
 
             void SetColumn(const vec3& column, Index columnIndex)
             {
-                m_T[X][columnIndex] = column.x;
-                m_T[Y][columnIndex] = column.y;
-                m_T[Z][columnIndex] = column.z;
-            }
-
-            void SetMatrix(const mat4& t)
-            {
-                m_T = t;
-            }
-
-            const mat4& GetMatrix() const
-            {
-                return m_T;
+                m_T[0][static_cast<unsigned int>(columnIndex)] = column.x;
+                m_T[1][static_cast<unsigned int>(columnIndex)] = column.y;
+                m_T[2][static_cast<unsigned int>(columnIndex)] = column.z;
             }
 
         private:
             mat4 m_T;
         };
+
+        inline Transform operator*(const Transform& lhs, const Transform& rhs)
+        {
+            return static_cast<mat4>(lhs) * static_cast<mat4>(rhs);
+        }
+
+        inline Transform operator/(const Transform& lhs, const Transform& rhs)
+        {
+            return static_cast<mat4>(lhs) / static_cast<mat4>(rhs);
+        }
+
+        inline Transform operator+(const Transform& lhs, const Transform& rhs)
+        {
+            return static_cast<mat4>(lhs) + static_cast<mat4>(rhs);
+        }
+
+        inline Transform operator-(const Transform& lhs, const Transform& rhs)
+        {
+            return static_cast<mat4>(lhs) - static_cast<mat4>(rhs);
+        }
     }
 }

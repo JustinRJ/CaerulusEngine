@@ -36,11 +36,6 @@ namespace Core
                 return m_far;
             }
 
-            const mat4& GetMatrix() const
-            {
-                return m_perspective;
-            }
-
             void SetPerspective(float degFOV, float aspect, float inear, float ifar)
             {
                 m_degFOV = degFOV;
@@ -73,6 +68,8 @@ namespace Core
                 m_far = farP;
                 m_perspective = perspective(radians(m_degFOV), m_aspect, m_near, m_far);
             }
+
+            operator const mat4& () const { return m_perspective; }
 
         private:
             float m_degFOV;

@@ -52,8 +52,8 @@
     <ClCompile Include="Managers\PointLightManager.cpp">
       <Filter>Managers</Filter>
     </ClCompile>
-    <ClCompile Include="include\Geometry\Model.cpp">
-      <Filter>include\Geometry</Filter>
+    <ClCompile Include="Geometry\Model.cpp">
+      <Filter>Geometry</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -142,7 +142,7 @@
     <ClInclude Include="include\Pipeline\ShaderSource.h">
       <Filter>include\Pipeline</Filter>
     </ClInclude>
-    <ClInclude Include="include\Pipeline\ShaderUniformFunctor.h">
+    <ClInclude Include="include\Pipeline\ShaderUniformCallback.h">
       <Filter>include\Pipeline</Filter>
     </ClInclude>
     <ClInclude Include="include\Pipeline\VertexArray.h">
@@ -152,6 +152,9 @@
       <Filter>include\Pipeline</Filter>
     </ClInclude>
     <ClInclude Include="include\Pipeline\VertexBufferLayout.h">
+      <Filter>include\Pipeline</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Pipeline\IGraphicsObject.h">
       <Filter>include\Pipeline</Filter>
     </ClInclude>
   </ItemGroup>
@@ -197,6 +200,9 @@
     </Filter>
     <Filter Include="include\Surface">
       <UniqueIdentifier>{9b49e5d7-e176-421d-941f-f8f20d6dda3a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Geometry">
+      <UniqueIdentifier>{a8d1b25c-6ffe-4210-b08a-719481e8edca}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

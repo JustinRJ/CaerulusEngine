@@ -6,7 +6,7 @@ namespace Core
 {
     namespace Interface
     {
-        class CAERULUS_CORE ISerializable : private Interface::NonCopyable
+        class CAERULUS_CORE ISerializable : Interface::NonCopyable
         {
         public:
             virtual ~ISerializable() = default;

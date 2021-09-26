@@ -2,6 +2,8 @@
 
 #include "Node/Node.h"
 
+#include <vector>
+
 namespace Core
 {
     namespace Node
@@ -10,15 +12,16 @@ namespace Core
         unsigned int Node::s_maxDiscardedNodeIDs = 128;
         std::list<unsigned int> Node::s_reusableNodeIDs;
 
-        Node::Node(std::shared_ptr<Node> parent) :
-            m_parent(parent.get())
+        Node::Node(Node* parent) :
+            m_parent(parent),
+            m_localTransform(Math::Transform())
         {
             if (m_parent)
             {
-                m_parent->m_children.push_back(this);
+                m_parent->m_children.insert(this);
             }
 
-            if (s_reusableNodeIDs.size() < s_maxDiscardedNodeIDs)
+            if (s_maxDiscardedNodeIDs > s_reusableNodeIDs.size())
             {
                 m_ID = s_numEntities++;
             }
@@ -37,9 +40,8 @@ namespace Core
 
         bool Node::IsRoot() const
         {
-            return m_parent == nullptr;
+            return !m_parent;
         }
-
 
         unsigned int Node::GetID() const
         {
@@ -51,14 +53,37 @@ namespace Core
             return s_numEntities;
         }
 
-        Math::Transform& Node::GetTransform()
+        const Math::Transform& Node::GetLocalTransform() const
         {
-            return m_transform;
+            return m_localTransform;
         }
 
-        const Math::Transform& Node::GetTransform() const
+        void Node::SetLocalTransform(const Math::Transform& transform)
         {
-            return m_transform;
+            m_localTransform = transform;
+        }
+
+        void Node::CalculateWorldSpace(Math::Transform& ctm) const
+        {
+            if (m_parent)
+            {
+                m_parent->CalculateWorldSpace(ctm);
+            }
+            ctm = ctm * m_localTransform;
+        }
+
+        Math::Transform Node::GetWorldTransform() const
+        {
+            Math::Transform ctm;
+            CalculateWorldSpace(ctm);
+            return ctm;
+        }
+
+        void Node::SetWorldTransform(const Math::Transform& transform)
+        {
+            Math::Transform ctm;
+            CalculateWorldSpace(ctm);
+            m_localTransform = ctm * transform;
         }
 
         void Node::SwapID(Node& e)

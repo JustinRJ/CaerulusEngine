@@ -24,12 +24,13 @@ namespace Graphics
         class Mesh : public GPUGeometry
         {
         public:
-            Mesh(const Managers::ShaderManager& shaderManager,
-                const std::vector<Vertex>& vertices, const std::vector<GLuint>& indices, const std::string& materialName) :
-                GPUGeometry(shaderManager, &vertices[0], sizeof(Vertex)* vertices.size(), &indices[0], indices.size()),
+            Mesh(Core::Node::Node* parent,
+                const Managers::ShaderManager& shaderManager,
+                const std::vector<Vertex>& vertices, const std::vector<GLuint>& indices, const std::string& fileMaterialName) :
+                GPUGeometry(parent, shaderManager, &vertices[0], sizeof(Vertex)* vertices.size(), &indices[0], indices.size()),
                 m_vertices(vertices),
                 m_indices(indices),
-                m_materialName(materialName)
+                m_fileMaterialName(fileMaterialName)
             {
                 Pipeline::VertexBufferLayout layout;
                 layout.Push<float>(3);
@@ -38,15 +39,15 @@ namespace Graphics
                 GetVertexArray().AddBuffer(GetVertexBuffer(), layout);
             }
 
-            const std::string& GetMaterialName() const
+            const std::string& GetFileMaterialName() const
             {
-                return m_materialName;
+                return m_fileMaterialName;
             }
 
         private:
             const std::vector<Vertex> m_vertices;
             const std::vector<GLuint> m_indices;
-            const std::string m_materialName;
+            const std::string m_fileMaterialName;
         };
     }
 }

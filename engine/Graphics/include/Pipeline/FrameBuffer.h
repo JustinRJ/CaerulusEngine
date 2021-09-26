@@ -11,7 +11,7 @@ namespace Graphics
 {
     namespace Pipeline
     {
-        class CAERULUS_GRAPHICS FrameBuffer : public Core::Interface::NonCopyable
+        class CAERULUS_GRAPHICS FrameBuffer : Core::Interface::NonCopyable
         {
         public:
             FrameBuffer() = default;

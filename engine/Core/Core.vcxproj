@@ -223,7 +223,7 @@
     <ClInclude Include="include\Math\Box.h" />
     <ClInclude Include="include\Math\Camera.h" />
     <ClInclude Include="include\Math\Circle.h" />
-    <ClInclude Include="include\Math\Line.h" />
+    <ClInclude Include="include\Math\LineSegment.h" />
     <ClInclude Include="include\Math\Math.h" />
     <ClInclude Include="include\Math\Perspective.h" />
     <ClInclude Include="include\Math\Polygon.h" />
@@ -233,6 +233,7 @@
     <ClInclude Include="include\Math\Transform.h" />
     <ClInclude Include="include\Node\Node.h" />
     <ClInclude Include="include\Template\Cacher.h" />
+    <ClInclude Include="include\Template\CallbackPtr.h" />
     <ClInclude Include="include\Template\Manager.h" />
     <ClInclude Include="include\Template\NodeManager.h" />
     <ClInclude Include="include\Template\NonAssignable.h" />

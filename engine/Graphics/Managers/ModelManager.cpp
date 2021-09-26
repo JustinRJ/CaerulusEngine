@@ -15,7 +15,7 @@ namespace Graphics
             m_materialManager(materialManager)
         {}
 
-        void ModelManager::Load(const std::string& modelName, const std::string& modelPath, const std::string& materialPath)
+        void ModelManager::Load(Core::Node::Node* parent, const std::string& modelName, const std::string& modelPath, const std::string& materialPath)
         {
             if (IsLoaded(modelName))
             {
@@ -24,7 +24,7 @@ namespace Graphics
             else
             {
                 LogMessage("Loading model " + modelName + " with path: " + modelPath);
-                std::unique_ptr<Model> newModel = std::make_unique<Model>(m_materialManager.GetShaderManager(), modelPath);
+                std::unique_ptr<Model> newModel = std::make_unique<Model>(parent, m_materialManager.GetShaderManager(), modelPath);
                 if (!newModel->IsLoaded())
                 {
                     LogInDebug("Model with name " + modelName + " failed to load with path: " + modelPath);
@@ -41,11 +41,6 @@ namespace Graphics
 
                     m_materialManager.Load(appendedMaterialPath);
 
-                    for (const std::shared_ptr<Mesh>& mesh : newModel->GetMeshes())
-                    {
-                        mesh->SetMaterial(mesh->GetMaterialName());
-                    }
-
                     Insert(modelName, std::move(newModel));
                 }
             }
@@ -56,19 +51,19 @@ namespace Graphics
             return m_materialManager;
         }
 
-        void ModelManager::AddModelUniformFunctor(const std::string& modelName, const std::string& shaderName, std::function<void(const Pipeline::Shader& shader)> uniformFunctor)
+        void ModelManager::AddModelUniformCallback(const std::string& modelName, const std::string& shaderName, std::function<void(const Pipeline::Shader& shader)> uniformCallback)
         {
-            if (Model* material = GetMutable(modelName))
+            if (Model* model = GetMutable(modelName))
             {
-                material->AddUniformFunctor(shaderName, uniformFunctor);
+                model->AddUniformCallback(shaderName, uniformCallback);
             }
         }
 
-        void ModelManager::SetModelTransform(const std::string& modelName, const Core::Math::mat4& transform)
+        void ModelManager::SetModelLocalTransform(const std::string& modelName, const Core::Math::Transform& transform)
         {
-            if (Model* material = GetMutable(modelName))
+            if (Model* model = GetMutable(modelName))
             {
-                material->GetTransform().SetMatrix(transform);
+                model->SetLocalTransform(transform);
             }
         }
     }

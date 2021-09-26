@@ -13,7 +13,7 @@ namespace Core
     namespace Template
     {
         template <class T>
-        class NodeManager : private Interface::NonCopyable
+        class NodeManager : Interface::NonCopyable
         {
         public:
             NodeManager() = default;

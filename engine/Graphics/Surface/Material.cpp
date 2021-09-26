@@ -14,7 +14,7 @@ namespace Graphics
         unsigned int Material::s_materialTextureSlotOffset = 0;
 
         Material::Material(const Managers::ShaderManager& shaderManager, const Managers::TextureManager& textureManager, const std::string& path) :
-            Pipeline::ShaderUniformFunctor(shaderManager),
+            Pipeline::ShaderUniformCallback(shaderManager),
             m_path(path),
             m_textures(7),
             m_textureManager(textureManager)
@@ -81,9 +81,13 @@ namespace Graphics
             unsigned int slot = static_cast<unsigned int>(type);
             if (slot < m_textures.size())
             {
-                if (const Texture* const texture = m_textureManager.Get(m_textures[slot]))
+                const std::string& textureName = m_textures.at(slot);
+                if (textureName != "")
                 {
-                    texture->Bind(slot + s_materialTextureSlotOffset);
+                    if (const Texture* const texture = m_textureManager.Get(textureName))
+                    {
+                        texture->Bind(slot + s_materialTextureSlotOffset);
+                    }
                 }
             }
         }

@@ -9,8 +9,8 @@ namespace Graphics
         class PointLight : public Light
         {
         public:
-            PointLight(const Managers::ShaderManager& shaderManager) :
-                Light(shaderManager)
+            PointLight(Core::Node::Node* parent, const Managers::ShaderManager& shaderManager) :
+                Light(parent, shaderManager)
             {}
 
             float GetRadius() const

@@ -6,7 +6,7 @@ namespace Core
 {
     namespace Interface
     {
-        class CAERULUS_CORE ITickable : private Interface::NonCopyable
+        class CAERULUS_CORE ITickable : Interface::NonCopyable
         {
         public:
             virtual ~ITickable() = default;

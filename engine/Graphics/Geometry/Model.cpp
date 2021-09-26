@@ -1,10 +1,10 @@
 #include "stdafx.h"
 
-#include "Model.h"
+#include "Geometry/Model.h"
 
 #include <tiny_obj_loader.h>
 
-#include "Mesh.h"
+#include "Geometry/Mesh.h"
 #include "Surface/Material.h"
 
 using namespace Core::Math;
@@ -27,9 +27,11 @@ namespace Graphics
     namespace Geometry
     {
         Model::Model(
+            Core::Node::Node* parent,
             const Managers::ShaderManager& shaderManager,
             const std::string& path) :
-            Pipeline::ShaderUniformFunctor(shaderManager),
+            Node::Node(parent),
+            Pipeline::ShaderUniformCallback(shaderManager),
             m_isLoaded(false),
             m_path(path),
             m_shaderManager(shaderManager)
@@ -43,8 +45,10 @@ namespace Graphics
 
             for (unsigned int i = 0; i < vertices.size(); ++i)
             {
-                m_meshes.push_back(std::make_shared<Mesh>(m_shaderManager,
-                    vertices.at(i), indices.at(i), materialNames.at(i)));
+                std::shared_ptr<Mesh> newMesh =
+                    std::make_shared<Mesh>(this, m_shaderManager, vertices.at(i), indices.at(i), materialNames.at(i));
+                newMesh->SetMaterialName(newMesh->GetFileMaterialName());
+                m_meshes.push_back(newMesh);
             }
 
             m_isLoaded = true;
@@ -182,12 +186,12 @@ namespace Graphics
             return m_isLoaded;
         }
 
-        std::vector<std::string> Model::GetMaterials() const
+        std::vector<std::string> Model::GetMaterialNames() const
         {
             std::vector<std::string> materials;
             for (const std::shared_ptr<Mesh>& mesh : m_meshes)
             {
-                materials.push_back(mesh->GetMaterial());
+                materials.push_back(mesh->GetMaterialName());
             }
             return materials;
         }

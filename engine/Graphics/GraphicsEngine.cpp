@@ -80,7 +80,7 @@ namespace Graphics
 
             if (m_IBL)
             {
-                m_IBL->InvokeUniformFunctors();
+                m_IBL->InvokeUniformCallbacks();
             }
 
             m_window->SwapBuffer();
@@ -93,17 +93,21 @@ namespace Graphics
         {
             if (it->second)
             {
-                it->second->InvokeUniformFunctors();
+                it->second->InvokeUniformCallbacks();
                 for (const std::shared_ptr<Mesh>& mesh : it->second->GetMeshes())
                 {
                     if (mesh)
                     {
-                        mesh->InvokeUniformFunctors();
-                        if (const Material* material = m_materialManager.Get(mesh->GetMaterial()))
+                        mesh->InvokeUniformCallbacks();
+                        const std::string& meshMaterialName = mesh->GetMaterialName();
+                        if (meshMaterialName != "")
                         {
-                            material->Bind();
-                            material->InvokeUniformFunctors();
-                            m_renderer->Draw(*mesh, m_renderWireframe);
+                            if (const Material* material = m_materialManager.Get(meshMaterialName))
+                            {
+                                material->Bind();
+                                material->InvokeUniformCallbacks();
+                                m_renderer->Draw(*mesh, m_renderWireframe);
+                            }
                         }
                     }
                 }
@@ -115,7 +119,7 @@ namespace Graphics
     {
         for (auto it = m_pointLightManager.GetMap().begin(); it != m_pointLightManager.GetMap().end(); ++it)
         {
-            it->second->InvokeUniformFunctors();
+            it->second->InvokeUniformCallbacks();
         }
     }
 

@@ -14,7 +14,7 @@ namespace Core
     namespace Template
     {
         template <class T>
-        class Manager : private Interface::NonCopyable
+        class Manager : Interface::NonCopyable
         {
         public:
             Manager() = default;

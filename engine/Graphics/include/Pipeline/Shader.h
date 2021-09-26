@@ -16,7 +16,7 @@ namespace Graphics
     {
         class ShaderSource;
 
-        class CAERULUS_GRAPHICS Shader : public Core::Interface::NonCopyable
+        class CAERULUS_GRAPHICS Shader : Core::Interface::NonCopyable
         {
         public:
             Shader(const Managers::ShaderSourceManager& shaderSourceManager, const std::string& vertex, const std::string& fragment);

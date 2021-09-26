@@ -226,10 +226,11 @@ echo DA | xcopy "$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(Plat
     <ClInclude Include="include\Managers\ShaderSourceManager.h" />
     <ClInclude Include="include\Managers\TextureManager.h" />
     <ClInclude Include="include\Pipeline\FrameBuffer.h" />
+    <ClInclude Include="include\Pipeline\IGraphicsObject.h" />
     <ClInclude Include="include\Pipeline\IndexBuffer.h" />
     <ClInclude Include="include\Pipeline\Shader.h" />
     <ClInclude Include="include\Pipeline\ShaderSource.h" />
-    <ClInclude Include="include\Pipeline\ShaderUniformFunctor.h" />
+    <ClInclude Include="include\Pipeline\ShaderUniformCallback.h" />
     <ClInclude Include="include\Pipeline\VertexArray.h" />
     <ClInclude Include="include\Pipeline\VertexBuffer.h" />
     <ClInclude Include="include\Pipeline\VertexBufferLayout.h" />
@@ -243,7 +244,7 @@ echo DA | xcopy "$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(Plat
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp" />
-    <ClCompile Include="include\Geometry\Model.cpp" />
+    <ClCompile Include="Geometry\Model.cpp" />
     <ClCompile Include="Managers\PointLightManager.cpp" />
     <ClCompile Include="Managers\MaterialManager.cpp" />
     <ClCompile Include="Managers\ModelManager.cpp" />

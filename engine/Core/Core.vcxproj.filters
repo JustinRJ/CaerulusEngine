@@ -98,7 +98,7 @@
     <ClInclude Include="include\Math\Circle.h">
       <Filter>include\Math</Filter>
     </ClInclude>
-    <ClInclude Include="include\Math\Line.h">
+    <ClInclude Include="include\Math\LineSegment.h">
       <Filter>include\Math</Filter>
     </ClInclude>
     <ClInclude Include="include\Math\Math.h">
@@ -154,6 +154,9 @@
     </ClInclude>
     <ClInclude Include="include\Time\Timer.h">
       <Filter>include\Time</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Template\CallbackPtr.h">
+      <Filter>include\Template</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

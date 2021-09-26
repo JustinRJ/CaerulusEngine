@@ -12,13 +12,13 @@ namespace Graphics
         public:
             ModelManager(MaterialManager& materialManager);
 
-            void Load(const std::string& modelName, const std::string& modelPath, const std::string& materialPath = "");
+            void Load(Core::Node::Node* parent, const std::string& modelName, const std::string& modelPath, const std::string& materialPath = "");
 
             MaterialManager& GetMaterialManager();
 
-            void AddModelUniformFunctor(const std::string& modelName, const std::string& shaderName, std::function<void(const Pipeline::Shader& shader)> uniformFunctor);
+            void AddModelUniformCallback(const std::string& modelName, const std::string& shaderName, std::function<void(const Pipeline::Shader& shader)> uniformCallback);
 
-            void SetModelTransform(const std::string& modelName, const Core::Math::mat4& transform);
+            void SetModelLocalTransform(const std::string& modelName, const Core::Math::Transform& transform);
 
         private:
             MaterialManager& m_materialManager;

@@ -1,12 +1,12 @@
 #pragma once
 
-#include "Core\Interface\NonCopyable.h"
+#include "Interface\NonCopyable.h"
 
 namespace Core
 {
     namespace Interface
     {
-        class Singleton : private NonCopyable
+        class Singleton : Interface::NonCopyable
         {
         public:
             virtual ~Singleton() = default;

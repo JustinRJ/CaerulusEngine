@@ -10,7 +10,7 @@ namespace Graphics
 {
     namespace Pipeline
     {
-        class CAERULUS_GRAPHICS IndexBuffer : public Core::Interface::NonCopyable
+        class CAERULUS_GRAPHICS IndexBuffer : Core::Interface::NonCopyable
         {
         public:
             IndexBuffer(const unsigned int* data, size_t count);

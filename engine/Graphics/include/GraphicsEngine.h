@@ -26,7 +26,7 @@ namespace Graphics
     {
         class Shader;
         class FrameBuffer;
-        class ShaderUniformFunctor;
+        class ShaderUniformCallback;
     }
 
     namespace Lighting

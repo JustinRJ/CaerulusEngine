@@ -18,7 +18,7 @@ namespace Graphics
             Geometry = GL_GEOMETRY_SHADER
         };
 
-        class CAERULUS_GRAPHICS ShaderSource : public Core::Interface::NonCopyable
+        class CAERULUS_GRAPHICS ShaderSource : Core::Interface::NonCopyable
         {
         public:
             ShaderSource(ShaderType type, const std::string& path);

@@ -2,7 +2,7 @@
 
 #include "Node/Node.h"
 #include "Managers/MaterialManager.h"
-#include "Pipeline/ShaderUniformFunctor.h"
+#include "Pipeline/ShaderUniformCallback.h"
 
 namespace Graphics
 {
@@ -20,14 +20,14 @@ namespace Graphics
     {
         class Mesh;
 
-        class CAERULUS_GRAPHICS Model : public Core::Node::Node, public Pipeline::ShaderUniformFunctor
+        class CAERULUS_GRAPHICS Model : public Core::Node::Node, public Pipeline::ShaderUniformCallback
         {
         public:
-            Model(const Managers::ShaderManager& shaderManager, const std::string& path);
+            Model(Core::Node::Node* parent, const Managers::ShaderManager& shaderManager, const std::string& path);
 
             bool IsLoaded() const;
 
-            std::vector<std::string> GetMaterials() const;
+            std::vector<std::string> GetMaterialNames() const;
             const std::vector<std::shared_ptr<Mesh>>& GetMeshes() const;
 
         private:

@@ -17,7 +17,7 @@ namespace Graphics
             void Load(const std::string& materialPath);
 
             void SetMaterialTexture(const std::string& materialName, const std::string& textureName, Surface::TextureType type);
-            void AddMaterialUniformFunctor(const std::string& materialName, const std::string& shaderName, std::function<void(const Pipeline::Shader& shader)> uniformFunctor);
+            void AddMaterialUniformCallback(const std::string& materialName, const std::string& shaderName, std::function<void(const Pipeline::Shader& shader)> uniformCallback);
 
             ShaderManager& GetShaderManager();
             TextureManager& GetTextureManager();

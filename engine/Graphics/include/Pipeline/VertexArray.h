@@ -10,7 +10,7 @@ namespace Graphics
 {
     namespace Pipeline
     {
-        class CAERULUS_GRAPHICS VertexArray : public Core::Interface::NonCopyable
+        class CAERULUS_GRAPHICS VertexArray : Core::Interface::NonCopyable
         {
         public:
             VertexArray();

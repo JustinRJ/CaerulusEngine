@@ -58,7 +58,7 @@ namespace Graphics
     }
 }
 
-class CAERULUS_ENGINE Engine : public Core::Interface::NonCopyable
+class CAERULUS_ENGINE Engine : Core::Interface::NonCopyable
 {
 public:
     Engine(int argc, char** argv);

@@ -8,19 +8,19 @@ namespace Graphics
 {
     namespace Pipeline
     {
-        class CAERULUS_GRAPHICS ShaderUniformFunctor : public Core::Interface::NonCopyable
+        class CAERULUS_GRAPHICS ShaderUniformCallback : Core::Interface::NonCopyable
         {
         public:
-            ShaderUniformFunctor(const Managers::ShaderManager& shaderManager) :
+            ShaderUniformCallback(const Managers::ShaderManager& shaderManager) :
                 m_shaderManager(shaderManager)
             {}
 
-            virtual ~ShaderUniformFunctor() = default;
+            virtual ~ShaderUniformCallback() = default;
 
-            void AddUniformFunctor(const std::string& shaderName, const std::function<void(const Shader& shader)>& uniformFunctor)
+            void AddUniformCallback(const std::string& shaderName, const std::function<void(const Shader& shader)>& uniformCallback)
             {
                 bool shaderFound = false;
-                for (const auto& pair : m_shaderFunctors)
+                for (const auto& pair : m_shaderCallbacks)
                 {
                     if (pair.first == shaderName)
                     {
@@ -30,13 +30,13 @@ namespace Graphics
 
                 if (!shaderFound)
                 {
-                    m_shaderFunctors.push_back({ shaderName, uniformFunctor });
+                    m_shaderCallbacks.push_back({ shaderName, uniformCallback });
                 }
             }
 
-            void InvokeUniformFunctors() const
+            void InvokeUniformCallbacks() const
             {
-                for (const auto& pair : m_shaderFunctors)
+                for (const auto& pair : m_shaderCallbacks)
                 {
                     if (const Shader* const shader = m_shaderManager.Get(pair.first))
                     {
@@ -47,7 +47,7 @@ namespace Graphics
             }
 
         private:
-            std::vector<std::pair<const std::string, std::function<void(const Shader& shader)>>> m_shaderFunctors;
+            std::vector<std::pair<const std::string, std::function<void(const Shader& shader)>>> m_shaderCallbacks;
 
             const Managers::ShaderManager& m_shaderManager;
         };

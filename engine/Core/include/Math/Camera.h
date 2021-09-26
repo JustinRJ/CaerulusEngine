@@ -19,7 +19,7 @@ namespace Core
 
             void Translate(const vec3& translation, bool translateY = true)
             {
-                mat4 view = m_transform.GetMatrix();
+                mat4 view = m_transform;
                 vec3 temp(view[0][3], view[1][3], view[2][3]);
                 temp += normalize(vec3(view[0][0], translateY ? view[0][2] : 0.0f, view[2][0])) * translation.x;
                 if (translateY)
@@ -28,13 +28,13 @@ namespace Core
                 }
                 temp += normalize(vec3(view[0][2], translateY ? view[1][2] : 0.0f, view[2][2])) * translation.z;
                 view *= translate(mat4(1.0f), -temp);
-                m_transform.SetMatrix(view);
+                m_transform = view;
             }
 
             void Rotate(const vec3& eulerDelta, const vec3& forcedUp = UnitUp)
             {
-                Transform transform = inverse(m_transform.GetMatrix());
-                quat orig_rot = normalize(quat_cast(transform.GetMatrix()));
+                Transform transform = inverse(static_cast<mat4>(m_transform));
+                quat orig_rot = normalize(quat_cast(static_cast<mat4>(transform)));
 
                 bool force = l1Norm(forcedUp) > 0.0f;
 
@@ -60,7 +60,7 @@ namespace Core
 
                 temp.SetAxis(transform.GetAxis(Index::W), Index::W);
 
-                m_transform = inverse(temp.GetMatrix());
+                m_transform = inverse(static_cast<mat4>(temp));
             }
 
             const Transform& GetTransform() const

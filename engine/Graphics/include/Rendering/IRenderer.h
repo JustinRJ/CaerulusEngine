@@ -33,7 +33,7 @@ namespace Graphics
 
     namespace Rendering
     {
-        class CAERULUS_GRAPHICS IRenderer : public Core::Interface::NonCopyable
+        class CAERULUS_GRAPHICS IRenderer : Core::Interface::NonCopyable
         {
         public:
             virtual ~IRenderer() = default;

@@ -9,7 +9,7 @@ namespace Core
 {
     namespace Logging
     {
-        class LogToFile : private Interface::NonCopyable
+        class LogToFile : Interface::NonCopyable
         {
         public:
             LogToFile() = delete;

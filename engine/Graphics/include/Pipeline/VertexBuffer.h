@@ -10,7 +10,7 @@ namespace Graphics
 {
     namespace Pipeline
     {
-        class CAERULUS_GRAPHICS VertexBuffer : public Core::Interface::NonCopyable
+        class CAERULUS_GRAPHICS VertexBuffer : Core::Interface::NonCopyable
         {
         public:
             VertexBuffer(const void* data, size_t size);
