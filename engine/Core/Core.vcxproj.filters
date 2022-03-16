@@ -4,14 +4,8 @@
     <Filter Include="Time">
       <UniqueIdentifier>{b239773a-3c68-4dcc-b557-c23f31324b2b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Node">
-      <UniqueIdentifier>{0ce5a568-d535-4192-abf7-d5cc83aafbcb}</UniqueIdentifier>
-    </Filter>
     <Filter Include="include">
       <UniqueIdentifier>{3db9cb99-4682-4124-be74-43780f8f91bc}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="include\Node">
-      <UniqueIdentifier>{5606dffc-9f9d-41db-ab92-3a8bfabd660d}</UniqueIdentifier>
     </Filter>
     <Filter Include="include\File">
       <UniqueIdentifier>{9c7786df-d3aa-47da-887e-d35b956248bd}</UniqueIdentifier>
@@ -34,6 +28,12 @@
     <Filter Include="include\Time">
       <UniqueIdentifier>{0cab583e-751c-4638-ab4e-4d53682f3be1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="include\ECS">
+      <UniqueIdentifier>{5606dffc-9f9d-41db-ab92-3a8bfabd660d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ECS">
+      <UniqueIdentifier>{0ce5a568-d535-4192-abf7-d5cc83aafbcb}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp" />
@@ -44,8 +44,8 @@
     <ClCompile Include="Time\Timer.cpp">
       <Filter>Time</Filter>
     </ClCompile>
-    <ClCompile Include="Node\Node.cpp">
-      <Filter>Node</Filter>
+    <ClCompile Include="ECS\Entity.cpp">
+      <Filter>ECS</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -122,12 +122,6 @@
     <ClInclude Include="include\Template\Cacher.h">
       <Filter>include\Template</Filter>
     </ClInclude>
-    <ClInclude Include="include\Template\AssetManager.h">
-      <Filter>include\Template</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Template\ComponentManager.h">
-      <Filter>include\Template</Filter>
-    </ClInclude>
     <ClInclude Include="include\Template\NonAssignable.h">
       <Filter>include\Template</Filter>
     </ClInclude>
@@ -136,9 +130,6 @@
     </ClInclude>
     <ClInclude Include="include\Template\Producer.h">
       <Filter>include\Template</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Node\Node.h">
-      <Filter>include\Node</Filter>
     </ClInclude>
     <ClInclude Include="include\Time\FixedTimer.h">
       <Filter>include\Time</Filter>
@@ -158,8 +149,23 @@
     <ClInclude Include="include\Math\Mesh.h">
       <Filter>include\Math</Filter>
     </ClInclude>
-    <ClInclude Include="include\Node\Component.h">
-      <Filter>include\Node</Filter>
+    <ClInclude Include="include\ECS\Component.h">
+      <Filter>include\ECS</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ECS\Entity.h">
+      <Filter>include\ECS</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ECS\ThreadSafe.h">
+      <Filter>include\ECS</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ECS\AssetManager.h">
+      <Filter>include\ECS</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ECS\ComponentManager.h">
+      <Filter>include\ECS</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ECS\Manager.h">
+      <Filter>include\ECS</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

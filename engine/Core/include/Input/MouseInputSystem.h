@@ -44,7 +44,7 @@ namespace Core
                 glfwSetInputMode(m_window->GetGLFWWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
             };
 
-            void EarlyUpdate() override
+            void EarlyTick() override
             {
                 UpdateMouseDrag();
             }

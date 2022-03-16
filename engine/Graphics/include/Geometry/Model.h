@@ -1,7 +1,6 @@
 #pragma once
 
-#include "Node/Component.h"
-#include "AssetManagers/MaterialManager.h"
+#include "ECS/Component.h"
 #include "Pipeline/ShaderUniformCallback.h"
 
 namespace Graphics
@@ -15,19 +14,25 @@ namespace Graphics
     {
         struct Vertex;
     }
+    namespace Rendering
+    {
+        class GLRenderer;
+    }
 
     namespace Geometry
     {
         class Mesh;
 
-        class CAERULUS_GRAPHICS Model : public Core::Node::Component, public Pipeline::ShaderUniformCallback
+        class CAERULUS_GRAPHICS Model : public Core::ECS::Component, public Pipeline::ShaderUniformCallback
         {
         public:
-            Model(Core::Node::Node& node, const std::string& path);
+            Model(Core::ECS::Entity& entity, const std::string& path);
 
             bool IsLoaded() const;
 
             const std::vector<std::shared_ptr<Mesh>>& GetMeshes() const;
+
+            void Update(float deltaTime) override;
 
         private:
             void LoadModel(std::vector<std::vector<Geometry::Vertex>>& verticesOut, std::vector<std::vector<GLuint>>& indicesOut, std::vector<std::string>& materialNamesOut);

@@ -9,8 +9,8 @@ namespace Graphics
         class DirectionalLight : public Light
         {
         public:
-            DirectionalLight(Core::Node::Node& node) :
-                Light(node),
+            DirectionalLight(Core::ECS::Entity& entity) :
+                Light(entity),
                 m_direction(0,0,0)
             {}
 

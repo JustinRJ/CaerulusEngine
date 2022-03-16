@@ -1,18 +1,18 @@
 #pragma once
 
-#include "Node/Component.h"
+#include "ECS/Component.h"
 #include "Pipeline/ShaderUniformCallback.h"
 
 namespace Graphics
 {
     namespace Lighting
     {
-        class Light : public Core::Node::Component, public Pipeline::ShaderUniformCallback
+        class Light : public Core::ECS::Component, public Pipeline::ShaderUniformCallback
         {
         public:
 
-            Light(Core::Node::Node& node) :
-                Core::Node::Component(node)
+            Light(Core::ECS::Entity& entity) :
+                Core::ECS::Component(entity)
             {}
 
             virtual ~Light() = default;

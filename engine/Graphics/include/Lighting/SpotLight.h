@@ -9,8 +9,8 @@ namespace Graphics
         class SpotLight : public Light
         {
         public:
-            SpotLight(Core::Node::Node& node) :
-                Light(node),
+            SpotLight(Core::ECS::Entity& entity) :
+                Light(entity),
                 m_angle(0)
             {}
 

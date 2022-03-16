@@ -34,8 +34,8 @@ namespace Graphics
     using namespace Rendering;
 
     GraphicsEngine::GraphicsEngine(
-        const Managers::ModelManager& modelManager,
-        const Managers::PointLightManager& pointLightManager,
+        Managers::ModelManager& modelManager,
+        Managers::PointLightManager& pointLightManager,
         std::shared_ptr<GLWindow> window,
         std::shared_ptr<IRenderer> renderer) :
         m_window(window),
@@ -47,72 +47,47 @@ namespace Graphics
         m_framebuffer->Init(m_window->GetActiveState().Width, m_window->GetActiveState().Height, 8);
     }
     
-    void GraphicsEngine::EarlyUpdate()
+    void GraphicsEngine::EarlyTick()
     {
         m_renderer->Clear(m_clearColour);
+
+        m_modelManager.EarlyUpdate();
+        m_pointLightManager.EarlyUpdate();
     }
 
-    void GraphicsEngine::Update(float deltaTime)
+    void GraphicsEngine::Tick(float deltaTime)
     {
         if (m_window)
         {
             m_window->Update();
 
-            // TODO - setup the engine/component update loops to avoid this
-
-            // TODO - manually calling m_IBL bind is bad
-            // add functionality to ShaderUniform to allow priority of update to be set
             if (m_IBL)
             {
                 m_IBL->Bind();
             }
 
-            if (m_renderer)
-            {
-                UpdateModels();
-            }
-
-            UpdateLights();
+            m_modelManager.Update(deltaTime);
+            m_pointLightManager.Update(deltaTime);
 
             if (m_IBL)
             {
                 m_IBL->InvokeUniformCallbacks();
             }
-
-            m_window->SwapBuffer();
         }
     }
 
-    void GraphicsEngine::UpdateModels()
+    void GraphicsEngine::FixedTick(float fixedTime)
     {
-        for (auto model : m_modelManager.GetAll())
-        {
-            if (model)
-            {
-                model->InvokeUniformCallbacks();
-                for (const std::shared_ptr<Mesh>& mesh : model->GetMeshes())
-                {
-                    if (mesh)
-                    {
-                        mesh->InvokeUniformCallbacks();
-                        if (const Material* material = mesh->GetMaterial())
-                        {
-                            material->Bind();
-                            material->InvokeUniformCallbacks();
-                            m_renderer->Draw(*mesh, m_renderWireframe);
-                        }
-                    }
-                }
-            }
-        }
+        m_modelManager.FixedUpdate(fixedTime);
+        m_pointLightManager.FixedUpdate(fixedTime);
     }
 
-    void GraphicsEngine::UpdateLights()
+    void GraphicsEngine::LateTick()
     {
-        for (const PointLight* light : m_pointLightManager.GetAll())
-        {
-            light->InvokeUniformCallbacks();
-        }
+        m_modelManager.LateUpdate();
+        m_pointLightManager.LateUpdate();
+
+        m_window->SwapBuffer();
     }
 
     const Core::Math::vec4& GraphicsEngine::GetClearColour() const
@@ -148,16 +123,6 @@ namespace Graphics
     std::shared_ptr<Lighting::IBL> GraphicsEngine::GetIBL() const
     {
         return m_IBL;
-    }
-
-    void GraphicsEngine::SetWireframe(bool wireframe)
-    {
-        m_renderWireframe = wireframe;
-    }
-
-    bool GraphicsEngine::GetWireframe() const
-    {
-        return m_renderWireframe;
     }
 
     void GraphicsEngine::SetIBL(std::shared_ptr<Lighting::IBL> ibl)

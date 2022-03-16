@@ -15,7 +15,7 @@ namespace Graphics
 
         void ShaderManager::Load(const std::string& shaderSourceName, const std::string& vertexPath, const std::string& fragmentPath)
         {
-            if (IsLoaded(shaderSourceName))
+            if (Get(shaderSourceName))
             {
                 LogInDebug("Shader with name " + shaderSourceName + " already loaded");
             }

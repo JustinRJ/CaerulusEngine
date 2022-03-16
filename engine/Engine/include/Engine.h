@@ -12,9 +12,9 @@
 
 namespace Core
 {
-    namespace Node
+    namespace ECS
     {
-        class Node;
+        class Entity;
     }
     namespace Input
     {
@@ -84,7 +84,7 @@ private:
     float m_sprintSpeed = 100.0f;
     float m_mouseSensitivity = 50.0f;
 
-    Core::Node::Node* m_rootNode;
+    Core::ECS::Entity* m_rootEntity;
 
     Core::Time::FPSLimiter m_fpsLimiter;
     Core::Time::FixedTimer m_fixedTimer;

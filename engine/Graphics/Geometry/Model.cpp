@@ -6,6 +6,7 @@
 
 #include "Geometry/Mesh.h"
 #include "Surface/Material.h"
+#include "Rendering/GLRenderer.h"
 
 using namespace Core::Math;
 using namespace Graphics::Geometry;
@@ -27,9 +28,9 @@ namespace Graphics
     namespace Geometry
     {
         Model::Model(
-            Core::Node::Node& node,
+            Core::ECS::Entity& entity,
             const std::string& path) :
-            Core::Node::Component(node),
+            Core::ECS::Component(entity),
             m_isLoaded(false),
             m_path(path)
         {
@@ -48,6 +49,24 @@ namespace Graphics
             }
 
             m_isLoaded = true;
+        }
+
+        void Model::Update(float deltaTime)
+        {
+            InvokeUniformCallbacks();
+            for (const std::shared_ptr<Mesh>& mesh : GetMeshes())
+            {
+                if (mesh && mesh->GetRenderer())
+                {
+                    mesh->InvokeUniformCallbacks();
+                    if (const Surface::Material* material = mesh->GetMaterial())
+                    {
+                        material->Bind();
+                        material->InvokeUniformCallbacks();
+                        mesh->Draw();
+                    }
+                }
+            }
         }
 
         void Model::LoadModel(std::vector<std::vector<Vertex>>& verticesOut, std::vector<std::vector<GLuint>>& indicesOut, std::vector<std::string>& materialNamesOut)

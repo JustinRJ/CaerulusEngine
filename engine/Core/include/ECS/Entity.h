@@ -7,34 +7,35 @@
 
 #include "Math/Transform.h"
 #include "Interface/NonCopyable.h"
+#include "ECS/ThreadSafe.h"
 
 namespace Core
 {
-    namespace Node
+    namespace ECS
     {
-        class Node;
+        class Entity;
         class Component;
 
         struct ComponentData
         {
             Component* Component;
-            std::function<void(const Node&)> OnDestroy;
+            std::function<void(const Entity&)> OnDestroy;
         };
 
-        typedef std::bitset<32> NodeBitset;
+        typedef std::bitset<32> EntityBitset;
 
-        class CAERULUS_CORE Node : Interface::NonCopyable
+        class CAERULUS_CORE Entity : Interface::NonCopyable
         {
         public:
-            Node(Node* parent);
-            ~Node();
+            Entity(Entity* parent);
+            ~Entity();
 
             unsigned int GetID() const;
 
-            unsigned int GetNodeCount() const;
+            unsigned int GetEntityCount() const;
 
-            Node* GetParent() const;
-            const std::vector<Node*>& GetChildren() const;
+            Entity* GetParent() const;
+            const std::vector<Entity*>& GetChildren() const;
 
             const std::string& GetName() const;
             void SetName(const std::string& layer);
@@ -42,8 +43,8 @@ namespace Core
             bool GetEnabled() const;
             void SetEnabled(bool enabled);
 
-            const NodeBitset& GetLayers() const;
-            void SetLayers(const NodeBitset& layer);
+            const EntityBitset& GetLayers() const;
+            void SetLayers(const EntityBitset& layer);
 
             const std::vector<std::string>& GetTags() const;
             void SetTags(const std::vector<std::string>& tags);
@@ -54,13 +55,18 @@ namespace Core
             const Math::Transform& GetLocalTransform() const;
             void SetLocalTransform(const Math::Transform& transform);
 
-            void SwapID(Node& e);
+            void SwapID(Entity& e);
 
-            void AddComponent(ComponentData componentData);
+            void AddComponent(const ComponentData& componentData);
             void RemoveComponent(const Component& component);
 
             template<class T>
-            T* GetComponentOfType()
+#ifdef THREAD_SAFE
+            const T* GetComponentOfType() const
+#endif
+#ifdef THREAD_UNSAFE
+            T* GetComponentOfType() const
+#endif
             {
                 T* foundType = nullptr;
                 auto it = std::begin(m_components);
@@ -76,11 +82,18 @@ namespace Core
             }
 
             template<class T>
-            std::vector<T*> GetComponentsOfType()
+#ifdef THREAD_SAFE
+            std::vector<const T*> GetComponentsOfType() const
             {
-                std::vector<T*> foundTypes;
+                std::vector<const T*> foundTypes;
+#endif
+#ifdef THREAD_UNSAFE
+                std::vector<T*> GetComponentsOfType() const
+                {
+                    std::vector<T*> foundTypes;
+#endif
                 foundTypes.push_back(GetComponentOfType<T>());
-                for (Node* child : m_children)
+                for (Entity* child : m_children)
                 {
                     auto childFoundTypes = child->GetComponentsOfType<T>();
                     foundTypes.insert(std::end(foundTypes), std::begin(childFoundTypes), std::end(childFoundTypes));
@@ -101,7 +114,7 @@ namespace Core
             void RemoveComponentsOfType()
             {
                 RemoveComponentOfType<T>();
-                for (Node* child : m_children)
+                for (Entity* child : m_children)
                 {
                     child->RemoveComponentsOfType<T>();
                 }
@@ -111,41 +124,41 @@ namespace Core
             bool m_enabled;
             unsigned int m_ID;
             std::string m_name;
-            NodeBitset m_layers;
+            EntityBitset m_layers;
             std::vector<std::string> m_tags;
 
-            Node* m_parent;
-            std::vector<Node*> m_children;
+            Entity* m_parent;
+            std::vector<Entity*> m_children;
 
             Math::Transform m_localTransform;
             std::vector<ComponentData> m_components;
 
             static unsigned int s_numEntities;
-            static unsigned int s_maxDiscardedNodeIDs;
-            static std::list<unsigned int> s_reusableNodeIDs;
+            static unsigned int s_maxDiscardedEntityIDs;
+            static std::list<unsigned int> s_reusableEntityIDs;
         };
 
-        inline bool operator== (const Node& left, const Node& right)
+        inline bool operator== (const Entity& left, const Entity& right)
         {
             return left.GetID() == right.GetID();
         }
 
-        inline bool operator< (const Node& left, const Node& right)
+        inline bool operator< (const Entity& left, const Entity& right)
         {
             return left.GetID() < right.GetID();
         }
 
-        inline bool operator> (const Node& left, const Node& right)
+        inline bool operator> (const Entity& left, const Entity& right)
         {
             return right < left;
         }
 
-        inline bool operator<= (const Node& left, const Node& right)
+        inline bool operator<= (const Entity& left, const Entity& right)
         {
             return !(left > right);
         }
 
-        inline bool operator>= (const Node& left, const Node& right)
+        inline bool operator>= (const Entity& left, const Entity& right)
         {
             return !(left < right);
         }

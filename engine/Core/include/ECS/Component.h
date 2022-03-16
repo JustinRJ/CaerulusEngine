@@ -4,15 +4,15 @@
 
 namespace Core
 {
-    namespace Node
+    namespace ECS
     {
-        class Node;
+        class Entity;
 
         class CAERULUS_CORE Component : Interface::NonCopyable
         {
         public:
-            Component(Node& node) :
-                m_node(node)
+            Component(Entity& entity) :
+                m_entity(entity)
             {}
 
             virtual ~Component() = default;
@@ -27,18 +27,18 @@ namespace Core
 
             virtual void Reset() {};
 
-            Node& GetNode()
+            Entity& GetEntity()
             {
-                return m_node;
+                return m_entity;
             }
 
-            const Node& GetNode() const
+            const Entity& GetEntity() const
             {
-                return m_node;
+                return m_entity;
             }
 
         protected:
-            Node& m_node;
+            Entity& m_entity;
         };
     }
 }

@@ -30,7 +30,8 @@ namespace Graphics
 {
     namespace Rendering
     {
-        GLRenderer::GLRenderer()
+        GLRenderer::GLRenderer() :
+            m_wireframe(false)
         {
             glewExperimental = true;
 
@@ -66,16 +67,16 @@ namespace Graphics
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         }
 
-        void GLRenderer::Draw(const Pipeline::VertexArray& va, const Pipeline::IndexBuffer& ib, bool wireframe) const
+        void GLRenderer::Draw(const Pipeline::VertexArray& va, const Pipeline::IndexBuffer& ib) const
         {
             va.Bind();
             ib.Bind();
-            glDrawElements(wireframe ? GL_LINE_LOOP : GL_TRIANGLES, static_cast<GLsizei>(ib.GetCount()), GL_UNSIGNED_INT, nullptr);
+            glDrawElements(m_wireframe ? GL_LINE_LOOP : GL_TRIANGLES, static_cast<GLsizei>(ib.GetCount()), GL_UNSIGNED_INT, nullptr);
         }
 
-        void GLRenderer::Draw(const Geometry::GPUGeometry& geometry, bool wireframe) const
+        void GLRenderer::Draw(const Geometry::GPUGeometry& geometry) const
         {
-            Draw(geometry.GetVertexArray(), geometry.GetIndexBuffer(), wireframe);
+            Draw(geometry.GetVertexArray(), geometry.GetIndexBuffer());
         }
 
         void GLRenderer::DrawSphere(Core::Math::vec3 position, double radius, Core::Math::vec3 colour) const
@@ -102,6 +103,17 @@ namespace Graphics
                 glVertex3f(point1.x, point1.y, point1.z);
                 glVertex3f(point2.x, point2.y, point2.z);
             glEnd();
+        }
+
+
+        void GLRenderer::SetWireframe(bool wireframe)
+        {
+            m_wireframe = wireframe;
+        }
+
+        bool GLRenderer::GetWireframe() const
+        {
+            return m_wireframe;
         }
     }
 }

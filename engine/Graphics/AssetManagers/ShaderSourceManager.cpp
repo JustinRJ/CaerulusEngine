@@ -11,7 +11,7 @@ namespace Graphics
     {
         void ShaderSourceManager::Load(const std::string& shaderSourcePath, ShaderType type)
         {
-            if (IsLoaded(shaderSourcePath))
+            if (Get(shaderSourcePath))
             {
                 LogInDebug("\tShader stage already loaded with path: " + shaderSourcePath);
             }

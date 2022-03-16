@@ -18,7 +18,7 @@ namespace Graphics
 
         void MaterialManager::Create(const std::string& materialName, const std::vector<std::string>& textureNames)
         {
-            if (IsLoaded(materialName))
+            if (Get(materialName))
             {
                 LogInDebug("Material with name " + materialName + " already loaded or created");
             }
@@ -48,7 +48,7 @@ namespace Graphics
                 {
                     const std::string name(materialNamesInFile[i]);
 
-                    if (IsLoaded(name))
+                    if (Get(name))
                     {
                         LogInDebug("Material with name " + name + " already loaded or created");
                     }

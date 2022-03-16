@@ -1,19 +1,19 @@
 #include "stdafx.h"
 
-#include "Node/Node.h"
-#include "Node/Component.h"
+#include "ECS/Entity.h"
+#include "ECS/Component.h"
 
 #include <vector>
 
 namespace Core
 {
-    namespace Node
+    namespace ECS
     {
-        unsigned int Node::s_numEntities = 0;
-        unsigned int Node::s_maxDiscardedNodeIDs = 128;
-        std::list<unsigned int> Node::s_reusableNodeIDs;
+        unsigned int Entity::s_numEntities = 0;
+        unsigned int Entity::s_maxDiscardedEntityIDs = 128;
+        std::list<unsigned int> Entity::s_reusableEntityIDs;
 
-        Node::Node(Node* parent) :
+        Entity::Entity(Entity* parent) :
             m_parent(parent)
         {
             if (m_parent)
@@ -26,21 +26,21 @@ namespace Core
                 m_enabled = true;
             }
 
-            if (s_maxDiscardedNodeIDs > s_reusableNodeIDs.size())
+            if (s_maxDiscardedEntityIDs > s_reusableEntityIDs.size())
             {
                 m_ID = s_numEntities++;
             }
             else
             {
-                m_ID = s_reusableNodeIDs.front();
-                s_reusableNodeIDs.erase(std::begin(s_reusableNodeIDs));
+                m_ID = s_reusableEntityIDs.front();
+                s_reusableEntityIDs.erase(std::begin(s_reusableEntityIDs));
             }
         }
 
-        Node::~Node()
+        Entity::~Entity()
         {
             s_numEntities--;
-            s_reusableNodeIDs.push_back(m_ID);
+            s_reusableEntityIDs.push_back(m_ID);
 
             for (auto it = std::begin(m_components); it != std::end(m_components); it++)
             {
@@ -48,58 +48,58 @@ namespace Core
                 it->OnDestroy(*this);
             }
 
-            for (Node* child : m_children)
+            for (Entity* child : m_children)
             {
                 delete child;
             }
         }
 
-        unsigned int Node::GetID() const
+        unsigned int Entity::GetID() const
         {
             return m_ID;
         }
 
-        unsigned int Node::GetNodeCount() const
+        unsigned int Entity::GetEntityCount() const
         {
             return s_numEntities;
         }
 
-        Node* Node::GetParent() const
+        Entity* Entity::GetParent() const
         {
             return m_parent;
         }
 
-        const std::vector<Node*>& Node::GetChildren() const
+        const std::vector<Entity*>& Entity::GetChildren() const
         {
             return m_children;
         }
 
-        const Math::Transform& Node::GetLocalTransform() const
+        const Math::Transform& Entity::GetLocalTransform() const
         {
             return m_localTransform;
         }
 
-        void Node::SetLocalTransform(const Math::Transform& transform)
+        void Entity::SetLocalTransform(const Math::Transform& transform)
         {
             m_localTransform = transform;
         }
 
-        Math::Transform Node::GetWorldTransform() const
+        Math::Transform Entity::GetWorldTransform() const
         {
             return m_parent ? m_parent->GetWorldTransform() * m_localTransform : m_localTransform;
         }
 
-        void Node::SetWorldTransform(const Math::Transform& transform)
+        void Entity::SetWorldTransform(const Math::Transform& transform)
         {
             m_localTransform = GetWorldTransform() * transform;
         }
 
-        void Node::AddComponent(const ComponentData componentData)
+        void Entity::AddComponent(const ComponentData& componentData)
         {
             m_components.push_back(componentData);
         }
 
-        void Node::RemoveComponent(const Component& component)
+        void Entity::RemoveComponent(const Component& component)
         {
             bool foundComponent = false;
             auto it = std::begin(m_components);
@@ -122,7 +122,7 @@ namespace Core
             }
         }
 
-        void Node::SetEnabled(bool enabled)
+        void Entity::SetEnabled(bool enabled)
         {
             if (m_enabled != enabled)
             {
@@ -133,50 +133,50 @@ namespace Core
                 }
             }
 
-            for (Node* child : m_children)
+            for (Entity* child : m_children)
             {
                 child->SetEnabled(enabled);
             }
         }
 
-        bool Node::GetEnabled() const
+        bool Entity::GetEnabled() const
         {
             return m_enabled;
         }
 
-        void Node::SwapID(Node& e)
+        void Entity::SwapID(Entity& e)
         {
             unsigned int temp = m_ID;
             m_ID = e.GetID();
             e.m_ID = temp;
         }
 
-        const NodeBitset& Node::GetLayers() const
+        const EntityBitset& Entity::GetLayers() const
         {
             return m_layers;
         }
 
-        void Node::SetLayers(const NodeBitset& layer)
+        void Entity::SetLayers(const EntityBitset& layer)
         {
             m_layers = layer;
         }
 
-        const std::string& Node::GetName() const
+        const std::string& Entity::GetName() const
         {
             return m_name;
         }
 
-        void Node::SetName(const std::string& name)
+        void Entity::SetName(const std::string& name)
         {
             m_name = name;
         }
 
-        const std::vector<std::string>& Node::GetTags() const
+        const std::vector<std::string>& Entity::GetTags() const
         {
             return m_tags;
         }
 
-        void Node::SetTags(const std::vector<std::string>& tags)
+        void Entity::SetTags(const std::vector<std::string>& tags)
         {
             m_tags = tags;
         }

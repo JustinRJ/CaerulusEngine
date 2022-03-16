@@ -36,7 +36,7 @@ namespace Core
                 glfwSetWindowUserPointer(window->GetGLFWWindow(), this);
             };
 
-            void EarlyUpdate() override
+            void EarlyTick() override
             {
                 InvokeCallbacks();
                 UpdateActionState();

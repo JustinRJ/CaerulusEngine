@@ -8,7 +8,7 @@ namespace Graphics
 {
     namespace Managers
     {
-        class CAERULUS_GRAPHICS MaterialManager : public Core::Template::AssetManager<Surface::Material>
+        class CAERULUS_GRAPHICS MaterialManager : public Core::ECS::AssetManager<Surface::Material>
         {
         public:
             MaterialManager(ShaderManager& shaderManager, TextureManager& textureManager);

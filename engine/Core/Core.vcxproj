@@ -207,6 +207,12 @@
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="include\ECS\AssetManager.h" />
+    <ClInclude Include="include\ECS\Component.h" />
+    <ClInclude Include="include\ECS\ComponentManager.h" />
+    <ClInclude Include="include\ECS\Entity.h" />
+    <ClInclude Include="include\ECS\Manager.h" />
+    <ClInclude Include="include\ECS\ThreadSafe.h" />
     <ClInclude Include="include\File\FileUtility.h" />
     <ClInclude Include="include\Input\InputDefines.h" />
     <ClInclude Include="include\Input\KeyboardInputSystem.h" />
@@ -231,12 +237,8 @@
     <ClInclude Include="include\Math\Rect.h" />
     <ClInclude Include="include\Math\Sphere.h" />
     <ClInclude Include="include\Math\Transform.h" />
-    <ClInclude Include="include\Node\Component.h" />
-    <ClInclude Include="include\Node\Node.h" />
     <ClInclude Include="include\Template\Cacher.h" />
     <ClInclude Include="include\Template\CallbackPtr.h" />
-    <ClInclude Include="include\Template\AssetManager.h" />
-    <ClInclude Include="include\Template\ComponentManager.h" />
     <ClInclude Include="include\Template\NonAssignable.h" />
     <ClInclude Include="include\Template\Observer.h" />
     <ClInclude Include="include\Template\Producer.h" />
@@ -248,7 +250,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp" />
-    <ClCompile Include="Node\Node.cpp" />
+    <ClCompile Include="ECS\Entity.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>

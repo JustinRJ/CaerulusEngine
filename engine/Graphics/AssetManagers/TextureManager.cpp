@@ -14,7 +14,7 @@ namespace Graphics
     {
         void TextureManager::Load(const std::string& textureName, const std::string& path)
         {
-            if (IsLoaded(textureName))
+            if (Get(textureName))
             {
                 LogInDebug("Texture " + textureName + " already loaded with path: " + path);
             }

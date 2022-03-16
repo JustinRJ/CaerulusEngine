@@ -8,18 +8,18 @@ namespace Graphics
 {
     namespace Managers
     {
-        const PointLight* PointLightManager::Create(Core::Node::Node& node, const Core::Math::vec3& colour)
+        const PointLight* PointLightManager::Create(Core::ECS::Entity& entity, const Core::Math::vec3& colour)
         {
-            std::unique_ptr<Lighting::PointLight> pointLight = std::make_unique<Lighting::PointLight>(node);
+            std::unique_ptr<Lighting::PointLight> pointLight = std::make_unique<Lighting::PointLight>(entity);
             PointLight* ptr = pointLight.get();
             pointLight->SetColour(colour);
-            Insert(std::move(pointLight));
+            Insert(&entity, std::move(pointLight));
             return ptr;
         }
 
-        void PointLightManager::AddPointLightUniformCallback(const Core::Node::Node& node, const Pipeline::Shader& shader, std::function<void(const Pipeline::ShaderUniformCallback&, const Pipeline::Shader& shader)> uniformCallback)
+        void PointLightManager::AddPointLightUniformCallback(Core::ECS::Entity& entity, const Pipeline::Shader& shader, std::function<void(const Pipeline::ShaderUniformCallback&, const Pipeline::Shader& shader)> uniformCallback)
         {
-            if (PointLight* light = GetMutable(node))
+            if (PointLight* light = GetMutable(&entity))
             {
                 light->AddUniformCallback(shader, uniformCallback);
             }

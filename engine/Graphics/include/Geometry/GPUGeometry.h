@@ -5,6 +5,7 @@
 #include "Pipeline/VertexBuffer.h"
 #include "Pipeline/IndexBuffer.h"
 #include "Pipeline/ShaderUniformCallback.h"
+#include "Rendering/GLRenderer.h"
 
 namespace Graphics
 {
@@ -20,7 +21,9 @@ namespace Graphics
         public:
             GPUGeometry(const void* vertData, size_t vertSize, const unsigned int* indexData, size_t indexCount) :
                 m_vertexBuffer(vertData, vertSize),
-                m_indexBuffer(indexData, indexCount)
+                m_indexBuffer(indexData, indexCount),
+                m_material(nullptr),
+                m_renderer(nullptr)
             {}
 
             virtual ~GPUGeometry() = default;
@@ -55,13 +58,27 @@ namespace Graphics
                 m_material = &material;
             }
 
+            const Rendering::GLRenderer* GetRenderer() const
+            {
+                return m_renderer;
+            }
+
+            void SetRenderer(const Rendering::GLRenderer* renderer)
+            {
+                m_renderer = renderer;
+            }
+
+            void Draw() const
+            {
+                m_renderer->Draw(*this);
+            }
+
         private:
             Pipeline::VertexArray m_vertexArray;
             Pipeline::VertexBuffer m_vertexBuffer;
             Pipeline::IndexBuffer m_indexBuffer;
-
-
             const Surface::Material* m_material;
+            const Rendering::GLRenderer* m_renderer;
         };
     }
 }

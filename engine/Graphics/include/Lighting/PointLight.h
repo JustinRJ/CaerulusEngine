@@ -9,9 +9,14 @@ namespace Graphics
         class PointLight : public Light
         {
         public:
-            PointLight(Core::Node::Node& node) :
-                Light(node)
+            PointLight(Core::ECS::Entity& entity) :
+                Light(entity)
             {}
+
+            void Update(float deltaTime) override
+            {
+                InvokeUniformCallbacks();
+            }
 
             float GetRadius() const
             {

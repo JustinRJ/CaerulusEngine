@@ -1,26 +1,29 @@
 #pragma once
 
 #include "Geometry/Model.h"
-#include "Template/ComponentManager.h"
-#include "ComponentManagers/PointLightManager.h"
+#include "ECS/ComponentManager.h"
 
 namespace Graphics
 {
     namespace Managers
     {
-        class CAERULUS_GRAPHICS ModelManager : public Core::Template::ComponentManager<Geometry::Model>
+        class MaterialManager;
+
+        class CAERULUS_GRAPHICS ModelManager : public Core::ECS::ComponentManager<Geometry::Model>
         {
         public:
-            ModelManager(MaterialManager& materialManager);
+            ModelManager(MaterialManager& materialManager, const Rendering::GLRenderer* renderer);
 
-            const Geometry::Model* Load(Core::Node::Node& node, const std::string& modelPath, const std::string& materialPath = "");
+            const Geometry::Model* Load(Core::ECS::Entity& entity, const std::string& modelPath, const std::string& materialPath = "");
 
             MaterialManager& GetMaterialManager();
 
-            void AddModelUniformCallback(const Core::Node::Node& key, const Pipeline::Shader& shader, std::function<void(const Pipeline::ShaderUniformCallback&, const Pipeline::Shader& shader)> uniformCallback);
+            void AddModelUniformCallback(Core::ECS::Entity& key, const Pipeline::Shader& shader, std::function<void(const Pipeline::ShaderUniformCallback&, const Pipeline::Shader& shader)> uniformCallback);
 
         private:
             MaterialManager& m_materialManager;
+
+            const Rendering::GLRenderer* m_renderer;
         };
     }
 }

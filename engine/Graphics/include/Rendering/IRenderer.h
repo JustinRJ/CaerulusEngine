@@ -39,8 +39,8 @@ namespace Graphics
             virtual ~IRenderer() = default;
 
             virtual void Clear(Core::Math::vec4 colour) const = 0;
-            virtual void Draw(const Pipeline::VertexArray& va, const Pipeline::IndexBuffer& ib, bool wireframe = false) const = 0;
-            virtual void Draw(const Geometry::GPUGeometry& geometry, bool wireframe = false) const = 0;
+            virtual void Draw(const Pipeline::VertexArray& va, const Pipeline::IndexBuffer& ib) const = 0;
+            virtual void Draw(const Geometry::GPUGeometry& geometry) const = 0;
 
             virtual void DrawSphere(Core::Math::vec3 position, double radius, Core::Math::vec3 colour) const = 0;
             virtual void DrawRay(Core::Math::vec3 start, Core::Math::vec3 end, Core::Math::vec3 colour, float lineWidth = 1.0) const = 0;

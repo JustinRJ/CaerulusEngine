@@ -8,6 +8,7 @@
 #include "Rendering/IRenderer.h"
 #include "Pipeline/FrameBuffer.h"
 #include "Pipeline/ShaderUniformCallback.h"
+#include "AssetManagers/ShaderManager.h"
 
 namespace Graphics
 {
@@ -23,6 +24,7 @@ namespace Graphics
             std::string BackgroundShader;
         };
 
+        // TODO - re-write this shit
         class IBL : public Pipeline::ShaderUniformCallback
         {
         public:
@@ -89,7 +91,7 @@ namespace Graphics
                     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, m_envCubemapHandle, 0);
                     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-                    m_renderer->Draw(m_cube, false);
+                    m_renderer->Draw(m_cube);
                 }
                 framebuffer->Unbind();
 
@@ -133,7 +135,7 @@ namespace Graphics
                     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, m_irradianceMapHandle, 0);
                     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-                    m_renderer->Draw(m_cube, false);
+                    m_renderer->Draw(m_cube);
                 }
                 framebuffer->Unbind();
 
@@ -182,7 +184,7 @@ namespace Graphics
                         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, m_prefilterMapHandle, mip);
 
                         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-                        m_renderer->Draw(m_cube, false);
+                        m_renderer->Draw(m_cube);
                     }
                 }
                 framebuffer->Unbind();

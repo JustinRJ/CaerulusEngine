@@ -2,7 +2,7 @@
 
 #include "Engine.h"
 
-#include "Node/Node.h"
+#include "ECS/Entity.h"
 #include "Math/Math.h"
 #include "Math/Camera.h"
 
@@ -29,7 +29,7 @@
 #include "Lighting/IBL.h"
 #include "Geometry/Mesh.h"
 
-using namespace Core::Node;
+using namespace Core::ECS;
 using namespace Core::Math;
 using namespace Core::Time;
 using namespace Core::Input;
@@ -58,12 +58,12 @@ Engine::Engine(int argc, char** argv) :
     m_shaderManager         = std::make_shared<ShaderManager>(*m_shaderSrcManager);
     m_textureManager        = std::make_shared<TextureManager>();
     m_materialManager       = std::make_shared<MaterialManager>(*m_shaderManager, *m_textureManager);
-    m_modelManager          = std::make_shared<ModelManager>(*m_materialManager);
+    m_modelManager          = std::make_shared<ModelManager>(*m_materialManager, m_renderer.get());
     m_pointLightManager     = std::make_shared<PointLightManager>();
 
     m_graphicsEngine = std::make_shared<GraphicsEngine>(*m_modelManager, *m_pointLightManager, m_window, m_renderer);
 
-    m_rootNode = new Node(nullptr);
+    m_rootEntity = new Entity(nullptr);
 
     m_tickable.push_back(m_keyboardInputSystem);
     m_tickable.push_back(m_mouseInputSystem);
@@ -118,22 +118,22 @@ void Engine::Tick()
 
     for (const std::shared_ptr<ITickable>& tickable : m_tickable)
     {
-        tickable->EarlyUpdate();
+        tickable->EarlyTick();
     }
 
     for (const std::shared_ptr<ITickable>& tickable : m_tickable)
     {
-        tickable->Update(m_deltaTime);
+        tickable->Tick(m_deltaTime);
     }
 
     for (const std::shared_ptr<ITickable>& tickable : m_tickable)
     {
-        tickable->FixedUpdate(m_fixedTime);
+        tickable->FixedTick(m_fixedTime);
     }
 
     for (const std::shared_ptr<ITickable>& tickable : m_tickable)
     {
-        tickable->LateUpdate();
+        tickable->LateTick();
     }
 
     glfwPollEvents();
@@ -144,7 +144,7 @@ void Engine::InitInput()
     m_keyboardInputSystem->AddWindowKeyCallback(m_window, GLFW_KEY_ESCAPE, Action::Release, [&](Modifier) { m_running = false; });
     m_keyboardInputSystem->AddWindowKeyCallback(m_window, GLFW_KEY_X, Action::Release, [&](Modifier)   { m_window->ToggleLockedCursor(); });
     m_keyboardInputSystem->AddWindowKeyCallback(m_window, GLFW_KEY_R, Action::Release, [&](Modifier)   { if (m_window->IsCursorLocked()) { m_reset = true; }});
-    m_keyboardInputSystem->AddWindowKeyCallback(m_window, GLFW_KEY_C, Action::Release, [&](Modifier)   { if (m_window->IsCursorLocked()) { m_graphicsEngine->SetWireframe(!m_graphicsEngine->GetWireframe()); }});
+    m_keyboardInputSystem->AddWindowKeyCallback(m_window, GLFW_KEY_C, Action::Release, [&](Modifier)   { if (m_window->IsCursorLocked()) { m_renderer->SetWireframe(!m_renderer->GetWireframe()); }});
 
     m_keyboardInputSystem->AddWindowKeyCallback(m_window, GLFW_KEY_A, Action::Hold, [&](Modifier m) { if (m_window->IsCursorLocked()) { m_camera->Translate(UnitRight   * -m_deltaTime * (m == Modifier::Shift ? m_sprintSpeed : m_normalSpeed), false); }});
     m_keyboardInputSystem->AddWindowKeyCallback(m_window, GLFW_KEY_D, Action::Hold, [&](Modifier m) { if (m_window->IsCursorLocked()) { m_camera->Translate(UnitRight   *  m_deltaTime * (m == Modifier::Shift ? m_sprintSpeed : m_normalSpeed), false); }});
@@ -195,77 +195,77 @@ void Engine::InitGLRenderer()
 
 void Engine::InitLighting()
 {
-    Node* redNode = new Node(m_rootNode);
-    Node* blueNode = new Node(m_rootNode);
-    Node* greenNode = new Node(m_rootNode);
-    Node* whiteNode = new Node(m_rootNode);
+    Entity* redEntity = new Entity(m_rootEntity);
+    Entity* blueEntity = new Entity(m_rootEntity);
+    Entity* greenEntity = new Entity(m_rootEntity);
+    Entity* whiteEntity = new Entity(m_rootEntity);
 
     // TODO - transform bug causing all lights to overlap
     Transform redTransform;
     redTransform.Translate(vec3(-150, 15., 0));
-    redNode->SetWorldTransform(redTransform);
+    redEntity->SetWorldTransform(redTransform);
 
     Transform blueTransform;
     blueTransform.Translate(vec3(0, 15., 0));
-    blueNode->SetWorldTransform(blueTransform);
+    blueEntity->SetWorldTransform(blueTransform);
 
     Transform greenTransform;
     greenTransform.Translate(vec3(150, 15., 0));
-    greenNode->SetWorldTransform(greenTransform);
+    greenEntity->SetWorldTransform(greenTransform);
 
     Transform whiteTransform;
     whiteTransform.Translate(vec3(0., 30., 0));
-    whiteNode->SetWorldTransform(whiteTransform);
+    whiteEntity->SetWorldTransform(whiteTransform);
 
-    m_pointLightManager->Create(*redNode, vec3(255, 0, 0));
-    m_pointLightManager->Create(*blueNode, vec3(0, 255, 0));
-    m_pointLightManager->Create(*greenNode, vec3(0, 0, 255));
-    m_pointLightManager->Create(*whiteNode, vec3(255, 255, 255));
+    m_pointLightManager->Create(*redEntity, vec3(255, 0, 0));
+    m_pointLightManager->Create(*blueEntity, vec3(0, 255, 0));
+    m_pointLightManager->Create(*greenEntity, vec3(0, 0, 255));
+    m_pointLightManager->Create(*whiteEntity, vec3(255, 255, 255));
 
-    m_pointLightManager->AddPointLightUniformCallback(*redNode, *m_shaderManager->Get("pbr"),
+    m_pointLightManager->AddPointLightUniformCallback(*redEntity, *m_shaderManager->Get("pbr"),
         [](const Pipeline::ShaderUniformCallback& shaderUniformCallback, const Pipeline::Shader& shader)
     {
         auto light = dynamic_cast<const PointLight*>(&shaderUniformCallback);
-        shader.Set3f("lightPositions[0]", light->GetNode().GetWorldTransform().GetTranslation());
+        shader.Set3f("lightPositions[0]", light->GetEntity().GetWorldTransform().GetTranslation());
         shader.Set3f("lightColours[0]", light->GetColour());
     });
 
-    m_pointLightManager->AddPointLightUniformCallback(*blueNode, *m_shaderManager->Get("pbr"),
+    m_pointLightManager->AddPointLightUniformCallback(*blueEntity, *m_shaderManager->Get("pbr"),
         [](const Pipeline::ShaderUniformCallback& shaderUniformCallback, const Pipeline::Shader& shader)
     {
         auto light = dynamic_cast<const PointLight*>(&shaderUniformCallback);
-        shader.Set3f("lightPositions[1]", light->GetNode().GetWorldTransform().GetTranslation());
+        shader.Set3f("lightPositions[1]", light->GetEntity().GetWorldTransform().GetTranslation());
         shader.Set3f("lightColours[1]", light->GetColour());
     });
 
-    m_pointLightManager->AddPointLightUniformCallback(*greenNode, *m_shaderManager->Get("pbr"),
+    m_pointLightManager->AddPointLightUniformCallback(*greenEntity, *m_shaderManager->Get("pbr"),
         [](const Pipeline::ShaderUniformCallback& shaderUniformCallback, const Pipeline::Shader& shader)
     {
         auto light = dynamic_cast<const PointLight*>(&shaderUniformCallback);
-        shader.Set3f("lightPositions[2]", light->GetNode().GetWorldTransform().GetTranslation());
+        shader.Set3f("lightPositions[2]", light->GetEntity().GetWorldTransform().GetTranslation());
         shader.Set3f("lightColours[2]", light->GetColour());
     });
 
-    m_pointLightManager->AddPointLightUniformCallback(*whiteNode, *m_shaderManager->Get("pbr"),
+    m_pointLightManager->AddPointLightUniformCallback(*whiteEntity, *m_shaderManager->Get("pbr"),
         [](const Pipeline::ShaderUniformCallback& shaderUniformCallback, const Pipeline::Shader& shader)
     {
         auto light = dynamic_cast<const PointLight*>(&shaderUniformCallback);
-        shader.Set3f("lightPositions[3]", light->GetNode().GetWorldTransform().GetTranslation());
+        shader.Set3f("lightPositions[3]", light->GetEntity().GetWorldTransform().GetTranslation());
         shader.Set3f("lightColours[3]", light->GetColour());
     });
 }
 
 void Engine::InitScene()
 {
-    Node* sponzaNode = new Node(m_rootNode);
-    sponzaNode->SetName("sponza");
+    Entity* sponzaEntity = new Entity(m_rootEntity);
+    sponzaEntity->SetName("sponza");
     Transform sponzaTransform;
     sponzaTransform.Translate(vec3(0.f, -10.f, 0.f));
     sponzaTransform.Scale(vec3(0.25f, 0.25f, 0.25f));
-    sponzaNode->SetLocalTransform(sponzaTransform);
+    sponzaEntity->SetLocalTransform(sponzaTransform);
 
     // Only set shaders and unform callback for sponza model 
-    if (const Model* model = m_modelManager->Load(*sponzaNode, "assets/models/Sponza/sponza.obj"))
+    if (const Model* model = m_modelManager->Load(*sponzaEntity, "assets/models/Sponza/sponza.obj"))
     {
         // Sponza model doesn't have AO textures, add default AO texture
         // Use completely black texture to disable IBL lighting
@@ -274,15 +274,14 @@ void Engine::InitScene()
         m_textureManager->Load("black", "assets/textures/black.png");
 
         // Set uniform callback to update each models MVP before it's rendered
-        m_modelManager->AddModelUniformCallback(*sponzaNode, *m_shaderManager->Get("pbr"), [capturedCamera = m_camera](const Pipeline::ShaderUniformCallback& shaderUniformCallback, const Pipeline::Shader& shader)
+        m_modelManager->AddModelUniformCallback(*sponzaEntity, *m_shaderManager->Get("pbr"), [capturedCamera = m_camera](const Pipeline::ShaderUniformCallback& shaderUniformCallback, const Pipeline::Shader& shader)
         {
-            auto model = dynamic_cast<const Model*>(&shaderUniformCallback);
-
             shader.SetMat4fv("projection",  capturedCamera->GetPerspective().GetMatrix());
             shader.SetMat4fv("view",        capturedCamera->GetView());
             shader.Set3f("viewPos",         capturedCamera->GetTranslation());
 
-            shader.SetMat4fv("model",       model->GetNode().GetWorldTransform().GetMatrix());
+            auto model = dynamic_cast<const Model*>(&shaderUniformCallback);
+            shader.SetMat4fv("model",       model->GetEntity().GetWorldTransform().GetMatrix());
         });
 
         for (int i = 0; i < model->GetMeshes().size(); ++i)
@@ -290,7 +289,7 @@ void Engine::InitScene()
             auto mesh = model->GetMeshes()[i];
 
             // Can set uniform callback for meshes if required
-            //mesh->AddUniformCallback("", [](const Pipeline::ShaderUniformCallback& shaderUniformCallback, const Pipeline::Shader& shader) {});
+            //mesh->AddUniformCallback(*m_shaderManager->Get("example"), [](const Pipeline::ShaderUniformCallback& shaderUniformCallback, const Pipeline::Shader& shader) {});
 
             auto materialFileName = mesh->GetFileMaterialName();
             mesh->SetMaterial(*m_materialManager->Get(materialFileName));
