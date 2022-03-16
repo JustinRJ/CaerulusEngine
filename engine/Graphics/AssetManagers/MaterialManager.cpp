@@ -1,6 +1,6 @@
 #include "stdafx.h"
 
-#include "Managers/MaterialManager.h"
+#include "AssetManagers/MaterialManager.h"
 
 #include <fstream>
 
@@ -25,7 +25,7 @@ namespace Graphics
             else
             {
                 LogMessage("Creating material " + materialName);
-                std::unique_ptr<Material> material = std::make_unique<Material>(m_shaderManager, m_textureManager, "");
+                std::unique_ptr<Material> material = std::make_unique<Material>(m_textureManager, "");
 
                 for (unsigned int i = 0; i < textureNames.size(); ++i)
                 {
@@ -56,7 +56,7 @@ namespace Graphics
                     {
                         LogMessage("Loading material " + name + " with path: " + materialPath);
 
-                        std::unique_ptr<Material> newMaterial = std::make_unique<Material>(m_shaderManager, m_textureManager, materialPath);
+                        std::unique_ptr<Material> newMaterial = std::make_unique<Material>(m_textureManager, materialPath);
 
                         std::vector<std::string> textures;
                         for (const std::string& textureName : Material::GetTextureNamesFromFile(is, static_cast<TextureType>(i)))
@@ -104,11 +104,11 @@ namespace Graphics
             }
         }
 
-        void MaterialManager::AddMaterialUniformCallback(const std::string& materialName, const std::string& shaderName, std::function<void(const Pipeline::Shader& shader)> uniformCallback)
+        void MaterialManager::AddMaterialUniformCallback(const std::string& materialName, const Pipeline::Shader& shader, std::function<void(const Pipeline::ShaderUniformCallback&, const Pipeline::Shader& shader)> uniformCallback)
         {
             if (Material* material = GetMutable(materialName))
             {
-                material->AddUniformCallback(shaderName, uniformCallback);
+                material->AddUniformCallback(shader, uniformCallback);
             }
         }
     }

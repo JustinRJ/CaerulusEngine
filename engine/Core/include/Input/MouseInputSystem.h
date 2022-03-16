@@ -35,25 +35,19 @@ namespace Core
             std::string Name = "";
         };
 
-        class MouseInputManager : public Interface::ITickable
+        class MouseInputSystem : public Interface::ITickable
         {
         public:
-            MouseInputManager(std::shared_ptr<Graphics::Window::GLWindow> window) :
+            MouseInputSystem(std::shared_ptr<Graphics::Window::GLWindow> window) :
                 m_window(window)
             {
                 glfwSetInputMode(m_window->GetGLFWWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
             };
 
-            void Reset() override {}
-
-            void PreUpdate(float deltaTime) override
+            void EarlyUpdate() override
             {
                 UpdateMouseDrag();
             }
-
-            void Update(float deltaTime) override {}
-
-            void FixedUpdate(float fixedTime) override {}
 
             void AddDragMouseCallback(std::shared_ptr<Graphics::Window::GLWindow> window, std::function<void(const DragData&)> callback, const std::string& name = "")
             {

@@ -1,6 +1,6 @@
 #include "stdafx.h"
 
-#include "Managers/TextureManager.h"
+#include "AssetManagers/TextureManager.h"
 
 #include "File/FileUtility.h"
 

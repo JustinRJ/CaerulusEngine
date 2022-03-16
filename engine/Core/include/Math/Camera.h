@@ -13,28 +13,26 @@ namespace Core
             Camera() = default;
 
             Camera(const vec3& position, const vec3& forward, const vec3& up = UnitUp) :
-                m_transform(lookAt(position, Math::normalize(position + forward), up)),
+                m_view(lookAt(position, Math::normalize(position + forward), up)),
                 m_perspective(54.0f, 1.25f, 1.0f, 1000.0f)
             {}
 
             void Translate(const vec3& translation, bool translateY = true)
             {
-                mat4 view = m_transform;
-                vec3 temp(view[0][3], view[1][3], view[2][3]);
-                temp += normalize(vec3(view[0][0], translateY ? view[0][2] : 0.0f, view[2][0])) * translation.x;
+                vec3 temp(m_view[0][3], m_view[1][3], m_view[2][3]);
+                temp += normalize(vec3(m_view[0][0], translateY ? m_view[0][2] : 0.0f, m_view[2][0])) * translation.x;
                 if (translateY)
                 {
-                    temp += normalize(vec3(view[0][1], view[1][1], view[2][1])) * translation.y;
+                    temp += normalize(vec3(m_view[0][1], m_view[1][1], m_view[2][1])) * translation.y;
                 }
-                temp += normalize(vec3(view[0][2], translateY ? view[1][2] : 0.0f, view[2][2])) * translation.z;
-                view *= translate(mat4(1.0f), -temp);
-                m_transform = view;
+                temp += normalize(vec3(m_view[0][2], translateY ? m_view[1][2] : 0.0f, m_view[2][2])) * translation.z;
+                m_view *= translate(mat4(1.0f), -temp);
             }
 
             void Rotate(const vec3& eulerDelta, const vec3& forcedUp = UnitUp)
             {
-                Transform transform = inverse(static_cast<mat4>(m_transform));
-                quat orig_rot = normalize(quat_cast(static_cast<mat4>(transform)));
+                mat4 transform = inverse(m_view);
+                quat orig_rot = normalize(quat_cast(transform));
 
                 bool force = l1Norm(forcedUp) > 0.0f;
 
@@ -56,21 +54,24 @@ namespace Core
                     }
                 }
 
-                Transform temp = mat4_cast(rotation);
-
-                temp.SetAxis(transform.GetAxis(Index::W), Index::W);
-
-                m_transform = inverse(static_cast<mat4>(temp));
+                mat4 temp = mat4_cast(rotation);
+                temp[3] = transform[3];
+                m_view = inverse(temp);
             }
 
-            const Transform& GetTransform() const
+            vec3 GetTranslation() const
             {
-                return m_transform;
+                return m_view[3];
             }
 
-            Transform& GetTransform()
+            const mat4& GetView() const
             {
-                return m_transform;
+                return m_view;
+            }
+
+            mat4& GetView()
+            {
+                return m_view;
             }
 
             const Perspective& GetPerspective() const
@@ -84,7 +85,7 @@ namespace Core
             }
 
         private:
-            Transform m_transform;
+            mat4 m_view;
             Perspective m_perspective;
         };
     }

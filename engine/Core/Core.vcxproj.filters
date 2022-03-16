@@ -56,14 +56,11 @@
     <ClInclude Include="include\Input\InputDefines.h">
       <Filter>include\Input</Filter>
     </ClInclude>
-    <ClInclude Include="include\Input\KeyboardInputManager.h">
+    <ClInclude Include="include\Input\KeyboardInputSystem.h">
       <Filter>include\Input</Filter>
     </ClInclude>
-    <ClInclude Include="include\Input\MouseInputManager.h">
+    <ClInclude Include="include\Input\MouseInputSystem.h">
       <Filter>include\Input</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Interface\ISerializable.h">
-      <Filter>include\Interface</Filter>
     </ClInclude>
     <ClInclude Include="include\Interface\ITickable.h">
       <Filter>include\Interface</Filter>
@@ -125,10 +122,10 @@
     <ClInclude Include="include\Template\Cacher.h">
       <Filter>include\Template</Filter>
     </ClInclude>
-    <ClInclude Include="include\Template\Manager.h">
+    <ClInclude Include="include\Template\AssetManager.h">
       <Filter>include\Template</Filter>
     </ClInclude>
-    <ClInclude Include="include\Template\NodeManager.h">
+    <ClInclude Include="include\Template\ComponentManager.h">
       <Filter>include\Template</Filter>
     </ClInclude>
     <ClInclude Include="include\Template\NonAssignable.h">
@@ -157,6 +154,12 @@
     </ClInclude>
     <ClInclude Include="include\Template\CallbackPtr.h">
       <Filter>include\Template</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Math\Mesh.h">
+      <Filter>include\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Node\Component.h">
+      <Filter>include\Node</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

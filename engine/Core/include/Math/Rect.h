@@ -43,40 +43,7 @@ namespace Core
                 {
                     return false;
                 }
-
-                std::vector<vec2> corners = GetCorners();
-                for (unsigned int i = 0u; i < corners.size(); ++i)
-                {
-                    vec2 current = corners[i];
-                    vec2 next = corners[i == corners.size() - 1 ? 0 : i + 1];
-                    vec2 edge = next - current;
-                    vec2 axis = { -edge[1], edge[0] };
-
-                    float aMinProj = std::numeric_limits<float>::max();
-                    float bMinProj = std::numeric_limits<float>::max();
-                    float aMaxProj = std::numeric_limits<float>::min();
-                    float bMaxProj = std::numeric_limits<float>::min();
-
-                    for (const vec2& v : corners)
-                    {
-                        float proj = dot(axis, v);
-                        aMinProj = std::min(aMinProj, proj);
-                        aMaxProj = std::max(aMaxProj, proj);
-                    }
-
-                    for (const vec2& v : rect.GetCorners())
-                    {
-                        float proj = dot(axis, v);
-                        bMinProj = std::min(bMinProj, proj);
-                        bMaxProj = std::max(bMaxProj, proj);
-                    }
-
-                    if (aMaxProj < bMinProj || aMinProj > bMaxProj)
-                    {
-	                    return true;
-                    }
-                }
-                return false;
+                return IsIntersecting2D(GetCorners(), rect.GetCorners());
             }
 
             vec2 GetCenter() const
@@ -89,7 +56,7 @@ namespace Core
             std::vector<vec2> GetCorners() const
             {
                 std::vector<vec2> corners(m_aa.GetCorners().size());
-                std::transform(m_aa.GetCorners().begin(), m_aa.GetCorners().end(), corners.begin(), [&](const vec2& v)
+                std::transform(std::begin(GetCorners()), std::end(m_aa.GetCorners()), std::begin(corners), [&](const vec2& v)
                 {
                     return TransformVector(m_T, v);
                 });

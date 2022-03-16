@@ -1,6 +1,6 @@
 #include "stdafx.h"
 
-#include "Managers/ShaderManager.h"
+#include "AssetManagers/ShaderManager.h"
 
 using namespace Core::Logging;
 using namespace Graphics::Pipeline;

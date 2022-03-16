@@ -27,14 +27,11 @@ namespace Graphics
     namespace Geometry
     {
         Model::Model(
-            Core::Node::Node* parent,
-            const Managers::ShaderManager& shaderManager,
+            Core::Node::Node& node,
             const std::string& path) :
-            Node::Node(parent),
-            Pipeline::ShaderUniformCallback(shaderManager),
+            Core::Node::Component(node),
             m_isLoaded(false),
-            m_path(path),
-            m_shaderManager(shaderManager)
+            m_path(path)
         {
             std::vector<std::vector<Vertex>> vertices;
             std::vector<std::vector<GLuint>> indices;
@@ -46,8 +43,7 @@ namespace Graphics
             for (unsigned int i = 0; i < vertices.size(); ++i)
             {
                 std::shared_ptr<Mesh> newMesh =
-                    std::make_shared<Mesh>(this, m_shaderManager, vertices.at(i), indices.at(i), materialNames.at(i));
-                newMesh->SetMaterialName(newMesh->GetFileMaterialName());
+                    std::make_shared<Mesh>(vertices.at(i), indices.at(i), materialNames.at(i));
                 m_meshes.push_back(newMesh);
             }
 
@@ -184,16 +180,6 @@ namespace Graphics
         bool Model::IsLoaded() const
         {
             return m_isLoaded;
-        }
-
-        std::vector<std::string> Model::GetMaterialNames() const
-        {
-            std::vector<std::string> materials;
-            for (const std::shared_ptr<Mesh>& mesh : m_meshes)
-            {
-                materials.push_back(mesh->GetMaterialName());
-            }
-            return materials;
         }
     }
 }

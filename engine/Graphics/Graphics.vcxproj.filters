@@ -19,21 +19,6 @@
     <ClCompile Include="Surface\Texture.cpp">
       <Filter>Surface</Filter>
     </ClCompile>
-    <ClCompile Include="Managers\MaterialManager.cpp">
-      <Filter>Managers</Filter>
-    </ClCompile>
-    <ClCompile Include="Managers\ModelManager.cpp">
-      <Filter>Managers</Filter>
-    </ClCompile>
-    <ClCompile Include="Managers\ShaderManager.cpp">
-      <Filter>Managers</Filter>
-    </ClCompile>
-    <ClCompile Include="Managers\ShaderSourceManager.cpp">
-      <Filter>Managers</Filter>
-    </ClCompile>
-    <ClCompile Include="Managers\TextureManager.cpp">
-      <Filter>Managers</Filter>
-    </ClCompile>
     <ClCompile Include="Pipeline\IndexBuffer.cpp">
       <Filter>Pipeline</Filter>
     </ClCompile>
@@ -49,33 +34,30 @@
     <ClCompile Include="Pipeline\FrameBuffer.cpp">
       <Filter>Pipeline</Filter>
     </ClCompile>
-    <ClCompile Include="Managers\PointLightManager.cpp">
-      <Filter>Managers</Filter>
-    </ClCompile>
     <ClCompile Include="Geometry\Model.cpp">
       <Filter>Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="AssetManagers\MaterialManager.cpp">
+      <Filter>AssetManagers</Filter>
+    </ClCompile>
+    <ClCompile Include="AssetManagers\ShaderManager.cpp">
+      <Filter>AssetManagers</Filter>
+    </ClCompile>
+    <ClCompile Include="AssetManagers\ShaderSourceManager.cpp">
+      <Filter>AssetManagers</Filter>
+    </ClCompile>
+    <ClCompile Include="AssetManagers\TextureManager.cpp">
+      <Filter>AssetManagers</Filter>
+    </ClCompile>
+    <ClCompile Include="ComponentManagers\ModelManager.cpp">
+      <Filter>ComponentManagers</Filter>
+    </ClCompile>
+    <ClCompile Include="ComponentManagers\PointLightManager.cpp">
+      <Filter>ComponentManagers</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
-    <ClInclude Include="include\Managers\MaterialManager.h">
-      <Filter>include\Managers</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Managers\ModelManager.h">
-      <Filter>include\Managers</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Managers\PointLightManager.h">
-      <Filter>include\Managers</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Managers\ShaderManager.h">
-      <Filter>include\Managers</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Managers\ShaderSourceManager.h">
-      <Filter>include\Managers</Filter>
-    </ClInclude>
-    <ClInclude Include="include\Managers\TextureManager.h">
-      <Filter>include\Managers</Filter>
-    </ClInclude>
     <ClInclude Include="include\Window\GLWindow.h">
       <Filter>include\Window</Filter>
     </ClInclude>
@@ -157,6 +139,24 @@
     <ClInclude Include="include\Pipeline\IGraphicsObject.h">
       <Filter>include\Pipeline</Filter>
     </ClInclude>
+    <ClInclude Include="include\AssetManagers\MaterialManager.h">
+      <Filter>include\AssetManagers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\AssetManagers\ShaderManager.h">
+      <Filter>include\AssetManagers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\AssetManagers\ShaderSourceManager.h">
+      <Filter>include\AssetManagers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\AssetManagers\TextureManager.h">
+      <Filter>include\AssetManagers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ComponentManagers\ModelManager.h">
+      <Filter>include\ComponentManagers</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ComponentManagers\PointLightManager.h">
+      <Filter>include\ComponentManagers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Window">
@@ -171,17 +171,11 @@
     <Filter Include="Surface">
       <UniqueIdentifier>{9ec83860-3c23-4c54-a0a6-22e28240c0df}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Managers">
-      <UniqueIdentifier>{4e852032-ce2c-42b8-8c01-ffa32ca0039b}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Rendering">
       <UniqueIdentifier>{08d81769-f5b2-4627-a76d-42331781a9fc}</UniqueIdentifier>
     </Filter>
     <Filter Include="include">
       <UniqueIdentifier>{eaafbfba-865b-4529-ad34-ac01742750a4}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="include\Managers">
-      <UniqueIdentifier>{2f84ea08-63e9-45ad-a9ec-a5b77cc3da08}</UniqueIdentifier>
     </Filter>
     <Filter Include="include\Window">
       <UniqueIdentifier>{363d6b26-e29d-465a-b867-e7fc735da347}</UniqueIdentifier>
@@ -203,6 +197,18 @@
     </Filter>
     <Filter Include="Geometry">
       <UniqueIdentifier>{a8d1b25c-6ffe-4210-b08a-719481e8edca}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\AssetManagers">
+      <UniqueIdentifier>{2f84ea08-63e9-45ad-a9ec-a5b77cc3da08}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="AssetManagers">
+      <UniqueIdentifier>{4e852032-ce2c-42b8-8c01-ffa32ca0039b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ComponentManagers">
+      <UniqueIdentifier>{d1ad2598-fdd2-43fd-8cbd-ce358a5df85c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\ComponentManagers">
+      <UniqueIdentifier>{1aa1eea1-0d77-4856-bbf8-0dd7eac32873}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

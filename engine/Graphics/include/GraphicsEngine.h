@@ -7,8 +7,8 @@
 
 #include "Math/Math.h"
 #include "Interface/ITickable.h"
-#include "Managers/ModelManager.h"
-#include "Managers/PointLightManager.h"
+#include "ComponentManagers/ModelManager.h"
+#include "ComponentManagers/PointLightManager.h"
 
 namespace Graphics
 {
@@ -44,18 +44,13 @@ namespace Graphics
     {
     public:
         GraphicsEngine(
-            const Managers::ShaderManager& shaderManager,
-            const Managers::TextureManager& textureManager,
-            const Managers::MaterialManager& materialManager,
             const Managers::ModelManager& modelManager,
             const Managers::PointLightManager& pointLightManager,
             std::shared_ptr<Window::GLWindow> window,
             std::shared_ptr<Rendering::IRenderer> renderer);
 
-        void PreUpdate(float deltaTime) override;
+        void EarlyUpdate() override;
         void Update(float deltaTime) override;
-        void FixedUpdate(float fixedTime) override {}
-        void Reset() override {}
 
         std::shared_ptr<Pipeline::FrameBuffer> GetFrameBuffer() const;
 
@@ -83,9 +78,6 @@ namespace Graphics
         std::shared_ptr<Rendering::IRenderer> m_renderer;
         std::shared_ptr<Pipeline::FrameBuffer> m_framebuffer;
 
-        const Managers::ShaderManager& m_shaderManager;
-        const Managers::TextureManager& m_textureManager;
-        const Managers::MaterialManager& m_materialManager;
         const Managers::ModelManager& m_modelManager;
         const Managers::PointLightManager& m_pointLightManager;
     };

@@ -26,8 +26,7 @@ namespace Graphics
         class IBL : public Pipeline::ShaderUniformCallback
         {
         public:
-            IBL(Core::Node::Node* parent,
-                const Managers::ShaderManager& shaderManager,
+            IBL(const Managers::ShaderManager& shaderManager,
                 const Managers::TextureManager& textureManager,
                 const IBLShaders& iblShaders,
                 const std::string& textureName,
@@ -35,8 +34,6 @@ namespace Graphics
                 std::shared_ptr<Window::GLWindow> window,
                 std::shared_ptr<Core::Math::Camera> camera,
                 std::shared_ptr<Pipeline::FrameBuffer> framebuffer) :
-                Pipeline::ShaderUniformCallback(shaderManager),
-                m_cube(parent, shaderManager),
                 m_textureName(textureName),
                 m_renderer(renderer)
             {
@@ -114,7 +111,7 @@ namespace Graphics
                 glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
                 glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-                glBindFramebuffer(GL_FRAMEBUFFER, framebuffer->GetID());
+                framebuffer->Bind();
                 glBindRenderbuffer(GL_RENDERBUFFER, framebuffer->GetDepthID());
                 glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, 32, 32);
 
@@ -128,7 +125,7 @@ namespace Graphics
                 glActiveTexture(GL_TEXTURE0);
                 glBindTexture(GL_TEXTURE_CUBE_MAP, m_envCubemapHandle);
 
-                glViewport(0, 0, 32, 32); // don't forget to configure the viewport to the capture dimensions.
+                glViewport(0, 0, windowWidth, windowHeight);
                 framebuffer->Bind();
                 for (unsigned int i = 0; i < 6; ++i)
                 {
@@ -196,7 +193,7 @@ namespace Graphics
 
                 // pre-allocate enough memory for the LUT texture.
                 glBindTexture(GL_TEXTURE_2D, m_brdfLUTTextureHandle);
-                glTexImage2D(GL_TEXTURE_2D, 0, GL_RG16F, 512, 512, 0, GL_RG, GL_FLOAT, 0);
+                glTexImage2D(GL_TEXTURE_2D, 0, GL_RG16F, windowWidth, windowHeight, 0, GL_RG, GL_FLOAT, 0);
                 // be sure to set wrapping mode to GL_CLAMP_TO_EDGE
                 glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
                 glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
@@ -206,7 +203,7 @@ namespace Graphics
                 // then re-configure capture framebuffer object and render screen-space quad with BRDF shader.
                 framebuffer->Bind();
                 glBindRenderbuffer(GL_RENDERBUFFER, framebuffer->GetDepthID());
-                glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, 512, 512);
+                glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, windowWidth, windowHeight);
                 glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_brdfLUTTextureHandle, 0);
 
                 const Pipeline::Shader* BrdfShader = shaderManager.Get(iblShaders.BrdfShader);
@@ -226,10 +223,10 @@ namespace Graphics
                 PbrShader->Set1i("irradianceMap", 0);
                 PbrShader->Set1i("prefilterMap", 1);
                 PbrShader->Set1i("brdfLUT", 2);
-                PbrShader->SetMat4fv("projection", camera->GetPerspective());
+                PbrShader->SetMat4fv("projection", camera->GetPerspective().GetMatrix());
                 BackgroundShader->Bind();
                 BackgroundShader->Set1i("environmentMap", 0);
-                BackgroundShader->SetMat4fv("projection", camera->GetPerspective());
+                BackgroundShader->SetMat4fv("projection", camera->GetPerspective().GetMatrix());
 
                 glViewport(0, 0, windowWidth, windowHeight);
 

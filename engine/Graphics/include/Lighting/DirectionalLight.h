@@ -9,7 +9,10 @@ namespace Graphics
         class DirectionalLight : public Light
         {
         public:
-            DirectionalLight() = default;
+            DirectionalLight(Core::Node::Node& node) :
+                Light(node),
+                m_direction(0,0,0)
+            {}
 
             const Core::Math::vec3& GetDirection() const
             {

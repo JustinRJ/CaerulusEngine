@@ -13,8 +13,7 @@ namespace Graphics
     {
         unsigned int Material::s_materialTextureSlotOffset = 0;
 
-        Material::Material(const Managers::ShaderManager& shaderManager, const Managers::TextureManager& textureManager, const std::string& path) :
-            Pipeline::ShaderUniformCallback(shaderManager),
+        Material::Material(const Managers::TextureManager& textureManager, const std::string& path) :
             m_path(path),
             m_textures(7),
             m_textureManager(textureManager)

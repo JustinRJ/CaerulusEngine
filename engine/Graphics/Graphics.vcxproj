@@ -207,6 +207,12 @@ echo DA | xcopy "$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(Plat
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="include\AssetManagers\MaterialManager.h" />
+    <ClInclude Include="include\AssetManagers\ShaderManager.h" />
+    <ClInclude Include="include\AssetManagers\ShaderSourceManager.h" />
+    <ClInclude Include="include\AssetManagers\TextureManager.h" />
+    <ClInclude Include="include\ComponentManagers\ModelManager.h" />
+    <ClInclude Include="include\ComponentManagers\PointLightManager.h" />
     <ClInclude Include="include\Geometry\Cube.h" />
     <ClInclude Include="include\Geometry\GPUGeometry.h" />
     <ClInclude Include="include\Geometry\Mesh.h" />
@@ -219,12 +225,6 @@ echo DA | xcopy "$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(Plat
     <ClInclude Include="include\Lighting\Light.h" />
     <ClInclude Include="include\Lighting\PointLight.h" />
     <ClInclude Include="include\Lighting\SpotLight.h" />
-    <ClInclude Include="include\Managers\MaterialManager.h" />
-    <ClInclude Include="include\Managers\ModelManager.h" />
-    <ClInclude Include="include\Managers\PointLightManager.h" />
-    <ClInclude Include="include\Managers\ShaderManager.h" />
-    <ClInclude Include="include\Managers\ShaderSourceManager.h" />
-    <ClInclude Include="include\Managers\TextureManager.h" />
     <ClInclude Include="include\Pipeline\FrameBuffer.h" />
     <ClInclude Include="include\Pipeline\IGraphicsObject.h" />
     <ClInclude Include="include\Pipeline\IndexBuffer.h" />
@@ -243,14 +243,14 @@ echo DA | xcopy "$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(Plat
     <ClInclude Include="stdafx.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="AssetManagers\MaterialManager.cpp" />
+    <ClCompile Include="AssetManagers\ShaderManager.cpp" />
+    <ClCompile Include="AssetManagers\ShaderSourceManager.cpp" />
+    <ClCompile Include="AssetManagers\TextureManager.cpp" />
+    <ClCompile Include="ComponentManagers\ModelManager.cpp" />
+    <ClCompile Include="ComponentManagers\PointLightManager.cpp" />
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="Geometry\Model.cpp" />
-    <ClCompile Include="Managers\PointLightManager.cpp" />
-    <ClCompile Include="Managers\MaterialManager.cpp" />
-    <ClCompile Include="Managers\ModelManager.cpp" />
-    <ClCompile Include="Managers\ShaderManager.cpp" />
-    <ClCompile Include="Managers\ShaderSourceManager.cpp" />
-    <ClCompile Include="Managers\TextureManager.cpp" />
     <ClCompile Include="Pipeline\FrameBuffer.cpp" />
     <ClCompile Include="Pipeline\IndexBuffer.cpp" />
     <ClCompile Include="Pipeline\Shader.cpp" />

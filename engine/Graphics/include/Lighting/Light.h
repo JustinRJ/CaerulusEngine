@@ -1,19 +1,18 @@
 #pragma once
 
-#include "Node/Node.h"
+#include "Node/Component.h"
 #include "Pipeline/ShaderUniformCallback.h"
 
 namespace Graphics
 {
     namespace Lighting
     {
-        class Light : public Core::Node::Node, public Pipeline::ShaderUniformCallback
+        class Light : public Core::Node::Component, public Pipeline::ShaderUniformCallback
         {
         public:
 
-            Light(Core::Node::Node* parent, const Managers::ShaderManager& shaderManager) :
-                Core::Node::Node(parent),
-                Pipeline::ShaderUniformCallback(shaderManager)
+            Light(Core::Node::Node& node) :
+                Core::Node::Component(node)
             {}
 
             virtual ~Light() = default;

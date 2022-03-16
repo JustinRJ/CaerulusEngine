@@ -1,13 +1,13 @@
 #pragma once
 
-#include "Template/Manager.h"
+#include "Template/AssetManager.h"
 #include "Pipeline/ShaderSource.h"
 
 namespace Graphics
 {
     namespace Managers
     {
-        class CAERULUS_GRAPHICS ShaderSourceManager : public Core::Template::Manager<Pipeline::ShaderSource>
+        class CAERULUS_GRAPHICS ShaderSourceManager : public Core::Template::AssetManager<Pipeline::ShaderSource>
         {
         public:
             ShaderSourceManager() = default;

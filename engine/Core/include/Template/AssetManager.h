@@ -14,29 +14,35 @@ namespace Core
     namespace Template
     {
         template <class T>
-        class Manager : Interface::NonCopyable
+        class AssetManager : Interface::NonCopyable
         {
         public:
-            Manager() = default;
-            virtual ~Manager() = default;
+            AssetManager() = default;
+            virtual ~AssetManager() = default;
 
             const T* Get(const std::string& key) const
             {
                 return GetMutable(key);
             }
 
-            const std::map<const std::string, std::unique_ptr<T>>& GetMap() const
+            std::vector<const T*> GetAll() const
             {
-                return m_managedMap;
+                std::vector<const T*> elements;
+                std::transform(std::begin(m_managedMap), std::end(m_managedMap),
+                    std::back_inserter(elements), [](auto& kv) { return dynamic_cast<T*>(kv.second.get()); });
+                return elements;
             }
 
             bool Remove(const std::string& key)
             {
-                if (IsLoaded(key))
+                bool removed = false;
+                auto it = m_managedMap.find(key);
+                if (it != std::end(m_managedMap))
                 {
-                    return m_managedMap.erase(key) > 0;
+                    m_managedMap.erase(it);
+                    removed = true;
                 }
-                return false;
+                return removed;
             }
 
             bool IsLoaded(const std::string& key) const
@@ -44,14 +50,12 @@ namespace Core
                 return m_managedMap.find(key) != m_managedMap.end();
             }
 
-            void Clear()
-            {
-                m_managedMap.clear();
-            }
-
             void Insert(const std::string& key, std::unique_ptr<T>&& value)
             {
-                m_managedMap.insert(std::make_pair(key, std::move(value)));
+                if (!key.empty() && value)
+                {
+                    m_managedMap.emplace(key, std::move(value));
+                }
             }
 
             std::unique_ptr<T> Release(const std::string& key)
@@ -82,10 +86,6 @@ namespace Core
 
         private:
             std::map<const std::string, std::unique_ptr<T>> m_managedMap;
-
-            // TODO - add map for mask - T pair
-
-            // TODO - add map for void pointer - T pair
         };
     }
 }

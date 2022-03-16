@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Managers/TextureManager.h"
+#include "AssetManagers/TextureManager.h"
 #include "Pipeline/ShaderUniformCallback.h"
 
 namespace Graphics
@@ -28,7 +28,7 @@ namespace Graphics
         class CAERULUS_GRAPHICS Material : public Pipeline::ShaderUniformCallback
         {
         public:
-            Material(const Managers::ShaderManager& shaderManager, const Managers::TextureManager& textureManager, const std::string& path);
+            Material(const Managers::TextureManager& textureManager, const std::string& path);
 
             void Bind() const;
             void Bind(TextureType type) const;

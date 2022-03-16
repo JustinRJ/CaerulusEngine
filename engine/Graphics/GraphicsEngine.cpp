@@ -34,18 +34,12 @@ namespace Graphics
     using namespace Rendering;
 
     GraphicsEngine::GraphicsEngine(
-        const Managers::ShaderManager& shaderManager,
-        const Managers::TextureManager& textureManager,
-        const Managers::MaterialManager& materialManager,
         const Managers::ModelManager& modelManager,
         const Managers::PointLightManager& pointLightManager,
         std::shared_ptr<GLWindow> window,
         std::shared_ptr<IRenderer> renderer) :
         m_window(window),
         m_renderer(renderer),
-        m_shaderManager(shaderManager),
-        m_textureManager(textureManager),
-        m_materialManager(materialManager),
         m_modelManager(modelManager),
         m_pointLightManager(pointLightManager)
     {
@@ -53,7 +47,7 @@ namespace Graphics
         m_framebuffer->Init(m_window->GetActiveState().Width, m_window->GetActiveState().Height, 8);
     }
     
-    void GraphicsEngine::PreUpdate(float deltaTime)
+    void GraphicsEngine::EarlyUpdate()
     {
         m_renderer->Clear(m_clearColour);
     }
@@ -63,6 +57,8 @@ namespace Graphics
         if (m_window)
         {
             m_window->Update();
+
+            // TODO - setup the engine/component update loops to avoid this
 
             // TODO - manually calling m_IBL bind is bad
             // add functionality to ShaderUniform to allow priority of update to be set
@@ -89,25 +85,21 @@ namespace Graphics
 
     void GraphicsEngine::UpdateModels()
     {
-        for (auto it = m_modelManager.GetMap().begin(); it != m_modelManager.GetMap().end(); ++it)
+        for (auto model : m_modelManager.GetAll())
         {
-            if (it->second)
+            if (model)
             {
-                it->second->InvokeUniformCallbacks();
-                for (const std::shared_ptr<Mesh>& mesh : it->second->GetMeshes())
+                model->InvokeUniformCallbacks();
+                for (const std::shared_ptr<Mesh>& mesh : model->GetMeshes())
                 {
                     if (mesh)
                     {
                         mesh->InvokeUniformCallbacks();
-                        const std::string& meshMaterialName = mesh->GetMaterialName();
-                        if (meshMaterialName != "")
+                        if (const Material* material = mesh->GetMaterial())
                         {
-                            if (const Material* material = m_materialManager.Get(meshMaterialName))
-                            {
-                                material->Bind();
-                                material->InvokeUniformCallbacks();
-                                m_renderer->Draw(*mesh, m_renderWireframe);
-                            }
+                            material->Bind();
+                            material->InvokeUniformCallbacks();
+                            m_renderer->Draw(*mesh, m_renderWireframe);
                         }
                     }
                 }
@@ -117,9 +109,9 @@ namespace Graphics
 
     void GraphicsEngine::UpdateLights()
     {
-        for (auto it = m_pointLightManager.GetMap().begin(); it != m_pointLightManager.GetMap().end(); ++it)
+        for (const PointLight* light : m_pointLightManager.GetAll())
         {
-            it->second->InvokeUniformCallbacks();
+            light->InvokeUniformCallbacks();
         }
     }
 

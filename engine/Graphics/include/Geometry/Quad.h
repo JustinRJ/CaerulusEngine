@@ -22,8 +22,8 @@ namespace Graphics
         class Quad : public GPUGeometry
         {
         public:
-            Quad(Core::Node::Node* parent, const Managers::ShaderManager& shaderManager) :
-                GPUGeometry(parent, shaderManager, s_QuadVertices, 4 * 2 * sizeof(GLfloat), s_QuadIndices, 6)
+            Quad() :
+                GPUGeometry(s_QuadVertices, 4 * 2 * sizeof(GLfloat), s_QuadIndices, 6)
             {
                 Pipeline::VertexBufferLayout layout;
                 layout.Push<float>(2);

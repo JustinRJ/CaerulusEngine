@@ -29,7 +29,7 @@ namespace Core
 
             void Notify()
             {
-                for (auto it = m_observed.begin(); it != m_observed.end(); ++it)
+                for (auto it = std::begin(m_observed); it != std::end(m_observed); ++it)
                 {
                     (*it)->Update(m_value);
                 }

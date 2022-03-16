@@ -69,7 +69,10 @@ namespace Core
                 m_perspective = perspective(radians(m_degFOV), m_aspect, m_near, m_far);
             }
 
-            operator const mat4& () const { return m_perspective; }
+            const mat4& GetMatrix() const
+            {
+                return m_perspective;
+            }
 
         private:
             float m_degFOV;

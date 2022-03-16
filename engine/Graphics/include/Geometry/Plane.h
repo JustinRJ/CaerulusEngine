@@ -22,8 +22,8 @@ namespace Graphics
         class Plane : public GPUGeometry
         {
         public:
-            Plane(Core::Node::Node* parent, const Managers::ShaderManager& shaderManager) :
-                GPUGeometry(parent, shaderManager, s_PlaneVertices, 4 * 3 * sizeof(GLfloat), s_PlaneIndices, 6)
+            Plane() :
+                GPUGeometry(s_PlaneVertices, 4 * 3 * sizeof(GLfloat), s_PlaneIndices, 6)
             {
                 Pipeline::VertexBufferLayout layout;
                 layout.Push<float>(3);

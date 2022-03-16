@@ -57,12 +57,11 @@ namespace Core
 
             std::vector<vec2> GetCorners() const
             {
-                std::vector<vec2> corners {
-                m_min,
-                vec2(m_min.x, m_max.y),
-                m_max,
-                vec2(m_max.x, m_min.y) };
-                return corners;
+                return {
+                    m_min,
+                    vec2(m_min.x, m_max.y),
+                    m_max,
+                    vec2(m_max.x, m_min.y) };
             }
 
         private:

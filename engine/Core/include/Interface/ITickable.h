@@ -11,10 +11,12 @@ namespace Core
         public:
             virtual ~ITickable() = default;
 
-            virtual void PreUpdate(float deltaTime) = 0;
-            virtual void Update(float deltaTime) = 0;
-            virtual void FixedUpdate(float fixedTime) = 0;
-            virtual void Reset() = 0;
+            virtual void EarlyUpdate() {};
+            virtual void Update(float deltaTime) {};
+            virtual void FixedUpdate(float fixedTime) {};
+            virtual void LateUpdate() {};
+
+            virtual void Reset() {};
         };
     }
 }

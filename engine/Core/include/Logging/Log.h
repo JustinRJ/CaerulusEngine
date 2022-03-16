@@ -38,7 +38,7 @@ namespace Core
 
         inline void LogError(const std::string& error)
         {
-            LogMessage(error.c_str());
+            LogError(error.c_str());
         }
 
         inline void LogError(const char* message, const char* error)

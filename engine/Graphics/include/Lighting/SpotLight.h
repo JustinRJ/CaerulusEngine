@@ -9,7 +9,10 @@ namespace Graphics
         class SpotLight : public Light
         {
         public:
-            SpotLight() = default;
+            SpotLight(Core::Node::Node& node) :
+                Light(node),
+                m_angle(0)
+            {}
 
             void GetAngle(float angle)
             {
@@ -21,18 +24,7 @@ namespace Graphics
                 return m_angle;
             }
 
-            const Core::Math::vec3& GetPosition() const
-            {
-                return m_position;
-            }
-
-            void SetPosition(const Core::Math::vec3& pos)
-            {
-                m_position = pos;
-            }
-
         private:
-            Core::Math::vec3 m_position;
             float m_angle;
         };
     }

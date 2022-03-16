@@ -7,21 +7,19 @@
 
 #include "Interface/NonCopyable.h"
 
+#include "Time/FPSLimiter.h"
+#include "Time/FixedTimer.h"
+
 namespace Core
 {
     namespace Node
     {
         class Node;
     }
-    namespace Time
-    {
-        class FPSLimiter;
-        class FixedTimer;
-    }
     namespace Input
     {
-        class MouseInputManager;
-        class KeyboardInputManager;
+        class MouseInputSystem;
+        class KeyboardInputSystem;
     }
     namespace Interface
     {
@@ -86,12 +84,12 @@ private:
     float m_sprintSpeed = 100.0f;
     float m_mouseSensitivity = 50.0f;
 
-    std::shared_ptr<Core::Node::Node> m_rootNode;
+    Core::Node::Node* m_rootNode;
 
-    std::shared_ptr<Core::Time::FPSLimiter> m_fpsLimiter;
-    std::shared_ptr<Core::Time::FixedTimer> m_fixedTimer;
-    std::shared_ptr<Core::Input::MouseInputManager> m_mouseInputManager;
-    std::shared_ptr<Core::Input::KeyboardInputManager> m_keyboardInputManager;
+    Core::Time::FPSLimiter m_fpsLimiter;
+    Core::Time::FixedTimer m_fixedTimer;
+    std::shared_ptr<Core::Input::MouseInputSystem> m_mouseInputSystem;
+    std::shared_ptr<Core::Input::KeyboardInputSystem> m_keyboardInputSystem;
 
     std::shared_ptr<Core::Math::Camera> m_camera;
     std::shared_ptr<Graphics::Window::GLWindow> m_window;
@@ -100,9 +98,10 @@ private:
 
     std::shared_ptr<Graphics::Managers::TextureManager> m_textureManager;
     std::shared_ptr<Graphics::Managers::MaterialManager> m_materialManager;
-    std::shared_ptr<Graphics::Managers::ModelManager> m_modelManager;
     std::shared_ptr<Graphics::Managers::ShaderSourceManager> m_shaderSrcManager;
     std::shared_ptr<Graphics::Managers::ShaderManager> m_shaderManager;
+
+    std::shared_ptr<Graphics::Managers::ModelManager> m_modelManager;
     std::shared_ptr<Graphics::Managers::PointLightManager> m_pointLightManager;
 
     std::vector<std::shared_ptr<Core::Interface::ITickable>> m_tickable;

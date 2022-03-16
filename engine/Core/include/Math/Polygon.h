@@ -1,7 +1,5 @@
 #pragma once
 
-#include <vector>
-
 #include "Circle.h"
 #include "Transform.h"
 
@@ -26,40 +24,7 @@ namespace Core
                 {
                     return false;
                 }
-
-                std::vector<vec2> corners = GetPoints();
-                for (unsigned int i = 0u; i < corners.size(); ++i)
-                {
-                    vec2 current = corners[i];
-                    vec2 next = corners[i == corners.size() - 1 ? 0 : i + 1];
-                    vec2 edge = next - current;
-                    vec2 axis = { -edge[1], edge[0] };
-
-                    float aMinProj = std::numeric_limits<float>::max();
-                    float bMinProj = std::numeric_limits<float>::max();
-                    float aMaxProj = std::numeric_limits<float>::min();
-                    float bMaxProj = std::numeric_limits<float>::min();
-
-                    for (const vec2& v : corners)
-                    {
-                        float proj = dot(axis, v);
-                        aMinProj = std::min(aMinProj, proj);
-                        aMaxProj = std::max(aMaxProj, proj);
-                    }
-
-                    for (const vec2& v : polygon.GetPoints())
-                    {
-                        float proj = dot(axis, v);
-                        bMinProj = std::min(bMinProj, proj);
-                        bMaxProj = std::max(bMaxProj, proj);
-                    }
-
-                    if (aMaxProj < bMinProj || aMinProj > bMaxProj)
-                    {
-                        return true;
-                    }
-                }
-                return false;
+                return IsIntersecting2D(m_points, polygon.GetPoints());
             }
 
             const std::vector<vec2>& GetPoints() const
@@ -77,10 +42,10 @@ namespace Core
 
             void UpdateCircle()
             {
-                vec2 centerAverage(0, 0);
+                vec2 centerAverage;
                 for (vec2 point : m_points)
                 {
-                    centerAverage.x += point.x;
+                    centerAverage += point;
                 }
                 centerAverage = vec2(centerAverage.x / m_points.size(), centerAverage.y / m_points.size());
 

@@ -1,13 +1,13 @@
 #pragma once
 
-#include "Template/Manager.h"
+#include "Template/AssetManager.h"
 #include "Surface/Texture.h"
 
 namespace Graphics
 {
     namespace Managers
     {
-        class CAERULUS_GRAPHICS TextureManager : public Core::Template::Manager<Surface::Texture>
+        class CAERULUS_GRAPHICS TextureManager : public Core::Template::AssetManager<Surface::Texture>
         {
         public:
             TextureManager() = default;

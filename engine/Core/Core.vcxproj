@@ -209,9 +209,8 @@
   <ItemGroup>
     <ClInclude Include="include\File\FileUtility.h" />
     <ClInclude Include="include\Input\InputDefines.h" />
-    <ClInclude Include="include\Input\KeyboardInputManager.h" />
-    <ClInclude Include="include\Input\MouseInputManager.h" />
-    <ClInclude Include="include\Interface\ISerializable.h" />
+    <ClInclude Include="include\Input\KeyboardInputSystem.h" />
+    <ClInclude Include="include\Input\MouseInputSystem.h" />
     <ClInclude Include="include\Interface\ITickable.h" />
     <ClInclude Include="include\Interface\NonCopyable.h" />
     <ClInclude Include="include\Interface\NonMovable.h" />
@@ -225,17 +224,19 @@
     <ClInclude Include="include\Math\Circle.h" />
     <ClInclude Include="include\Math\LineSegment.h" />
     <ClInclude Include="include\Math\Math.h" />
+    <ClInclude Include="include\Math\Mesh.h" />
     <ClInclude Include="include\Math\Perspective.h" />
     <ClInclude Include="include\Math\Polygon.h" />
     <ClInclude Include="include\Math\Ray.h" />
     <ClInclude Include="include\Math\Rect.h" />
     <ClInclude Include="include\Math\Sphere.h" />
     <ClInclude Include="include\Math\Transform.h" />
+    <ClInclude Include="include\Node\Component.h" />
     <ClInclude Include="include\Node\Node.h" />
     <ClInclude Include="include\Template\Cacher.h" />
     <ClInclude Include="include\Template\CallbackPtr.h" />
-    <ClInclude Include="include\Template\Manager.h" />
-    <ClInclude Include="include\Template\NodeManager.h" />
+    <ClInclude Include="include\Template\AssetManager.h" />
+    <ClInclude Include="include\Template\ComponentManager.h" />
     <ClInclude Include="include\Template\NonAssignable.h" />
     <ClInclude Include="include\Template\Observer.h" />
     <ClInclude Include="include\Template\Producer.h" />

@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Node/Node.h"
-#include "Managers/MaterialManager.h"
+#include "Node/Component.h"
+#include "AssetManagers/MaterialManager.h"
 #include "Pipeline/ShaderUniformCallback.h"
 
 namespace Graphics
@@ -20,14 +20,13 @@ namespace Graphics
     {
         class Mesh;
 
-        class CAERULUS_GRAPHICS Model : public Core::Node::Node, public Pipeline::ShaderUniformCallback
+        class CAERULUS_GRAPHICS Model : public Core::Node::Component, public Pipeline::ShaderUniformCallback
         {
         public:
-            Model(Core::Node::Node* parent, const Managers::ShaderManager& shaderManager, const std::string& path);
+            Model(Core::Node::Node& node, const std::string& path);
 
             bool IsLoaded() const;
 
-            std::vector<std::string> GetMaterialNames() const;
             const std::vector<std::shared_ptr<Mesh>>& GetMeshes() const;
 
         private:
@@ -37,8 +36,6 @@ namespace Graphics
             bool m_isLoaded;
             const std::string m_path;
             std::vector<std::shared_ptr<Mesh>> m_meshes;
-
-            const Managers::ShaderManager& m_shaderManager;
         };
     }
 }

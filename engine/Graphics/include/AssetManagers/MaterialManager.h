@@ -1,13 +1,14 @@
 #pragma once
 
 #include "TextureManager.h"
+#include "ShaderManager.h"
 #include "Surface/Material.h"
 
 namespace Graphics
 {
     namespace Managers
     {
-        class CAERULUS_GRAPHICS MaterialManager : public Core::Template::Manager<Surface::Material>
+        class CAERULUS_GRAPHICS MaterialManager : public Core::Template::AssetManager<Surface::Material>
         {
         public:
             MaterialManager(ShaderManager& shaderManager, TextureManager& textureManager);
@@ -17,7 +18,7 @@ namespace Graphics
             void Load(const std::string& materialPath);
 
             void SetMaterialTexture(const std::string& materialName, const std::string& textureName, Surface::TextureType type);
-            void AddMaterialUniformCallback(const std::string& materialName, const std::string& shaderName, std::function<void(const Pipeline::Shader& shader)> uniformCallback);
+            void AddMaterialUniformCallback(const std::string& materialName, const Pipeline::Shader& shader, std::function<void(const Pipeline::ShaderUniformCallback&, const Pipeline::Shader& shader)> uniformCallback);
 
             ShaderManager& GetShaderManager();
             TextureManager& GetTextureManager();

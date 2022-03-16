@@ -8,7 +8,7 @@
 
 #include "Math/Math.h"
 #include "Interface/NonCopyable.h"
-#include "Managers/ShaderSourceManager.h"
+#include "AssetManagers/ShaderSourceManager.h"
 
 namespace Graphics
 {

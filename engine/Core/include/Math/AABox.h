@@ -57,16 +57,15 @@ namespace Core
 
             std::vector<vec3> GetCorners() const
             {
-                std::vector<vec3> corners {
-                m_min,
-                vec3(m_min.x, m_max.y, m_min.z),
-                vec3(m_max.x, m_max.y, m_min.z),
-                vec3(m_max.x, m_min.y, m_min.z),
-                vec3(m_min.x, m_min.y, m_max.z),
-                vec3(m_min.x, m_max.y, m_max.z),
-                m_max,
-                vec3(m_max.x, m_min.y, m_max.z) };
-                return corners;
+                return {
+                    m_min,
+                    vec3(m_min.x, m_max.y, m_min.z),
+                    vec3(m_max.x, m_max.y, m_min.z),
+                    vec3(m_max.x, m_min.y, m_min.z),
+                    vec3(m_min.x, m_min.y, m_max.z),
+                    vec3(m_min.x, m_max.y, m_max.z),
+                    m_max,
+                    vec3(m_max.x, m_min.y, m_max.z) };
             }
 
         private:

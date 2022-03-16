@@ -7,6 +7,7 @@
 #include <gtx/quaternion.hpp>
 #include <gtc/matrix_transform.hpp>
 
+#include <vector>
 #include <stdint.h>
 
 namespace Core
@@ -18,9 +19,9 @@ namespace Core
         const float PIf = std::atan(1.f) * 4.f;
         const double PI = std::atan(1.) * 4.;
 
-        const vec3 UnitUp = vec3(0.f, 1.f, 0.f);
-        const vec3 UnitRight = vec3(1.f, 0.f, 0.f);
-        const vec3 UnitForward = vec3(0.f, 0.0, -1.f);
+        constexpr vec3 UnitUp = vec3(0.f, 1.f, 0.f);
+        constexpr vec3 UnitRight = vec3(1.f, 0.f, 0.f);
+        constexpr vec3 UnitForward = vec3(0.f, 0.0, -1.f);
 
         inline vec3 UpVector(const quat& q)
         {
@@ -79,6 +80,80 @@ namespace Core
             conv.i = 0x5f3759df - (conv.i >> 1);
             conv.f *= threehalfs - (x2 * conv.f * conv.f);
             return conv.f;
+        }
+
+        inline bool IsIntersecting2D(const std::vector<vec2>& corners1, const std::vector<vec2>& corners2)
+        {
+            for (unsigned int i = 0u; i < corners1.size(); ++i)
+            {
+                vec2 current = corners1[i];
+                vec2 next = corners1[i == corners1.size() - 1 ? 0 : i + 1];
+                vec2 edge = next - current;
+                vec2 axis = { -edge[1], edge[0] };
+
+                float aMinProj = std::numeric_limits<float>::max();
+                float bMinProj = std::numeric_limits<float>::max();
+                float aMaxProj = std::numeric_limits<float>::min();
+                float bMaxProj = std::numeric_limits<float>::min();
+
+                for (const vec2& v : corners1)
+                {
+                    float proj = dot(axis, v);
+                    aMinProj = std::min(aMinProj, proj);
+                    aMaxProj = std::max(aMaxProj, proj);
+                }
+
+                for (const vec2& v : corners2)
+                {
+                    float proj = dot(axis, v);
+                    bMinProj = std::min(bMinProj, proj);
+                    bMaxProj = std::max(bMaxProj, proj);
+                }
+
+                if (aMaxProj < bMinProj || aMinProj > bMaxProj)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        inline bool IsIntersecting3D(const std::vector<vec3> corners1, const std::vector<vec3> corners2)
+        {
+            for (unsigned int i = 0u; i < corners1.size(); ++i)
+            {
+                vec3 current = corners1[i];
+                vec3 next = corners1[i == corners1.size() - 1 ? 0 : i + 1];
+                vec3 last = corners1[i == 0 ? corners1.size() - 1 : i - 1];
+                vec3 edge1 = next - current;
+                vec3 edge2 = last - current;
+                vec3 axis = normalize(cross(edge1, edge2));
+
+                float aMinProj = std::numeric_limits<float>::max();
+                float bMinProj = std::numeric_limits<float>::max();
+                float aMaxProj = std::numeric_limits<float>::min();
+                float bMaxProj = std::numeric_limits<float>::min();
+
+                for (const vec3& v : corners1)
+                {
+                    float proj = dot(axis, v);
+                    aMinProj = std::min(aMinProj, proj);
+                    aMaxProj = std::max(aMaxProj, proj);
+                }
+
+                for (const vec3& v : corners2)
+                {
+                    float proj = dot(axis, v);
+                    bMinProj = std::min(bMinProj, proj);
+                    bMaxProj = std::max(bMaxProj, proj);
+                }
+
+                if (aMaxProj < bMinProj || aMinProj > bMaxProj)
+                {
+                    return true;
+                }
+            }
+            return false;
         }
     }
 }

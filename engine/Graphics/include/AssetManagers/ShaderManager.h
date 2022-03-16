@@ -7,7 +7,7 @@ namespace Graphics
 {
     namespace Managers
     {
-        class CAERULUS_GRAPHICS ShaderManager : public Core::Template::Manager<Pipeline::Shader>
+        class CAERULUS_GRAPHICS ShaderManager : public Core::Template::AssetManager<Pipeline::Shader>
         {
         public:
             ShaderManager(ShaderSourceManager& shaderSourceManager);

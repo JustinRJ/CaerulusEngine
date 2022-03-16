@@ -1,6 +1,5 @@
 #pragma once
 
-#include "Node/Node.h"
 #include "Math/Math.h"
 #include "Pipeline/VertexArray.h"
 #include "Pipeline/VertexBuffer.h"
@@ -16,15 +15,10 @@ namespace Graphics
 
     namespace Geometry
     {
-        class GPUGeometry : public Core::Node::Node, public Pipeline::ShaderUniformCallback
+        class GPUGeometry : public Pipeline::ShaderUniformCallback
         {
         public:
-            GPUGeometry(
-                Core::Node::Node* parent,
-                const Managers::ShaderManager& shaderManager,
-                const void* vertData, size_t vertSize, const unsigned int* indexData, size_t indexCount) :
-                Node::Node(parent),
-                Pipeline::ShaderUniformCallback(shaderManager),
+            GPUGeometry(const void* vertData, size_t vertSize, const unsigned int* indexData, size_t indexCount) :
                 m_vertexBuffer(vertData, vertSize),
                 m_indexBuffer(indexData, indexCount)
             {}
@@ -51,14 +45,14 @@ namespace Graphics
                 return m_indexBuffer;
             }
 
-            const std::string& GetMaterialName() const
+            const Surface::Material* GetMaterial() const
             {
-                return m_materialName;
+                return m_material;
             }
 
-            void SetMaterialName(const std::string& materialName)
+            void SetMaterial(const Surface::Material& material)
             {
-                m_materialName = materialName;
+                m_material = &material;
             }
 
         private:
@@ -66,7 +60,8 @@ namespace Graphics
             Pipeline::VertexBuffer m_vertexBuffer;
             Pipeline::IndexBuffer m_indexBuffer;
 
-            std::string m_materialName;
+
+            const Surface::Material* m_material;
         };
     }
 }

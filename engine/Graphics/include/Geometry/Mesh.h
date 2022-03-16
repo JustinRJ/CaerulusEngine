@@ -24,10 +24,8 @@ namespace Graphics
         class Mesh : public GPUGeometry
         {
         public:
-            Mesh(Core::Node::Node* parent,
-                const Managers::ShaderManager& shaderManager,
-                const std::vector<Vertex>& vertices, const std::vector<GLuint>& indices, const std::string& fileMaterialName) :
-                GPUGeometry(parent, shaderManager, &vertices[0], sizeof(Vertex)* vertices.size(), &indices[0], indices.size()),
+            Mesh(const std::vector<Vertex>& vertices, const std::vector<GLuint>& indices, const std::string& fileMaterialName) :
+                GPUGeometry(&vertices[0], sizeof(Vertex)* vertices.size(), &indices[0], indices.size()),
                 m_vertices(vertices),
                 m_indices(indices),
                 m_fileMaterialName(fileMaterialName)
