@@ -38,7 +38,7 @@ namespace Core
         class MouseInputSystem : public Interface::ITickable
         {
         public:
-            MouseInputSystem(std::shared_ptr<Graphics::Window::GLWindow> window) :
+            MouseInputSystem(Graphics::Window::GLWindow* window) :
                 m_window(window)
             {
                 glfwSetInputMode(m_window->GetGLFWWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
@@ -49,7 +49,7 @@ namespace Core
                 UpdateMouseDrag();
             }
 
-            void AddDragMouseCallback(std::shared_ptr<Graphics::Window::GLWindow> window, std::function<void(const DragData&)> callback, const std::string& name = "")
+            void AddDragMouseCallback(Graphics::Window::GLWindow* window, std::function<void(const DragData&)> callback, const std::string& name = "")
             {
                 DragBinding dragBinding;
                 dragBinding.Callback = callback;
@@ -79,7 +79,7 @@ namespace Core
 
             DragData m_dragData;
             std::vector<DragBinding> m_dragBindingMap;
-            std::shared_ptr<Graphics::Window::GLWindow> m_window;
+            Graphics::Window::GLWindow* m_window;
         };
     }
 }

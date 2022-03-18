@@ -18,7 +18,7 @@ namespace Graphics
             glDeleteVertexArrays(1, &m_handle);
         }
 
-        void VertexArray::AddBuffer(const VertexBuffer& vb, const VertexBufferLayout& layout)
+        void VertexArray::AddBuffer(VertexBuffer& vb, const VertexBufferLayout& layout)
         {
             Bind();
             vb.Bind();
@@ -34,7 +34,7 @@ namespace Graphics
             }
         }
 
-        void VertexArray::Bind() const
+        void VertexArray::Bind()
         {
             if (m_boundHandle != m_handle)
             {

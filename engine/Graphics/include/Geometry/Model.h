@@ -30,7 +30,7 @@ namespace Graphics
 
             bool IsLoaded() const;
 
-            const std::vector<std::shared_ptr<Mesh>>& GetMeshes() const;
+            const std::vector<std::unique_ptr<Mesh>>& GetMeshes() const;
 
             void Update(float deltaTime) override;
 
@@ -40,7 +40,7 @@ namespace Graphics
 
             bool m_isLoaded;
             const std::string m_path;
-            std::vector<std::shared_ptr<Mesh>> m_meshes;
+            std::vector<std::unique_ptr<Mesh>> m_meshes;
         };
     }
 }

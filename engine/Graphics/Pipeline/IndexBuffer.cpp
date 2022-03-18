@@ -21,7 +21,7 @@ namespace Graphics
             glDeleteBuffers(1, &m_handle);
         }
 
-        void IndexBuffer::Bind() const
+        void IndexBuffer::Bind()
         {
             if (m_boundHandle != m_handle)
             {

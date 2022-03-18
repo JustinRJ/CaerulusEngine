@@ -7,7 +7,7 @@ using namespace Graphics::Pipeline;
 
 namespace Graphics
 {
-    namespace Managers
+    namespace AssetManagers
     {
         ShaderManager::ShaderManager(ShaderSourceManager& shaderSourceManager) :
             m_shaderSourceManager(shaderSourceManager)

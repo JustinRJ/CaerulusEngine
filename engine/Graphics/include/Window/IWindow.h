@@ -56,7 +56,7 @@ namespace Graphics
             virtual void Update() = 0;
             virtual void Apply() = 0;
             virtual void Focus() = 0;
-            virtual void SwapBuffer() const = 0;
+            virtual void SwapBuffer() = 0;
             virtual void* GetHandle() const = 0;
 
             virtual void Set(const std::string& title, int x, int y, int bits, bool fullscreen)

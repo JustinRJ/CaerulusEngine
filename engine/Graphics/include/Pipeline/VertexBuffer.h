@@ -16,7 +16,7 @@ namespace Graphics
             VertexBuffer(const void* data, size_t size);
             ~VertexBuffer();
 
-            void Bind() const;
+            void Bind();
             static void Unbind();
 
             GLuint GetHandle() const;

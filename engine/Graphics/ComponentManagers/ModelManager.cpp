@@ -8,12 +8,13 @@
 
 using namespace Core::Logging;
 using namespace Graphics::Geometry;
+using namespace Graphics::AssetManagers;
 
 namespace Graphics
 {
-    namespace Managers
+    namespace ComponentManagers
     {
-        ModelManager::ModelManager(MaterialManager& materialManager, const Rendering::GLRenderer* renderer) :
+        ModelManager::ModelManager(AssetManagers::MaterialManager& materialManager, Rendering::GLRenderer* renderer) :
             m_materialManager(materialManager),
             m_renderer(renderer)
         {}
@@ -56,12 +57,12 @@ namespace Graphics
             return ptr;
         }
 
-        MaterialManager& ModelManager::GetMaterialManager()
+        AssetManagers::MaterialManager& ModelManager::GetMaterialManager()
         {
             return m_materialManager;
         }
 
-        void ModelManager::AddModelUniformCallback(Core::ECS::Entity& key, const Pipeline::Shader& shader, std::function<void(const Pipeline::ShaderUniformCallback&, const Pipeline::Shader& shader)> uniformCallback)
+        void ModelManager::AddModelUniformCallback(Core::ECS::Entity& key, Pipeline::Shader& shader, std::function<void(Pipeline::ShaderUniformCallback&, Pipeline::Shader& shader)> uniformCallback)
         {
             if (Model* model = GetMutable(&key))
             {

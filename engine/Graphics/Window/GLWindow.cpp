@@ -20,9 +20,9 @@ namespace Graphics
 {
     namespace Window
     {
-        GLWindow::GLWindow(std::shared_ptr<Core::Math::Camera> camera, const std::string& title, int x, int y, int bits, bool fullscreen) :
-            m_window(nullptr),
+        GLWindow::GLWindow(Core::Math::Camera* camera, const std::string& title, int x, int y, int bits, bool fullscreen) :
             m_lockedCursor(true),
+            m_window(nullptr),
             m_camera(camera)
         {
             if (!glfwInit())
@@ -76,12 +76,12 @@ namespace Graphics
             glfwFocusWindow(m_window);
         }
 
-        void GLWindow::SwapBuffer() const
+        void GLWindow::SwapBuffer()
         {
             glfwSwapBuffers(m_window);
         }
 
-        GLFWwindow* GLWindow::GetGLFWWindow() const
+        GLFWwindow* GLWindow::GetGLFWWindow()
         {
             return m_window;
         }

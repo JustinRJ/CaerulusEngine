@@ -18,8 +18,9 @@ namespace Core
 
         struct ComponentData
         {
-            Component* Component;
-            std::function<void(const Entity&)> OnDestroy;
+            size_t ComponentHash = 0;
+            Component* Component = nullptr;
+            std::function<void(Entity&)> RemoveComponent = {};
         };
 
         typedef std::bitset<32> EntityBitset;
@@ -40,7 +41,7 @@ namespace Core
             const std::string& GetName() const;
             void SetName(const std::string& layer);
 
-            bool GetEnabled() const;
+            bool IsEnabled() const;
             void SetEnabled(bool enabled);
 
             const EntityBitset& GetLayers() const;
@@ -58,23 +59,26 @@ namespace Core
             void SwapID(Entity& e);
 
             void AddComponent(const ComponentData& componentData);
-            void RemoveComponent(const Component& component);
 
             template<class T>
 #ifdef THREAD_SAFE
-            const T* GetComponentOfType() const
-#endif
-#ifdef THREAD_UNSAFE
-            T* GetComponentOfType() const
+            const T* GetComponentOfType(size_t typeToFind = 0) const
+#else
+            T* GetComponentOfType(size_t typeToFind = 0) const
 #endif
             {
+                if (typeToFind == 0)
+                {
+                    typeToFind = typeid(T).hash_code();
+                }
+
                 T* foundType = nullptr;
                 auto it = std::begin(m_components);
                 while (!foundType && it != std::end(m_components))
                 {
-                    if (auto type = dynamic_cast<T*>(it->Component))
+                    if (typeToFind == it->ComponentHash)
                     {
-                        foundType = type;
+                        foundType = static_cast<T*>(it->Component);
                     }
                     it++;
                 }
@@ -83,40 +87,68 @@ namespace Core
 
             template<class T>
 #ifdef THREAD_SAFE
-            std::vector<const T*> GetComponentsOfType() const
+            std::vector<const T*> GetComponentsOfType(size_t typeToFind = 0) const
             {
                 std::vector<const T*> foundTypes;
-#endif
-#ifdef THREAD_UNSAFE
-                std::vector<T*> GetComponentsOfType() const
+#else
+                std::vector<T*> GetComponentsOfType(size_t typeToFind = 0) const
                 {
                     std::vector<T*> foundTypes;
 #endif
-                foundTypes.push_back(GetComponentOfType<T>());
+                if (typeToFind == 0)
+                {
+                    typeToFind = typeid(T).hash_code();
+                }
+
+                foundTypes.push_back(GetComponentOfType<T>(typeToFind));
                 for (Entity* child : m_children)
                 {
-                    auto childFoundTypes = child->GetComponentsOfType<T>();
+                    auto childFoundTypes = child->GetComponentsOfType<T>(typeToFind);
                     foundTypes.insert(std::end(foundTypes), std::begin(childFoundTypes), std::end(childFoundTypes));
                 }
                 return foundTypes;
             }
 
             template<class T>
-            void RemoveComponentOfType()
+            void RemoveComponentOfType(size_t typeToFind = 0)
             {
-                if (auto component = GetComponentOfType<T>())
+                if (typeToFind == 0)
                 {
-                    RemoveComponent(*component);
+                    typeToFind = typeid(T).hash_code();
+                }
+
+                bool foundComponent = false;
+                auto it = std::begin(m_components);
+                while (!foundComponent && it != std::end(m_components))
+                {
+                    if (typeToFind == it->ComponentHash)
+                    {
+                        foundComponent = true;
+                    }
+                    else
+                    {
+                        it++;
+                    }
+                }
+                if (foundComponent)
+                {
+                    it->RemoveComponent(*this);
+                    m_components.erase(it);
                 }
             }
 
             template<class T>
-            void RemoveComponentsOfType()
+            void RemoveComponentsOfType(size_t typeToFind = 0)
             {
-                RemoveComponentOfType<T>();
+                if (typeToFind == 0)
+                {
+                    typeToFind = typeid(T).hash_code();
+                }
+
+                RemoveComponentOfType<T>(typeToFind);
                 for (Entity* child : m_children)
                 {
-                    child->RemoveComponentsOfType<T>();
+                    child->RemoveComponentsOfType<T>(typeToFind);
                 }
             }
 

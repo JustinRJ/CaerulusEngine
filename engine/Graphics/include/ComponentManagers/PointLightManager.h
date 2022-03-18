@@ -5,7 +5,7 @@
 
 namespace Graphics
 {
-    namespace Managers
+    namespace ComponentManagers
     {
         class CAERULUS_GRAPHICS PointLightManager : public Core::ECS::ComponentManager<Lighting::PointLight>
         {
@@ -14,7 +14,7 @@ namespace Graphics
 
             const Lighting::PointLight* Create(Core::ECS::Entity& entity, const Core::Math::vec3& colour);
 
-            void AddPointLightUniformCallback(Core::ECS::Entity& entity, const Pipeline::Shader& shader, std::function<void(const Pipeline::ShaderUniformCallback&, const Pipeline::Shader& shader)> uniformCallback);
+            void AddPointLightUniformCallback(Core::ECS::Entity& entity, Pipeline::Shader& shader, std::function<void(Pipeline::ShaderUniformCallback&, Pipeline::Shader& shader)> uniformCallback);
         };
     }
 }

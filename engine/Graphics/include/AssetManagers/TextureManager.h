@@ -5,7 +5,7 @@
 
 namespace Graphics
 {
-    namespace Managers
+    namespace AssetManagers
     {
         class CAERULUS_GRAPHICS TextureManager : public Core::ECS::AssetManager<Surface::Texture>
         {

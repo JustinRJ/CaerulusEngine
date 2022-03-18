@@ -5,25 +5,28 @@
 
 namespace Graphics
 {
-    namespace Managers
+    namespace AssetManagers
     {
         class MaterialManager;
+    }
 
+    namespace ComponentManagers
+    {
         class CAERULUS_GRAPHICS ModelManager : public Core::ECS::ComponentManager<Geometry::Model>
         {
         public:
-            ModelManager(MaterialManager& materialManager, const Rendering::GLRenderer* renderer);
+            ModelManager(AssetManagers::MaterialManager& materialManager, Rendering::GLRenderer* renderer);
 
             const Geometry::Model* Load(Core::ECS::Entity& entity, const std::string& modelPath, const std::string& materialPath = "");
 
-            MaterialManager& GetMaterialManager();
+            AssetManagers::MaterialManager& GetMaterialManager();
 
-            void AddModelUniformCallback(Core::ECS::Entity& key, const Pipeline::Shader& shader, std::function<void(const Pipeline::ShaderUniformCallback&, const Pipeline::Shader& shader)> uniformCallback);
+            void AddModelUniformCallback(Core::ECS::Entity& key, Pipeline::Shader& shader, std::function<void(Pipeline::ShaderUniformCallback&, Pipeline::Shader& shader)> uniformCallback);
 
         private:
-            MaterialManager& m_materialManager;
+            AssetManagers::MaterialManager& m_materialManager;
 
-            const Rendering::GLRenderer* m_renderer;
+            Rendering::GLRenderer* m_renderer;
         };
     }
 }

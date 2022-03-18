@@ -33,52 +33,50 @@ namespace Graphics
                 return m_vertexArray;
             }
 
-            const Pipeline::VertexArray& GetVertexArray() const
-            {
-                return m_vertexArray;
-            }
-
-            const Pipeline::VertexBuffer& GetVertexBuffer() const
+            Pipeline::VertexBuffer& GetVertexBuffer()
             {
                 return m_vertexBuffer;
             }
 
-            const Pipeline::IndexBuffer& GetIndexBuffer() const
+            Pipeline::IndexBuffer& GetIndexBuffer()
             {
                 return m_indexBuffer;
             }
 
-            const Surface::Material* GetMaterial() const
+            Surface::Material* GetMaterial()
             {
                 return m_material;
             }
 
-            void SetMaterial(const Surface::Material& material)
+            void SetMaterial(Surface::Material* material)
             {
-                m_material = &material;
+                m_material = material;
             }
 
-            const Rendering::GLRenderer* GetRenderer() const
+            Rendering::IRenderer* GetRenderer()
             {
                 return m_renderer;
             }
 
-            void SetRenderer(const Rendering::GLRenderer* renderer)
+            void SetRenderer(Rendering::IRenderer* renderer)
             {
                 m_renderer = renderer;
             }
 
-            void Draw() const
+            void Draw()
             {
-                m_renderer->Draw(*this);
+                if (m_renderer)
+                {
+                    m_renderer->Draw(*this);
+                }
             }
 
         private:
             Pipeline::VertexArray m_vertexArray;
             Pipeline::VertexBuffer m_vertexBuffer;
             Pipeline::IndexBuffer m_indexBuffer;
-            const Surface::Material* m_material;
-            const Rendering::GLRenderer* m_renderer;
+            Surface::Material* m_material;
+            Rendering::IRenderer* m_renderer;
         };
     }
 }

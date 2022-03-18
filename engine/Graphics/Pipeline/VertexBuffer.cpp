@@ -21,7 +21,7 @@ namespace Graphics
             glDeleteBuffers(1, &m_handle);
         }
 
-        void VertexBuffer::Bind() const
+        void VertexBuffer::Bind()
         {
             if (m_boundHandle != m_handle)
             {

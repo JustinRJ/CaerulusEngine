@@ -28,10 +28,10 @@ namespace Graphics
         class CAERULUS_GRAPHICS Material : public Pipeline::ShaderUniformCallback
         {
         public:
-            Material(const Managers::TextureManager& textureManager, const std::string& path);
+            Material(const AssetManagers::TextureManager& textureManager, const std::string& path);
 
-            void Bind() const;
-            void Bind(TextureType type) const;
+            void Bind();
+            void Bind(TextureType type);
             static void Unbind();
 
             const std::string& GetPath() const;
@@ -48,7 +48,7 @@ namespace Graphics
         private:
             const std::string m_path;
             std::vector<std::string> m_textures;
-            const Managers::TextureManager& m_textureManager;
+            const AssetManagers::TextureManager& m_textureManager;
 
             // Lighting techniques require different texture slots for pre and post processing
             // so all textures that are bound must be offset by the graphics engines requirements

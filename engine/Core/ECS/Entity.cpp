@@ -44,8 +44,7 @@ namespace Core
 
             for (auto it = std::begin(m_components); it != std::end(m_components); it++)
             {
-                it->Component->OnDisable();
-                it->OnDestroy(*this);
+                it->RemoveComponent(*this);
             }
 
             for (Entity* child : m_children)
@@ -99,29 +98,6 @@ namespace Core
             m_components.push_back(componentData);
         }
 
-        void Entity::RemoveComponent(const Component& component)
-        {
-            bool foundComponent = false;
-            auto it = std::begin(m_components);
-            while (!foundComponent && it != std::end(m_components))
-            {
-                if (it->Component == &component)
-                {
-                    foundComponent = true;
-                }
-                else
-                {
-                    it++;
-                }
-            }
-            if (foundComponent)
-            {
-                it->Component->OnDisable();
-                it->OnDestroy(*this);
-                m_components.erase(it);
-            }
-        }
-
         void Entity::SetEnabled(bool enabled)
         {
             if (m_enabled != enabled)
@@ -129,7 +105,7 @@ namespace Core
                 m_enabled = enabled;
                 for (auto it = std::begin(m_components); it != std::end(m_components); it++)
                 {
-                    enabled ? it->Component->OnEnable() : it->Component->OnDisable();
+                    it->Component->SetEnabled(enabled);
                 }
             }
 
@@ -139,7 +115,7 @@ namespace Core
             }
         }
 
-        bool Entity::GetEnabled() const
+        bool Entity::IsEnabled() const
         {
             return m_enabled;
         }

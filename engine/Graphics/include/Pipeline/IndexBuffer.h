@@ -16,7 +16,7 @@ namespace Graphics
             IndexBuffer(const unsigned int* data, size_t count);
             ~IndexBuffer();
 
-            void Bind() const;
+            void Bind();
             static void Unbind();
 
             GLuint GetHandle() const;

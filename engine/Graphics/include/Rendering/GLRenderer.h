@@ -11,16 +11,16 @@ namespace Graphics
         public:
             GLRenderer();
 
-            void Clear(Core::Math::vec4 colour) const override;
-            void Draw(const Pipeline::VertexArray& va, const Pipeline::IndexBuffer& ib) const override;
-            void Draw(const Geometry::GPUGeometry& geometry) const override;
+            void Clear(Core::Math::vec4 colour) override;
+            void Draw(Pipeline::VertexArray& va, Pipeline::IndexBuffer& ib) override;
+            void Draw(Geometry::GPUGeometry& geometry) override;
 
-            void DrawSphere(Core::Math::vec3 position, double radius, Core::Math::vec3 colour) const override;
-            void DrawRay(Core::Math::vec3 start, Core::Math::vec3 end, Core::Math::vec3 colour, float lineWidth = 2.5f) const override;
-            void DrawLine(Core::Math::vec3 point1, Core::Math::vec3 point2, Core::Math::vec3 colour, float lineWidth = 2.5f) const override;
+            void DrawSphere(Core::Math::vec3 position, double radius, Core::Math::vec3 colour) override;
+            void DrawRay(Core::Math::vec3 start, Core::Math::vec3 end, Core::Math::vec3 colour, float lineWidth = 2.5f) override;
+            void DrawLine(Core::Math::vec3 point1, Core::Math::vec3 point2, Core::Math::vec3 colour, float lineWidth = 2.5f) override;
 
-            void SetWireframe(bool wireframe);
-            bool GetWireframe() const;
+            bool IsWireframeActive() const;
+            void SetWireframeActive(bool wireframe);
 
         private:
             bool m_wireframe;

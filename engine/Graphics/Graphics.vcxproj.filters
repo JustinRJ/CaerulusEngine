@@ -136,9 +136,6 @@
     <ClInclude Include="include\Pipeline\VertexBufferLayout.h">
       <Filter>include\Pipeline</Filter>
     </ClInclude>
-    <ClInclude Include="include\Pipeline\IGraphicsObject.h">
-      <Filter>include\Pipeline</Filter>
-    </ClInclude>
     <ClInclude Include="include\AssetManagers\MaterialManager.h">
       <Filter>include\AssetManagers</Filter>
     </ClInclude>

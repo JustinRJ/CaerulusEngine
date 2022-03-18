@@ -6,7 +6,7 @@ using namespace Graphics::Lighting;
 
 namespace Graphics
 {
-    namespace Managers
+    namespace ComponentManagers
     {
         const PointLight* PointLightManager::Create(Core::ECS::Entity& entity, const Core::Math::vec3& colour)
         {
@@ -17,7 +17,7 @@ namespace Graphics
             return ptr;
         }
 
-        void PointLightManager::AddPointLightUniformCallback(Core::ECS::Entity& entity, const Pipeline::Shader& shader, std::function<void(const Pipeline::ShaderUniformCallback&, const Pipeline::Shader& shader)> uniformCallback)
+        void PointLightManager::AddPointLightUniformCallback(Core::ECS::Entity& entity, Pipeline::Shader& shader, std::function<void(Pipeline::ShaderUniformCallback&, Pipeline::Shader& shader)> uniformCallback)
         {
             if (PointLight* light = GetMutable(&entity))
             {

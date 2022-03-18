@@ -15,7 +15,7 @@ namespace Core
 
             void Insert(const std::string key, std::unique_ptr<R>&& value) override
             {
-                if (!key.empty() && value)
+                if (!key.empty())
                 {
                     Manager<const std::string, R>::Insert(key, std::move(value));
                 }

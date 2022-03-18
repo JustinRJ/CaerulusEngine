@@ -43,9 +43,9 @@ namespace Graphics
 
             for (unsigned int i = 0; i < vertices.size(); ++i)
             {
-                std::shared_ptr<Mesh> newMesh =
-                    std::make_shared<Mesh>(vertices.at(i), indices.at(i), materialNames.at(i));
-                m_meshes.push_back(newMesh);
+                std::unique_ptr<Mesh> newMesh =
+                    std::make_unique<Mesh>(vertices.at(i), indices.at(i), materialNames.at(i));
+                m_meshes.push_back(std::move(newMesh));
             }
 
             m_isLoaded = true;
@@ -54,12 +54,12 @@ namespace Graphics
         void Model::Update(float deltaTime)
         {
             InvokeUniformCallbacks();
-            for (const std::shared_ptr<Mesh>& mesh : GetMeshes())
+            for (const std::unique_ptr<Mesh>& mesh : GetMeshes())
             {
                 if (mesh && mesh->GetRenderer())
                 {
                     mesh->InvokeUniformCallbacks();
-                    if (const Surface::Material* material = mesh->GetMaterial())
+                    if (Surface::Material* material = mesh->GetMaterial())
                     {
                         material->Bind();
                         material->InvokeUniformCallbacks();
@@ -119,18 +119,18 @@ namespace Graphics
                         Vertex vertex;
 
                         Core::Math::vec3 position(
-                            attrib.vertices[3 * idx.vertex_index + 0],
-                            attrib.vertices[3 * idx.vertex_index + 1],
-                            attrib.vertices[3 * idx.vertex_index + 2]);
+                            attrib.vertices[static_cast<__int64>(3) * idx.vertex_index + 0],
+                            attrib.vertices[static_cast<__int64>(3) * idx.vertex_index + 1],
+                            attrib.vertices[static_cast<__int64>(3) * idx.vertex_index + 2]);
 
                         Core::Math::vec2 texCoord(
-                            attrib.texcoords[2 * idx.texcoord_index + 0],
-                            attrib.texcoords[2 * idx.texcoord_index + 1]);
+                            attrib.texcoords[static_cast<__int64>(2) * idx.texcoord_index + 0],
+                            attrib.texcoords[static_cast<__int64>(2) * idx.texcoord_index + 1]);
 
                         Core::Math::vec3 normal(
-                            attrib.normals[3 * idx.normal_index + 0],
-                            attrib.normals[3 * idx.normal_index + 1],
-                            attrib.normals[3 * idx.normal_index + 2]);
+                            attrib.normals[static_cast<__int64>(3) * idx.normal_index + 0],
+                            attrib.normals[static_cast<__int64>(3) * idx.normal_index + 1],
+                            attrib.normals[static_cast<__int64>(3) * idx.normal_index + 2]);
 
                         vertex.Position = position;
                         vertex.TexCoord = texCoord;
@@ -165,8 +165,8 @@ namespace Graphics
                 for (unsigned int i = 0; i < meshVertices.size() - 2; i += 3)
                 {
                     Vertex v1 = meshVertices.at(i);
-                    Vertex v2 = meshVertices.at(i + 1);
-                    Vertex v3 = meshVertices.at(i + 2);
+                    Vertex v2 = meshVertices.at(static_cast<__int64>(i) + 1);
+                    Vertex v3 = meshVertices.at(static_cast<__int64>(i) + 2);
 
                     vec3 edge1 = v2.Position - v1.Position;
                     vec3 edge2 = v3.Position - v1.Position;
@@ -191,7 +191,7 @@ namespace Graphics
             }
         }
 
-        const std::vector<std::shared_ptr<Mesh>>& Model::GetMeshes() const
+        const std::vector<std::unique_ptr<Mesh>>& Model::GetMeshes() const
         {
             return m_meshes;
         }

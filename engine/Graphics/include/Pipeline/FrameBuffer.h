@@ -18,7 +18,7 @@ namespace Graphics
             ~FrameBuffer();
 
             bool Init(unsigned int width, unsigned int height, unsigned int msaa = 0);
-            void Bind() const;
+            void Bind();
             static void Unbind();
             void Update();
 

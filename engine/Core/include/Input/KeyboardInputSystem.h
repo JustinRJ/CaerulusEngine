@@ -31,7 +31,7 @@ namespace Core
         class KeyboardInputSystem : public Interface::ITickable
         {
         public:
-            KeyboardInputSystem(std::shared_ptr<Graphics::Window::GLWindow> window)
+            KeyboardInputSystem(Graphics::Window::GLWindow* window)
             {
                 glfwSetWindowUserPointer(window->GetGLFWWindow(), this);
             };
@@ -42,7 +42,7 @@ namespace Core
                 UpdateActionState();
             }
 
-            void AddWindowKeyCallback(std::shared_ptr<Graphics::Window::GLWindow> window, int key, Action action, std::function<void(Modifier)> callback, const std::string& name = "")
+            void AddWindowKeyCallback(Graphics::Window::GLWindow* window, int key, Action action, std::function<void(Modifier)> callback, const std::string& name = "")
             {
                 KeyBinding newBinding;
                 newBinding.TargetAction = action;

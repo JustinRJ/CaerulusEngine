@@ -9,10 +9,9 @@ using namespace Graphics::Surface;
 
 namespace Graphics
 {
-    namespace Managers
+    namespace AssetManagers
     {
-        MaterialManager::MaterialManager(ShaderManager& shaderManager, TextureManager& textureManager) :
-            m_shaderManager(shaderManager),
+        MaterialManager::MaterialManager(TextureManager& textureManager) :
             m_textureManager(textureManager)
         {}
 
@@ -86,11 +85,6 @@ namespace Graphics
             }
         }
 
-        ShaderManager& MaterialManager::GetShaderManager()
-        {
-            return m_shaderManager;
-        }
-
         TextureManager& MaterialManager::GetTextureManager()
         {
             return m_textureManager;
@@ -104,7 +98,7 @@ namespace Graphics
             }
         }
 
-        void MaterialManager::AddMaterialUniformCallback(const std::string& materialName, const Pipeline::Shader& shader, std::function<void(const Pipeline::ShaderUniformCallback&, const Pipeline::Shader& shader)> uniformCallback)
+        void MaterialManager::AddMaterialUniformCallback(const std::string& materialName, Pipeline::Shader& shader, std::function<void(Pipeline::ShaderUniformCallback&, Pipeline::Shader& shader)> uniformCallback)
         {
             if (Material* material = GetMutable(materialName))
             {

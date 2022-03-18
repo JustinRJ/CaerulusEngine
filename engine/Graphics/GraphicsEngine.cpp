@@ -24,6 +24,9 @@
 #include "Lighting/PointLight.h"
 #include "Lighting/DirectionalLight.h"
 
+#include "ComponentManagers/ModelManager.h"
+#include "ComponentManagers/PointLightManager.h"
+
 namespace Graphics
 {
     using namespace Window;
@@ -34,25 +37,31 @@ namespace Graphics
     using namespace Rendering;
 
     GraphicsEngine::GraphicsEngine(
-        Managers::ModelManager& modelManager,
-        Managers::PointLightManager& pointLightManager,
-        std::shared_ptr<GLWindow> window,
-        std::shared_ptr<IRenderer> renderer) :
-        m_window(window),
-        m_renderer(renderer),
-        m_modelManager(modelManager),
-        m_pointLightManager(pointLightManager)
-    {
-        m_framebuffer = std::make_shared<Pipeline::FrameBuffer>();
-        m_framebuffer->Init(m_window->GetActiveState().Width, m_window->GetActiveState().Height, 8);
-    }
+        ComponentManagers::ModelManager& modelManager,
+        ComponentManagers::PointLightManager& pointLightManager) :
+        m_IBL(nullptr),
+        m_window(nullptr),
+        m_renderer(nullptr),
+        m_framebuffer(*new Pipeline::FrameBuffer()),
+        m_modelManager(&modelManager),
+        m_pointLightManager(&pointLightManager)
+    {}
     
     void GraphicsEngine::EarlyTick()
     {
-        m_renderer->Clear(m_clearColour);
+        if (m_renderer)
+        {
+            m_renderer->Clear(m_clearColour);
+        }
 
-        m_modelManager.EarlyUpdate();
-        m_pointLightManager.EarlyUpdate();
+        if (m_modelManager)
+        {
+            m_modelManager->EarlyUpdate();
+        }
+        if (m_pointLightManager)
+        {
+            m_pointLightManager->EarlyUpdate();
+        }
     }
 
     void GraphicsEngine::Tick(float deltaTime)
@@ -66,8 +75,14 @@ namespace Graphics
                 m_IBL->Bind();
             }
 
-            m_modelManager.Update(deltaTime);
-            m_pointLightManager.Update(deltaTime);
+            if (m_modelManager)
+            {
+                m_modelManager->Update(deltaTime);
+            }
+            if (m_pointLightManager)
+            {
+                m_pointLightManager->Update(deltaTime);
+            }
 
             if (m_IBL)
             {
@@ -78,16 +93,31 @@ namespace Graphics
 
     void GraphicsEngine::FixedTick(float fixedTime)
     {
-        m_modelManager.FixedUpdate(fixedTime);
-        m_pointLightManager.FixedUpdate(fixedTime);
+        if (m_modelManager)
+        {
+            m_modelManager->FixedUpdate(fixedTime);
+        }
+        if (m_pointLightManager)
+        {
+            m_pointLightManager->FixedUpdate(fixedTime);
+        }
     }
 
     void GraphicsEngine::LateTick()
     {
-        m_modelManager.LateUpdate();
-        m_pointLightManager.LateUpdate();
+        if (m_modelManager)
+        {
+            m_modelManager->LateUpdate();
+        }
+        if (m_pointLightManager)
+        {
+            m_pointLightManager->LateUpdate();
+        }
 
-        m_window->SwapBuffer();
+        if (m_window)
+        {
+            m_window->SwapBuffer();
+        }
     }
 
     const Core::Math::vec4& GraphicsEngine::GetClearColour() const
@@ -100,37 +130,41 @@ namespace Graphics
         m_clearColour = colour;
     }
 
-    std::shared_ptr<GLWindow> GraphicsEngine::GetWindow() const
+    GLWindow* GraphicsEngine::GetWindow()
     {
         return m_window;
     }
 
-    void GraphicsEngine::SetWindow(std::shared_ptr<GLWindow> window)
+    void GraphicsEngine::SetWindow(GLWindow* window)
     {
         m_window = window;
+        if (m_window)
+        {
+            m_framebuffer.Init(m_window->GetActiveState().Width, m_window->GetActiveState().Height, 8);
+        }
     }
 
-    std::shared_ptr<IRenderer> GraphicsEngine::GetRenderer() const
+    IRenderer* GraphicsEngine::GetRenderer()
     {
         return m_renderer;
     }
 
-    void GraphicsEngine::SetRenderer(std::shared_ptr<IRenderer> renderer)
+    void GraphicsEngine::SetRenderer(IRenderer* renderer)
     {
         m_renderer = renderer;
     }
 
-    std::shared_ptr<Lighting::IBL> GraphicsEngine::GetIBL() const
+    Lighting::IBL* GraphicsEngine::GetIBL()
     {
         return m_IBL;
     }
 
-    void GraphicsEngine::SetIBL(std::shared_ptr<Lighting::IBL> ibl)
+    void GraphicsEngine::SetIBL(Lighting::IBL* ibl)
     {
         m_IBL = ibl;
     }
 
-    std::shared_ptr<Pipeline::FrameBuffer> GraphicsEngine::GetFrameBuffer() const
+    Pipeline::FrameBuffer& GraphicsEngine::GetFrameBuffer()
     {
         return m_framebuffer;
     }

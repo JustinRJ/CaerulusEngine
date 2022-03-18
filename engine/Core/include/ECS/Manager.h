@@ -29,14 +29,33 @@ namespace Core
                 }
             }
 
+            virtual void Remove(T key)
+            {
+                auto it = m_managedMap.find(key);
+                if (it != std::end(m_managedMap))
+                {
+                    m_managedMap.erase(it);
+                }
+            }
+
 #ifdef THREAD_SAFE
             const R* Get(T key) const
-#endif
-#ifdef THREAD_UNSAFE
+#else
             R* Get(T key) const
 #endif
             {
                 return GetMutable(key);
+            }
+
+            R* GetMutable(T key) const
+            {
+                R* found = nullptr;
+                auto it = m_managedMap.find(key);
+                if (it != m_managedMap.end())
+                {
+                    found = it->second.get();
+                }
+                return found;
             }
 
             std::vector<const R*> GetAll() const
@@ -45,18 +64,6 @@ namespace Core
                 std::transform(std::begin(m_managedMap), std::end(m_managedMap),
                     std::begin(elements), [](auto& kv) { return static_cast<R*>(kv.second.get()); });
                 return elements;
-            }
-
-            bool Remove(T key)
-            {
-                bool removed = false;
-                auto it = m_managedMap.find(key);
-                if (it != std::end(m_managedMap))
-                {
-                    m_managedMap.erase(it);
-                    removed = true;
-                }
-                return removed;
             }
 
             std::unique_ptr<R> Release(T key)
@@ -74,18 +81,8 @@ namespace Core
             }
 
         protected:
-            R* GetMutable(T key) const
-            {
-                R* found = nullptr;
-                auto it = m_managedMap.find(key);
-                if (it != m_managedMap.end())
-                {
-                    found = it->second.get();
-                }
-                return found;
-            }
 
-            const std::map<T, std::unique_ptr<R>>& GetMap() const
+            std::map<T, std::unique_ptr<R>>& GetMap()
             {
                 return m_managedMap;
             }

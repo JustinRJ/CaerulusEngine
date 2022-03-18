@@ -61,30 +61,30 @@ namespace Graphics
             glDebugMessageCallback(OpenGLErrorLogCallback, 0);
         }
 
-        void GLRenderer::Clear(Core::Math::vec4 colour) const
+        void GLRenderer::Clear(Core::Math::vec4 colour)
         {
             glClearColor(colour.r, colour.g, colour.b, colour.a);
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         }
 
-        void GLRenderer::Draw(const Pipeline::VertexArray& va, const Pipeline::IndexBuffer& ib) const
+        void GLRenderer::Draw(Pipeline::VertexArray& va, Pipeline::IndexBuffer& ib)
         {
             va.Bind();
             ib.Bind();
             glDrawElements(m_wireframe ? GL_LINE_LOOP : GL_TRIANGLES, static_cast<GLsizei>(ib.GetCount()), GL_UNSIGNED_INT, nullptr);
         }
 
-        void GLRenderer::Draw(const Geometry::GPUGeometry& geometry) const
+        void GLRenderer::Draw(Geometry::GPUGeometry& geometry)
         {
             Draw(geometry.GetVertexArray(), geometry.GetIndexBuffer());
         }
 
-        void GLRenderer::DrawSphere(Core::Math::vec3 position, double radius, Core::Math::vec3 colour) const
+        void GLRenderer::DrawSphere(Core::Math::vec3 position, double radius, Core::Math::vec3 colour)
         {
             // TODO
         }
 
-        void GLRenderer::DrawRay(Core::Math::vec3 start, Core::Math::vec3 end, Core::Math::vec3 colour, float lineWidth) const
+        void GLRenderer::DrawRay(Core::Math::vec3 start, Core::Math::vec3 end, Core::Math::vec3 colour, float lineWidth)
         {
             glLineWidth(lineWidth);
             glColor3f(colour.r, colour.g, colour.b);
@@ -95,7 +95,7 @@ namespace Graphics
             glEnd();
         }
 
-        void GLRenderer::DrawLine(Core::Math::vec3 point1, Core::Math::vec3 point2, Core::Math::vec3 colour, float lineWidth) const
+        void GLRenderer::DrawLine(Core::Math::vec3 point1, Core::Math::vec3 point2, Core::Math::vec3 colour, float lineWidth)
         {
             glLineWidth(lineWidth);
             glColor3f(colour.r, colour.g, colour.b);
@@ -106,12 +106,12 @@ namespace Graphics
         }
 
 
-        void GLRenderer::SetWireframe(bool wireframe)
+        void GLRenderer::SetWireframeActive(bool wireframe)
         {
             m_wireframe = wireframe;
         }
 
-        bool GLRenderer::GetWireframe() const
+        bool GLRenderer::IsWireframeActive() const
         {
             return m_wireframe;
         }

@@ -5,7 +5,7 @@
 
 namespace Graphics
 {
-    namespace Managers
+    namespace AssetManagers
     {
         class CAERULUS_GRAPHICS ShaderManager : public Core::ECS::AssetManager<Pipeline::Shader>
         {

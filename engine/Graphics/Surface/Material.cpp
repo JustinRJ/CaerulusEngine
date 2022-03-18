@@ -13,7 +13,7 @@ namespace Graphics
     {
         unsigned int Material::s_materialTextureSlotOffset = 0;
 
-        Material::Material(const Managers::TextureManager& textureManager, const std::string& path) :
+        Material::Material(const AssetManagers::TextureManager& textureManager, const std::string& path) :
             m_path(path),
             m_textures(7),
             m_textureManager(textureManager)
@@ -75,7 +75,7 @@ namespace Graphics
             }
         }
 
-        void Material::Bind(TextureType type) const
+        void Material::Bind(TextureType type)
         {
             unsigned int slot = static_cast<unsigned int>(type);
             if (slot < m_textures.size())
@@ -91,7 +91,7 @@ namespace Graphics
             }
         }
 
-        void Material::Bind() const
+        void Material::Bind()
         {
             for (unsigned int i = 0; i < m_textures.size(); ++i)
             {

@@ -7,7 +7,7 @@ using namespace Graphics::Pipeline;
 
 namespace Graphics
 {
-    namespace Managers
+    namespace AssetManagers
     {
         void ShaderSourceManager::Load(const std::string& shaderSourcePath, ShaderType type)
         {

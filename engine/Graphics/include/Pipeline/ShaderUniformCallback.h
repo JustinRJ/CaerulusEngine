@@ -13,7 +13,7 @@ namespace Graphics
             ShaderUniformCallback() = default;
             virtual ~ShaderUniformCallback() = default;
 
-            void AddUniformCallback(const Shader& shader, const std::function<void(const ShaderUniformCallback&, const Shader& shader)>& uniformCallback)
+            void AddUniformCallback(Shader& shader, const std::function<void(ShaderUniformCallback&, Shader& shader)>& uniformCallback)
             {
                 bool shaderFound = false;
                 for (const auto& pair : m_shaderCallbacks)
@@ -30,7 +30,7 @@ namespace Graphics
                 }
             }
 
-            void InvokeUniformCallbacks() const
+            void InvokeUniformCallbacks()
             {
                 for (const auto& pair : m_shaderCallbacks)
                 {
@@ -40,7 +40,7 @@ namespace Graphics
             }
 
         private:
-            std::vector<std::pair<const Shader*, std::function<void(const ShaderUniformCallback&, const Shader&)>>> m_shaderCallbacks;
+            std::vector<std::pair<Shader*, std::function<void(ShaderUniformCallback&, Shader&)>>> m_shaderCallbacks;
         };
     }
 }

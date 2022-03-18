@@ -24,21 +24,22 @@ namespace Graphics
             std::string BackgroundShader;
         };
 
-        // TODO - re-write this shit
+        // TODO - re-write this, store on CameraComponent
         class IBL : public Pipeline::ShaderUniformCallback
         {
         public:
-            IBL(const Managers::ShaderManager& shaderManager,
-                const Managers::TextureManager& textureManager,
+            IBL(const AssetManagers::ShaderManager& shaderManager,
+                const AssetManagers::TextureManager& textureManager,
                 const IBLShaders& iblShaders,
                 const std::string& textureName,
-                std::shared_ptr<Rendering::IRenderer> renderer,
-                std::shared_ptr<Window::GLWindow> window,
-                std::shared_ptr<Core::Math::Camera> camera,
-                std::shared_ptr<Pipeline::FrameBuffer> framebuffer) :
-                m_textureName(textureName),
-                m_renderer(renderer)
+                Rendering::IRenderer* renderer,
+                Window::GLWindow* window,
+                Core::Math::Camera* camera,
+                Pipeline::FrameBuffer* framebuffer) :
+                m_textureName(textureName)
             {
+                m_cube.SetRenderer(renderer);
+
                 unsigned int windowWidth = window->GetActiveState().Width;
                 unsigned int windowHeight = window->GetActiveState().Height;
 
@@ -69,7 +70,7 @@ namespace Graphics
                     Core::Math::lookAt(Core::Math::vec3(0.0f, 0.0f, 0.0f), Core::Math::vec3(0.0f,  0.0f, -1.0f),  Core::Math::vec3(0.0f, -1.0f,  0.0f))
                 };
 
-                const Pipeline::Shader* CubemapShader = shaderManager.Get(iblShaders.CubemapShader);
+                Pipeline::Shader* CubemapShader = shaderManager.GetMutable(iblShaders.CubemapShader);
 
                 // pbr: convert HDR equirectangular environment map to cubemap equivalent
                 // ----------------------------------------------------------------------
@@ -91,7 +92,7 @@ namespace Graphics
                     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, m_envCubemapHandle, 0);
                     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-                    m_renderer->Draw(m_cube);
+                    m_cube.Draw();
                 }
                 framebuffer->Unbind();
 
@@ -117,7 +118,7 @@ namespace Graphics
                 glBindRenderbuffer(GL_RENDERBUFFER, framebuffer->GetDepthID());
                 glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, 32, 32);
 
-                const Pipeline::Shader* IrradianceShader = shaderManager.Get(iblShaders.IrradianceShader);
+                Pipeline::Shader* IrradianceShader = shaderManager.GetMutable(iblShaders.IrradianceShader);
 
                 // pbr: solve diffuse integral by convolution to create an irradiance (cube)map.
                 // -----------------------------------------------------------------------------
@@ -135,7 +136,7 @@ namespace Graphics
                     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, m_irradianceMapHandle, 0);
                     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-                    m_renderer->Draw(m_cube);
+                    m_cube.Draw();
                 }
                 framebuffer->Unbind();
 
@@ -155,7 +156,7 @@ namespace Graphics
                 // generate mipmaps for the cubemap so OpenGL automatically allocates the required memory.
                 glGenerateMipmap(GL_TEXTURE_CUBE_MAP);
 
-                const Pipeline::Shader* PrefilterShader = shaderManager.Get(iblShaders.PrefilterShader);
+                Pipeline::Shader* PrefilterShader = shaderManager.GetMutable(iblShaders.PrefilterShader);
 
                 // pbr: run a quasi monte-carlo simulation on the environment lighting to create a prefilter (cube)map.
                 // ----------------------------------------------------------------------------------------------------
@@ -184,7 +185,7 @@ namespace Graphics
                         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, m_prefilterMapHandle, mip);
 
                         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-                        m_renderer->Draw(m_cube);
+                        m_cube.Draw();
                     }
                 }
                 framebuffer->Unbind();
@@ -208,9 +209,9 @@ namespace Graphics
                 glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, windowWidth, windowHeight);
                 glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_brdfLUTTextureHandle, 0);
 
-                const Pipeline::Shader* BrdfShader = shaderManager.Get(iblShaders.BrdfShader);
-                const Pipeline::Shader* PbrShader = shaderManager.Get(iblShaders.PbrShader);
-                const Pipeline::Shader* BackgroundShader = shaderManager.Get(iblShaders.BackgroundShader);
+                Pipeline::Shader* BrdfShader = shaderManager.GetMutable(iblShaders.BrdfShader);
+                Pipeline::Shader* PbrShader = shaderManager.GetMutable(iblShaders.PbrShader);
+                Pipeline::Shader* BackgroundShader = shaderManager.GetMutable(iblShaders.BackgroundShader);
 
                 glViewport(0, 0, windowWidth, windowHeight);
                 BrdfShader->Bind();
@@ -247,7 +248,7 @@ namespace Graphics
                 return m_textureName;
             }
 
-            void Bind() const
+            void Bind()
             {
                 glActiveTexture(GL_TEXTURE0);
                 glBindTexture(GL_TEXTURE_CUBE_MAP, m_irradianceMapHandle);
@@ -257,7 +258,7 @@ namespace Graphics
                 glBindTexture(GL_TEXTURE_2D, m_brdfLUTTextureHandle);
             }
 
-            void Draw() const
+            void Draw()
             {
                 Surface::Texture::Unbind();
                 glActiveTexture(GL_TEXTURE0);
@@ -266,7 +267,7 @@ namespace Graphics
                 glBindTexture(GL_TEXTURE_CUBE_MAP, m_irradianceMapHandle);
                 glActiveTexture(GL_TEXTURE2);
                 glBindTexture(GL_TEXTURE_CUBE_MAP, m_prefilterMapHandle);
-                m_renderer->Draw(m_cube);
+                m_cube.Draw();
             }
 
             unsigned int GetRequiredTextureSlots() const
@@ -284,7 +285,6 @@ namespace Graphics
 
             Geometry::Cube m_cube;
             std::string m_textureName;
-            std::shared_ptr<Rendering::IRenderer> m_renderer;
         };
     }
 }

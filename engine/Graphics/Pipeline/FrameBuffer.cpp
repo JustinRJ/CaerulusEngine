@@ -144,7 +144,7 @@ namespace Graphics
             return m_msaa == 0 ? m_fboId : m_fboMsaaId;
         }
 
-        void FrameBuffer::Bind() const
+        void FrameBuffer::Bind()
         {
             if (m_msaa == 0)
             {

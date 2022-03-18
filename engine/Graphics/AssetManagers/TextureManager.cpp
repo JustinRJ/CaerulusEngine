@@ -10,7 +10,7 @@ using namespace Graphics::Surface;
 
 namespace Graphics
 {
-    namespace Managers
+    namespace AssetManagers
     {
         void TextureManager::Load(const std::string& textureName, const std::string& path)
         {

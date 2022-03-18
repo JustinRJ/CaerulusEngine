@@ -16,9 +16,9 @@ namespace Graphics
             VertexArray();
             ~VertexArray();
 
-            void AddBuffer(const VertexBuffer& vb, const VertexBufferLayout& layout);
+            void AddBuffer(VertexBuffer& vb, const VertexBufferLayout& layout);
 
-            void Bind() const;
+            void Bind();
             static void Unbind();
 
             GLuint GetHandle() const;
