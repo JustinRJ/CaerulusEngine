@@ -6,7 +6,7 @@ namespace Graphics
 {
     namespace Geometry
     {
-        const static GLfloat s_CubeVertices[] =
+        inline const static GLfloat s_CubeVertices[] =
         {
            -0.5, -0.5, -0.5,
             0.5, -0.5, -0.5,
@@ -18,7 +18,7 @@ namespace Graphics
            -0.5,  0.5,  0.5
         };
 
-        const static GLuint s_CubeIndices[] =
+        inline const static GLuint s_CubeIndices[] =
         {
             0, 1, 3, 3, 1, 2,
             1, 5, 2, 2, 5, 6,

@@ -66,10 +66,8 @@ namespace Core
         private:
             mat4 m_T;
             AABox m_aa;
-            static const vec3 s_min;
-            static const vec3 s_max;
+            inline static const vec3 s_min = { -0.5f, -0.5f, -0.5f };;
+            inline static const vec3 s_max = { 0.5f, 0.5f, 0.5f };;
         };
-        const vec3 Box::s_min = { -0.5f, -0.5f, -0.5f };
-        const vec3 Box::s_max = { 0.5f, 0.5f, 0.5f };
     }
 }

@@ -66,10 +66,8 @@ namespace Core
         private:
             mat3 m_T;
             AARect m_aa;
-            static const vec2 s_min;
-            static const vec2 s_max;
+            inline static const vec2 s_min = { -0.5f, -0.5f };
+            inline static const vec2 s_max = { 0.5f, 0.5f };
         };
-        const vec2 Rect::s_min = { -0.5f, -0.5f };
-        const vec2 Rect::s_max = { 0.5f, 0.5f };
     }
 }

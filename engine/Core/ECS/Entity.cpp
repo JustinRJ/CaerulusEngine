@@ -40,10 +40,10 @@ namespace Core
         {
             s_numEntities--;
             s_reusableEntityIDs.push_back(m_id);
-
-            for (auto it = std::begin(s_componentManagers); it != std::end(s_componentManagers); it++)
+            
+            for (auto& componentData : s_componentManagers)
             {
-                it->RemoveComponent(*this);
+                componentData.RemoveComponent(*this);
             }
 
             for (Entity* child : m_children)
@@ -143,11 +143,14 @@ namespace Core
 
         std::vector<Component*> Entity::AddComponentsOfTypeInner(size_t typeToAdd)
         {
-            AddComponentOfTypeInner(typeToAdd);
+            std::vector<Component*> addedComponents;
+            addedComponents.push_back(AddComponentOfTypeInner(typeToAdd));
             for (Entity* child : m_children)
             {
-                child->AddComponentsOfTypeInner(typeToAdd);
+                auto childAddedComponents = child->AddComponentsOfTypeInner(typeToAdd);
+                addedComponents.insert(std::end(addedComponents), std::begin(childAddedComponents), std::end(childAddedComponents));
             }
+            return addedComponents;
         }
 
         void Entity::SetEnabled(bool enabled)
@@ -155,9 +158,10 @@ namespace Core
             if (m_enabled != enabled)
             {
                 m_enabled = enabled;
-                for (auto it = std::begin(m_components); it != std::end(m_components); it++)
+
+                for (ComponentData& componentData : m_components)
                 {
-                    it->Component->SetEnabled(enabled);
+                    componentData.Component->SetEnabled(enabled);
                 }
             }
 

@@ -46,10 +46,8 @@ namespace Core
 
             void EarlyUpdate()
             {
-                const auto& map = Manager<ECS::Entity*, R>::GetMap();
-                for (auto it = std::begin(map); it != std::end(map); it++)
+                for (auto& [entity, component] : Manager<ECS::Entity*, R>::GetMap())
                 {
-                    auto& component = it->second;
                     if (component->IsEnabled())
                     {
                         component->EarlyUpdate();
@@ -59,10 +57,8 @@ namespace Core
 
             void Update(float deltaTime)
             {
-                const auto& map = Manager<ECS::Entity*, R>::GetMap();
-                for (auto it = std::begin(map); it != std::end(map); it++)
+                for (auto& [entity, component] : Manager<ECS::Entity*, R>::GetMap())
                 {
-                    auto& component = it->second;
                     if (component->IsEnabled())
                     {
                         component->Update(deltaTime);
@@ -72,10 +68,8 @@ namespace Core
 
             void FixedUpdate(float fixedTime)
             {
-                const auto& map = Manager<ECS::Entity*, R>::GetMap();
-                for (auto it = std::begin(map); it != std::end(map); it++)
+                for (auto& [entity, component] : Manager<ECS::Entity*, R>::GetMap())
                 {
-                    auto& component = it->second;
                     if (component->IsEnabled())
                     {
                         component->FixedUpdate(fixedTime);
@@ -85,10 +79,8 @@ namespace Core
 
             void LateUpdate()
             {
-                const auto& map = Manager<ECS::Entity*, R>::GetMap();
-                for (auto it = std::begin(map); it != std::end(map); it++)
+                for (auto& [entity, component] : Manager<ECS::Entity*, R>::GetMap())
                 {
-                    auto& component = it->second;
                     if (component->IsEnabled())
                     {
                         component->LateUpdate();
@@ -98,10 +90,8 @@ namespace Core
 
             void Reset()
             {
-                const auto& map = Manager<ECS::Entity*, R>::GetMap();
-                for (auto it = std::begin(map); it != std::end(map); it++)
+                for (auto& [entity, component] : Manager<ECS::Entity*, R>::GetMap())
                 {
-                    auto& component = it->second;
                     component->Reset();
                 }
             }

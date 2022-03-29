@@ -11,8 +11,6 @@ namespace Graphics
 {
     namespace Surface
     {
-        unsigned int Material::s_materialTextureSlotOffset = 0;
-
         Material::Material(const AssetManagers::TextureManager& textureManager, const std::string& path) :
             m_path(path),
             m_textures(7),

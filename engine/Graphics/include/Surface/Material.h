@@ -52,7 +52,7 @@ namespace Graphics
 
             // Lighting techniques require different texture slots for pre and post processing
             // so all textures that are bound must be offset by the graphics engines requirements
-            static unsigned int s_materialTextureSlotOffset;
+            inline static unsigned int s_materialTextureSlotOffset = 0;
         };
     }
 }
