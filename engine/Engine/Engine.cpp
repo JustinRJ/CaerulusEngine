@@ -2,32 +2,20 @@
 
 #include "Engine.h"
 
-#include "ECS/Entity.h"
-#include "Math/Math.h"
-#include "Math/Camera.h"
-
-#include "Logging/Log.h"
-#include "Logging/LogToFile.h"
-
-#include "Interface/ITickable.h"
-#include "Interface/NonCopyable.h"
+#include "ECS/AssetManagerFactory.h"
+#include "ECS/ComponentManagerFactory.h"
 
 #include "GraphicsEngine.h"
 #include "Window/GLWindow.h"
-#include "Rendering/GLRenderer.h"
+#include "Lighting/IBL.h"
+#include "Geometry/Mesh.h"
 
 #include "Input/MouseInputSystem.h"
 #include "Input/KeyboardInputSystem.h"
 
-#include "AssetManagers/TextureManager.h"
 #include "AssetManagers/MaterialManager.h"
-#include "AssetManagers/ShaderSourceManager.h"
-#include "AssetManagers/ShaderManager.h"
 #include "ComponentManagers/ModelManager.h"
 #include "ComponentManagers/PointLightManager.h"
-
-#include "Lighting/IBL.h"
-#include "Geometry/Mesh.h"
 
 using namespace Core::ECS;
 using namespace Core::Math;
@@ -39,12 +27,12 @@ using namespace Core::Interface;
 using namespace Graphics;
 using namespace Graphics::Window;
 using namespace Graphics::Surface;
-using namespace Graphics::AssetManagers;
-using namespace Graphics::ComponentManagers;
 using namespace Graphics::Geometry;
 using namespace Graphics::Pipeline;
 using namespace Graphics::Lighting;
 using namespace Graphics::Rendering;
+using namespace Graphics::AssetManagers;
+using namespace Graphics::ComponentManagers;
 
 Engine::Engine(int argc, char** argv) :
     m_argCount(argc),
@@ -53,14 +41,19 @@ Engine::Engine(int argc, char** argv) :
     m_camera                = new Camera(vec3(0, 0, 0), UnitForward, UnitUp);
     m_window                = new GLWindow(m_camera, "Caerulus", 1280, 1024, 32, false);
     m_renderer              = new GLRenderer();
-    m_keyboardInputSystem   = new KeyboardInputSystem(m_window);
-    m_mouseInputSystem      = new MouseInputSystem(m_window);
+    m_keyboardInputSystem   = new KeyboardInputSystem(*m_window);
+    m_mouseInputSystem      = new MouseInputSystem(*m_window);
     m_shaderSrcManager      = new ShaderSourceManager();
     m_shaderManager         = new ShaderManager(*m_shaderSrcManager);
     m_textureManager        = new TextureManager();
     m_materialManager       = new MaterialManager(*m_textureManager);
-    m_modelManager          = new ModelManager(*m_materialManager, m_renderer);
+    m_modelManager          = new ModelManager();
     m_pointLightManager     = new PointLightManager();
+
+    // TODO - populate this with all component managers then pass into individual pointlight / model component managers
+    Core::ECS::ComponentManagerFactory factory;
+    factory.CreateComponentManagerForType<Graphics::Geometry::Model>();
+    factory.CreateComponentManagerForType<Graphics::Lighting::PointLight>();
 
     m_graphicsEngine = new GraphicsEngine(*m_modelManager, *m_pointLightManager);
     m_graphicsEngine->SetWindow(m_window);
@@ -144,17 +137,17 @@ void Engine::Tick()
 
 void Engine::InitInput()
 {
-    m_keyboardInputSystem->AddWindowKeyCallback(m_window, GLFW_KEY_ESCAPE, Action::Release, [&](Modifier) { m_running = false; });
-    m_keyboardInputSystem->AddWindowKeyCallback(m_window, GLFW_KEY_X, Action::Release, [&](Modifier)   { m_window->ToggleLockedCursor(); });
-    m_keyboardInputSystem->AddWindowKeyCallback(m_window, GLFW_KEY_R, Action::Release, [&](Modifier)   { if (m_window->IsCursorLocked()) { m_reset = true; }});
-    m_keyboardInputSystem->AddWindowKeyCallback(m_window, GLFW_KEY_C, Action::Release, [&](Modifier)   { if (m_window->IsCursorLocked()) { m_renderer->SetWireframeActive(!m_renderer->IsWireframeActive()); }});
+    m_keyboardInputSystem->AddWindowKeyCallback(*m_window, GLFW_KEY_ESCAPE, Action::Release, [&](Modifier) { m_running = false; });
+    m_keyboardInputSystem->AddWindowKeyCallback(*m_window, GLFW_KEY_X, Action::Release, [&](Modifier)   { m_window->ToggleLockedCursor(); });
+    m_keyboardInputSystem->AddWindowKeyCallback(*m_window, GLFW_KEY_R, Action::Release, [&](Modifier)   { if (m_window->IsCursorLocked()) { m_reset = true; }});
+    m_keyboardInputSystem->AddWindowKeyCallback(*m_window, GLFW_KEY_C, Action::Release, [&](Modifier)   { if (m_window->IsCursorLocked()) { m_renderer->SetWireframeActive(!m_renderer->IsWireframeActive()); }});
 
-    m_keyboardInputSystem->AddWindowKeyCallback(m_window, GLFW_KEY_A, Action::Hold, [&](Modifier m) { if (m_window->IsCursorLocked()) { m_camera->Translate(UnitRight   * -m_deltaTime * (m == Modifier::Shift ? m_sprintSpeed : m_normalSpeed), false); }});
-    m_keyboardInputSystem->AddWindowKeyCallback(m_window, GLFW_KEY_D, Action::Hold, [&](Modifier m) { if (m_window->IsCursorLocked()) { m_camera->Translate(UnitRight   *  m_deltaTime * (m == Modifier::Shift ? m_sprintSpeed : m_normalSpeed), false); }});
-    m_keyboardInputSystem->AddWindowKeyCallback(m_window, GLFW_KEY_W, Action::Hold, [&](Modifier m) { if (m_window->IsCursorLocked()) { m_camera->Translate(UnitForward *  m_deltaTime * (m == Modifier::Shift ? m_sprintSpeed : m_normalSpeed)); }});
-    m_keyboardInputSystem->AddWindowKeyCallback(m_window, GLFW_KEY_S, Action::Hold, [&](Modifier m) { if (m_window->IsCursorLocked()) { m_camera->Translate(UnitForward * -m_deltaTime * (m == Modifier::Shift ? m_sprintSpeed : m_normalSpeed)); }});
-    m_keyboardInputSystem->AddWindowKeyCallback(m_window, GLFW_KEY_Q, Action::Hold, [&](Modifier m) { if (m_window->IsCursorLocked()) { m_camera->Translate(UnitUp      * -m_deltaTime * (m == Modifier::Shift ? m_sprintSpeed : m_normalSpeed)); }});
-    m_keyboardInputSystem->AddWindowKeyCallback(m_window, GLFW_KEY_E, Action::Hold, [&](Modifier m) { if (m_window->IsCursorLocked()) { m_camera->Translate(UnitUp      *  m_deltaTime * (m == Modifier::Shift ? m_sprintSpeed : m_normalSpeed)); }});
+    m_keyboardInputSystem->AddWindowKeyCallback(*m_window, GLFW_KEY_A, Action::Hold, [&](Modifier m) { if (m_window->IsCursorLocked()) { m_camera->Translate(UnitRight   * -m_deltaTime * (m == Modifier::Shift ? m_sprintSpeed : m_normalSpeed), false); }});
+    m_keyboardInputSystem->AddWindowKeyCallback(*m_window, GLFW_KEY_D, Action::Hold, [&](Modifier m) { if (m_window->IsCursorLocked()) { m_camera->Translate(UnitRight   *  m_deltaTime * (m == Modifier::Shift ? m_sprintSpeed : m_normalSpeed), false); }});
+    m_keyboardInputSystem->AddWindowKeyCallback(*m_window, GLFW_KEY_W, Action::Hold, [&](Modifier m) { if (m_window->IsCursorLocked()) { m_camera->Translate(UnitForward *  m_deltaTime * (m == Modifier::Shift ? m_sprintSpeed : m_normalSpeed)); }});
+    m_keyboardInputSystem->AddWindowKeyCallback(*m_window, GLFW_KEY_S, Action::Hold, [&](Modifier m) { if (m_window->IsCursorLocked()) { m_camera->Translate(UnitForward * -m_deltaTime * (m == Modifier::Shift ? m_sprintSpeed : m_normalSpeed)); }});
+    m_keyboardInputSystem->AddWindowKeyCallback(*m_window, GLFW_KEY_Q, Action::Hold, [&](Modifier m) { if (m_window->IsCursorLocked()) { m_camera->Translate(UnitUp      * -m_deltaTime * (m == Modifier::Shift ? m_sprintSpeed : m_normalSpeed)); }});
+    m_keyboardInputSystem->AddWindowKeyCallback(*m_window, GLFW_KEY_E, Action::Hold, [&](Modifier m) { if (m_window->IsCursorLocked()) { m_camera->Translate(UnitUp      *  m_deltaTime * (m == Modifier::Shift ? m_sprintSpeed : m_normalSpeed)); }});
 
     m_mouseInputSystem->AddDragMouseCallback(m_window, [&](const DragData& dd)
     {
@@ -219,37 +212,40 @@ void Engine::InitLighting()
     whiteTransform.Translate(vec3(0., 30., 0));
     whiteEntity->SetLocalTransform(whiteTransform);
 
-    m_pointLightManager->Create(*redEntity, vec3(255, 0, 0));
-    m_pointLightManager->Create(*blueEntity, vec3(0, 255, 0));
-    m_pointLightManager->Create(*greenEntity, vec3(0, 0, 255));
-    m_pointLightManager->Create(*whiteEntity, vec3(255, 255, 255));
-
-    m_pointLightManager->AddPointLightUniformCallback(*redEntity, *m_shaderManager->GetMutable("pbr"),
-        [](Pipeline::ShaderUniformCallback& shaderUniformCallback, Pipeline::Shader& shader)
+    PointLight* redLight = redEntity->AddComponentOfType<PointLight>();
+    redLight->SetColour(vec3(255, 0, 0));
+    redLight->AddUniformCallback(*m_shaderManager->GetMutable("pbr"),
+    [](Pipeline::ShaderUniformCallback& shaderUniformCallback, Pipeline::Shader& shader)
     {
         auto light = static_cast<const PointLight*>(&shaderUniformCallback);
         shader.Set3f("lightPositions[0]", light->GetEntity().GetLocalTransform().GetTranslation());
         shader.Set3f("lightColours[0]", light->GetColour());
     });
 
-    m_pointLightManager->AddPointLightUniformCallback(*blueEntity, *m_shaderManager->GetMutable("pbr"),
-        [](Pipeline::ShaderUniformCallback& shaderUniformCallback, Pipeline::Shader& shader)
+    PointLight* blueLight = blueEntity->AddComponentOfType<PointLight>();
+    blueLight->SetColour(vec3(0, 255, 0));
+    blueLight->AddUniformCallback(*m_shaderManager->GetMutable("pbr"),
+    [](Pipeline::ShaderUniformCallback& shaderUniformCallback, Pipeline::Shader& shader)
     {
         auto light = static_cast<const PointLight*>(&shaderUniformCallback);
         shader.Set3f("lightPositions[1]", light->GetEntity().GetLocalTransform().GetTranslation());
         shader.Set3f("lightColours[1]", light->GetColour());
     });
 
-    m_pointLightManager->AddPointLightUniformCallback(*greenEntity, *m_shaderManager->GetMutable("pbr"),
-        [](Pipeline::ShaderUniformCallback& shaderUniformCallback, Pipeline::Shader& shader)
+    PointLight* greenLight = greenEntity->AddComponentOfType<PointLight>();
+    greenLight->SetColour(vec3(0, 0, 255));
+    greenLight->AddUniformCallback(*m_shaderManager->GetMutable("pbr"),
+    [](Pipeline::ShaderUniformCallback& shaderUniformCallback, Pipeline::Shader& shader)
     {
         auto light = static_cast<const PointLight*>(&shaderUniformCallback);
         shader.Set3f("lightPositions[2]", light->GetEntity().GetLocalTransform().GetTranslation());
         shader.Set3f("lightColours[2]", light->GetColour());
     });
 
-    m_pointLightManager->AddPointLightUniformCallback(*whiteEntity, *m_shaderManager->GetMutable("pbr"),
-        [](Pipeline::ShaderUniformCallback& shaderUniformCallback, Pipeline::Shader& shader)
+    PointLight* whiteLight = whiteEntity->AddComponentOfType<PointLight>();
+    whiteLight->SetColour(vec3(255, 255, 255));
+    whiteLight->AddUniformCallback(*m_shaderManager->GetMutable("pbr"),
+    [](Pipeline::ShaderUniformCallback& shaderUniformCallback, Pipeline::Shader& shader)
     {
         auto light = static_cast<const PointLight*>(&shaderUniformCallback);
         shader.Set3f("lightPositions[3]", light->GetEntity().GetLocalTransform().GetTranslation());
@@ -264,6 +260,12 @@ void Engine::InitLighting()
 
 void Engine::InitScene()
 {
+    // Sponza model doesn't have AO textures, add default AO texture
+    // Use completely black texture to disable IBL lighting
+    m_textureManager->Load("defaultAO", "assets/textures/defaultAO.png");
+    m_textureManager->Load("white", "assets/textures/white.png");
+    m_textureManager->Load("black", "assets/textures/black.png");
+
     Entity* sponzaEntity = new Entity(m_rootEntity);
     sponzaEntity->SetName("sponza");
     Transform sponzaTransform;
@@ -271,49 +273,36 @@ void Engine::InitScene()
     sponzaTransform.Scale(vec3(0.25f, 0.25f, 0.25f));
     sponzaEntity->SetLocalTransform(sponzaTransform);
 
-    // Only set shaders and unform callback for sponza model 
-    if (const Model* model = m_modelManager->Load(*sponzaEntity, "assets/models/Sponza/sponza.obj"))
+    Model* model = sponzaEntity->AddComponentOfType<Model>();
+    model->Load("assets/models/Sponza/sponza.obj", m_renderer, m_materialManager);
+    model->AddUniformCallback(*m_shaderManager->GetMutable("pbr"), [capturedCamera = m_camera](Pipeline::ShaderUniformCallback& shaderUniformCallback, Pipeline::Shader& shader)
     {
-        // Sponza model doesn't have AO textures, add default AO texture
-        // Use completely black texture to disable IBL lighting
-        m_textureManager->Load("defaultAO", "assets/textures/defaultAO.png");
-        m_textureManager->Load("white", "assets/textures/white.png");
-        m_textureManager->Load("black", "assets/textures/black.png");
+        shader.SetMat4fv("projection",  capturedCamera->GetPerspective().GetMatrix());
+        shader.SetMat4fv("view",        capturedCamera->GetView());
+        shader.Set3f("viewPos",         capturedCamera->GetTranslation());
 
-        // Set uniform callback to update each models MVP before it's rendered
-        m_modelManager->AddModelUniformCallback(*sponzaEntity, *m_shaderManager->GetMutable("pbr"), [capturedCamera = m_camera](Pipeline::ShaderUniformCallback& shaderUniformCallback, Pipeline::Shader& shader)
+        auto model = static_cast<const Model*>(&shaderUniformCallback);
+        shader.SetMat4fv("model",       model->GetEntity().GetWorldTransform().GetMatrix());
+    });
+
+    for (auto& mesh : model->GetMeshes())
+    {
+        // Can set uniform callback for meshes if required
+        // mesh->AddUniformCallback(*m_shaderManager->GetMutable("example"), [](const Pipeline::ShaderUniformCallback& shaderUniformCallback, const Pipeline::Shader& shader) {});
+
+        auto materialFileName = mesh->GetFileMaterialName();
+        if (materialFileName != "")
         {
-            shader.SetMat4fv("projection",  capturedCamera->GetPerspective().GetMatrix());
-            shader.SetMat4fv("view",        capturedCamera->GetView());
-            shader.Set3f("viewPos",         capturedCamera->GetTranslation());
-
-            auto model = static_cast<const Model*>(&shaderUniformCallback);
-            shader.SetMat4fv("model",       model->GetEntity().GetWorldTransform().GetMatrix());
-        });
-
-        for (int i = 0; i < model->GetMeshes().size(); ++i)
-        {
-            auto& mesh = model->GetMeshes()[i];
-
-            // Can set uniform callback for meshes if required
-            //mesh->AddUniformCallback(*m_shaderManager->Get("example"), [](const Pipeline::ShaderUniformCallback& shaderUniformCallback, const Pipeline::Shader& shader) {});
-
-            auto materialFileName = mesh->GetFileMaterialName();
-            mesh->SetMaterial(m_materialManager->GetMutable(materialFileName));
-
-            if (materialFileName != "")
+            m_materialManager->SetMaterialTexture(materialFileName, "defaultAO", TextureType::Bump);
+            m_materialManager->AddMaterialUniformCallback(materialFileName, *m_shaderManager->GetMutable("pbr"), [](Pipeline::ShaderUniformCallback& shaderUniformCallback, Pipeline::Shader& shader)
             {
-                m_materialManager->SetMaterialTexture(materialFileName, "defaultAO", TextureType::Bump);
-                m_materialManager->AddMaterialUniformCallback(materialFileName, *m_shaderManager->GetMutable("pbr"), [](Pipeline::ShaderUniformCallback& shaderUniformCallback, Pipeline::Shader& shader)
-                {
-                    // Sponza asset has material properties set in the wrong channels
-                    shader.Set1i("albedoMap",       Material::GetTextureSlotForTextureType(TextureType::Diffuse));
-                    shader.Set1i("normalMap",       Material::GetTextureSlotForTextureType(TextureType::Highlight));
-                    shader.Set1i("metallicMap",     Material::GetTextureSlotForTextureType(TextureType::Ambient));
-                    shader.Set1i("roughnessMap",    Material::GetTextureSlotForTextureType(TextureType::Specular));
-                    shader.Set1i("aoMap",           Material::GetTextureSlotForTextureType(TextureType::Bump));
-                });
-            }
+                // Sponza asset has material properties set in the wrong channels
+                shader.Set1i("albedoMap",       Material::GetTextureSlotForTextureType(TextureType::Diffuse));
+                shader.Set1i("normalMap",       Material::GetTextureSlotForTextureType(TextureType::Highlight));
+                shader.Set1i("metallicMap",     Material::GetTextureSlotForTextureType(TextureType::Ambient));
+                shader.Set1i("roughnessMap",    Material::GetTextureSlotForTextureType(TextureType::Specular));
+                shader.Set1i("aoMap",           Material::GetTextureSlotForTextureType(TextureType::Bump));
+            });
         }
     }
 }

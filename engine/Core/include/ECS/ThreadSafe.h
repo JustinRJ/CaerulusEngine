@@ -1,6 +1,6 @@
 #pragma once
 
-#define __THREAD_SAFE SAFE
+#define __THREAD_SAFE UNSAFE
 
 #define SAFE  1
 #define UNSAFE 2

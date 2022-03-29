@@ -11,10 +11,6 @@ namespace Graphics
         {
         public:
             PointLightManager() = default;
-
-            const Lighting::PointLight* Create(Core::ECS::Entity& entity, const Core::Math::vec3& colour);
-
-            void AddPointLightUniformCallback(Core::ECS::Entity& entity, Pipeline::Shader& shader, std::function<void(Pipeline::ShaderUniformCallback&, Pipeline::Shader& shader)> uniformCallback);
         };
     }
 }

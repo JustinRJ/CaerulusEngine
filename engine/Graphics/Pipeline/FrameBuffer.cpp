@@ -8,8 +8,6 @@ namespace Graphics
 {
     namespace Pipeline
     {
-        GLuint FrameBuffer::m_boundHandle = 0;
-
         FrameBuffer::~FrameBuffer()
         {
             DeleteBuffers();
@@ -149,21 +147,16 @@ namespace Graphics
             if (m_msaa == 0)
             {
                 glBindFramebuffer(GL_FRAMEBUFFER, m_fboId);
-                m_boundHandle = m_fboId;
             }
             else
             {
                 glBindFramebuffer(GL_FRAMEBUFFER, m_fboMsaaId);
-                m_boundHandle = m_fboMsaaId;
             }
         }
 
         void FrameBuffer::Unbind()
         {
-            if (m_boundHandle != 0)
-            {
-                glBindFramebuffer(GL_FRAMEBUFFER, 0);
-            }
+            glBindFramebuffer(GL_FRAMEBUFFER, 0);
         }
 
         void FrameBuffer::Update()

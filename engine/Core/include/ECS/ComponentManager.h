@@ -1,7 +1,7 @@
 #pragma once
 
-#include "ECS/Component.h"
 #include "ECS/Manager.h"
+#include "ECS/Component.h"
 
 namespace Core
 {
@@ -11,45 +11,37 @@ namespace Core
         class ComponentManager : public Manager<ECS::Entity*, R>
         {
         public:
-            ComponentManager() = default;
-            virtual ~ComponentManager() = default;
-
-            void Insert(ECS::Entity* entity, std::unique_ptr<R>&& value) override
+            ComponentManager()
             {
-                if (entity && value)
+                ComponentManagerData data;
+                data.ManagedTypeHash = Manager<ECS::Entity*, R>::GetManagedTypeHash();
+                data.AddComponent = [&](Entity& e)
                 {
-                    assert(dynamic_cast<ECS::Component*>(value.get()));
-
-                    ComponentData data;
-                    data.Component = value.get();
-                    data.ComponentHash = GetManagedObjectHash();
-                    data.RemoveComponent = [&](Entity& e)
+                    auto newComponent = std::make_unique<R>(e);
+                    auto returnNewComponent = newComponent.get();
+                    Insert(&e, std::move(newComponent));
+                    return returnNewComponent;
+                };
+                data.RemoveComponent = [&](Entity& e)
+                {
+                    auto& map = Manager<ECS::Entity*, R>::GetMap();
+                    auto it = map.find(&e);
+                    if (it != std::end(map))
                     {
-                        auto& map = Manager<ECS::Entity*, R>::GetMap();
-                        auto it = map.find(&e);
-                        if (it != std::end(map))
-                        {
-                            it->second->OnDestroy();
-                            map.erase(it);
-                        }
-                    };
+                        auto& component = it->second;
+                        component->OnDestroy();
+                        map.erase(it);
+                    }
+                };
 
-                    entity->AddComponent(data);
-
-                    R* onAwakeAfterInsert = value.get();
-                    Manager<ECS::Entity*, R>::Insert(entity, std::move(value));
-                    onAwakeAfterInsert->OnAwake();
-                }
+                Entity::RegisterComponentManager(data);
             }
+
+            virtual ~ComponentManager() = default;
 
             void Remove(ECS::Entity* key) override
             {
                 key->RemoveComponentOfType<R>();
-            }
-
-            size_t GetManagedObjectHash() const
-            {
-                return typeid(R).hash_code();
             }
 
             void EarlyUpdate()
@@ -57,7 +49,11 @@ namespace Core
                 const auto& map = Manager<ECS::Entity*, R>::GetMap();
                 for (auto it = std::begin(map); it != std::end(map); it++)
                 {
-                    it->second->EarlyUpdate();
+                    auto& component = it->second;
+                    if (component->IsEnabled())
+                    {
+                        component->EarlyUpdate();
+                    }
                 }
             }
 
@@ -66,7 +62,11 @@ namespace Core
                 const auto& map = Manager<ECS::Entity*, R>::GetMap();
                 for (auto it = std::begin(map); it != std::end(map); it++)
                 {
-                    it->second->Update(deltaTime);
+                    auto& component = it->second;
+                    if (component->IsEnabled())
+                    {
+                        component->Update(deltaTime);
+                    }
                 }
             }
 
@@ -75,7 +75,11 @@ namespace Core
                 const auto& map = Manager<ECS::Entity*, R>::GetMap();
                 for (auto it = std::begin(map); it != std::end(map); it++)
                 {
-                    it->second->FixedUpdate(fixedTime);
+                    auto& component = it->second;
+                    if (component->IsEnabled())
+                    {
+                        component->FixedUpdate(fixedTime);
+                    }
                 }
             }
 
@@ -84,7 +88,11 @@ namespace Core
                 const auto& map = Manager<ECS::Entity*, R>::GetMap();
                 for (auto it = std::begin(map); it != std::end(map); it++)
                 {
-                    it->second->LateUpdate();
+                    auto& component = it->second;
+                    if (component->IsEnabled())
+                    {
+                        component->LateUpdate();
+                    }
                 }
             }
 
@@ -93,7 +101,21 @@ namespace Core
                 const auto& map = Manager<ECS::Entity*, R>::GetMap();
                 for (auto it = std::begin(map); it != std::end(map); it++)
                 {
-                    it->second->Reset();
+                    auto& component = it->second;
+                    component->Reset();
+                }
+            }
+
+        private:
+            void Insert(ECS::Entity* entity, std::unique_ptr<R>&& value) override
+            {
+                if (entity && value)
+                {
+                    assert(dynamic_cast<ECS::Component*>(value.get()));
+
+                    R* onAwakeAfterInsert = value.get();
+                    Manager<ECS::Entity*, R>::Insert(entity, std::move(value));
+                    onAwakeAfterInsert->OnAwake();
                 }
             }
         };

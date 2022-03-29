@@ -6,20 +6,28 @@
 #include <string>
 #include <algorithm>
 
-#include "Logging/Log.h"
-#include "Interface/NonCopyable.h"
+#include "ECS/IManager.h"
 #include "ECS/ThreadSafe.h"
+#include "Logging/Log.h"
 
 namespace Core
 {
     namespace ECS
     {
         template <class T, class R>
-        class Manager : Interface::NonCopyable
+        class Manager : public IManager
         {
         public:
-            Manager() = default;
+            Manager() :
+                m_typeHash(typeid(R).hash_code())
+            {}
+
             virtual ~Manager() = default;
+
+            size_t GetManagedTypeHash() const override
+            {
+                return m_typeHash;
+            }
 
             virtual void Insert(T key, std::unique_ptr<R>&& value)
             {
@@ -81,12 +89,13 @@ namespace Core
             }
 
         protected:
-
             std::map<T, std::unique_ptr<R>>& GetMap()
             {
                 return m_managedMap;
             }
 
+        private:
+            size_t m_typeHash;
             std::map<T, std::unique_ptr<R>> m_managedMap;
         };
     }

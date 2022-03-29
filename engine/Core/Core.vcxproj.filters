@@ -167,5 +167,14 @@
     <ClInclude Include="include\ECS\Manager.h">
       <Filter>include\ECS</Filter>
     </ClInclude>
+    <ClInclude Include="include\ECS\ComponentManagerFactory.h">
+      <Filter>include\ECS</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ECS\IManager.h">
+      <Filter>include\ECS</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ECS\AssetManagerFactory.h">
+      <Filter>include\ECS</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

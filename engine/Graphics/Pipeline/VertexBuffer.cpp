@@ -6,8 +6,6 @@ namespace Graphics
 {
     namespace Pipeline
     {
-        GLuint VertexBuffer::m_boundHandle = 0;
-
         VertexBuffer::VertexBuffer(const void* data, size_t size) :
             m_size(size)
         {
@@ -23,20 +21,12 @@ namespace Graphics
 
         void VertexBuffer::Bind()
         {
-            if (m_boundHandle != m_handle)
-            {
-                glBindBuffer(GL_ARRAY_BUFFER, m_handle);
-                m_boundHandle = m_handle;
-            }
+            glBindBuffer(GL_ARRAY_BUFFER, m_handle);
         }
 
         void VertexBuffer::Unbind()
         {
-            if (m_boundHandle != 0)
-            {
-                glBindBuffer(GL_ARRAY_BUFFER, 0);
-                m_boundHandle = 0;
-            }
+            glBindBuffer(GL_ARRAY_BUFFER, 0);
         }
 
         GLuint VertexBuffer::GetHandle() const

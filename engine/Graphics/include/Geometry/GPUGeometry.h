@@ -76,6 +76,8 @@ namespace Graphics
             Pipeline::VertexBuffer m_vertexBuffer;
             Pipeline::IndexBuffer m_indexBuffer;
             Surface::Material* m_material;
+
+            // TODO - make this static so every piece of geometry uses the same render instance, don't have to set it in Model
             Rendering::IRenderer* m_renderer;
         };
     }

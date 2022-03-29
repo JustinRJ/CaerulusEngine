@@ -112,6 +112,7 @@
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)Engine\;$(SolutionDir)Engine\include\;$(SolutionDir)Core\include\;$(SolutionDir)Graphics\include\;$(SolutionDir)..\dependencies\glew-2.1.0\include\;$(SolutionDir)..\dependencies\glfw-3.2.1\include\;$(SolutionDir)..\dependencies\glm-0.9.9.0\include\</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4251</DisableSpecificWarnings>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -149,6 +150,7 @@ echo DA | xcopy "$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(Plat
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)Engine\;$(SolutionDir)Engine\include\;$(SolutionDir)Core\include\;$(SolutionDir)Graphics\include\;$(SolutionDir)..\dependencies\glew-2.1.0\include\;$(SolutionDir)..\dependencies\glfw-3.2.1\include\;$(SolutionDir)..\dependencies\glm-0.9.9.0\include\</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4251</DisableSpecificWarnings>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -188,6 +190,7 @@ echo DA | xcopy "$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(Plat
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)Engine\;$(SolutionDir)Engine\include\;$(SolutionDir)Core\include\;$(SolutionDir)Graphics\include\;$(SolutionDir)..\dependencies\glew-2.1.0\include\;$(SolutionDir)..\dependencies\glfw-3.2.1\include\;$(SolutionDir)..\dependencies\glm-0.9.9.0\include\</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4251</DisableSpecificWarnings>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -229,6 +232,7 @@ echo DA | xcopy "$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(Plat
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)Engine\;$(SolutionDir)Engine\include\;$(SolutionDir)Core\include\;$(SolutionDir)Graphics\include\;$(SolutionDir)..\dependencies\glew-2.1.0\include\;$(SolutionDir)..\dependencies\glfw-3.2.1\include\;$(SolutionDir)..\dependencies\glm-0.9.9.0\include\</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4251</DisableSpecificWarnings>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

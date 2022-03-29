@@ -60,7 +60,7 @@ namespace Graphics
             GLuint m_fboId = 0;               // secondary id for frame buffer object
             GLuint m_texId = 0;               // id for texture object (color buffer)
             GLuint m_rboId = 0;               // id for render buffer object (depth buffer)
-            static GLuint m_boundHandle;
+
             std::string m_errorMessage = "";
         };
     }

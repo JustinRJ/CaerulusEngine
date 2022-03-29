@@ -1,6 +1,7 @@
 #pragma once
 
 #include "ECS/Component.h"
+#include "Geometry/Mesh.h"
 #include "Pipeline/ShaderUniformCallback.h"
 
 namespace Graphics
@@ -16,7 +17,12 @@ namespace Graphics
     }
     namespace Rendering
     {
-        class GLRenderer;
+        class IRenderer;
+    }
+
+    namespace AssetManagers
+    {
+        class MaterialManager;
     }
 
     namespace Geometry
@@ -26,7 +32,9 @@ namespace Graphics
         class CAERULUS_GRAPHICS Model : public Core::ECS::Component, public Pipeline::ShaderUniformCallback
         {
         public:
-            Model(Core::ECS::Entity& entity, const std::string& path);
+            Model(Core::ECS::Entity& entity);
+
+            void Load(const std::string& modelPath, Rendering::IRenderer* renderer, AssetManagers::MaterialManager* materialManager = nullptr, const std::string& materialPath = "");
 
             bool IsLoaded() const;
 
@@ -39,7 +47,7 @@ namespace Graphics
             void CalculateTangentAndBiTangent(std::vector<std::vector<Geometry::Vertex>>& vertices);
 
             bool m_isLoaded;
-            const std::string m_path;
+            std::string m_path;
             std::vector<std::unique_ptr<Mesh>> m_meshes;
         };
     }

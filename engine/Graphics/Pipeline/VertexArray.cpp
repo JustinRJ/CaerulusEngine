@@ -6,8 +6,6 @@ namespace Graphics
 {
     namespace Pipeline
     {
-        unsigned int VertexArray::m_boundHandle = 0;
-
         VertexArray::VertexArray()
         {
             glGenVertexArrays(1, &m_handle);
@@ -36,20 +34,12 @@ namespace Graphics
 
         void VertexArray::Bind()
         {
-            if (m_boundHandle != m_handle)
-            {
-                glBindVertexArray(m_handle);
-                m_boundHandle = m_handle;
-            }
+            glBindVertexArray(m_handle);
         }
 
         void VertexArray::Unbind()
         {
-            if (m_boundHandle != 0)
-            {
-                glBindVertexArray(0);
-                m_boundHandle = 0;
-            }
+            glBindVertexArray(0);
         }
 
         GLuint VertexArray::GetHandle() const

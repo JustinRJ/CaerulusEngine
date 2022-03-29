@@ -39,8 +39,7 @@ namespace Graphics
             int GetUniformLocation(const std::string& name);
 
             GLuint m_handle;
-            static GLuint m_boundHandle;
-            bool m_isLinked = false;
+            bool m_isLinked;
             const std::string m_vertex;
             const std::string m_fragment;
             std::unordered_map<std::string, int> m_uniformLocationCache;

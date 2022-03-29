@@ -15,9 +15,6 @@ namespace Graphics
 {
     namespace Surface
     {
-        GLuint Texture::m_boundHandle;
-        GLuint Texture::m_boundSlot;
-
         Texture::Texture(const std::string& path, bool isHDR) :
             m_path(path),
             m_width(0),
@@ -59,6 +56,10 @@ namespace Graphics
                 else if (m_BPP == 4)
                 {
                     format = GL_RGBA;
+                }
+                else
+                {
+                    LogError("Unsupported texture format!");
                 }
 
                 glTexImage2D(GL_TEXTURE_2D, 0, format, m_width, m_height, 0, format, GL_UNSIGNED_BYTE, data);
@@ -111,27 +112,13 @@ namespace Graphics
 
         void Texture::Bind(GLuint slot) const
         {
-            GLuint slotToBind = GL_TEXTURE0 + slot;
-            if (m_boundSlot != slotToBind)
-            {
-                glActiveTexture(slotToBind);
-                m_boundSlot = slotToBind;
-            }
-
-            if (m_boundHandle != m_handle)
-            {
-                glBindTexture(GL_TEXTURE_2D, m_handle);
-                m_boundHandle = m_handle;
-            }
+            glActiveTexture(GL_TEXTURE0 + slot);
+            glBindTexture(GL_TEXTURE_2D, m_handle);
         }
 
         void Texture::Unbind()
         {
-            if (m_boundHandle != 0)
-            {
-                glBindTexture(GL_TEXTURE_2D, 0);
-                m_boundHandle = 0;
-            }
+            glBindTexture(GL_TEXTURE_2D, 0);
         }
 
         void Texture::ComputeMipmap()

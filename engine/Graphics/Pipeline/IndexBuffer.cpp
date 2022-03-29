@@ -6,8 +6,6 @@ namespace Graphics
 {
     namespace Pipeline
     {
-        GLuint IndexBuffer::m_boundHandle = 0;
-
         IndexBuffer::IndexBuffer(const unsigned int* data, size_t count) :
             m_count(count)
         {
@@ -23,20 +21,12 @@ namespace Graphics
 
         void IndexBuffer::Bind()
         {
-            if (m_boundHandle != m_handle)
-            {
-                glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_handle);
-                m_boundHandle = m_handle;
-            }
+            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_handle);
         }
 
         void IndexBuffer::Unbind()
         {
-            if (m_boundHandle != 0)
-            {
-                glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-                m_boundHandle = 0;
-            }
+            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
         }
 
         GLuint IndexBuffer::GetHandle() const

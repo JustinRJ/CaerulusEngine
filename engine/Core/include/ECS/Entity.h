@@ -18,8 +18,14 @@ namespace Core
 
         struct ComponentData
         {
-            size_t ComponentHash = 0;
+            size_t ComponentTypeHash = 0;
             Component* Component = nullptr;
+        };
+
+        struct ComponentManagerData
+        {
+            size_t ManagedTypeHash = 0;
+            std::function<Component*(Entity&)> AddComponent = {};
             std::function<void(Entity&)> RemoveComponent = {};
         };
 
@@ -28,14 +34,14 @@ namespace Core
         class CAERULUS_CORE Entity : Interface::NonCopyable
         {
         public:
-            Entity(Entity* parent);
+            Entity(Entity* parent = nullptr);
             ~Entity();
 
             unsigned int GetID() const;
 
-            unsigned int GetEntityCount() const;
-
             Entity* GetParent() const;
+            void SetParent(Entity* parent);
+
             const std::vector<Entity*>& GetChildren() const;
 
             const std::string& GetName() const;
@@ -58,103 +64,69 @@ namespace Core
 
             void SwapID(Entity& e);
 
-            void AddComponent(const ComponentData& componentData);
+            static unsigned int GetEntityCount();
+            static void RegisterComponentManager(const ComponentManagerData& componentManager);
 
             template<class T>
 #ifdef THREAD_SAFE
-            const T* GetComponentOfType(size_t typeToFind = 0) const
+            const T* AddComponentOfType()
 #else
-            T* GetComponentOfType(size_t typeToFind = 0) const
+            T* AddComponentOfType()
 #endif
             {
-                if (typeToFind == 0)
-                {
-                    typeToFind = typeid(T).hash_code();
-                }
-
-                T* foundType = nullptr;
-                auto it = std::begin(m_components);
-                while (!foundType && it != std::end(m_components))
-                {
-                    if (typeToFind == it->ComponentHash)
-                    {
-                        foundType = static_cast<T*>(it->Component);
-                    }
-                    it++;
-                }
-                return foundType;
+                return static_cast<T*>(AddComponentOfTypeInner(typeid(T).hash_code()));
             }
 
             template<class T>
 #ifdef THREAD_SAFE
-            std::vector<const T*> GetComponentsOfType(size_t typeToFind = 0) const
-            {
-                std::vector<const T*> foundTypes;
+            const T* GetComponentOfType() const
 #else
-                std::vector<T*> GetComponentsOfType(size_t typeToFind = 0) const
-                {
-                    std::vector<T*> foundTypes;
+            T* GetComponentOfType() const
 #endif
-                if (typeToFind == 0)
-                {
-                    typeToFind = typeid(T).hash_code();
-                }
+            {
+                return static_cast<T*>(GetComponentOfTypeInner(typeid(T).hash_code()));
+            }
 
-                foundTypes.push_back(GetComponentOfType<T>(typeToFind));
-                for (Entity* child : m_children)
-                {
-                    auto childFoundTypes = child->GetComponentsOfType<T>(typeToFind);
-                    foundTypes.insert(std::end(foundTypes), std::begin(childFoundTypes), std::end(childFoundTypes));
-                }
-                return foundTypes;
+            // TODO - create std::vector<const T*> impl
+#ifndef THREAD_SAFE
+            template<class T>
+            std::vector<T*> AddComponentsOfType()
+            {
+                return AddComponentsOfTypeInner(typeid(T).hash_code());
             }
 
             template<class T>
-            void RemoveComponentOfType(size_t typeToFind = 0)
+            std::vector<T*> GetComponentsOfType() const
             {
-                if (typeToFind == 0)
-                {
-                    typeToFind = typeid(T).hash_code();
-                }
+                return GetComponentsOfTypeInner(typeid(T).hash_code());
+            }
+#endif
 
-                bool foundComponent = false;
-                auto it = std::begin(m_components);
-                while (!foundComponent && it != std::end(m_components))
-                {
-                    if (typeToFind == it->ComponentHash)
-                    {
-                        foundComponent = true;
-                    }
-                    else
-                    {
-                        it++;
-                    }
-                }
-                if (foundComponent)
-                {
-                    it->RemoveComponent(*this);
-                    m_components.erase(it);
-                }
+            template<class T>
+            void RemoveComponentOfType()
+            {
+                RemoveComponentOfTypeInner(typeid(T).hash_code());
             }
 
             template<class T>
-            void RemoveComponentsOfType(size_t typeToFind = 0)
+            void RemoveComponentsOfType()
             {
-                if (typeToFind == 0)
-                {
-                    typeToFind = typeid(T).hash_code();
-                }
-
-                RemoveComponentOfType<T>(typeToFind);
-                for (Entity* child : m_children)
-                {
-                    child->RemoveComponentsOfType<T>(typeToFind);
-                }
+                RemoveComponentsOfTypeInner(typeid(T).hash_code());
             }
 
         private:
+
+            Component* AddComponentOfTypeInner(size_t typeToAdd);
+            std::vector<Component*> AddComponentsOfTypeInner(size_t typeToAdd);
+
+            Component* GetComponentOfTypeInner(size_t typeToFind) const;
+            std::vector<Component*> GetComponentsOfTypeInner(size_t typeToFind) const;
+
+            void RemoveComponentOfTypeInner(size_t typeToRemove);
+            void RemoveComponentsOfTypeInner(size_t typeToRemove);
+
             bool m_enabled;
-            unsigned int m_ID;
+            unsigned int m_id;
             std::string m_name;
             EntityBitset m_layers;
             std::vector<std::string> m_tags;
@@ -164,6 +136,8 @@ namespace Core
 
             Math::Transform m_localTransform;
             std::vector<ComponentData> m_components;
+
+            static std::vector<ComponentManagerData> s_componentManagers;
 
             static unsigned int s_numEntities;
             static unsigned int s_maxDiscardedEntityIDs;

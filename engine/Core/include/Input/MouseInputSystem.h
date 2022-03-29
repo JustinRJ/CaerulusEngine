@@ -38,8 +38,8 @@ namespace Core
         class MouseInputSystem : public Interface::ITickable
         {
         public:
-            MouseInputSystem(Graphics::Window::GLWindow* window) :
-                m_window(window)
+            MouseInputSystem(Graphics::Window::GLWindow& window) :
+                m_window(&window)
             {
                 glfwSetInputMode(m_window->GetGLFWWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
             };
@@ -66,14 +66,18 @@ namespace Core
         private:
             void UpdateMouseDrag()
             {
-                double xpos, ypos;
-                glfwGetCursorPos(m_window->GetGLFWWindow(), &xpos, &ypos);
-                double deltaX = xpos - (m_window->GetActiveState().Width * 0.5);
-                double deltaY = ypos - (m_window->GetActiveState().Height * 0.5);
-
-                for (const DragBinding& dragBinding : m_dragBindingMap)
+                if (m_window)
                 {
-                    dragBinding.Callback({ xpos, ypos, deltaX, deltaY });
+                    double xpos, ypos;
+                    glfwGetCursorPos(m_window->GetGLFWWindow(), &xpos, &ypos);
+                    const auto& activeState = m_window->GetActiveState();
+                    double deltaX = xpos - (activeState.Width * 0.5);
+                    double deltaY = ypos - (activeState.Height * 0.5);
+
+                    for (const DragBinding& dragBinding : m_dragBindingMap)
+                    {
+                        dragBinding.Callback({ xpos, ypos, deltaX, deltaY });
+                    }
                 }
             }
 

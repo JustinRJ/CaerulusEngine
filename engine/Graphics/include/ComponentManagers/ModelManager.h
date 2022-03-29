@@ -12,21 +12,12 @@ namespace Graphics
 
     namespace ComponentManagers
     {
+        // TODO - use ModelInstance component class which has raw ptrs to meshes and materials so that can have different combos of mesh/material
+        //      - remove all component behaviour from current Model class and move to ModelInstance, Model should be stored within an AssetManager
         class CAERULUS_GRAPHICS ModelManager : public Core::ECS::ComponentManager<Geometry::Model>
         {
         public:
-            ModelManager(AssetManagers::MaterialManager& materialManager, Rendering::GLRenderer* renderer);
-
-            const Geometry::Model* Load(Core::ECS::Entity& entity, const std::string& modelPath, const std::string& materialPath = "");
-
-            AssetManagers::MaterialManager& GetMaterialManager();
-
-            void AddModelUniformCallback(Core::ECS::Entity& key, Pipeline::Shader& shader, std::function<void(Pipeline::ShaderUniformCallback&, Pipeline::Shader& shader)> uniformCallback);
-
-        private:
-            AssetManagers::MaterialManager& m_materialManager;
-
-            Rendering::GLRenderer* m_renderer;
+            ModelManager() = default;
         };
     }
 }

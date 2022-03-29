@@ -36,8 +36,6 @@ namespace Graphics
 
             const std::string m_path;
             GLuint m_handle;
-            static GLuint m_boundHandle;
-            static GLuint m_boundSlot;
 
             int m_width;
             int m_height;

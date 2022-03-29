@@ -4,9 +4,9 @@
 
 #include <tiny_obj_loader.h>
 
-#include "Geometry/Mesh.h"
 #include "Surface/Material.h"
-#include "Rendering/GLRenderer.h"
+#include "Rendering/IRenderer.h"
+#include "AssetManagers/MaterialManager.h"
 
 using namespace Core::Math;
 using namespace Graphics::Geometry;
@@ -28,12 +28,17 @@ namespace Graphics
     namespace Geometry
     {
         Model::Model(
-            Core::ECS::Entity& entity,
-            const std::string& path) :
+            Core::ECS::Entity& entity) :
             Core::ECS::Component(entity),
             m_isLoaded(false),
-            m_path(path)
+            m_path("")
         {
+        }
+
+        void Model::Load(const std::string& modelPath, Rendering::IRenderer* renderer, AssetManagers::MaterialManager* materialManager, const std::string& materialPath)
+        {
+            m_path = modelPath;
+
             std::vector<std::vector<Vertex>> vertices;
             std::vector<std::vector<GLuint>> indices;
             std::vector<std::string> materialNames;
@@ -46,6 +51,26 @@ namespace Graphics
                 std::unique_ptr<Mesh> newMesh =
                     std::make_unique<Mesh>(vertices.at(i), indices.at(i), materialNames.at(i));
                 m_meshes.push_back(std::move(newMesh));
+            }
+
+            if (materialManager)
+            {
+                std::string appendedMaterialPath(materialPath);
+                if (appendedMaterialPath == "")
+                {
+                    appendedMaterialPath = modelPath;
+                    appendedMaterialPath.erase(appendedMaterialPath.find_last_of('.'));
+                    appendedMaterialPath.append(".mtl");
+                }
+
+                materialManager->Load(appendedMaterialPath);
+                for (auto& mesh : GetMeshes())
+                {
+                    mesh->SetRenderer(renderer);
+
+                    auto materialFileName = mesh->GetFileMaterialName();
+                    mesh->SetMaterial(materialManager->GetMutable(materialFileName));
+                }
             }
 
             m_isLoaded = true;

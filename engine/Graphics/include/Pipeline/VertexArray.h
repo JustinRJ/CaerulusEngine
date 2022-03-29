@@ -25,7 +25,6 @@ namespace Graphics
 
         private:
             GLuint m_handle;
-            static GLuint m_boundHandle;
         };
     }
 }

@@ -84,6 +84,7 @@ private:
     float m_deltaTime = 0.0f;
     float m_fixedTime = 0.0f;
     float m_fpsLimit = 1.0f / 144.0f;
+
     float m_normalSpeed = 50.0f;
     float m_sprintSpeed = 100.0f;
     float m_mouseSensitivity = 50.0f;

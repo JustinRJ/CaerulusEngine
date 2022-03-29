@@ -11,13 +11,12 @@ namespace Graphics
 {
     namespace Pipeline
     {
-        GLuint Shader::m_boundHandle = 0;
-
         Shader::Shader(const AssetManagers::ShaderSourceManager& shaderSourceManager,
             const std::string& vertex, const std::string& fragment) :
             m_vertex(vertex),
             m_fragment(fragment),
-            m_shaderSourceManager(shaderSourceManager)
+            m_shaderSourceManager(shaderSourceManager),
+            m_isLinked(false)
         {
             const unsigned int LogSize = 512;
             // Shader Program Compilation
@@ -41,20 +40,12 @@ namespace Graphics
 
         void Shader::Bind()
         {
-            if (m_boundHandle != m_handle)
-            {
-                glUseProgram(m_handle);
-                m_boundHandle = m_handle;
-            }
+            glUseProgram(m_handle);
         }
 
         void Shader::Unbind()
         {
-            if (m_boundHandle != 0)
-            {
-                glUseProgram(0);
-                m_boundHandle = 0;
-            }
+            glUseProgram(0);
         }
 
         GLuint Shader::GetHandle() const
