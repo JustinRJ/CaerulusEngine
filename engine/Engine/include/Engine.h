@@ -15,6 +15,8 @@ namespace Core
     namespace ECS
     {
         class Entity;
+        class AssetManagerFactory;
+        class ComponentManagerFactory;
     }
     namespace Input
     {
@@ -51,12 +53,7 @@ namespace Graphics
         class MaterialManager;
         class ShaderSourceManager;
         class ShaderManager;
-    }
-
-    namespace ComponentManagers
-    {
         class ModelManager;
-        class PointLightManager;
     }
 }
 
@@ -92,11 +89,11 @@ private:
     Core::Time::FPSLimiter m_fpsLimiter;
     Core::Time::FixedTimer m_fixedTimer;
 
-    // TODO - create a CameraComponentManager
-    Core::Math::Camera* m_camera;
     Core::ECS::Entity* m_rootEntity;
+
     Graphics::Window::GLWindow* m_window;
     Graphics::Rendering::GLRenderer* m_renderer;
+    std::shared_ptr<Core::Math::Camera> m_camera;
 
     Graphics::GraphicsEngine* m_graphicsEngine;
     Core::Input::MouseInputSystem* m_mouseInputSystem;
@@ -106,9 +103,10 @@ private:
     Graphics::AssetManagers::MaterialManager* m_materialManager;
     Graphics::AssetManagers::ShaderSourceManager* m_shaderSrcManager;
     Graphics::AssetManagers::ShaderManager* m_shaderManager;
+    Graphics::AssetManagers::ModelManager* m_modelManager;
 
-    Graphics::ComponentManagers::ModelManager* m_modelManager;
-    Graphics::ComponentManagers::PointLightManager* m_pointLightManager;
+    Core::ECS::AssetManagerFactory* m_assetManagers;
+    Core::ECS::ComponentManagerFactory* m_componentManagers;
 
     std::vector<Core::Interface::ITickable*> m_tickable;
 };

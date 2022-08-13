@@ -16,6 +16,7 @@
 #include "Geometry/Plane.h"
 #include "Geometry/Mesh.h"
 #include "Geometry/Model.h"
+#include "Geometry/ModelInstance.h"
 
 #include "Surface/Material.h"
 
@@ -24,8 +25,7 @@
 #include "Lighting/PointLight.h"
 #include "Lighting/DirectionalLight.h"
 
-#include "ComponentManagers/ModelManager.h"
-#include "ComponentManagers/PointLightManager.h"
+#include "ECS/ComponentManagerFactory.h"
 
 namespace Graphics
 {
@@ -36,15 +36,13 @@ namespace Graphics
     using namespace Lighting;
     using namespace Rendering;
 
-    GraphicsEngine::GraphicsEngine(
-        ComponentManagers::ModelManager& modelManager,
-        ComponentManagers::PointLightManager& pointLightManager) :
+    GraphicsEngine::GraphicsEngine(Core::ECS::ComponentManagerFactory& componentManagers) :
         m_IBL(nullptr),
         m_window(nullptr),
         m_renderer(nullptr),
         m_framebuffer(*new Pipeline::FrameBuffer()),
-        m_modelManager(&modelManager),
-        m_pointLightManager(&pointLightManager)
+        m_modelManager(componentManagers.GetComponentManagerForType<ModelInstance>()),
+        m_pointLightManager(componentManagers.GetComponentManagerForType<PointLight>())
     {}
     
     void GraphicsEngine::EarlyTick()

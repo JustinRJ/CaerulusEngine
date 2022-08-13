@@ -18,8 +18,8 @@ struct std::hash<Vertex>
     {
         return
             ((hash<vec3>()(vertex.Position) ^
-            (hash<vec3>()(vertex.Normal) << 1)) >> 1) ^
-                (hash<vec2>()(vertex.TexCoord) << 1);
+             (hash<vec3>()(vertex.Normal) << 1)) >> 1) ^
+             (hash<vec2>()(vertex.TexCoord) << 1);
     }
 };
 
@@ -27,13 +27,10 @@ namespace Graphics
 {
     namespace Geometry
     {
-        Model::Model(
-            Core::ECS::Entity& entity) :
-            Core::ECS::Component(entity),
+        Model::Model() :
             m_isLoaded(false),
             m_path("")
-        {
-        }
+        {}
 
         void Model::Load(const std::string& modelPath, Rendering::IRenderer* renderer, AssetManagers::MaterialManager* materialManager, const std::string& materialPath)
         {
@@ -48,7 +45,7 @@ namespace Graphics
 
             for (unsigned int i = 0; i < vertices.size(); ++i)
             {
-                std::unique_ptr<Mesh> newMesh =
+                std::shared_ptr<Mesh> newMesh =
                     std::make_unique<Mesh>(vertices.at(i), indices.at(i), materialNames.at(i));
                 m_meshes.push_back(std::move(newMesh));
             }
@@ -64,34 +61,16 @@ namespace Graphics
                 }
 
                 materialManager->Load(appendedMaterialPath);
-                for (auto& mesh : GetMeshes())
+                for (auto& mesh : m_meshes)
                 {
                     mesh->SetRenderer(renderer);
 
                     auto materialFileName = mesh->GetFileMaterialName();
-                    mesh->SetMaterial(materialManager->GetMutable(materialFileName));
+                    mesh->SetFileMaterial(materialManager->Get(materialFileName));
                 }
             }
 
             m_isLoaded = true;
-        }
-
-        void Model::Update(float deltaTime)
-        {
-            InvokeUniformCallbacks();
-            for (const std::unique_ptr<Mesh>& mesh : GetMeshes())
-            {
-                if (mesh && mesh->GetRenderer())
-                {
-                    mesh->InvokeUniformCallbacks();
-                    if (Surface::Material* material = mesh->GetMaterial())
-                    {
-                        material->Bind();
-                        material->InvokeUniformCallbacks();
-                        mesh->Draw();
-                    }
-                }
-            }
         }
 
         void Model::LoadModel(std::vector<std::vector<Vertex>>& verticesOut, std::vector<std::vector<GLuint>>& indicesOut, std::vector<std::string>& materialNamesOut)
@@ -216,7 +195,7 @@ namespace Graphics
             }
         }
 
-        const std::vector<std::unique_ptr<Mesh>>& Model::GetMeshes() const
+        const std::vector<std::shared_ptr<Mesh>>& Model::GetMeshes() const
         {
             return m_meshes;
         }

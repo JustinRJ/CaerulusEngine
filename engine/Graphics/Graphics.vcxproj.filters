@@ -49,11 +49,8 @@
     <ClCompile Include="AssetManagers\TextureManager.cpp">
       <Filter>AssetManagers</Filter>
     </ClCompile>
-    <ClCompile Include="ComponentManagers\ModelManager.cpp">
-      <Filter>ComponentManagers</Filter>
-    </ClCompile>
-    <ClCompile Include="ComponentManagers\PointLightManager.cpp">
-      <Filter>ComponentManagers</Filter>
+    <ClCompile Include="AssetManagers\ModelManager.cpp">
+      <Filter>AssetManagers</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -148,11 +145,11 @@
     <ClInclude Include="include\AssetManagers\TextureManager.h">
       <Filter>include\AssetManagers</Filter>
     </ClInclude>
-    <ClInclude Include="include\ComponentManagers\ModelManager.h">
-      <Filter>include\ComponentManagers</Filter>
+    <ClInclude Include="include\AssetManagers\ModelManager.h">
+      <Filter>include\AssetManagers</Filter>
     </ClInclude>
-    <ClInclude Include="include\ComponentManagers\PointLightManager.h">
-      <Filter>include\ComponentManagers</Filter>
+    <ClInclude Include="include\Geometry\ModelInstance.h">
+      <Filter>include\Geometry</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -200,12 +197,6 @@
     </Filter>
     <Filter Include="AssetManagers">
       <UniqueIdentifier>{4e852032-ce2c-42b8-8c01-ffa32ca0039b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ComponentManagers">
-      <UniqueIdentifier>{d1ad2598-fdd2-43fd-8cbd-ce358a5df85c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="include\ComponentManagers">
-      <UniqueIdentifier>{1aa1eea1-0d77-4856-bbf8-0dd7eac32873}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

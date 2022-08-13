@@ -13,15 +13,15 @@ namespace Graphics
             m_shaderSourceManager(shaderSourceManager)
         {}
 
-        void ShaderManager::Load(const std::string& shaderSourceName, const std::string& vertexPath, const std::string& fragmentPath)
+        void ShaderManager::Load(const std::string& name, const std::string& vertexPath, const std::string& fragmentPath)
         {
-            if (Get(shaderSourceName))
+            if (Get(name))
             {
-                LogInDebug("Shader with name " + shaderSourceName + " already loaded");
+                LogInDebug("Shader with name " + name + " already loaded");
             }
             else
             {
-                LogMessage("Loading shader with name " + shaderSourceName + ":");
+                LogMessage("Loading shader with name " + name + ":");
                 m_shaderSourceManager.Load(vertexPath, Vertex);
                 m_shaderSourceManager.Load(fragmentPath, Fragment);
 
@@ -29,11 +29,11 @@ namespace Graphics
 
                 if (shader->IsLinked())
                 {
-                    Insert(shaderSourceName, std::move(shader));
+                    Insert(name, std::move(shader));
                 }
                 else
                 {
-                    LogInDebug("Failed to link shader source with name: " + shaderSourceName);
+                    LogInDebug("Failed to link shader source with name: " + name);
                 }
             }
         }

@@ -117,9 +117,9 @@ namespace Core
             }
         }
 
-        Component* Entity::AddComponentOfTypeInner(size_t typeToAdd)
+        std::shared_ptr<Component> Entity::AddComponentOfTypeInner(size_t typeToAdd)
         {
-            Component* component = GetComponentOfTypeInner(typeToAdd);
+            std::shared_ptr<Component> component = GetComponentOfTypeInner(typeToAdd);
             if (!component)
             {
                 bool addedComponent = false;
@@ -133,7 +133,7 @@ namespace Core
                         data.ComponentTypeHash = typeToAdd;
                         m_components.push_back(data);
                         addedComponent = true;
-                        component = data.Component;
+                        component = data.Component.lock();
                     }
                     componentManagerIt++;
                 }
@@ -141,9 +141,9 @@ namespace Core
             return component;
         }
 
-        std::vector<Component*> Entity::AddComponentsOfTypeInner(size_t typeToAdd)
+        std::vector<std::shared_ptr<Component>> Entity::AddComponentsOfTypeInner(size_t typeToAdd)
         {
-            std::vector<Component*> addedComponents;
+            std::vector<std::shared_ptr<Component>> addedComponents;
             addedComponents.push_back(AddComponentOfTypeInner(typeToAdd));
             for (Entity* child : m_children)
             {
@@ -161,7 +161,7 @@ namespace Core
 
                 for (ComponentData& componentData : m_components)
                 {
-                    componentData.Component->SetEnabled(enabled);
+                    componentData.Component.lock()->SetEnabled(enabled);
                 }
             }
 
@@ -213,24 +213,24 @@ namespace Core
             m_tags = tags;
         }
 
-        Component* Entity::GetComponentOfTypeInner(size_t typeToFind) const
+        std::shared_ptr<Component> Entity::GetComponentOfTypeInner(size_t typeToFind) const
         {
-            Component* foundType = nullptr;
+            std::shared_ptr<Component> foundType;
             auto it = std::begin(m_components);
             while (!foundType && it != std::end(m_components))
             {
                 if (typeToFind == it->ComponentTypeHash)
                 {
-                    foundType = it->Component;
+                    foundType = it->Component.lock();
                 }
                 it++;
             }
             return foundType;
         }
 
-        std::vector<Component*> Entity::GetComponentsOfTypeInner(size_t typeToFind = 0) const
+        std::vector<std::shared_ptr<Component>> Entity::GetComponentsOfTypeInner(size_t typeToFind = 0) const
         {
-            std::vector<Component*> foundTypes;
+            std::vector<std::shared_ptr<Component>> foundTypes;
             foundTypes.push_back(GetComponentOfTypeInner(typeToFind));
             for (Entity* child : m_children)
             {

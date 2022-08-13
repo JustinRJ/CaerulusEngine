@@ -15,6 +15,16 @@ namespace Core
                 m_translation(0.f, 0.f, 0.f)
             {}
 
+            Transform(const mat4& matrix)
+            {
+                auto d3 = vec3();
+                auto d4 = vec4();
+                auto q = quat();
+                Math::decompose(matrix, m_scale, q, m_translation, d3, d4);
+                // TODO - fix this
+                m_rotation = vec3(q.x, q.y, q.z);
+            }
+
             Transform(const vec3& scale, const vec3& rotation, const vec3& translation)
             {
                 m_scale = scale;

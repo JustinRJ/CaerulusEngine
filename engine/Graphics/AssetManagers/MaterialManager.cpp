@@ -15,15 +15,15 @@ namespace Graphics
             m_textureManager(textureManager)
         {}
 
-        void MaterialManager::Create(const std::string& materialName, const std::vector<std::string>& textureNames)
+        void MaterialManager::Create(const std::string& name, const std::vector<std::string>& textureNames)
         {
-            if (Get(materialName))
+            if (Get(name))
             {
-                LogInDebug("Material with name " + materialName + " already loaded or created");
+                LogInDebug("Material with name " + name + " already loaded or created");
             }
             else
             {
-                LogMessage("Creating material " + materialName);
+                LogMessage("Creating material " + name);
                 std::unique_ptr<Material> material = std::make_unique<Material>(m_textureManager, "");
 
                 for (unsigned int i = 0; i < textureNames.size(); ++i)
@@ -31,14 +31,14 @@ namespace Graphics
                     material->SetTexture(textureNames[i], static_cast<TextureType>(i));
                 }
 
-                Insert(materialName, std::move(material));
+                Insert(name, std::move(material));
             }
         }
 
-        void MaterialManager::Load(const std::string& materialPath)
+        void MaterialManager::Load(const std::string& path)
         {
             std::filebuf fb;
-            fb.open(materialPath.c_str(), std::ios::in);
+            fb.open(path.c_str(), std::ios::in);
             if (fb.is_open())
             {
                 std::istream is(&fb);
@@ -53,9 +53,9 @@ namespace Graphics
                     }
                     else
                     {
-                        LogMessage("Loading material " + name + " with path: " + materialPath);
+                        LogMessage("Loading material " + name + " with path: " + path);
 
-                        std::unique_ptr<Material> newMaterial = std::make_unique<Material>(m_textureManager, materialPath);
+                        std::unique_ptr<Material> newMaterial = std::make_unique<Material>(m_textureManager, path);
 
                         std::vector<std::string> textures;
                         for (const std::string& textureName : Material::GetTextureNamesFromFile(is, static_cast<TextureType>(i)))
@@ -63,7 +63,7 @@ namespace Graphics
                             if (textureName != "")
                             {
                                 // general path before material name
-                                std::string generalPath = materialPath;
+                                std::string generalPath = path;
                                 generalPath.erase(generalPath.rfind("/"));
                                 std::string newTextureName(textureName);
                                 newTextureName.erase(newTextureName.rfind("."));
@@ -88,22 +88,6 @@ namespace Graphics
         TextureManager& MaterialManager::GetTextureManager()
         {
             return m_textureManager;
-        }
-
-        void MaterialManager::SetMaterialTexture(const std::string& materialName, const std::string& textureName, Surface::TextureType type)
-        {
-            if (Material* material = GetMutable(materialName))
-            {
-                material->SetTexture(textureName, type);
-            }
-        }
-
-        void MaterialManager::AddMaterialUniformCallback(const std::string& materialName, Pipeline::Shader& shader, std::function<void(Pipeline::ShaderUniformCallback&, Pipeline::Shader& shader)> uniformCallback)
-        {
-            if (Material* material = GetMutable(materialName))
-            {
-                material->AddUniformCallback(shader, uniformCallback);
-            }
         }
     }
 }

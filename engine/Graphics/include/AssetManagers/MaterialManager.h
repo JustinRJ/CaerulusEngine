@@ -13,12 +13,9 @@ namespace Graphics
         public:
             MaterialManager(TextureManager& textureManager);
 
-            void Create(const std::string& materialName, const std::vector<std::string>& textureNames);
+            void Create(const std::string& name, const std::vector<std::string>& textureNames);
 
-            void Load(const std::string& materialPath);
-
-            void SetMaterialTexture(const std::string& materialName, const std::string& textureName, Surface::TextureType type);
-            void AddMaterialUniformCallback(const std::string& materialName, Pipeline::Shader& shader, std::function<void(Pipeline::ShaderUniformCallback&, Pipeline::Shader& shader)> uniformCallback);
+            void Load(const std::string& path);
 
             TextureManager& GetTextureManager();
 

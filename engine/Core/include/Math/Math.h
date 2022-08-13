@@ -6,6 +6,7 @@
 #include <gtc/type_ptr.hpp>
 #include <gtx/quaternion.hpp>
 #include <gtc/matrix_transform.hpp>
+#include <gtx/matrix_decompose.hpp>
 
 #include <vector>
 #include <stdint.h>

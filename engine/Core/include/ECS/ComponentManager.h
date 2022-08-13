@@ -13,14 +13,15 @@ namespace Core
         public:
             ComponentManager()
             {
+                StaticAssertComponentIsBase<R>();
+
                 ComponentManagerData data;
                 data.ManagedTypeHash = Manager<ECS::Entity*, R>::GetManagedTypeHash();
                 data.AddComponent = [&](Entity& e)
                 {
-                    auto newComponent = std::make_unique<R>(e);
-                    auto returnNewComponent = newComponent.get();
-                    Insert(&e, std::move(newComponent));
-                    return returnNewComponent;
+                    auto newComponent = std::make_shared<R>(e);
+                    Insert(&e, newComponent);
+                    return newComponent;
                 };
                 data.RemoveComponent = [&](Entity& e)
                 {
@@ -97,14 +98,12 @@ namespace Core
             }
 
         private:
-            void Insert(ECS::Entity* entity, std::unique_ptr<R>&& value) override
+            void Insert(ECS::Entity* entity, std::shared_ptr<R> value) override
             {
                 if (entity && value)
                 {
-                    assert(dynamic_cast<ECS::Component*>(value.get()));
-
                     R* onAwakeAfterInsert = value.get();
-                    Manager<ECS::Entity*, R>::Insert(entity, std::move(value));
+                    Manager<ECS::Entity*, R>::Insert(entity, value);
                     onAwakeAfterInsert->OnAwake();
                 }
             }

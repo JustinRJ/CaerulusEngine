@@ -22,7 +22,6 @@ namespace Graphics
             GPUGeometry(const void* vertData, size_t vertSize, const unsigned int* indexData, size_t indexCount) :
                 m_vertexBuffer(vertData, vertSize),
                 m_indexBuffer(indexData, indexCount),
-                m_material(nullptr),
                 m_renderer(nullptr)
             {}
 
@@ -41,16 +40,6 @@ namespace Graphics
             Pipeline::IndexBuffer& GetIndexBuffer()
             {
                 return m_indexBuffer;
-            }
-
-            Surface::Material* GetMaterial()
-            {
-                return m_material;
-            }
-
-            void SetMaterial(Surface::Material* material)
-            {
-                m_material = material;
             }
 
             Rendering::IRenderer* GetRenderer()
@@ -75,7 +64,6 @@ namespace Graphics
             Pipeline::VertexArray m_vertexArray;
             Pipeline::VertexBuffer m_vertexBuffer;
             Pipeline::IndexBuffer m_indexBuffer;
-            Surface::Material* m_material;
 
             // TODO - make this static so every piece of geometry uses the same render instance, don't have to set it in Model
             Rendering::IRenderer* m_renderer;

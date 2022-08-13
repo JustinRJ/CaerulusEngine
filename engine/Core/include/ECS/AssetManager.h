@@ -13,11 +13,11 @@ namespace Core
             AssetManager() = default;
             virtual ~AssetManager() = default;
 
-            void Insert(const std::string key, std::unique_ptr<R>&& value) override
+            void Insert(const std::string key, std::shared_ptr<R> value) override
             {
                 if (!key.empty())
                 {
-                    Manager<const std::string, R>::Insert(key, std::move(value));
+                    Manager<const std::string, R>::Insert(key, value);
                 }
             }
         };

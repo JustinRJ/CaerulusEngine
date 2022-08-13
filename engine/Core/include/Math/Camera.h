@@ -3,18 +3,19 @@
 #include "Transform.h"
 #include "Perspective.h"
 
+#include "ECS/Component.h"
+
 namespace Core
 {
     namespace Math
     {
-        class Camera
+        class Camera : public Core::ECS::Component
         {
         public:
-            Camera() = default;
-
-            Camera(const vec3& position, const vec3& forward, const vec3& up = UnitUp) :
-                m_view(lookAt(position, Math::normalize(position + forward), up)),
-                m_perspective(54.0f, 1.25f, 1.0f, 1000.0f)
+            Camera(Core::ECS::Entity& entity) :
+                Core::ECS::Component(entity),
+                m_view(1),
+                m_perspective()
             {}
 
             void Translate(const vec3& translation, bool translateY = true)
@@ -69,9 +70,9 @@ namespace Core
                 return m_view;
             }
 
-            mat4& GetView()
+            void SetView(const vec3& position, const vec3& forward, const vec3& up = UnitUp)
             {
-                return m_view;
+                m_view = lookAt(position, Math::normalize(position + forward), up);
             }
 
             const Perspective& GetPerspective() const

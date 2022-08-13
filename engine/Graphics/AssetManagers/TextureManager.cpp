@@ -12,24 +12,24 @@ namespace Graphics
 {
     namespace AssetManagers
     {
-        void TextureManager::Load(const std::string& textureName, const std::string& path)
+        void TextureManager::Load(const std::string& name, const std::string& path)
         {
-            if (Get(textureName))
+            if (Get(name))
             {
-                LogInDebug("Texture " + textureName + " already loaded with path: " + path);
+                LogInDebug("Texture " + name + " already loaded with path: " + path);
             }
             else
             {
-                LogMessage("Loading texture " + textureName + " with path: " + path);
+                LogMessage("Loading texture " + name + " with path: " + path);
                 std::unique_ptr<Texture> texture = std::make_unique<Texture>(path, Core::File::GetFileExtension(path) == "hdr");
 
                 if (texture->IsLoaded())
                 {
-                    Insert(textureName, std::move(texture));
+                    Insert(name, std::move(texture));
                 }
                 else
                 {
-                    LogInDebug("Failed to load " + textureName + " texture with path: " + path);
+                    LogInDebug("Failed to load " + name + " texture with path: " + path);
                 }
             }
         }

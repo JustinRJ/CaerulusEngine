@@ -9,25 +9,25 @@ namespace Graphics
 {
     namespace AssetManagers
     {
-        void ShaderSourceManager::Load(const std::string& shaderSourcePath, ShaderType type)
+        void ShaderSourceManager::Load(const std::string& path, ShaderType type)
         {
-            if (Get(shaderSourcePath))
+            if (Get(path))
             {
-                LogInDebug("\tShader stage already loaded with path: " + shaderSourcePath);
+                LogInDebug("\tShader stage already loaded with path: " + path);
             }
             else
             {
-                LogMessage("\tLoading shader stage with path: " + shaderSourcePath);
-                std::unique_ptr<ShaderSource> shaderSource = std::make_unique<ShaderSource>(type, shaderSourcePath);
+                LogMessage("\tLoading shader stage with path: " + path);
+                std::unique_ptr<ShaderSource> shaderSource = std::make_unique<ShaderSource>(type, path);
                 shaderSource->Load();
 
                 if (shaderSource->IsCompiled())
                 {
-                    Insert(shaderSourcePath, std::move(shaderSource));
+                    Insert(path, std::move(shaderSource));
                 }
                 else
                 {
-                    LogInDebug("Failed to compile shader source with path: " + shaderSourcePath);
+                    LogInDebug("Failed to compile shader source with path: " + path);
                 }
             }
         }

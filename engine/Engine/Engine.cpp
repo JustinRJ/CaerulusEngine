@@ -8,14 +8,16 @@
 #include "GraphicsEngine.h"
 #include "Window/GLWindow.h"
 #include "Lighting/IBL.h"
+#include "Lighting/PointLight.h"
 #include "Geometry/Mesh.h"
+#include "Geometry/Model.h"
+#include "Geometry/ModelInstance.h"
 
 #include "Input/MouseInputSystem.h"
 #include "Input/KeyboardInputSystem.h"
 
 #include "AssetManagers/MaterialManager.h"
-#include "ComponentManagers/ModelManager.h"
-#include "ComponentManagers/PointLightManager.h"
+#include "AssetManagers/ModelManager.h"
 
 using namespace Core::ECS;
 using namespace Core::Math;
@@ -32,30 +34,44 @@ using namespace Graphics::Pipeline;
 using namespace Graphics::Lighting;
 using namespace Graphics::Rendering;
 using namespace Graphics::AssetManagers;
-using namespace Graphics::ComponentManagers;
 
 Engine::Engine(int argc, char** argv) :
     m_argCount(argc),
     m_argValue(argv)
 {
-    m_camera                = new Camera(vec3(0, 0, 0), UnitForward, UnitUp);
-    m_window                = new GLWindow(m_camera, "Caerulus", 1280, 1024, 32, false);
-    m_renderer              = new GLRenderer();
-    m_keyboardInputSystem   = new KeyboardInputSystem(*m_window);
-    m_mouseInputSystem      = new MouseInputSystem(*m_window);
-    m_shaderSrcManager      = new ShaderSourceManager();
-    m_shaderManager         = new ShaderManager(*m_shaderSrcManager);
-    m_textureManager        = new TextureManager();
-    m_materialManager       = new MaterialManager(*m_textureManager);
-    m_modelManager          = new ModelManager();
-    m_pointLightManager     = new PointLightManager();
+    m_componentManagers = new Core::ECS::ComponentManagerFactory();
 
-    // TODO - populate this with all component managers then pass into individual pointlight / model component managers
-    Core::ECS::ComponentManagerFactory factory;
-    factory.CreateComponentManagerForType<Graphics::Geometry::Model>();
-    factory.CreateComponentManagerForType<Graphics::Lighting::PointLight>();
+    m_componentManagers->CreateComponentManagerForType<ModelInstance>();
+    m_componentManagers->CreateComponentManagerForType<PointLight>();
+    m_componentManagers->CreateComponentManagerForType<Camera>();
 
-    m_graphicsEngine = new GraphicsEngine(*m_modelManager, *m_pointLightManager);
+    Entity* camera = new Entity(nullptr);
+    m_camera = camera->AddComponentOfType<Camera>();
+    m_camera->SetView(vec3(0, 0, 0), UnitForward, UnitUp);
+    m_camera->GetPerspective().SetPerspective(54.0f, 1.25f, 1.0f, 1000.0f);
+
+    m_window = new GLWindow(m_camera.get(), "Caerulus", 1280, 1024, 32, false);
+    m_renderer = new GLRenderer();
+    m_keyboardInputSystem = new KeyboardInputSystem(*m_window);
+    m_mouseInputSystem = new MouseInputSystem(*m_window);
+
+    m_assetManagers = new Core::ECS::AssetManagerFactory();
+    m_assetManagers->AddAssetManagerForType(std::make_shared<ShaderSourceManager>());
+    m_shaderSrcManager = static_cast<ShaderSourceManager*>(m_assetManagers->GetAssetManagerForType<ShaderSource>());
+
+    m_assetManagers->AddAssetManagerForType(std::make_shared<ShaderManager>(*m_shaderSrcManager));
+    m_shaderManager = static_cast<ShaderManager*>(m_assetManagers->GetAssetManagerForType<Shader>());
+
+    m_assetManagers->AddAssetManagerForType(std::make_shared<TextureManager>());
+    m_textureManager = static_cast<TextureManager*>(m_assetManagers->GetAssetManagerForType<Texture>());
+
+    m_assetManagers->AddAssetManagerForType(std::make_shared<MaterialManager>(*m_textureManager));
+    m_materialManager = static_cast<MaterialManager*>(m_assetManagers->GetAssetManagerForType<Material>());
+
+    m_assetManagers->AddAssetManagerForType(std::make_shared<ModelManager>(*m_materialManager, m_renderer));
+    m_modelManager = static_cast<ModelManager*>(m_assetManagers->GetAssetManagerForType<Model>());
+
+    m_graphicsEngine = new GraphicsEngine(*m_componentManagers);
     m_graphicsEngine->SetWindow(m_window);
     m_graphicsEngine->SetRenderer(m_renderer);
 
@@ -172,16 +188,16 @@ void Engine::InitGLRenderer()
 
     m_textureManager->Load("city", "assets/textures/city_ref.hdr");
     Lighting::IBL* ibl = new IBL(*m_shaderManager, *m_textureManager,
-        iblShaders, "city", m_renderer, m_window, m_camera, &m_graphicsEngine->GetFrameBuffer());
+        iblShaders, "city", m_renderer, m_window, m_camera.get(), &m_graphicsEngine->GetFrameBuffer());
 
-    ibl->AddUniformCallback(*m_shaderManager->GetMutable("background"), [&](Pipeline::ShaderUniformCallback& shaderUniformCallback, Pipeline::Shader& shader)
+    ibl->AddUniformCallback(*m_shaderManager->Get("background"), [&](Pipeline::ShaderUniformCallback& shaderUniformCallback, Pipeline::Shader& shader)
     {
         shader.SetMat4fv("projection", m_camera->GetPerspective().GetMatrix());
         shader.SetMat4fv("view",       m_camera->GetView());
 
         m_graphicsEngine->GetIBL()->Draw();
     });
-    ibl->AddUniformCallback(*m_shaderManager->GetMutable("brdf"), [&](Pipeline::ShaderUniformCallback& shaderUniformCallback, Pipeline::Shader& shader)
+    ibl->AddUniformCallback(*m_shaderManager->Get("brdf"), [&](Pipeline::ShaderUniformCallback& shaderUniformCallback, Pipeline::Shader& shader)
     {
         m_window->Update();
     });
@@ -212,9 +228,9 @@ void Engine::InitLighting()
     whiteTransform.Translate(vec3(0., 30., 0));
     whiteEntity->SetLocalTransform(whiteTransform);
 
-    PointLight* redLight = redEntity->AddComponentOfType<PointLight>();
+    std::shared_ptr<PointLight> redLight = redEntity->AddComponentOfType<PointLight>();
     redLight->SetColour(vec3(255, 0, 0));
-    redLight->AddUniformCallback(*m_shaderManager->GetMutable("pbr"),
+    redLight->AddUniformCallback(*m_shaderManager->Get("pbr"),
     [](Pipeline::ShaderUniformCallback& shaderUniformCallback, Pipeline::Shader& shader)
     {
         auto light = static_cast<const PointLight*>(&shaderUniformCallback);
@@ -222,9 +238,9 @@ void Engine::InitLighting()
         shader.Set3f("lightColours[0]", light->GetColour());
     });
 
-    PointLight* blueLight = blueEntity->AddComponentOfType<PointLight>();
+    std::shared_ptr<PointLight> blueLight = blueEntity->AddComponentOfType<PointLight>();
     blueLight->SetColour(vec3(0, 255, 0));
-    blueLight->AddUniformCallback(*m_shaderManager->GetMutable("pbr"),
+    blueLight->AddUniformCallback(*m_shaderManager->Get("pbr"),
     [](Pipeline::ShaderUniformCallback& shaderUniformCallback, Pipeline::Shader& shader)
     {
         auto light = static_cast<const PointLight*>(&shaderUniformCallback);
@@ -232,9 +248,9 @@ void Engine::InitLighting()
         shader.Set3f("lightColours[1]", light->GetColour());
     });
 
-    PointLight* greenLight = greenEntity->AddComponentOfType<PointLight>();
+    std::shared_ptr<PointLight> greenLight = greenEntity->AddComponentOfType<PointLight>();
     greenLight->SetColour(vec3(0, 0, 255));
-    greenLight->AddUniformCallback(*m_shaderManager->GetMutable("pbr"),
+    greenLight->AddUniformCallback(*m_shaderManager->Get("pbr"),
     [](Pipeline::ShaderUniformCallback& shaderUniformCallback, Pipeline::Shader& shader)
     {
         auto light = static_cast<const PointLight*>(&shaderUniformCallback);
@@ -242,9 +258,9 @@ void Engine::InitLighting()
         shader.Set3f("lightColours[2]", light->GetColour());
     });
 
-    PointLight* whiteLight = whiteEntity->AddComponentOfType<PointLight>();
+    std::shared_ptr<PointLight> whiteLight = whiteEntity->AddComponentOfType<PointLight>();
     whiteLight->SetColour(vec3(255, 255, 255));
-    whiteLight->AddUniformCallback(*m_shaderManager->GetMutable("pbr"),
+    whiteLight->AddUniformCallback(*m_shaderManager->Get("pbr"),
     [](Pipeline::ShaderUniformCallback& shaderUniformCallback, Pipeline::Shader& shader)
     {
         auto light = static_cast<const PointLight*>(&shaderUniformCallback);
@@ -273,19 +289,21 @@ void Engine::InitScene()
     sponzaTransform.Scale(vec3(0.25f, 0.25f, 0.25f));
     sponzaEntity->SetLocalTransform(sponzaTransform);
 
-    Model* model = sponzaEntity->AddComponentOfType<Model>();
-    model->Load("assets/models/Sponza/sponza.obj", m_renderer, m_materialManager);
-    model->AddUniformCallback(*m_shaderManager->GetMutable("pbr"), [capturedCamera = m_camera](Pipeline::ShaderUniformCallback& shaderUniformCallback, Pipeline::Shader& shader)
+    std::shared_ptr<ModelInstance> sponza = sponzaEntity->AddComponentOfType<ModelInstance>();
+    m_modelManager->Load("sponza", "assets/models/Sponza/sponza.obj");
+    sponza->Model = m_modelManager->Get("sponza").get();
+
+    sponza->AddUniformCallback(*m_shaderManager->Get("pbr"), [capturedCamera = m_camera](Pipeline::ShaderUniformCallback& shaderUniformCallback, Pipeline::Shader& shader)
     {
         shader.SetMat4fv("projection",  capturedCamera->GetPerspective().GetMatrix());
         shader.SetMat4fv("view",        capturedCamera->GetView());
         shader.Set3f("viewPos",         capturedCamera->GetTranslation());
 
-        auto model = static_cast<const Model*>(&shaderUniformCallback);
-        shader.SetMat4fv("model",       model->GetEntity().GetWorldTransform().GetMatrix());
+        auto modelInstance = static_cast<const ModelInstance*>(&shaderUniformCallback);
+        shader.SetMat4fv("model", modelInstance->GetEntity().GetWorldTransform().GetMatrix());
     });
 
-    for (auto& mesh : model->GetMeshes())
+    for (auto& mesh : sponza->Model->GetMeshes())
     {
         // Can set uniform callback for meshes if required
         // mesh->AddUniformCallback(*m_shaderManager->GetMutable("example"), [](const Pipeline::ShaderUniformCallback& shaderUniformCallback, const Pipeline::Shader& shader) {});
@@ -293,8 +311,12 @@ void Engine::InitScene()
         auto materialFileName = mesh->GetFileMaterialName();
         if (materialFileName != "")
         {
-            m_materialManager->SetMaterialTexture(materialFileName, "defaultAO", TextureType::Bump);
-            m_materialManager->AddMaterialUniformCallback(materialFileName, *m_shaderManager->GetMutable("pbr"), [](Pipeline::ShaderUniformCallback& shaderUniformCallback, Pipeline::Shader& shader)
+            if (std::shared_ptr<Material> material = m_materialManager->Get(materialFileName))
+            {
+                material->SetTexture("defaultAO", TextureType::Bump);
+            }
+
+            m_materialManager->Get(materialFileName)->AddUniformCallback(*m_shaderManager->Get("pbr"), [](Pipeline::ShaderUniformCallback& shaderUniformCallback, Pipeline::Shader& shader)
             {
                 // Sponza asset has material properties set in the wrong channels
                 shader.Set1i("albedoMap",       Material::GetTextureSlotForTextureType(TextureType::Diffuse));

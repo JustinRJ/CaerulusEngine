@@ -29,11 +29,11 @@ namespace Core
                 return m_typeHash;
             }
 
-            virtual void Insert(T key, std::unique_ptr<R>&& value)
+            virtual void Insert(T key, std::shared_ptr<R> value)
             {
                 if (value)
                 {
-                    m_managedMap.emplace(key, std::move(value));
+                    m_managedMap.emplace(key, value);
                 }
             }
 
@@ -46,57 +46,46 @@ namespace Core
                 }
             }
 
-#ifdef THREAD_SAFE
-            const R* Get(T key) const
-#else
-            R* Get(T key) const
-#endif
+            std::shared_ptr<R> Get(T key) const
             {
-                return GetMutable(key);
-            }
-
-            R* GetMutable(T key) const
-            {
-                R* found = nullptr;
+                std::shared_ptr<R> found;
                 auto it = m_managedMap.find(key);
                 if (it != m_managedMap.end())
                 {
-                    found = it->second.get();
+                    found = it->second;
                 }
                 return found;
             }
 
-            std::vector<const R*> GetAll() const
+            std::vector<std::shared_ptr<R>> GetAll() const
             {
-                std::vector<const R*> elements(m_managedMap.size());
+                std::vector<std::shared_ptr<R>> elements(m_managedMap.size());
                 std::transform(std::begin(m_managedMap), std::end(m_managedMap),
-                    std::begin(elements), [](auto& kv) { return static_cast<R*>(kv.second.get()); });
+                    std::begin(elements), [](auto& kv) { return kv.second; });
                 return elements;
             }
 
-            std::unique_ptr<R> Release(T key)
+            std::shared_ptr<R> Release(T key)
             {
-                std::unique_ptr<R> released = nullptr;
-
+                std::shared_ptr<R> released = nullptr;
                 auto it = m_managedMap.find(key);
                 if (it != m_managedMap.end())
                 {
-                    released = std::move(it->second);
+                    released = it->second;
                     m_managedMap.erase(it);
                 }
-
                 return released;
             }
 
         protected:
-            std::map<T, std::unique_ptr<R>>& GetMap()
+            std::map<T, std::shared_ptr<R>>& GetMap()
             {
                 return m_managedMap;
             }
 
         private:
             size_t m_typeHash;
-            std::map<T, std::unique_ptr<R>> m_managedMap;
+            std::map<T, std::shared_ptr<R>> m_managedMap;
         };
     }
 }

@@ -70,7 +70,7 @@ namespace Graphics
                     Core::Math::lookAt(Core::Math::vec3(0.0f, 0.0f, 0.0f), Core::Math::vec3(0.0f,  0.0f, -1.0f),  Core::Math::vec3(0.0f, -1.0f,  0.0f))
                 };
 
-                Pipeline::Shader* CubemapShader = shaderManager.GetMutable(iblShaders.CubemapShader);
+                std::shared_ptr<Pipeline::Shader> CubemapShader = shaderManager.Get(iblShaders.CubemapShader);
 
                 // pbr: convert HDR equirectangular environment map to cubemap equivalent
                 // ----------------------------------------------------------------------
@@ -80,7 +80,7 @@ namespace Graphics
 
                 glActiveTexture(GL_TEXTURE0);
 
-                const Surface::Texture* texture = textureManager.Get(m_textureName);
+                std::shared_ptr<Surface::Texture> texture = textureManager.Get(m_textureName);
                 glBindTexture(GL_TEXTURE_2D, texture->GetHandle());
 
                 glViewport(0, 0, 512, 512);
@@ -118,7 +118,7 @@ namespace Graphics
                 glBindRenderbuffer(GL_RENDERBUFFER, framebuffer->GetDepthID());
                 glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, 32, 32);
 
-                Pipeline::Shader* IrradianceShader = shaderManager.GetMutable(iblShaders.IrradianceShader);
+                std::shared_ptr<Pipeline::Shader> IrradianceShader = shaderManager.Get(iblShaders.IrradianceShader);
 
                 // pbr: solve diffuse integral by convolution to create an irradiance (cube)map.
                 // -----------------------------------------------------------------------------
@@ -156,7 +156,7 @@ namespace Graphics
                 // generate mipmaps for the cubemap so OpenGL automatically allocates the required memory.
                 glGenerateMipmap(GL_TEXTURE_CUBE_MAP);
 
-                Pipeline::Shader* PrefilterShader = shaderManager.GetMutable(iblShaders.PrefilterShader);
+                std::shared_ptr<Pipeline::Shader> PrefilterShader = shaderManager.Get(iblShaders.PrefilterShader);
 
                 // pbr: run a quasi monte-carlo simulation on the environment lighting to create a prefilter (cube)map.
                 // ----------------------------------------------------------------------------------------------------
@@ -209,9 +209,9 @@ namespace Graphics
                 glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, windowWidth, windowHeight);
                 glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_brdfLUTTextureHandle, 0);
 
-                Pipeline::Shader* BrdfShader = shaderManager.GetMutable(iblShaders.BrdfShader);
-                Pipeline::Shader* PbrShader = shaderManager.GetMutable(iblShaders.PbrShader);
-                Pipeline::Shader* BackgroundShader = shaderManager.GetMutable(iblShaders.BackgroundShader);
+                std::shared_ptr<Pipeline::Shader> BrdfShader = shaderManager.Get(iblShaders.BrdfShader);
+                std::shared_ptr<Pipeline::Shader> PbrShader = shaderManager.Get(iblShaders.PbrShader);
+                std::shared_ptr<Pipeline::Shader> BackgroundShader = shaderManager.Get(iblShaders.BackgroundShader);
 
                 glViewport(0, 0, windowWidth, windowHeight);
                 BrdfShader->Bind();

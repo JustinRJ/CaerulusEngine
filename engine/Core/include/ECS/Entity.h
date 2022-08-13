@@ -4,6 +4,7 @@
 #include <vector>
 #include <bitset>
 #include <string>
+#include <algorithm>
 
 #include "Math/Transform.h"
 #include "Interface/NonCopyable.h"
@@ -19,19 +20,25 @@ namespace Core
         struct ComponentData
         {
             size_t ComponentTypeHash = 0;
-            Component* Component = nullptr;
+            std::weak_ptr<Component> Component;
         };
 
         struct ComponentManagerData
         {
             size_t ManagedTypeHash = 0;
-            std::function<Component*(Entity&)> AddComponent = {};
+            std::function<std::shared_ptr<Component>(Entity&)> AddComponent = {};
             std::function<void(Entity&)> RemoveComponent = {};
         };
 
         typedef std::bitset<32> EntityBitset;
 
-        class CAERULUS_CORE Entity : Interface::NonCopyable
+        template<class T>
+        inline void StaticAssertComponentIsBase()
+        {
+            static_assert(std::is_base_of<Component, T>::value, "T must be a child of Component");
+        }
+
+        class CAERULUS_CORE Entity final : Interface::NonCopyable
         {
         public:
             Entity(Entity* parent = nullptr);
@@ -68,59 +75,68 @@ namespace Core
             static void RegisterComponentManager(const ComponentManagerData& componentManager);
 
             template<class T>
-#ifdef THREAD_SAFE
-            const T* AddComponentOfType()
-#else
-            T* AddComponentOfType()
-#endif
+            std::shared_ptr<T> AddComponentOfType()
             {
-                return static_cast<T*>(AddComponentOfTypeInner(typeid(T).hash_code()));
+                StaticAssertComponentIsBase<T>();
+                return std::static_pointer_cast<T>(AddComponentOfTypeInner(typeid(T).hash_code()));
             }
 
             template<class T>
-#ifdef THREAD_SAFE
-            const T* GetComponentOfType() const
-#else
-            T* GetComponentOfType() const
-#endif
+            std::shared_ptr<T> GetComponentOfType() const
             {
-                return static_cast<T*>(GetComponentOfTypeInner(typeid(T).hash_code()));
-            }
-
-            // TODO - create std::vector<const T*> impl
-#ifndef THREAD_SAFE
-            template<class T>
-            std::vector<T*> AddComponentsOfType()
-            {
-                return AddComponentsOfTypeInner(typeid(T).hash_code());
+                StaticAssertComponentIsBase<T>();
+                return std::static_pointer_cast<T>(GetComponentOfTypeInner(typeid(T).hash_code()));
             }
 
             template<class T>
-            std::vector<T*> GetComponentsOfType() const
+            std::vector<std::shared_ptr<T>> AddComponentsOfType()
             {
-                return GetComponentsOfTypeInner(typeid(T).hash_code());
+                StaticAssertComponentIsBase<T>();
+
+                std::vector<Component> components = AddComponentsOfTypeInner(typeid(T).hash_code());
+                std::vector<T> componentsAsT(components.size());
+                std::transform(std::begin(components), std::end(components), std::begin(componentsAsT), [](const Component& component)
+                {
+                    return std::static_pointer_cast<T>(component);
+                });
+                return componentsAsT;
             }
-#endif
+
+            template<class T>
+            std::vector<std::shared_ptr<T>> GetComponentsOfType() const
+            {
+                StaticAssertComponentIsBase<T>();
+
+                std::vector<Component> components = GetComponentsOfTypeInner(typeid(T).hash_code());
+                std::vector<T> componentsAsT(components.size());
+                std::transform(std::begin(components), std::end(components), std::begin(componentsAsT), [](const Component& component)
+                {
+                    return std::static_pointer_cast<T>(component);
+                });
+                return componentsAsT;
+            }
 
             template<class T>
             void RemoveComponentOfType()
             {
+                StaticAssertComponentIsBase<T>();
                 RemoveComponentOfTypeInner(typeid(T).hash_code());
             }
 
             template<class T>
             void RemoveComponentsOfType()
             {
+                StaticAssertComponentIsBase<T>();
                 RemoveComponentsOfTypeInner(typeid(T).hash_code());
             }
 
         private:
 
-            Component* AddComponentOfTypeInner(size_t typeToAdd);
-            std::vector<Component*> AddComponentsOfTypeInner(size_t typeToAdd);
+            std::shared_ptr<Component> AddComponentOfTypeInner(size_t typeToAdd);
+            std::vector<std::shared_ptr<Component>> AddComponentsOfTypeInner(size_t typeToAdd);
 
-            Component* GetComponentOfTypeInner(size_t typeToFind) const;
-            std::vector<Component*> GetComponentsOfTypeInner(size_t typeToFind) const;
+            std::shared_ptr<Component> GetComponentOfTypeInner(size_t typeToFind) const;
+            std::vector<std::shared_ptr<Component>> GetComponentsOfTypeInner(size_t typeToFind) const;
 
             void RemoveComponentOfTypeInner(size_t typeToRemove);
             void RemoveComponentsOfTypeInner(size_t typeToRemove);

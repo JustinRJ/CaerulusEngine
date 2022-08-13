@@ -212,15 +212,15 @@ echo DA | xcopy "$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(Plat
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="include\AssetManagers\MaterialManager.h" />
+    <ClInclude Include="include\AssetManagers\ModelManager.h" />
     <ClInclude Include="include\AssetManagers\ShaderManager.h" />
     <ClInclude Include="include\AssetManagers\ShaderSourceManager.h" />
     <ClInclude Include="include\AssetManagers\TextureManager.h" />
-    <ClInclude Include="include\ComponentManagers\ModelManager.h" />
-    <ClInclude Include="include\ComponentManagers\PointLightManager.h" />
     <ClInclude Include="include\Geometry\Cube.h" />
     <ClInclude Include="include\Geometry\GPUGeometry.h" />
     <ClInclude Include="include\Geometry\Mesh.h" />
     <ClInclude Include="include\Geometry\Model.h" />
+    <ClInclude Include="include\Geometry\ModelInstance.h" />
     <ClInclude Include="include\Geometry\Plane.h" />
     <ClInclude Include="include\Geometry\Quad.h" />
     <ClInclude Include="include\GraphicsEngine.h" />
@@ -247,11 +247,10 @@ echo DA | xcopy "$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(Plat
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AssetManagers\MaterialManager.cpp" />
+    <ClCompile Include="AssetManagers\ModelManager.cpp" />
     <ClCompile Include="AssetManagers\ShaderManager.cpp" />
     <ClCompile Include="AssetManagers\ShaderSourceManager.cpp" />
     <ClCompile Include="AssetManagers\TextureManager.cpp" />
-    <ClCompile Include="ComponentManagers\ModelManager.cpp" />
-    <ClCompile Include="ComponentManagers\PointLightManager.cpp" />
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="Geometry\Model.cpp" />
     <ClCompile Include="Pipeline\FrameBuffer.cpp" />

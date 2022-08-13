@@ -81,7 +81,7 @@ namespace Graphics
                 const std::string& textureName = m_textures.at(slot);
                 if (textureName != "")
                 {
-                    if (const Texture* const texture = m_textureManager.Get(textureName))
+                    if (std::shared_ptr<Texture> texture = m_textureManager.Get(textureName))
                     {
                         texture->Bind(slot + s_materialTextureSlotOffset);
                     }

@@ -12,7 +12,7 @@ namespace Graphics
         public:
             ShaderSourceManager() = default;
 
-            void Load(const std::string& shaderSourcePath, Pipeline::ShaderType type);
+            void Load(const std::string& path, Pipeline::ShaderType type);
         };
     }
 }

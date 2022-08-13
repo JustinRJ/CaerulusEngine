@@ -18,8 +18,8 @@ namespace Core
                 size_t assetHashToFind = typeid(T).hash_code();
                 IManager* foundAssetManager = nullptr;
 
-                auto it = std::begin(m_assetManagers);
-                while (!foundAssetManager && it != std::end(m_assetManagers))
+                auto it = std::begin(m_managers);
+                while (!foundAssetManager && it != std::end(m_managers))
                 {
                     if (assetHashToFind == (*it)->GetManagedTypeHash())
                     {
@@ -36,15 +36,30 @@ namespace Core
                 IManager* foundAssetManager = GetAssetManagerForType<T>();
                 if (!foundAssetManager)
                 {
-                    m_assetManagers.push_back(std::make_unique<AssetManager<T>>());
-                    foundAssetManager = m_assetManagers.back().get();
+                    m_managers.push_back(std::make_unique<AssetManager<T>>());
+                    foundAssetManager = m_managers.back().get();
                 }
                 return static_cast<AssetManager<T>*>(foundAssetManager);
             }
 
+            bool AddAssetManagerForType(const std::shared_ptr<IManager>& manager)
+            {
+                bool found = std::any_of(std::begin(m_managers),
+                    std::end(m_managers),
+                    [manager](const std::shared_ptr<IManager>& imanager)
+                {
+                    return imanager->GetManagedTypeHash() == manager->GetManagedTypeHash();
+                });
+
+                if (!found)
+                {
+                    m_managers.push_back(manager);
+                }
+                return !found;
+            }
 
         private:
-            std::vector<std::unique_ptr<IManager>> m_assetManagers;
+            std::vector<std::shared_ptr<IManager>> m_managers;
         };
     }
 }

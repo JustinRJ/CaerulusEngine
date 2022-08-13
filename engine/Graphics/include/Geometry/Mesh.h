@@ -37,6 +37,16 @@ namespace Graphics
                 GetVertexArray().AddBuffer(GetVertexBuffer(), layout);
             }
 
+            std::shared_ptr<Surface::Material> GetFileMaterial()
+            {
+                return m_fileMaterial;
+            }
+
+            void SetFileMaterial(std::shared_ptr<Surface::Material> material)
+            {
+                m_fileMaterial = material;
+            }
+
             const std::string& GetFileMaterialName() const
             {
                 return m_fileMaterialName;
@@ -46,6 +56,9 @@ namespace Graphics
             const std::vector<Vertex> m_vertices;
             const std::vector<GLuint> m_indices;
             const std::string m_fileMaterialName;
+
+            // Original material loaded by Meshes
+            std::shared_ptr<Surface::Material> m_fileMaterial;
         };
     }
 }

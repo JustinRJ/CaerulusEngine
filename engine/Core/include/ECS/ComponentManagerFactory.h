@@ -16,35 +16,51 @@ namespace Core
             ComponentManager<T>* GetComponentManagerForType()
             {
                 size_t componentHashToFind = typeid(T).hash_code();
-                IManager* foundComponentManager = nullptr;
+                IManager* foundManager = nullptr;
 
-                auto it = std::begin(m_componentManagers);
-                while (!foundComponentManager && it != std::end(m_componentManagers))
+                auto it = std::begin(m_managers);
+                while (!foundManager && it != std::end(m_managers))
                 {
                     if (componentHashToFind == (*it)->GetManagedTypeHash())
                     {
-                        foundComponentManager = it->get();
+                        foundManager = it->get();
                     }
                     it++;
                 }
-                return static_cast<ComponentManager<T>*>(foundComponentManager);
+                return static_cast<ComponentManager<T>*>(foundManager);
             }
 
             template<class T>
             ComponentManager<T>* CreateComponentManagerForType()
             {
-                IManager* foundComponentManager = GetComponentManagerForType<T>();
-                if (!foundComponentManager)
+                IManager* foundManager = GetComponentManagerForType<T>();
+                if (!foundManager)
                 {
-                    m_componentManagers.push_back(std::make_unique<ComponentManager<T>>());
-                    foundComponentManager = m_componentManagers.back().get();
+                    m_managers.push_back(std::make_shared<ComponentManager<T>>());
+                    foundManager = m_managers.back().get();
                 }
-                return static_cast<ComponentManager<T>*>(foundComponentManager);
+                return static_cast<ComponentManager<T>*>(foundManager);
+            }
+
+            bool AddComponentManagerForType(const std::shared_ptr<IManager>& manager)
+            {
+                bool found = std::any_of(std::begin(m_managers),
+                    std::end(m_managers),
+                    [manager](const std::shared_ptr<IManager>& imanager)
+                    {
+                        return imanager->GetManagedTypeHash() == manager->GetManagedTypeHash();
+                    });
+
+                if (!found)
+                {
+                    m_managers.push_back(manager);
+                }
+                return !found;
             }
 
 
         private:
-            std::vector<std::unique_ptr<IManager>> m_componentManagers;
+            std::vector<std::shared_ptr<IManager>> m_managers;
         };
     }
 }

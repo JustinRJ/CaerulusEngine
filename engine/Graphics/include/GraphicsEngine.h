@@ -8,8 +8,24 @@
 #include "Math/Math.h"
 #include "Interface/ITickable.h"
 
+namespace Core
+{
+    namespace ECS
+    {
+        class ComponentManagerFactory;
+
+        template<class ModelInstance>
+        class ComponentManager;
+
+        template<class PointLight>
+        class ComponentManager;
+    }
+}
+
 namespace Graphics
 {
+    class ModelInstance;
+
     namespace Geometry
     {
         class Model;
@@ -31,6 +47,7 @@ namespace Graphics
     {
         class IBL;
         class Light;
+        class PointLight;
     }
 
     namespace Rendering
@@ -38,18 +55,10 @@ namespace Graphics
         class IRenderer;
     }
 
-    namespace ComponentManagers
-    {
-        class ModelManager;
-        class PointLightManager;
-    }
-
     class CAERULUS_GRAPHICS GraphicsEngine : public Core::Interface::ITickable
     {
     public:
-        GraphicsEngine(
-            ComponentManagers::ModelManager& modelManager,
-            ComponentManagers::PointLightManager& pointLightManager);
+        GraphicsEngine(Core::ECS::ComponentManagerFactory& componentManagers);
 
         void EarlyTick() override;
         void Tick(float deltaTime) override;
@@ -79,7 +88,7 @@ namespace Graphics
 
         Pipeline::FrameBuffer& m_framebuffer;
 
-        ComponentManagers::ModelManager* m_modelManager;
-        ComponentManagers::PointLightManager* m_pointLightManager;
+        Core::ECS::ComponentManager<ModelInstance>* m_modelManager;
+        Core::ECS::ComponentManager<Lighting::PointLight>* m_pointLightManager;
     };
 }
