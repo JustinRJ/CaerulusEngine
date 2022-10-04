@@ -1,13 +1,15 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27703.2026
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31205.134
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Core", "Core\Core.vcxproj", "{8DB407DD-297E-43A8-8E82-B0BED40438B4}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Engine", "Engine\Engine.vcxproj", "{166DAD1B-9BB1-4C46-BA4E-74FCB180A1FB}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Graphics", "Graphics\Graphics.vcxproj", "{BB3C7E92-761A-495A-B792-A9F0C5AE0C1A}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Networking", "Networking\Networking.vcxproj", "{F754A778-958A-4F52-9610-2B5747A9FC8A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -41,6 +43,14 @@ Global
 		{BB3C7E92-761A-495A-B792-A9F0C5AE0C1A}.Release|Win32.Build.0 = Release|Win32
 		{BB3C7E92-761A-495A-B792-A9F0C5AE0C1A}.Release|x64.ActiveCfg = Release|x64
 		{BB3C7E92-761A-495A-B792-A9F0C5AE0C1A}.Release|x64.Build.0 = Release|x64
+		{F754A778-958A-4F52-9610-2B5747A9FC8A}.Debug|Win32.ActiveCfg = Debug|Win32
+		{F754A778-958A-4F52-9610-2B5747A9FC8A}.Debug|Win32.Build.0 = Debug|Win32
+		{F754A778-958A-4F52-9610-2B5747A9FC8A}.Debug|x64.ActiveCfg = Debug|x64
+		{F754A778-958A-4F52-9610-2B5747A9FC8A}.Debug|x64.Build.0 = Debug|x64
+		{F754A778-958A-4F52-9610-2B5747A9FC8A}.Release|Win32.ActiveCfg = Release|Win32
+		{F754A778-958A-4F52-9610-2B5747A9FC8A}.Release|Win32.Build.0 = Release|Win32
+		{F754A778-958A-4F52-9610-2B5747A9FC8A}.Release|x64.ActiveCfg = Release|x64
+		{F754A778-958A-4F52-9610-2B5747A9FC8A}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

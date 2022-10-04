@@ -29,7 +29,7 @@ namespace Core
                 return m_typeHash;
             }
 
-            virtual void Insert(T key, std::shared_ptr<R> value)
+            virtual void Insert(T key, const std::shared_ptr<R>& value)
             {
                 if (value)
                 {

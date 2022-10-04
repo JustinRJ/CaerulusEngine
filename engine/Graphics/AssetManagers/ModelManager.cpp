@@ -28,12 +28,12 @@ namespace Graphics
             else
             {
                 LogMessage("Loading texture " + name + " with path: " + path);
-                std::unique_ptr<Model> model = std::make_unique<Model>();
+                std::shared_ptr<Model> model = std::make_unique<Model>();
                 model->Load(path, m_renderer, &m_materialManager, materialPath);
 
                 if (model->IsLoaded())
                 {
-                    Insert(name, std::move(model));
+                    Insert(name, model);
                 }
                 else
                 {

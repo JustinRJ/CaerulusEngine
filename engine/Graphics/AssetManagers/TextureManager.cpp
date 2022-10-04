@@ -21,11 +21,11 @@ namespace Graphics
             else
             {
                 LogMessage("Loading texture " + name + " with path: " + path);
-                std::unique_ptr<Texture> texture = std::make_unique<Texture>(path, Core::File::GetFileExtension(path) == "hdr");
+                std::shared_ptr<Texture> texture = std::make_unique<Texture>(path, Core::File::GetFileExtension(path) == "hdr");
 
                 if (texture->IsLoaded())
                 {
-                    Insert(name, std::move(texture));
+                    Insert(name, texture);
                 }
                 else
                 {

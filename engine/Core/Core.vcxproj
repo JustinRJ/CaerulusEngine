@@ -212,13 +212,12 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="include\ECS\AssetManager.h" />
-    <ClInclude Include="include\ECS\AssetManagerFactory.h" />
     <ClInclude Include="include\ECS\Component.h" />
-    <ClInclude Include="include\ECS\ComponentManagerFactory.h" />
     <ClInclude Include="include\ECS\ComponentManager.h" />
     <ClInclude Include="include\ECS\Entity.h" />
     <ClInclude Include="include\ECS\IManager.h" />
     <ClInclude Include="include\ECS\Manager.h" />
+    <ClInclude Include="include\ECS\ManagerFactory.h" />
     <ClInclude Include="include\ECS\ThreadSafe.h" />
     <ClInclude Include="include\File\FileUtility.h" />
     <ClInclude Include="include\Input\InputDefines.h" />

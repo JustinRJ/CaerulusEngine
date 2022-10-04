@@ -25,11 +25,11 @@ namespace Graphics
                 m_shaderSourceManager.Load(vertexPath, Vertex);
                 m_shaderSourceManager.Load(fragmentPath, Fragment);
 
-                std::unique_ptr<Shader> shader = std::make_unique<Shader>(m_shaderSourceManager, vertexPath, fragmentPath);
+                std::shared_ptr<Shader> shader = std::make_unique<Shader>(m_shaderSourceManager, vertexPath, fragmentPath);
 
                 if (shader->IsLinked())
                 {
-                    Insert(name, std::move(shader));
+                    Insert(name, shader);
                 }
                 else
                 {

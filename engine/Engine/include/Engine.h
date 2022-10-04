@@ -15,8 +15,7 @@ namespace Core
     namespace ECS
     {
         class Entity;
-        class AssetManagerFactory;
-        class ComponentManagerFactory;
+        class ManagerFactory;
     }
     namespace Input
     {
@@ -89,24 +88,22 @@ private:
     Core::Time::FPSLimiter m_fpsLimiter;
     Core::Time::FixedTimer m_fixedTimer;
 
-    Core::ECS::Entity* m_rootEntity;
-
-    Graphics::Window::GLWindow* m_window;
-    Graphics::Rendering::GLRenderer* m_renderer;
     std::shared_ptr<Core::Math::Camera> m_camera;
+    std::shared_ptr<Core::ECS::Entity> m_rootEntity;
+    std::shared_ptr<Graphics::Window::GLWindow> m_window;
+    std::shared_ptr<Graphics::Rendering::GLRenderer> m_renderer;
 
-    Graphics::GraphicsEngine* m_graphicsEngine;
-    Core::Input::MouseInputSystem* m_mouseInputSystem;
-    Core::Input::KeyboardInputSystem* m_keyboardInputSystem;
+    std::shared_ptr<Graphics::GraphicsEngine> m_graphicsEngine;
+    std::shared_ptr<Core::Input::MouseInputSystem> m_mouseInputSystem;
+    std::shared_ptr<Core::Input::KeyboardInputSystem> m_keyboardInputSystem;
 
-    Graphics::AssetManagers::TextureManager* m_textureManager;
-    Graphics::AssetManagers::MaterialManager* m_materialManager;
-    Graphics::AssetManagers::ShaderSourceManager* m_shaderSrcManager;
-    Graphics::AssetManagers::ShaderManager* m_shaderManager;
-    Graphics::AssetManagers::ModelManager* m_modelManager;
+    std::shared_ptr<Graphics::AssetManagers::ShaderSourceManager> m_shaderSrcManager;
+    std::shared_ptr<Graphics::AssetManagers::ShaderManager> m_shaderManager;
+    std::shared_ptr<Graphics::AssetManagers::TextureManager> m_textureManager;
+    std::shared_ptr<Graphics::AssetManagers::MaterialManager> m_materialManager;
+    std::shared_ptr<Graphics::AssetManagers::ModelManager> m_modelManager;
 
-    Core::ECS::AssetManagerFactory* m_assetManagers;
-    Core::ECS::ComponentManagerFactory* m_componentManagers;
+    Core::ECS::ManagerFactory* m_managerFactory;
 
     std::vector<Core::Interface::ITickable*> m_tickable;
 };

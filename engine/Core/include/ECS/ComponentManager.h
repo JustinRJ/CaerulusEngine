@@ -98,7 +98,7 @@ namespace Core
             }
 
         private:
-            void Insert(ECS::Entity* entity, std::shared_ptr<R> value) override
+            void Insert(ECS::Entity* entity, const std::shared_ptr<R>& value) override
             {
                 if (entity && value)
                 {

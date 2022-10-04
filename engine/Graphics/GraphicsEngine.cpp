@@ -16,7 +16,7 @@
 #include "Geometry/Plane.h"
 #include "Geometry/Mesh.h"
 #include "Geometry/Model.h"
-#include "Geometry/ModelInstance.h"
+#include "Rendering/RenderInstance.h"
 
 #include "Surface/Material.h"
 
@@ -25,7 +25,7 @@
 #include "Lighting/PointLight.h"
 #include "Lighting/DirectionalLight.h"
 
-#include "ECS/ComponentManagerFactory.h"
+#include "ECS/ManagerFactory.h"
 
 namespace Graphics
 {
@@ -36,13 +36,13 @@ namespace Graphics
     using namespace Lighting;
     using namespace Rendering;
 
-    GraphicsEngine::GraphicsEngine(Core::ECS::ComponentManagerFactory& componentManagers) :
+    GraphicsEngine::GraphicsEngine(Core::ECS::ManagerFactory& managerFactory) :
         m_IBL(nullptr),
         m_window(nullptr),
         m_renderer(nullptr),
         m_framebuffer(*new Pipeline::FrameBuffer()),
-        m_modelManager(componentManagers.GetComponentManagerForType<ModelInstance>()),
-        m_pointLightManager(componentManagers.GetComponentManagerForType<PointLight>())
+        m_instanceManager(managerFactory.GetComponentManagerForType<RenderInstance>()),
+        m_pointLightManager(managerFactory.GetComponentManagerForType<PointLight>())
     {}
     
     void GraphicsEngine::EarlyTick()
@@ -52,9 +52,9 @@ namespace Graphics
             m_renderer->Clear(m_clearColour);
         }
 
-        if (m_modelManager)
+        if (m_instanceManager)
         {
-            m_modelManager->EarlyUpdate();
+            m_instanceManager->EarlyUpdate();
         }
         if (m_pointLightManager)
         {
@@ -73,9 +73,9 @@ namespace Graphics
                 m_IBL->Bind();
             }
 
-            if (m_modelManager)
+            if (m_instanceManager)
             {
-                m_modelManager->Update(deltaTime);
+                m_instanceManager->Update(deltaTime);
             }
             if (m_pointLightManager)
             {
@@ -91,9 +91,9 @@ namespace Graphics
 
     void GraphicsEngine::FixedTick(float fixedTime)
     {
-        if (m_modelManager)
+        if (m_instanceManager)
         {
-            m_modelManager->FixedUpdate(fixedTime);
+            m_instanceManager->FixedUpdate(fixedTime);
         }
         if (m_pointLightManager)
         {
@@ -103,9 +103,9 @@ namespace Graphics
 
     void GraphicsEngine::LateTick()
     {
-        if (m_modelManager)
+        if (m_instanceManager)
         {
-            m_modelManager->LateUpdate();
+            m_instanceManager->LateUpdate();
         }
         if (m_pointLightManager)
         {

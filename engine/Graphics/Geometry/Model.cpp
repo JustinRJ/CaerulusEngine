@@ -96,7 +96,7 @@ namespace Graphics
                 std::string prevMaterialName = "";
                 std::vector<Vertex> vertices;
                 std::vector<GLuint> indices;
-                // Loop over faces(polygon)
+
                 size_t index_offset = 0;
                 for (size_t f = 0; f < shape.mesh.num_face_vertices.size(); ++f)
                 {
@@ -106,7 +106,7 @@ namespace Graphics
                         materialName = materials[firstMeshesFaceMaterialID].name;
                     }
 
-                    if (f != 0 && materialName != prevMaterialName)
+                    if (f != 0 && materialName != prevMaterialName && materialName != "")
                     {
                         verticesOut.push_back(vertices);
                         indicesOut.push_back(indices);
@@ -115,7 +115,7 @@ namespace Graphics
                         indices.clear();
                     }
 
-                    unsigned int fv = shape.mesh.num_face_vertices[f];
+                    size_t fv = size_t(shape.mesh.num_face_vertices[f]);
                     for (size_t v = 0; v < fv; ++v)
                     {
                         tinyobj::index_t idx = shape.mesh.indices[index_offset + v];
@@ -123,18 +123,18 @@ namespace Graphics
                         Vertex vertex;
 
                         Core::Math::vec3 position(
-                            attrib.vertices[static_cast<__int64>(3) * idx.vertex_index + 0],
-                            attrib.vertices[static_cast<__int64>(3) * idx.vertex_index + 1],
-                            attrib.vertices[static_cast<__int64>(3) * idx.vertex_index + 2]);
+                            attrib.vertices[3 * size_t(idx.vertex_index) + 0],
+                            attrib.vertices[3 * size_t(idx.vertex_index) + 1],
+                            attrib.vertices[3 * size_t(idx.vertex_index) + 2]);
 
                         Core::Math::vec2 texCoord(
-                            attrib.texcoords[static_cast<__int64>(2) * idx.texcoord_index + 0],
-                            attrib.texcoords[static_cast<__int64>(2) * idx.texcoord_index + 1]);
+                            attrib.texcoords[2 * size_t(idx.texcoord_index) + 0],
+                            attrib.texcoords[2 * size_t(idx.texcoord_index) + 1]);
 
                         Core::Math::vec3 normal(
-                            attrib.normals[static_cast<__int64>(3) * idx.normal_index + 0],
-                            attrib.normals[static_cast<__int64>(3) * idx.normal_index + 1],
-                            attrib.normals[static_cast<__int64>(3) * idx.normal_index + 2]);
+                            attrib.normals[3 * size_t(idx.normal_index) + 0],
+                            attrib.normals[3 * size_t(idx.normal_index) + 1],
+                            attrib.normals[3 * size_t(idx.normal_index) + 2]);
 
                         vertex.Position = position;
                         vertex.TexCoord = texCoord;
@@ -142,7 +142,7 @@ namespace Graphics
 
                         if (uniqueVertices.count(vertex) == 0)
                         {
-                            uniqueVertices[vertex] = static_cast<uint32_t>(vertices.size());
+                            uniqueVertices[vertex] = size_t(vertices.size());
                             vertices.push_back(vertex);
                         }
                         indices.push_back(uniqueVertices[vertex]);

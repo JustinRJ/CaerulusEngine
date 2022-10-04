@@ -3,12 +3,20 @@
 #include <string>
 #include <iostream>
 
-#define Debug(x) std::cout << #x << " " << x << std::endl;
-
 namespace Core
 {
     namespace Logging
     {
+        template<typename... Args>
+        void Log(const std::string& file, int lineNum, const Args& ... args)
+        {
+            std::stringstream ss;
+            (ss << ... << args) << "\n";
+            std::cout << "FILE: " << file << " LINE: " << lineNum << " MESSAGE: " << ss.str() << std::endl;
+        }
+
+        #define Log(...) Log(__FILE__, __LINE__, __VA_ARGS__);
+
         inline void LogInDebug(const char* debug)
         {
             #ifdef _DEBUG

@@ -49,7 +49,7 @@ namespace Core
                 UpdateMouseDrag();
             }
 
-            void AddDragMouseCallback(Graphics::Window::GLWindow* window, std::function<void(const DragData&)> callback, const std::string& name = "")
+            void AddDragMouseCallback(std::function<void(const DragData&)> callback, const std::string& name = "")
             {
                 DragBinding dragBinding;
                 dragBinding.Callback = callback;

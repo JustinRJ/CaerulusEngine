@@ -82,9 +82,6 @@
     <ClInclude Include="include\Geometry\Mesh.h">
       <Filter>include\Geometry</Filter>
     </ClInclude>
-    <ClInclude Include="include\Geometry\Model.h">
-      <Filter>include\Geometry</Filter>
-    </ClInclude>
     <ClInclude Include="include\Geometry\Plane.h">
       <Filter>include\Geometry</Filter>
     </ClInclude>
@@ -148,8 +145,11 @@
     <ClInclude Include="include\AssetManagers\ModelManager.h">
       <Filter>include\AssetManagers</Filter>
     </ClInclude>
-    <ClInclude Include="include\Geometry\ModelInstance.h">
+    <ClInclude Include="include\Geometry\Model.h">
       <Filter>include\Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Rendering\RenderInstance.h">
+      <Filter>include\Rendering</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

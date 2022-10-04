@@ -12,9 +12,9 @@ namespace Core
 {
     namespace ECS
     {
-        class ComponentManagerFactory;
+        class ManagerFactory;
 
-        template<class ModelInstance>
+        template<class RenderInstance>
         class ComponentManager;
 
         template<class PointLight>
@@ -24,7 +24,7 @@ namespace Core
 
 namespace Graphics
 {
-    class ModelInstance;
+    class RenderInstance;
 
     namespace Geometry
     {
@@ -58,7 +58,7 @@ namespace Graphics
     class CAERULUS_GRAPHICS GraphicsEngine : public Core::Interface::ITickable
     {
     public:
-        GraphicsEngine(Core::ECS::ComponentManagerFactory& componentManagers);
+        GraphicsEngine(Core::ECS::ManagerFactory& componentManagers);
 
         void EarlyTick() override;
         void Tick(float deltaTime) override;
@@ -88,7 +88,7 @@ namespace Graphics
 
         Pipeline::FrameBuffer& m_framebuffer;
 
-        Core::ECS::ComponentManager<ModelInstance>* m_modelManager;
+        Core::ECS::ComponentManager<RenderInstance>* m_instanceManager;
         Core::ECS::ComponentManager<Lighting::PointLight>* m_pointLightManager;
     };
 }

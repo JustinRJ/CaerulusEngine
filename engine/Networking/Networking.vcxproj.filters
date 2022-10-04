@@ -1,0 +1,42 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="stdafx.cpp" />
+    <ClCompile Include="dllmain.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="include\Common\INetworkable.h">
+      <Filter>include\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Common\Deserializer.h">
+      <Filter>include\Client</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Common\Serializer.h">
+      <Filter>include\Server</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="include">
+      <UniqueIdentifier>{eaafbfba-865b-4529-ad34-ac01742750a4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Common">
+      <UniqueIdentifier>{b3353bf5-391f-4ee3-89df-fe349acf5792}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Client">
+      <UniqueIdentifier>{b6997045-d871-4df1-b466-92b8746485a1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Server">
+      <UniqueIdentifier>{9953e4bf-ee03-40f2-a185-6135d511ac98}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\Common">
+      <UniqueIdentifier>{7e44fb10-f70c-4942-9b4e-756e72ad5917}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\Client">
+      <UniqueIdentifier>{24f0bdee-1c07-4e50-ab1d-d5c7063913e2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\Server">
+      <UniqueIdentifier>{dfe89206-3c63-437c-a4b5-bf242ec8f4d7}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>
