@@ -7,7 +7,7 @@
 #include "Rendering/IRenderer.h"
 
 using namespace Core::File;
-using namespace Core::Logging;
+using namespace Core::Log;
 using namespace Graphics::Geometry;
 
 namespace Graphics
@@ -19,25 +19,25 @@ namespace Graphics
             m_renderer(renderer)
         {}
 
-        void ModelManager::Load(const std::string& name, const std::string& path, const std::string& materialPath)
+        void ModelManager::Load(std::string_view name, std::string_view path, std::string_view materialPath)
         {
-            if (Get(name))
+            if (Get(name.data()))
             {
-                LogInDebug("Texture " + name + " already loaded with path: " + path);
+                LogInDebug("Texture " + std::string(name) + " already loaded with path: " + std::string(path));
             }
             else
             {
-                LogMessage("Loading texture " + name + " with path: " + path);
+                LogMessage("Loading texture " + std::string(name) + " with path: " + std::string(path));
                 std::shared_ptr<Model> model = std::make_unique<Model>();
                 model->Load(path, m_renderer, &m_materialManager, materialPath);
 
                 if (model->IsLoaded())
                 {
-                    Insert(name, model);
+                    Insert(name.data(), model);
                 }
                 else
                 {
-                    LogInDebug("Failed to load " + name + " texture with path: " + path);
+                    LogInDebug("Failed to load " + std::string(name) + " texture with path: " + std::string(path));
                 }
             }
         }

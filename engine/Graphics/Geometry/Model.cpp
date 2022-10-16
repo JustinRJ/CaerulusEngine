@@ -32,7 +32,7 @@ namespace Graphics
             m_path("")
         {}
 
-        void Model::Load(const std::string& modelPath, Rendering::IRenderer* renderer, AssetManagers::MaterialManager* materialManager, const std::string& materialPath)
+        void Model::Load(std::string_view modelPath, Rendering::IRenderer* renderer, AssetManagers::MaterialManager* materialManager, std::string_view materialPath)
         {
             m_path = modelPath;
 
@@ -43,7 +43,7 @@ namespace Graphics
             LoadModel(vertices, indices, materialNames);
             //CalculateTangentAndBiTangent(vertices);
 
-            for (unsigned int i = 0; i < vertices.size(); ++i)
+            for (uint32_t i = 0; i < vertices.size(); ++i)
             {
                 std::shared_ptr<Mesh> newMesh =
                     std::make_unique<Mesh>(vertices.at(i), indices.at(i), materialNames.at(i));
@@ -66,7 +66,7 @@ namespace Graphics
                     mesh->SetRenderer(renderer);
 
                     auto materialFileName = mesh->GetFileMaterialName();
-                    mesh->SetFileMaterial(materialManager->Get(materialFileName));
+                    mesh->SetFileMaterial(materialManager->Get(materialFileName.data()));
                 }
             }
 
@@ -142,7 +142,7 @@ namespace Graphics
 
                         if (uniqueVertices.count(vertex) == 0)
                         {
-                            uniqueVertices[vertex] = size_t(vertices.size());
+                            uniqueVertices[vertex] = uint32_t(vertices.size());
                             vertices.push_back(vertex);
                         }
                         indices.push_back(uniqueVertices[vertex]);
@@ -166,7 +166,7 @@ namespace Graphics
         {
             for (std::vector<Vertex>& meshVertices : vertices)
             {
-                for (unsigned int i = 0; i < meshVertices.size() - 2; i += 3)
+                for (uint32_t i = 0; i < meshVertices.size() - 2; i += 3)
                 {
                     Vertex v1 = meshVertices.at(i);
                     Vertex v2 = meshVertices.at(static_cast<__int64>(i) + 1);

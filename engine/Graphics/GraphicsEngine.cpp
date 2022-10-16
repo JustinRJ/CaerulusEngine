@@ -41,8 +41,8 @@ namespace Graphics
         m_window(nullptr),
         m_renderer(nullptr),
         m_framebuffer(*new Pipeline::FrameBuffer()),
-        m_instanceManager(managerFactory.GetComponentManagerForType<RenderInstance>()),
-        m_pointLightManager(managerFactory.GetComponentManagerForType<PointLight>())
+        m_instanceManager(managerFactory.GetComponentManager<RenderInstance>().get()),
+        m_pointLightManager(managerFactory.GetComponentManager<PointLight>().get())
     {}
     
     void GraphicsEngine::EarlyTick()

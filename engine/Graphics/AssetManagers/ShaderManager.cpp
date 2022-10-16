@@ -2,7 +2,7 @@
 
 #include "AssetManagers/ShaderManager.h"
 
-using namespace Core::Logging;
+using namespace Core::Log;
 using namespace Graphics::Pipeline;
 
 namespace Graphics
@@ -13,15 +13,15 @@ namespace Graphics
             m_shaderSourceManager(shaderSourceManager)
         {}
 
-        void ShaderManager::Load(const std::string& name, const std::string& vertexPath, const std::string& fragmentPath)
+        void ShaderManager::Load(std::string_view name, std::string_view vertexPath, std::string_view fragmentPath)
         {
-            if (Get(name))
+            if (Get(name.data()))
             {
-                LogInDebug("Shader with name " + name + " already loaded");
+                LogInDebug("Shader with name " + std::string(name) + " already loaded");
             }
             else
             {
-                LogMessage("Loading shader with name " + name + ":");
+                LogMessage("Loading shader with name " + std::string(name) + ":");
                 m_shaderSourceManager.Load(vertexPath, Vertex);
                 m_shaderSourceManager.Load(fragmentPath, Fragment);
 
@@ -29,11 +29,11 @@ namespace Graphics
 
                 if (shader->IsLinked())
                 {
-                    Insert(name, shader);
+                    Insert(name.data(), shader);
                 }
                 else
                 {
-                    LogInDebug("Failed to link shader source with name: " + name);
+                    LogInDebug("Failed to link shader source with name: " + std::string(name));
                 }
             }
         }

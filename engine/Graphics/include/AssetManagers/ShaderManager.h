@@ -12,7 +12,7 @@ namespace Graphics
         public:
             ShaderManager(ShaderSourceManager& shaderSourceManager);
 
-            void Load(const std::string& name, const std::string& vertexPath, const std::string& fragmentPath);
+            void Load(std::string_view name, std::string_view vertexPath, std::string_view fragmentPath);
 
             ShaderSourceManager& GetShaderSrcManager();
 

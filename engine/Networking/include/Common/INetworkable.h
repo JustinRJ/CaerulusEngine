@@ -55,7 +55,7 @@ namespace Networking
             }
         }
 
-        static void appendString(char** dataOut, uint32_t& size, const std::string& str)
+        static void appendString(char** dataOut, uint32_t& size, std::string_view str)
         {
             uint32_t sSize = str.size();
             appendData<uint32_t>(dataOut, size, sSize);

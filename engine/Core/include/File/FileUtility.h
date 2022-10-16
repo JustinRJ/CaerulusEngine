@@ -6,7 +6,7 @@ namespace Core
 {
     namespace File
     {
-        inline std::string GetFileExtension(const std::string& path)
+        inline std::string GetFileExtension(std::string_view path)
         {
             std::string extension;
             if (path.find_last_of(".") != std::string::npos)

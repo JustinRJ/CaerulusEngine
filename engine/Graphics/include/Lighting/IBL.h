@@ -31,7 +31,7 @@ namespace Graphics
             IBL(const AssetManagers::ShaderManager& shaderManager,
                 const AssetManagers::TextureManager& textureManager,
                 const IBLShaders& iblShaders,
-                const std::string& textureName,
+                std::string_view textureName,
                 Rendering::IRenderer* renderer,
                 Window::GLWindow* window,
                 Core::Math::Camera* camera,
@@ -40,14 +40,14 @@ namespace Graphics
             {
                 m_cube.SetRenderer(renderer);
 
-                unsigned int windowWidth = window->GetActiveState().Width;
-                unsigned int windowHeight = window->GetActiveState().Height;
+                uint32_t windowWidth = window->GetActiveState().Width;
+                uint32_t windowHeight = window->GetActiveState().Height;
 
                 // pbr: setup cubemap to render to and attach to framebuffer
                 // ---------------------------------------------------------
                 glGenTextures(1, &m_envCubemapHandle);
                 glBindTexture(GL_TEXTURE_CUBE_MAP, m_envCubemapHandle);
-                for (unsigned int i = 0; i < 6; ++i)
+                for (uint32_t i = 0; i < 6; ++i)
                 {
                     glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB16F, 512, 512, 0, GL_RGB, GL_FLOAT, nullptr);
                 }
@@ -86,7 +86,7 @@ namespace Graphics
                 glViewport(0, 0, 512, 512);
                 framebuffer->Bind();
 
-                for (unsigned int i = 0; i < 6; ++i)
+                for (uint32_t i = 0; i < 6; ++i)
                 {
                     CubemapShader->SetMat4fv("view", captureViews[i]);
                     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, m_envCubemapHandle, 0);
@@ -104,7 +104,7 @@ namespace Graphics
                 // --------------------------------------------------------------------------------
                 glGenTextures(1, &m_irradianceMapHandle);
                 glBindTexture(GL_TEXTURE_CUBE_MAP, m_irradianceMapHandle);
-                for (unsigned int i = 0; i < 6; ++i)
+                for (uint32_t i = 0; i < 6; ++i)
                 {
                     glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB16F, 32, 32, 0, GL_RGB, GL_FLOAT, nullptr);
                 }
@@ -130,7 +130,7 @@ namespace Graphics
 
                 glViewport(0, 0, windowWidth, windowHeight);
                 framebuffer->Bind();
-                for (unsigned int i = 0; i < 6; ++i)
+                for (uint32_t i = 0; i < 6; ++i)
                 {
                     IrradianceShader->SetMat4fv("view", captureViews[i]);
                     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, m_irradianceMapHandle, 0);
@@ -144,7 +144,7 @@ namespace Graphics
                 // --------------------------------------------------------------------------------
                 glGenTextures(1, &m_prefilterMapHandle);
                 glBindTexture(GL_TEXTURE_CUBE_MAP, m_prefilterMapHandle);
-                for (unsigned int i = 0; i < 6; ++i)
+                for (uint32_t i = 0; i < 6; ++i)
                 {
                     glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB16F, 128, 128, 0, GL_RGB, GL_FLOAT, nullptr);
                 }
@@ -167,19 +167,19 @@ namespace Graphics
                 glBindTexture(GL_TEXTURE_CUBE_MAP, m_envCubemapHandle);
 
                 framebuffer->Bind();
-                unsigned int maxMipLevels = 5;
-                for (unsigned int mip = 0; mip < maxMipLevels; ++mip)
+                uint32_t maxMipLevels = 5;
+                for (uint32_t mip = 0; mip < maxMipLevels; ++mip)
                 {
                     // resize framebuffer according to mip-level size.
-                    unsigned int mipWidth = static_cast<unsigned int>(128 * std::pow(0.5, mip));
-                    unsigned int mipHeight = static_cast<unsigned int>(128 * std::pow(0.5, mip));
+                    uint32_t mipWidth = static_cast<uint32_t>(128 * std::pow(0.5, mip));
+                    uint32_t mipHeight = static_cast<uint32_t>(128 * std::pow(0.5, mip));
                     glBindRenderbuffer(GL_RENDERBUFFER, framebuffer->GetDepthID());
                     glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, mipWidth, mipHeight);
                     glViewport(0, 0, mipWidth, mipHeight);
 
                     float roughness = (float)mip / (float)(maxMipLevels - 1);
                     PrefilterShader->Set1f("roughness", roughness);
-                    for (unsigned int i = 0; i < 6; ++i)
+                    for (uint32_t i = 0; i < 6; ++i)
                     {
                         PrefilterShader->SetMat4fv("view", captureViews[i]);
                         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, m_prefilterMapHandle, mip);
@@ -243,7 +243,7 @@ namespace Graphics
                 return m_cube;
             }
 
-            const std::string& GetTexture() const
+            std::string_view GetTexture() const
             {
                 return m_textureName;
             }
@@ -270,7 +270,7 @@ namespace Graphics
                 m_cube.Draw();
             }
 
-            unsigned int GetRequiredTextureSlots() const
+            uint32_t GetRequiredTextureSlots() const
             {
                 // We require 3 texture slots
                 // See Bind || Draw
@@ -278,10 +278,10 @@ namespace Graphics
             }
 
         private:
-            unsigned int m_envCubemapHandle = 0;
-            unsigned int m_irradianceMapHandle = 0;
-            unsigned int m_prefilterMapHandle = 0;
-            unsigned int m_brdfLUTTextureHandle = 0;
+            uint32_t m_envCubemapHandle = 0;
+            uint32_t m_irradianceMapHandle = 0;
+            uint32_t m_prefilterMapHandle = 0;
+            uint32_t m_brdfLUTTextureHandle = 0;
 
             Geometry::Cube m_cube;
             std::string m_textureName;

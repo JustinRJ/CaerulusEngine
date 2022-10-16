@@ -45,15 +45,6 @@ namespace Graphics
     {
         class GLRenderer;
     }
-
-    namespace AssetManagers
-    {
-        class TextureManager;
-        class MaterialManager;
-        class ShaderSourceManager;
-        class ShaderManager;
-        class ModelManager;
-    }
 }
 
 class CAERULUS_ENGINE Engine : Core::Interface::NonCopyable
@@ -96,12 +87,6 @@ private:
     std::shared_ptr<Graphics::GraphicsEngine> m_graphicsEngine;
     std::shared_ptr<Core::Input::MouseInputSystem> m_mouseInputSystem;
     std::shared_ptr<Core::Input::KeyboardInputSystem> m_keyboardInputSystem;
-
-    std::shared_ptr<Graphics::AssetManagers::ShaderSourceManager> m_shaderSrcManager;
-    std::shared_ptr<Graphics::AssetManagers::ShaderManager> m_shaderManager;
-    std::shared_ptr<Graphics::AssetManagers::TextureManager> m_textureManager;
-    std::shared_ptr<Graphics::AssetManagers::MaterialManager> m_materialManager;
-    std::shared_ptr<Graphics::AssetManagers::ModelManager> m_modelManager;
 
     Core::ECS::ManagerFactory* m_managerFactory;
 

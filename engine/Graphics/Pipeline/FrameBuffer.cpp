@@ -13,11 +13,11 @@ namespace Graphics
             DeleteBuffers();
         }
 
-        bool FrameBuffer::Init(unsigned int width, unsigned int height, unsigned int msaa)
+        bool FrameBuffer::Init(uint32_t width, uint32_t height, uint32_t msaa)
         {
             int maxMsaa = 0;
             glGetIntegerv(GL_MAX_SAMPLES, &maxMsaa);
-            if (msaa > static_cast<unsigned int>(maxMsaa))
+            if (msaa > static_cast<uint32_t>(maxMsaa))
             {
                 msaa = maxMsaa;
             }
@@ -450,22 +450,22 @@ namespace Graphics
             return m_rboId;
         }
 
-        unsigned int FrameBuffer::GetWidth() const
+        uint32_t FrameBuffer::GetWidth() const
         {
             return m_width;
         }
 
-        unsigned int FrameBuffer::GetHeight() const
+        uint32_t FrameBuffer::GetHeight() const
         {
             return m_height;
         }
 
-        unsigned int FrameBuffer::GetMsaa() const
+        uint32_t FrameBuffer::GetMsaa() const
         {
             return m_msaa;
         }
 
-        const std::string& FrameBuffer::GetErrorMessage() const
+        std::string_view FrameBuffer::GetErrorMessage() const
         {
             return m_errorMessage;
         }

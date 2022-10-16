@@ -21,15 +21,15 @@ namespace Graphics
         class CAERULUS_GRAPHICS ShaderSource : Core::Interface::NonCopyable
         {
         public:
-            ShaderSource(ShaderType type, const std::string& path);
+            ShaderSource(ShaderType type, std::string_view path);
             ~ShaderSource();
 
             void Load();
             bool IsCompiled() const;
-            unsigned int GetHandle() const;
+            uint32_t GetHandle() const;
 
         private:
-            void Compile(const std::string& source);
+            void Compile(std::string_view source);
 
             bool m_isCompiled;
             GLuint m_handle;

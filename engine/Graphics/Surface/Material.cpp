@@ -4,14 +4,14 @@
 
 #include <tiny_obj_loader.h>
 
-#include "Logging/Log.h"
+#include "Log/Log.h"
 #include "Surface/Texture.h"
 
 namespace Graphics
 {
     namespace Surface
     {
-        Material::Material(const AssetManagers::TextureManager& textureManager, const std::string& path) :
+        Material::Material(const AssetManagers::TextureManager& textureManager, std::string_view path) :
             m_path(path),
             m_textures(7),
             m_textureManager(textureManager)
@@ -45,7 +45,7 @@ namespace Graphics
             tinyobj::LoadMtl(&materialMap, &materials, &is);
             is.seekg(0, is.beg);
 
-            unsigned int slot = static_cast<unsigned int>(type);
+            uint32_t slot = static_cast<uint32_t>(type);
 
             std::vector<std::string> textureNames(12);
             textureNames[0] = materials[slot].ambient_texname;            // map_Ka
@@ -64,9 +64,9 @@ namespace Graphics
             return textureNames;
         }
 
-        void Material::SetTexture(const std::string& textureName, TextureType type)
+        void Material::SetTexture(std::string_view textureName, TextureType type)
         {
-            unsigned int slot = static_cast<unsigned int>(type);
+            uint32_t slot = static_cast<uint32_t>(type);
             if (slot < m_textures.size())
             {
                 m_textures[slot] = textureName;
@@ -75,13 +75,13 @@ namespace Graphics
 
         void Material::Bind(TextureType type)
         {
-            unsigned int slot = static_cast<unsigned int>(type);
+            uint32_t slot = static_cast<uint32_t>(type);
             if (slot < m_textures.size())
             {
-                const std::string& textureName = m_textures.at(slot);
+                std::string_view textureName = m_textures.at(slot);
                 if (textureName != "")
                 {
-                    if (std::shared_ptr<Texture> texture = m_textureManager.Get(textureName))
+                    if (std::shared_ptr<Texture> texture = m_textureManager.Get(textureName.data()))
                     {
                         texture->Bind(slot + s_materialTextureSlotOffset);
                     }
@@ -91,7 +91,7 @@ namespace Graphics
 
         void Material::Bind()
         {
-            for (unsigned int i = 0; i < m_textures.size(); ++i)
+            for (uint32_t i = 0; i < m_textures.size(); ++i)
             {
                 Bind(static_cast<TextureType>(i));
             }
@@ -102,14 +102,14 @@ namespace Graphics
             Texture::Unbind();
         }
 
-        const std::string& Material::GetPath() const
+        std::string_view Material::GetPath() const
         {
             return m_path;
         }
 
-        const std::string& Material::GetTexture(TextureType type) const
+        std::string_view Material::GetTexture(TextureType type) const
         {
-            unsigned int slot = static_cast<unsigned int>(type);
+            uint32_t slot = static_cast<uint32_t>(type);
             if (slot < m_textures.size())
             {
                 return m_textures[slot];
@@ -117,7 +117,7 @@ namespace Graphics
             throw std::runtime_error("Material.cpp - TextureType not found on material: " + m_path);
         }
 
-        void Material::SetMaterialTextureSlotOffset(unsigned int slotOffset)
+        void Material::SetMaterialTextureSlotOffset(uint32_t slotOffset)
         {
             s_materialTextureSlotOffset = slotOffset;
         }

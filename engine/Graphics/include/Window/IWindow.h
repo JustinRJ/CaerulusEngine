@@ -59,9 +59,9 @@ namespace Graphics
             virtual void SwapBuffer() = 0;
             virtual void* GetHandle() const = 0;
 
-            virtual void Set(const std::string& title, int x, int y, int bits, bool fullscreen)
+            virtual void Set(std::string_view title, int x, int y, int bits, bool fullscreen)
             {
-                m_newState = State(title, x, y, bits, fullscreen);
+                m_newState = State(title.data(), x, y, bits, fullscreen);
             }
 
             virtual const State& GetActiveState() const

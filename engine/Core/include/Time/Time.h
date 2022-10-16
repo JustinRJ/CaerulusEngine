@@ -18,8 +18,8 @@ namespace Core
             void Increment(time_t time);
             time_t GetTime() const;
 
-            static std::string GetTime(const std::string& format);
-            static std::string GetLocalTime(const std::string& format);
+            static std::string GetTime(std::string_view format);
+            static std::string GetLocalTime(std::string_view format);
 
         private:
             time_t m_time;

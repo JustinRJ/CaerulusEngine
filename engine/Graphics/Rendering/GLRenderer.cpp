@@ -3,14 +3,14 @@
 #include "Rendering/GLRenderer.h"
 
 #include "Math/Math.h"
-#include "Logging/Log.h"
+#include "Log/Log.h"
 #include "Window/GLWindow.h"
 #include "Pipeline/VertexArray.h"
 #include "Pipeline/VertexBuffer.h"
 #include "Pipeline/IndexBuffer.h"
 #include "Geometry/GPUGeometry.h"
 
-using namespace Core::Logging;
+using namespace Core::Log;
 
 void GLAPIENTRY OpenGLErrorLogCallback(GLenum source,
     GLenum type,

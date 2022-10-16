@@ -27,28 +27,28 @@
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
-    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
-    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
-    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
-    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
@@ -113,7 +113,8 @@
       <AdditionalLibraryDirectories>$(SolutionDir)..\dependencies\glfw-3.2.1\lib\$(Configuration)\$(Platform)\;</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
-      <Command>echo DA | xcopy "$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(Platform)\*.dll" "$(SolutionDir)..\bin\$(Configuration)\$(Platform)"</Command>
+      <Command>
+      </Command>
       <Message>
       </Message>
     </PostBuildEvent>
@@ -140,7 +141,8 @@
       <AdditionalLibraryDirectories>$(SolutionDir)..\dependencies\glfw-3.2.1\lib\$(Configuration)\$(Platform)\;</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
-      <Command>echo DA | xcopy "$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(Platform)\*.dll" "$(SolutionDir)..\bin\$(Configuration)\$(Platform)"</Command>
+      <Command>
+      </Command>
       <Message>
       </Message>
     </PostBuildEvent>
@@ -171,7 +173,8 @@
       <AdditionalLibraryDirectories>$(SolutionDir)..\dependencies\glfw-3.2.1\lib\$(Configuration)\$(Platform)\;</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
-      <Command>echo DA | xcopy "$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(Platform)\*.dll" "$(SolutionDir)..\bin\$(Configuration)\$(Platform)"</Command>
+      <Command>
+      </Command>
       <Message>
       </Message>
     </PostBuildEvent>
@@ -202,7 +205,8 @@
       <AdditionalLibraryDirectories>$(SolutionDir)..\dependencies\glfw-3.2.1\lib\$(Configuration)\$(Platform)\;</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
-      <Command>echo DA | xcopy "$(SolutionDir)$(MSBuildProjectName)\bin\$(Configuration)\$(Platform)\*.dll" "$(SolutionDir)..\bin\$(Configuration)\$(Platform)"</Command>
+      <Command>
+      </Command>
       <Message>
       </Message>
     </PostBuildEvent>
@@ -216,9 +220,7 @@
     <ClInclude Include="include\ECS\ComponentManager.h" />
     <ClInclude Include="include\ECS\Entity.h" />
     <ClInclude Include="include\ECS\IManager.h" />
-    <ClInclude Include="include\ECS\Manager.h" />
     <ClInclude Include="include\ECS\ManagerFactory.h" />
-    <ClInclude Include="include\ECS\ThreadSafe.h" />
     <ClInclude Include="include\File\FileUtility.h" />
     <ClInclude Include="include\Input\InputDefines.h" />
     <ClInclude Include="include\Input\KeyboardInputSystem.h" />
@@ -227,8 +229,8 @@
     <ClInclude Include="include\Interface\NonCopyable.h" />
     <ClInclude Include="include\Interface\NonMovable.h" />
     <ClInclude Include="include\Interface\Singleton.h" />
-    <ClInclude Include="include\Logging\Log.h" />
-    <ClInclude Include="include\Logging\LogToFile.h" />
+    <ClInclude Include="include\Log\Log.h" />
+    <ClInclude Include="include\Log\LogToFile.h" />
     <ClInclude Include="include\Math\AABox.h" />
     <ClInclude Include="include\Math\AARect.h" />
     <ClInclude Include="include\Math\Box.h" />
@@ -248,6 +250,8 @@
     <ClInclude Include="include\Template\NonAssignable.h" />
     <ClInclude Include="include\Template\Observer.h" />
     <ClInclude Include="include\Template\Producer.h" />
+    <ClInclude Include="include\Thread\LockQueue.h" />
+    <ClInclude Include="include\Thread\Thread.h" />
     <ClInclude Include="include\Time\FixedTimer.h" />
     <ClInclude Include="include\Time\FPSLimiter.h" />
     <ClInclude Include="include\Time\Time.h" />

@@ -17,7 +17,7 @@ namespace Graphics
             FrameBuffer() = default;
             ~FrameBuffer();
 
-            bool Init(unsigned int width, unsigned int height, unsigned int msaa = 0);
+            bool Init(uint32_t width, uint32_t height, uint32_t msaa = 0);
             void Bind();
             static void Unbind();
             void Update();
@@ -34,10 +34,10 @@ namespace Graphics
             GLuint GetColorID() const;
             GLuint GetDepthID() const;
 
-            unsigned int GetWidth() const;
-            unsigned int GetHeight() const;
-            unsigned int GetMsaa() const;
-            const std::string& GetErrorMessage() const;
+            uint32_t GetWidth() const;
+            uint32_t GetHeight() const;
+            uint32_t GetMsaa() const;
+            std::string_view GetErrorMessage() const;
             std::string GetStatus() const;
 
         private:
@@ -49,9 +49,9 @@ namespace Graphics
             static std::string GetRenderbufferParameters(GLuint id);
             static std::string ConvertInternalFormatToString(GLenum format);
 
-            unsigned int m_width = 0;         // buffer width
-            unsigned int m_height = 0;        // buffer height
-            unsigned int m_msaa = 0;          // # of multi samples; 0, 2, 4, 8,...
+            uint32_t m_width = 0;         // buffer width
+            uint32_t m_height = 0;        // buffer height
+            uint32_t m_msaa = 0;          // # of multi samples; 0, 2, 4, 8,...
             unsigned char* m_colorBuffer = nullptr;   // color buffer (rgba)
             float* m_depthBuffer = nullptr;           // depth buffer
             GLuint m_fboMsaaId = 0;           // primary id for multisample FBO

@@ -8,25 +8,25 @@ namespace Core
     {
         tm InternalTime;
 
-        std::string Time::GetTime(const std::string& format)
+        std::string Time::GetTime(std::string_view format)
         {
-            size_t length = strlen(format.c_str());
+            size_t length = strlen(format.data());
             char* buffer = new char[length];
-            strftime(buffer, length, format.c_str(), &InternalTime);
+            strftime(buffer, length, format.data(), &InternalTime);
             std::string outFormat(buffer);
             delete[] buffer;
 
             return outFormat;
         }
 
-        std::string Time::GetLocalTime(const std::string& format)
+        std::string Time::GetLocalTime(std::string_view format)
         {
             time_t rawTime;
             time(&rawTime);
             localtime_s(&InternalTime, &rawTime);
 
             char buffer[200];
-            strftime(buffer, 200, format.c_str(), &InternalTime);
+            strftime(buffer, 200, format.data(), &InternalTime);
 
             return std::string(buffer);
         }

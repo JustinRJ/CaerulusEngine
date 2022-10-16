@@ -6,12 +6,12 @@ namespace Graphics
 {
     namespace Pipeline
     {
-        IndexBuffer::IndexBuffer(const unsigned int* data, size_t count) :
+        IndexBuffer::IndexBuffer(const uint32_t* data, size_t count) :
             m_count(count)
         {
             glGenBuffers(1, &m_handle);
             glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_handle);
-            glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * m_count, data, GL_STATIC_DRAW);
+            glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint32_t) * m_count, data, GL_STATIC_DRAW);
         }
 
         IndexBuffer::~IndexBuffer()

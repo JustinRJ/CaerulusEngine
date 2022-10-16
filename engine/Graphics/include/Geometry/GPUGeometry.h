@@ -19,7 +19,7 @@ namespace Graphics
         class GPUGeometry : public Pipeline::ShaderUniformCallback
         {
         public:
-            GPUGeometry(const void* vertData, size_t vertSize, const unsigned int* indexData, size_t indexCount) :
+            GPUGeometry(const void* vertData, size_t vertSize, const uint32_t* indexData, size_t indexCount) :
                 m_vertexBuffer(vertData, vertSize),
                 m_indexBuffer(indexData, indexCount),
                 m_renderer(nullptr)

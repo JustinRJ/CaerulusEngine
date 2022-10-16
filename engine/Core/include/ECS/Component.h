@@ -16,9 +16,6 @@ namespace Core
 
             virtual ~Component() = default;
 
-            virtual void OnAwake() {};
-            virtual void OnDestroy() {};
-
             virtual void OnEnable() {};
             virtual void OnDisable() {};
 

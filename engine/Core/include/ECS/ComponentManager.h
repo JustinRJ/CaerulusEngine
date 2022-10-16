@@ -1,6 +1,6 @@
 #pragma once
 
-#include "ECS/Manager.h"
+#include "ECS/IManager.h"
 #include "ECS/Component.h"
 
 namespace Core
@@ -8,31 +8,25 @@ namespace Core
     namespace ECS
     {
         template <class R>
-        class ComponentManager : public Manager<ECS::Entity*, R>
+        class ComponentManager : public IManager
         {
         public:
-            ComponentManager()
+            ComponentManager() :
+                m_typeHash(typeid(R).hash_code())
             {
                 StaticAssertComponentIsBase<R>();
 
                 ComponentManagerData data;
-                data.ManagedTypeHash = Manager<ECS::Entity*, R>::GetManagedTypeHash();
-                data.AddComponent = [&](Entity& e)
+                data.ManagerTypeHash = GetManagedTypeHash();
+                data.AddComponent = [&](Entity& key)
                 {
-                    auto newComponent = std::make_shared<R>(e);
-                    Insert(&e, newComponent);
+                    const auto& newComponent = std::make_shared<R>(key);
+                    Insert(key, newComponent);
                     return newComponent;
                 };
-                data.RemoveComponent = [&](Entity& e)
+                data.RemoveComponent = [&](Entity& key)
                 {
-                    auto& map = Manager<ECS::Entity*, R>::GetMap();
-                    auto it = map.find(&e);
-                    if (it != std::end(map))
-                    {
-                        auto& component = it->second;
-                        component->OnDestroy();
-                        map.erase(it);
-                    }
+                    Remove(key);
                 };
 
                 Entity::RegisterComponentManager(data);
@@ -40,14 +34,14 @@ namespace Core
 
             virtual ~ComponentManager() = default;
 
-            void Remove(ECS::Entity* key) override
+            size_t GetManagedTypeHash() const override
             {
-                key->RemoveComponentOfType<R>();
+                return m_typeHash;
             }
 
             void EarlyUpdate()
             {
-                for (auto& [entity, component] : Manager<ECS::Entity*, R>::GetMap())
+                for (auto& [entity, component] : m_components)
                 {
                     if (component->IsEnabled())
                     {
@@ -58,7 +52,7 @@ namespace Core
 
             void Update(float deltaTime)
             {
-                for (auto& [entity, component] : Manager<ECS::Entity*, R>::GetMap())
+                for (auto& [entity, component] : m_components)
                 {
                     if (component->IsEnabled())
                     {
@@ -69,7 +63,7 @@ namespace Core
 
             void FixedUpdate(float fixedTime)
             {
-                for (auto& [entity, component] : Manager<ECS::Entity*, R>::GetMap())
+                for (auto& [entity, component] : m_components)
                 {
                     if (component->IsEnabled())
                     {
@@ -80,7 +74,7 @@ namespace Core
 
             void LateUpdate()
             {
-                for (auto& [entity, component] : Manager<ECS::Entity*, R>::GetMap())
+                for (auto& [entity, component] : m_components)
                 {
                     if (component->IsEnabled())
                     {
@@ -91,22 +85,32 @@ namespace Core
 
             void Reset()
             {
-                for (auto& [entity, component] : Manager<ECS::Entity*, R>::GetMap())
+                for (auto& [entity, component] : m_components)
                 {
                     component->Reset();
                 }
             }
 
         private:
-            void Insert(ECS::Entity* entity, const std::shared_ptr<R>& value) override
+            void Insert(Entity& key, const std::shared_ptr<R>& value)
             {
-                if (entity && value)
+                if (value)
                 {
-                    R* onAwakeAfterInsert = value.get();
-                    Manager<ECS::Entity*, R>::Insert(entity, value);
-                    onAwakeAfterInsert->OnAwake();
+                    m_components.insert({ &key, value });
                 }
             }
+
+            void Remove(Entity& key)
+            {
+                auto it = m_components.find(&key);
+                if (it != std::end(m_components))
+                {
+                    m_components.erase(it);
+                }
+            }
+
+            size_t m_typeHash;
+            std::map<Entity*, std::shared_ptr<R>> m_components;
         };
     }
 }

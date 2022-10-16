@@ -7,22 +7,22 @@ namespace Core
 {
     namespace ECS
     {
-        unsigned int Entity::s_numEntities = 0;
-        unsigned int Entity::s_maxDiscardedEntityIDs = 128;
-        std::list<unsigned int> Entity::s_reusableEntityIDs;
+        uint32_t Entity::s_numEntities = 0;
+        uint32_t Entity::s_maxDiscardedEntityIDs = 1000;
+        std::list<uint32_t> Entity::s_reusableEntityIDs;
         std::vector<ComponentManagerData> Entity::s_componentManagers;
 
-        Entity::Entity(Entity* parent) :
+        Entity::Entity(std::shared_ptr<Entity> parent) :
             m_parent(parent)
         {
-            if (m_parent)
+            if (auto p = m_parent.lock())
             {
-                m_parent->m_children.push_back(this);
-                m_enabled = m_parent->IsEnabled();
+                p->m_children.push_back(std::shared_ptr<Entity>(this));
+                m_isEnabled = p->IsEnabled();
             }
             else
             {
-                m_enabled = true;
+                m_isEnabled = true;
             }
 
             if (s_maxDiscardedEntityIDs > s_reusableEntityIDs.size())
@@ -40,44 +40,68 @@ namespace Core
         {
             s_numEntities--;
             s_reusableEntityIDs.push_back(m_id);
-            
+
+            m_isDeleted = true;
+            m_children.clear();
+
             for (auto& componentData : s_componentManagers)
             {
                 componentData.RemoveComponent(*this);
             }
 
-            for (Entity* child : m_children)
+            auto p = m_parent.lock();
+            if (p && !p->m_isDeleted)
             {
-                delete child;
-                child = nullptr;
+                auto& pChildren = p->m_children;
+                pChildren.erase(std::find_if(pChildren.begin(), pChildren.end(), [&](const std::shared_ptr<Entity>& e)
+                {
+                    return e->GetID() == GetID();
+                }));
             }
         }
 
-        unsigned int Entity::GetID() const
+        uint32_t Entity::GetID() const
         {
             return m_id;
         }
 
-        unsigned int Entity::GetEntityCount()
+        uint32_t Entity::GetEntityCount()
         {
             return s_numEntities;
         }
 
-        Entity* Entity::GetParent() const
+        std::shared_ptr<Entity> Entity::GetParent() const
         {
-            return m_parent;
+            return m_parent.lock();
         }
 
-        void Entity::SetParent(Entity* parent)
+        void Entity::SetParent(std::shared_ptr<Entity> parent)
         {
+            if (auto p = m_parent.lock())
+            {
+                auto& pChildren = p->m_children;
+                pChildren.erase(std::find_if(pChildren.begin(), pChildren.end(), [&](const std::shared_ptr<Entity>& e)
+                {
+                    return e->GetID() == GetID();
+                }));
+            }
             m_parent = parent;
-            SetEnabled(m_parent->IsEnabled());
+
+            if (auto p = m_parent.lock())
+            {
+                p->m_children.push_back(std::shared_ptr<Entity>(this));
+                SetEnabled(p->IsEnabled());
+            }
         }
 
-
-        const std::vector<Entity*>& Entity::GetChildren() const
+        const std::vector<std::shared_ptr<Entity>>& Entity::GetChildren() const
         {
             return m_children;
+        }
+
+        Math::Transform& Entity::GetLocalTransform()
+        {
+            return m_localTransform;
         }
 
         const Math::Transform& Entity::GetLocalTransform() const
@@ -85,14 +109,9 @@ namespace Core
             return m_localTransform;
         }
 
-        void Entity::SetLocalTransform(const Math::Transform& transform)
-        {
-            m_localTransform = transform;
-        }
-
         Math::Transform Entity::GetWorldTransform() const
         {
-            return m_parent ? m_parent->GetWorldTransform() * m_localTransform : m_localTransform;
+            return m_parent.lock() ? m_parent.lock()->GetWorldTransform() * m_localTransform : m_localTransform;
         }
 
         void Entity::SetWorldTransform(const Math::Transform& transform)
@@ -107,7 +126,7 @@ namespace Core
             auto it = std::begin(s_componentManagers);
             while (!componentManagerFound && it != std::end(s_componentManagers))
             {
-                componentManagerFound = it->ManagedTypeHash == componentManagerData.ManagedTypeHash;
+                componentManagerFound = it->ManagerTypeHash == componentManagerData.ManagerTypeHash;
                 it++;
             }
 
@@ -126,14 +145,14 @@ namespace Core
                 auto componentManagerIt = std::begin(s_componentManagers);
                 while (!addedComponent && componentManagerIt != std::end(s_componentManagers))
                 {
-                    if (componentManagerIt->ManagedTypeHash == typeToAdd)
+                    if (componentManagerIt->ManagerTypeHash == typeToAdd)
                     {
                         ComponentData data;
                         data.Component = componentManagerIt->AddComponent(*this);
                         data.ComponentTypeHash = typeToAdd;
                         m_components.push_back(data);
                         addedComponent = true;
-                        component = data.Component.lock();
+                        component = data.Component;
                     }
                     componentManagerIt++;
                 }
@@ -145,7 +164,7 @@ namespace Core
         {
             std::vector<std::shared_ptr<Component>> addedComponents;
             addedComponents.push_back(AddComponentOfTypeInner(typeToAdd));
-            for (Entity* child : m_children)
+            for (std::shared_ptr<Entity>& child : m_children)
             {
                 auto childAddedComponents = child->AddComponentsOfTypeInner(typeToAdd);
                 addedComponents.insert(std::end(addedComponents), std::begin(childAddedComponents), std::end(childAddedComponents));
@@ -155,17 +174,17 @@ namespace Core
 
         void Entity::SetEnabled(bool enabled)
         {
-            if (m_enabled != enabled)
+            if (m_isEnabled != enabled)
             {
-                m_enabled = enabled;
+                m_isEnabled = enabled;
 
                 for (ComponentData& componentData : m_components)
                 {
-                    componentData.Component.lock()->SetEnabled(enabled);
+                    componentData.Component->SetEnabled(enabled);
                 }
             }
 
-            for (Entity* child : m_children)
+            for (std::shared_ptr<Entity>& child : m_children)
             {
                 child->SetEnabled(enabled);
             }
@@ -173,14 +192,30 @@ namespace Core
 
         bool Entity::IsEnabled() const
         {
-            return m_enabled;
+            return m_isEnabled;
         }
 
         void Entity::SwapID(Entity& e)
         {
-            unsigned int temp = m_id;
-            m_id = e.GetID();
+            uint32_t temp = m_id;
+            m_id = e.m_id;
             e.m_id = temp;
+        }
+
+        std::vector<std::shared_ptr<Entity>> Entity::ToVector() const
+        {
+            std::vector<std::shared_ptr<Entity>> vec;
+            vec.insert(vec.begin(), m_children.begin(), m_children.end());
+            for (auto child : m_children)
+            {
+                vec.insert(vec.begin(), child->m_children.begin(), child->m_children.end());
+            }
+            return vec;
+        }
+
+        EntityBitset& Entity::GetLayers()
+        {
+            return m_layers;
         }
 
         const EntityBitset& Entity::GetLayers() const
@@ -188,19 +223,19 @@ namespace Core
             return m_layers;
         }
 
-        void Entity::SetLayers(const EntityBitset& layer)
-        {
-            m_layers = layer;
-        }
-
-        const std::string& Entity::GetName() const
+        std::string_view Entity::GetName() const
         {
             return m_name;
         }
 
-        void Entity::SetName(const std::string& name)
+        void Entity::SetName(std::string_view name)
         {
             m_name = name;
+        }
+
+        std::vector<std::string>& Entity::GetTags()
+        {
+            return m_tags;
         }
 
         const std::vector<std::string>& Entity::GetTags() const
@@ -208,20 +243,15 @@ namespace Core
             return m_tags;
         }
 
-        void Entity::SetTags(const std::vector<std::string>& tags)
-        {
-            m_tags = tags;
-        }
-
         std::shared_ptr<Component> Entity::GetComponentOfTypeInner(size_t typeToFind) const
         {
-            std::shared_ptr<Component> foundType;
+            std::shared_ptr<Component> foundType = nullptr;
             auto it = std::begin(m_components);
             while (!foundType && it != std::end(m_components))
             {
                 if (typeToFind == it->ComponentTypeHash)
                 {
-                    foundType = it->Component.lock();
+                    foundType = it->Component;
                 }
                 it++;
             }
@@ -232,7 +262,7 @@ namespace Core
         {
             std::vector<std::shared_ptr<Component>> foundTypes;
             foundTypes.push_back(GetComponentOfTypeInner(typeToFind));
-            for (Entity* child : m_children)
+            for (const std::shared_ptr<Entity>& child : m_children)
             {
                 auto childFoundTypes = child->GetComponentsOfTypeInner(typeToFind);
                 foundTypes.insert(std::end(foundTypes), std::begin(childFoundTypes), std::end(childFoundTypes));
@@ -246,26 +276,19 @@ namespace Core
             auto managerIt = std::begin(s_componentManagers);
             while (!componentManagerFound && managerIt != std::end(s_componentManagers))
             {
-                if (managerIt->ManagedTypeHash == typeToFind)
+                if (managerIt->ManagerTypeHash == typeToFind)
                 {
                     componentManagerFound = true;
-                    bool foundComponent = false;
-                    auto componentIt = std::begin(m_components);
-                    while (!foundComponent && componentIt != std::end(m_components))
-                    {
-                        if (componentIt->ComponentTypeHash == typeToFind)
-                        {
-                            foundComponent = true;
-                        }
-                        else
-                        {
-                            componentIt++;
-                        }
-                    }
 
-                    if (componentIt != std::end(m_components))
+                    auto it = std::find_if(std::begin(m_components), std::end(m_components),
+                        [typeToFind](const ComponentData& componentData)
                     {
-                        m_components.erase(componentIt);
+                        return componentData.ComponentTypeHash == typeToFind;
+                    });
+
+                    if (it != std::end(m_components))
+                    {
+                        m_components.erase(it);
                         managerIt->RemoveComponent(*this);
                     }
                 }
@@ -276,7 +299,7 @@ namespace Core
         void Entity::RemoveComponentsOfTypeInner(size_t typeToFind)
         {
             RemoveComponentOfTypeInner(typeToFind);
-            for (Entity* child : m_children)
+            for (std::shared_ptr<Entity>& child : m_children)
             {
                 child->RemoveComponentsOfTypeInner(typeToFind);
             }

@@ -5,31 +5,31 @@
 #include "File/FileUtility.h"
 
 using namespace Core::File;
-using namespace Core::Logging;
+using namespace Core::Log;
 using namespace Graphics::Surface;
 
 namespace Graphics
 {
     namespace AssetManagers
     {
-        void TextureManager::Load(const std::string& name, const std::string& path)
+        void TextureManager::Load(std::string_view name, std::string_view path)
         {
-            if (Get(name))
+            if (Get(name.data()))
             {
-                LogInDebug("Texture " + name + " already loaded with path: " + path);
+                LogInDebug("Texture " + std::string(name) + " already loaded with path: " + std::string(path));
             }
             else
             {
-                LogMessage("Loading texture " + name + " with path: " + path);
+                LogMessage("Loading texture " + std::string(name) + " with path: " + std::string(path));
                 std::shared_ptr<Texture> texture = std::make_unique<Texture>(path, Core::File::GetFileExtension(path) == "hdr");
 
                 if (texture->IsLoaded())
                 {
-                    Insert(name, texture);
+                    Insert(name.data(), texture);
                 }
                 else
                 {
-                    LogInDebug("Failed to load " + name + " texture with path: " + path);
+                    LogInDebug("Failed to load " + std::string(name) + " texture with path: " + std::string(path));
                 }
             }
         }

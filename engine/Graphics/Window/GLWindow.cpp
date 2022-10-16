@@ -7,9 +7,9 @@
 
 #include "Math/Math.h"
 #include "Math/Camera.h"
-#include "Logging/Log.h"
+#include "Log/Log.h"
 
-using namespace Core::Logging;
+using namespace Core::Log;
 
 void CloseWindowCallback(GLFWwindow* window)
 {
@@ -20,7 +20,7 @@ namespace Graphics
 {
     namespace Window
     {
-        GLWindow::GLWindow(Core::Math::Camera* camera, const std::string& title, int x, int y, int bits, bool fullscreen) :
+        GLWindow::GLWindow(Core::Math::Camera* camera, std::string_view title, int x, int y, int bits, bool fullscreen) :
             m_lockedCursor(true),
             m_window(nullptr),
             m_camera(camera)

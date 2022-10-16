@@ -7,14 +7,14 @@
 
 namespace Core
 {
-    namespace Logging
+    namespace Log
     {
         class LogToFile : Interface::NonCopyable
         {
         public:
             LogToFile() = delete;
 
-            explicit LogToFile(const std::string& path) :
+            explicit LogToFile(std::string_view path) :
                 log_file(path)
             {
                 if (!log_file.is_open())

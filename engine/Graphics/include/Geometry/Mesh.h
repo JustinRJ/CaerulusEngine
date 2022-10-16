@@ -24,7 +24,7 @@ namespace Graphics
         class Mesh : public GPUGeometry
         {
         public:
-            Mesh(const std::vector<Vertex>& vertices, const std::vector<GLuint>& indices, const std::string& fileMaterialName) :
+            Mesh(const std::vector<Vertex>& vertices, const std::vector<GLuint>& indices, std::string_view fileMaterialName) :
                 GPUGeometry(&vertices[0], sizeof(Vertex)* vertices.size(), &indices[0], indices.size()),
                 m_vertices(vertices),
                 m_indices(indices),
@@ -47,7 +47,7 @@ namespace Graphics
                 m_fileMaterial = material;
             }
 
-            const std::string& GetFileMaterialName() const
+            std::string_view GetFileMaterialName() const
             {
                 return m_fileMaterialName;
             }

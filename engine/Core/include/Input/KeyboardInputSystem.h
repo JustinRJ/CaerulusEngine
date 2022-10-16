@@ -42,7 +42,7 @@ namespace Core
                 UpdateActionState();
             }
 
-            void AddWindowKeyCallback(Graphics::Window::GLWindow& window, int key, Action action, std::function<void(Modifier)> callback, const std::string& name = "")
+            void AddWindowKeyCallback(Graphics::Window::GLWindow& window, int key, Action action, std::function<void(Modifier)> callback, std::string_view name = "")
             {
                 KeyBinding newBinding;
                 newBinding.TargetAction = action;
@@ -64,7 +64,7 @@ namespace Core
                 });
             }
 
-            bool Invoke(const std::string& name, Modifier mod = Modifier::None)
+            bool Invoke(std::string_view name, Modifier mod = Modifier::None)
             {
                 bool invoked = false;
                 for (const auto& kv : m_keyBindingMap)

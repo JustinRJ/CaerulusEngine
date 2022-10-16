@@ -2,28 +2,28 @@
 
 #include "Pipeline/Shader.h"
 
-#include "Logging/Log.h"
+#include "Log/Log.h"
 #include "Pipeline/ShaderSource.h"
 
-using namespace Core::Logging;
+using namespace Core::Log;
 
 namespace Graphics
 {
     namespace Pipeline
     {
         Shader::Shader(const AssetManagers::ShaderSourceManager& shaderSourceManager,
-            const std::string& vertex, const std::string& fragment) :
+            std::string_view vertex, std::string_view fragment) :
             m_vertex(vertex),
             m_fragment(fragment),
             m_shaderSourceManager(shaderSourceManager),
             m_isLinked(false)
         {
-            const unsigned int LogSize = 512;
+            const uint32_t LogSize = 512;
             // Shader Program Compilation
             GLchar infoLog[LogSize];
             m_handle = glCreateProgram();
             glAttachShader(m_handle, m_shaderSourceManager.Get(m_vertex)->GetHandle());
-            glAttachShader(m_handle, m_shaderSourceManager.Get(fragment)->GetHandle());
+            glAttachShader(m_handle, m_shaderSourceManager.Get(fragment.data())->GetHandle());
             glLinkProgram(m_handle);
 
             GLint isLinkSuccessful = false;
@@ -58,56 +58,56 @@ namespace Graphics
             return m_isLinked;
         }
 
-        void Shader::Set1i(const std::string& name, GLint value)
+        void Shader::Set1i(std::string_view name, GLint value)
         {
             glUniform1i(GetUniformLocation(name), value);
         }
 
-        void Shader::Set1f(const std::string& name, GLfloat value)
+        void Shader::Set1f(std::string_view name, GLfloat value)
         {
             glUniform1f(GetUniformLocation(name), value);
         }
 
-        void Shader::Set2f(const std::string& name, Core::Math::fvec2 value)
+        void Shader::Set2f(std::string_view name, Core::Math::fvec2 value)
         {
             glUniform2fv(GetUniformLocation(name), 1, value_ptr(value));
         }
 
-        void Shader::Set3f(const std::string& name, const Core::Math::fvec3& value)
+        void Shader::Set3f(std::string_view name, const Core::Math::fvec3& value)
         {
             glUniform3fv(GetUniformLocation(name), 1, value_ptr(value));
         }
 
-        void Shader::Set4f(const std::string& name, const Core::Math::fvec4& value)
+        void Shader::Set4f(std::string_view name, const Core::Math::fvec4& value)
         {
             glUniform4fv(GetUniformLocation(name), 1, value_ptr(value));
         }
 
-        void Shader::SetMat3fv(const std::string& name, const Core::Math::mat3& value, GLboolean transpose)
+        void Shader::SetMat3fv(std::string_view name, const Core::Math::mat3& value, GLboolean transpose)
         {
             glUniformMatrix3fv(GetUniformLocation(name), 1, transpose, value_ptr(value));
         }
 
-        void Shader::SetMat4fv(const std::string& name, const Core::Math::mat4& value, GLboolean transpose)
+        void Shader::SetMat4fv(std::string_view name, const Core::Math::mat4& value, GLboolean transpose)
         {
             glUniformMatrix4fv(GetUniformLocation(name), 1, transpose, value_ptr(value));
         }
 
-        int Shader::GetUniformLocation(const std::string& name)
+        int Shader::GetUniformLocation(std::string_view name)
         {
-            if (m_uniformLocationCache.find(name) != m_uniformLocationCache.end())
+            if (m_uniformLocationCache.find(name.data()) != m_uniformLocationCache.end())
             {
-                return m_uniformLocationCache[name];
+                return m_uniformLocationCache[name.data()];
             }
 
-            int location = glGetUniformLocation(m_handle, name.c_str());
+            int location = glGetUniformLocation(m_handle, name.data());
 
             if (location == -1)
             {
-                LogInDebug("Shader::GetUniformLocation: " + name + "does not exist!");
+                LogInDebug("Shader::GetUniformLocation: " + std::string(name) + "does not exist!");
             }
 
-            m_uniformLocationCache[name] = location;
+            m_uniformLocationCache[name.data()] = location;
             return location;
         }
     }

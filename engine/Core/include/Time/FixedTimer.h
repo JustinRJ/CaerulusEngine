@@ -14,7 +14,7 @@ namespace Core
             float Fixed(float fixed)
             {
                 m_accumulatedTime += Timer::Delta();
-                unsigned int count = 0;
+                uint32_t count = 0;
                 while (m_accumulatedTime >= fixed)
                 {
                     m_accumulatedTime -= fixed;

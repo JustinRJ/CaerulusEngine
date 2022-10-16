@@ -13,9 +13,9 @@ namespace Graphics
         public:
             MaterialManager(TextureManager& textureManager);
 
-            void Create(const std::string& name, const std::vector<std::string>& textureNames);
+            void Create(std::string_view name, const std::vector<std::string>& textureNames);
 
-            void Load(const std::string& path);
+            void Load(std::string_view path);
 
             TextureManager& GetTextureManager();
 

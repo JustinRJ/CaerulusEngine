@@ -7,15 +7,15 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
-#include "Logging/Log.h"
+#include "Log/Log.h"
 
-using namespace Core::Logging;
+using namespace Core::Log;
 
 namespace Graphics
 {
     namespace Surface
     {
-        Texture::Texture(const std::string& path, bool isHDR) :
+        Texture::Texture(std::string_view path, bool isHDR) :
             m_path(path),
             m_width(0),
             m_height(0),
@@ -39,12 +39,12 @@ namespace Graphics
             glDeleteTextures(1, &m_handle);
         }
 
-        bool Texture::Load(const std::string& path)
+        bool Texture::Load(std::string_view path)
         {
             bool isLoaded = false;
-            if (unsigned char* data = stbi_load(path.c_str(), &m_width, &m_height, &m_BPP, 0))
+            if (unsigned char* data = stbi_load(path.data(), &m_width, &m_height, &m_BPP, 0))
             {
-                GLenum format;
+                GLenum format = 0;
                 if (m_BPP == 1)
                 {
                     format = GL_RED;
@@ -74,10 +74,10 @@ namespace Graphics
             return isLoaded;
         }
 
-        bool Texture::LoadHDR(const std::string& path)
+        bool Texture::LoadHDR(std::string_view path)
         {
             bool isLoaded = false;
-            if (float* data = stbi_loadf(path.c_str(), &m_width, &m_height, &m_BPP, 0))
+            if (float* data = stbi_loadf(path.data(), &m_width, &m_height, &m_BPP, 0))
             {
                 glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, m_width, m_height, 0, GL_RGB, GL_FLOAT, data);
                 glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
@@ -90,7 +90,7 @@ namespace Graphics
             return isLoaded;
         }
 
-        unsigned int Texture::GetHandle() const
+        uint32_t Texture::GetHandle() const
         {
             return m_handle;
         }
@@ -105,7 +105,7 @@ namespace Graphics
             return m_height;
         }
 
-        const std::string& Texture::GetPath() const
+        std::string_view Texture::GetPath() const
         {
             return m_path;
         }

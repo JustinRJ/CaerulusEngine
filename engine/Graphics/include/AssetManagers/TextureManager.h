@@ -12,7 +12,7 @@ namespace Graphics
         public:
             TextureManager() = default;
 
-            void Load(const std::string& name, const std::string& path);
+            void Load(std::string_view name, std::string_view path);
         };
     }
 }

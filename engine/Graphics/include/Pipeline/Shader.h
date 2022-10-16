@@ -19,7 +19,7 @@ namespace Graphics
         class CAERULUS_GRAPHICS Shader : Core::Interface::NonCopyable
         {
         public:
-            Shader(const AssetManagers::ShaderSourceManager& shaderSourceManager, const std::string& vertex, const std::string& fragment);
+            Shader(const AssetManagers::ShaderSourceManager& shaderSourceManager, std::string_view vertex, std::string_view fragment);
 
             void Bind();
             static void Unbind();
@@ -27,16 +27,16 @@ namespace Graphics
             GLuint GetHandle() const;
             bool IsLinked() const;
 
-            void Set1i(const std::string& name, GLint value);
-            void Set1f(const std::string& name, GLfloat value);
-            void Set2f(const std::string& name, Core::Math::fvec2 value);
-            void Set3f(const std::string& name, const Core::Math::fvec3& value);
-            void Set4f(const std::string& name, const Core::Math::fvec4& value);
-            void SetMat3fv(const std::string& name, const Core::Math::mat3& value, GLboolean transpose = GL_FALSE);
-            void SetMat4fv(const std::string& name, const Core::Math::mat4& value, GLboolean transpose = GL_FALSE);
+            void Set1i(std::string_view name, GLint value);
+            void Set1f(std::string_view name, GLfloat value);
+            void Set2f(std::string_view name, Core::Math::fvec2 value);
+            void Set3f(std::string_view name, const Core::Math::fvec3& value);
+            void Set4f(std::string_view name, const Core::Math::fvec4& value);
+            void SetMat3fv(std::string_view name, const Core::Math::mat3& value, GLboolean transpose = GL_FALSE);
+            void SetMat4fv(std::string_view name, const Core::Math::mat4& value, GLboolean transpose = GL_FALSE);
 
         private:
-            int GetUniformLocation(const std::string& name);
+            int GetUniformLocation(std::string_view name);
 
             GLuint m_handle;
             bool m_isLinked;

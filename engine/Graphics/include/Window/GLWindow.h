@@ -21,7 +21,7 @@ namespace Graphics
         class CAERULUS_GRAPHICS GLWindow : public IWindow
         {
         public:
-            GLWindow(Core::Math::Camera* camera, const std::string& title, int x, int y, int bits, bool fullscreen = false);
+            GLWindow(Core::Math::Camera* camera, std::string_view title, int x, int y, int bits, bool fullscreen = false);
             ~GLWindow();
 
             void Update() override;

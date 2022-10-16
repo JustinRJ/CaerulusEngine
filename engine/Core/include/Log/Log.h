@@ -5,12 +5,12 @@
 
 namespace Core
 {
-    namespace Logging
+    namespace Log
     {
         template<typename... Args>
-        void Log(const std::string& file, int lineNum, const Args& ... args)
+        void Log(std::string_view file, int lineNum, const Args& ... args)
         {
-            std::stringstream ss;
+            std::stringstream ss();
             (ss << ... << args) << "\n";
             std::cout << "FILE: " << file << " LINE: " << lineNum << " MESSAGE: " << ss.str() << std::endl;
         }
@@ -24,9 +24,9 @@ namespace Core
             #endif
         }
 
-        inline void LogInDebug(const std::string& debug)
+        inline void LogInDebug(std::string_view debug)
         {
-            LogInDebug(debug.c_str());
+            LogInDebug(debug.data());
         }
 
         inline void LogMessage(const char* message)
@@ -34,9 +34,9 @@ namespace Core
             std::cout << message << std::endl;
         }
 
-        inline void LogMessage(const std::string& message)
+        inline void LogMessage(std::string_view message)
         {
-            LogMessage(message.c_str());
+            LogMessage(message.data());
         }
 
         inline void LogError(const char* error)
@@ -44,9 +44,9 @@ namespace Core
             std::cerr << error << std::endl;
         }
 
-        inline void LogError(const std::string& error)
+        inline void LogError(std::string_view error)
         {
-            LogError(error.c_str());
+            LogError(error.data());
         }
 
         inline void LogError(const char* message, const char* error)
@@ -54,15 +54,15 @@ namespace Core
             std::cerr <<  message << "\n" << error << std::endl;
         }
 
-        inline void LogError(const std::string& message, const std::string& error)
+        inline void LogError(std::string_view message, std::string_view error)
         {
-            LogError(message.c_str(), error.c_str());
+            LogError(message.data(), error.data());
         }
 
-        inline void LogException(const std::string& message, const std::string& exception = "")
+        inline void LogException(std::string_view message, std::string_view exception = "")
         {
-            std::cerr << message +
-                "\nException: " + exception +
+            std::cerr << std::string(message) +
+                "\nException: " + std::string(exception) +
                 "\nIn file: " +  __FILE__ +
                 "\nOn line: " + std::to_string(__LINE__) << std::endl;
         }

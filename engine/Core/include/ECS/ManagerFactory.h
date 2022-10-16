@@ -14,36 +14,41 @@ namespace Core
             virtual ~ManagerFactory() = default;
 
             template<class T>
-            AssetManager<T>* GetAssetManagerForType()
+            std::shared_ptr<AssetManager<T>> GetAssetManager()
             {
                 size_t hashToFind = typeid(T).hash_code();
-                IManager* foundManager = nullptr;
-
+                std::shared_ptr<IManager> foundManager = nullptr;
                 auto it = std::begin(m_assetManagers);
                 while (!foundManager && it != std::end(m_assetManagers))
                 {
                     if (hashToFind == (*it)->GetManagedTypeHash())
                     {
-                        foundManager = it->get();
+                        foundManager = *it;
                     }
                     it++;
                 }
-                return static_cast<AssetManager<T>*>(foundManager);
+                return std::static_pointer_cast<AssetManager<T>>(foundManager);
+            }
+
+            template<class T, class U>
+            std::shared_ptr<U> GetAssetManagerAsType()
+            {
+                return std::static_pointer_cast<U>(GetAssetManager<T>());
             }
 
             template<class T>
-            AssetManager<T>* CreateAssetManagerForType()
+            std::shared_ptr<AssetManager<T>> CreateAssetManager()
             {
-                IManager* foundManager = GetAssetManagerForType<T>();
+                std::shared_ptr<IManager> foundManager = GetAssetManager<T>();
                 if (!foundManager)
                 {
                     m_assetManagers.push_back(std::make_unique<AssetManager<T>>());
-                    foundManager = m_assetManagers.back().get();
+                    foundManager = m_assetManagers.back();
                 }
-                return static_cast<AssetManager<T>*>(foundManager);
+                return std::static_pointer_cast<AssetManager<T>>(foundManager);
             }
 
-            bool AddAssetManagerForType(const std::shared_ptr<IManager>& manager)
+            bool AddAssetManager(const std::shared_ptr<IManager>& manager)
             {
                 bool found = std::any_of(std::begin(m_assetManagers),
                     std::end(m_assetManagers),
@@ -60,36 +65,42 @@ namespace Core
             }
 
             template<class T>
-            ComponentManager<T>* GetComponentManagerForType()
+            std::shared_ptr<ComponentManager<T>> GetComponentManager()
             {
                 size_t hashToFind = typeid(T).hash_code();
-                IManager* foundManager = nullptr;
+                std::shared_ptr<IManager> foundManager = nullptr;
 
                 auto it = std::begin(m_componentManagers);
                 while (!foundManager && it != std::end(m_componentManagers))
                 {
                     if (hashToFind == (*it)->GetManagedTypeHash())
                     {
-                        foundManager = it->get();
+                        foundManager = *it;
                     }
                     it++;
                 }
-                return static_cast<ComponentManager<T>*>(foundManager);
+                return std::static_pointer_cast<ComponentManager<T>>(foundManager);
+            }
+
+            template<class T, class U>
+            std::shared_ptr<ComponentManager<T>> GetComponentManagerAsType()
+            {
+                return std::static_pointer_cast<U>(GetComponentManager<T>());
             }
 
             template<class T>
-            ComponentManager<T>* CreateComponentManagerForType()
+            std::shared_ptr<ComponentManager<T>> CreateComponentManager()
             {
-                IManager* foundManager = GetComponentManagerForType<T>();
+                std::shared_ptr<IManager> foundManager = GetComponentManager<T>();
                 if (!foundManager)
                 {
                     m_componentManagers.push_back(std::make_shared<ComponentManager<T>>());
-                    foundManager = m_componentManagers.back().get();
+                    foundManager = m_componentManagers.back();
                 }
-                return static_cast<ComponentManager<T>*>(foundManager);
+                return std::static_pointer_cast<ComponentManager<T>>(foundManager);
             }
 
-            bool AddComponentManagerForType(const std::shared_ptr<IManager>& manager)
+            bool AddComponentManager(const std::shared_ptr<IManager>& manager)
             {
                 bool found = std::any_of(std::begin(m_componentManagers),
                     std::end(m_componentManagers),

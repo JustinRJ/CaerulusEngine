@@ -32,7 +32,7 @@ namespace Graphics
         public:
             Model();
 
-            void Load(const std::string& modelPath, Rendering::IRenderer* renderer, AssetManagers::MaterialManager* materialManager = nullptr, const std::string& materialPath = "");
+            void Load(std::string_view modelPath, Rendering::IRenderer* renderer, AssetManagers::MaterialManager* materialManager = nullptr, std::string_view materialPath = "");
 
             bool IsLoaded() const;
 

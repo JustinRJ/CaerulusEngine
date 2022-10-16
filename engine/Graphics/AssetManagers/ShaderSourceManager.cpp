@@ -2,32 +2,32 @@
 
 #include "AssetManagers/ShaderSourceManager.h"
 
-using namespace Core::Logging;
+using namespace Core::Log;
 using namespace Graphics::Pipeline;
 
 namespace Graphics
 {
     namespace AssetManagers
     {
-        void ShaderSourceManager::Load(const std::string& path, ShaderType type)
+        void ShaderSourceManager::Load(std::string_view path, ShaderType type)
         {
-            if (Get(path))
+            if (Get(path.data()))
             {
-                LogInDebug("\tShader stage already loaded with path: " + path);
+                LogInDebug("\tShader stage already loaded with path: " + std::string(path));
             }
             else
             {
-                LogMessage("\tLoading shader stage with path: " + path);
+                LogMessage("\tLoading shader stage with path: " + std::string(path));
                 std::shared_ptr<ShaderSource> shaderSource = std::make_unique<ShaderSource>(type, path);
                 shaderSource->Load();
 
                 if (shaderSource->IsCompiled())
                 {
-                    Insert(path, shaderSource);
+                    Insert(path.data(), shaderSource);
                 }
                 else
                 {
-                    LogInDebug("Failed to compile shader source with path: " + path);
+                    LogInDebug("Failed to compile shader source with path: " + std::string(path));
                 }
             }
         }

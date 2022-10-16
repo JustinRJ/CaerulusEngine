@@ -14,10 +14,10 @@ namespace Graphics
         class CAERULUS_GRAPHICS Texture : Core::Interface::NonCopyable
         {
         public:
-            Texture(const std::string& path, bool isHDR);
+            Texture(std::string_view path, bool isHDR);
             ~Texture();
 
-            unsigned int GetHandle() const;
+            uint32_t GetHandle() const;
             void Bind(GLuint slot) const;
             static void Unbind();
 
@@ -28,11 +28,11 @@ namespace Graphics
             
             bool IsLoaded() const;
 
-            const std::string& GetPath() const;
+            std::string_view GetPath() const;
 
         private:
-            bool Load(const std::string& path);
-            bool LoadHDR(const std::string& path);
+            bool Load(std::string_view path);
+            bool LoadHDR(std::string_view path);
 
             const std::string m_path;
             GLuint m_handle;

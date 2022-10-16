@@ -11,7 +11,8 @@ namespace Core
         {
         public:
 
-            CallbackPtr(T*, std::function<void(void)> callback) :
+            CallbackPtr(T* pointer, std::function<void(void)> callback) :
+                m_pointer(pointer),
                 m_callback(callback)
             {}
 

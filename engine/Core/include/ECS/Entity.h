@@ -8,7 +8,6 @@
 
 #include "Math/Transform.h"
 #include "Interface/NonCopyable.h"
-#include "ECS/ThreadSafe.h"
 
 namespace Core
 {
@@ -16,21 +15,14 @@ namespace Core
     {
         class Entity;
         class Component;
-
-        struct ComponentData
-        {
-            size_t ComponentTypeHash = 0;
-            std::weak_ptr<Component> Component;
-        };
+        typedef std::bitset<32> EntityBitset;
 
         struct ComponentManagerData
         {
-            size_t ManagedTypeHash = 0;
+            size_t ManagerTypeHash = 0;
             std::function<std::shared_ptr<Component>(Entity&)> AddComponent = {};
             std::function<void(Entity&)> RemoveComponent = {};
         };
-
-        typedef std::bitset<32> EntityBitset;
 
         template<class T>
         inline void StaticAssertComponentIsBase()
@@ -41,37 +33,38 @@ namespace Core
         class CAERULUS_CORE Entity final : Interface::NonCopyable
         {
         public:
-            Entity(Entity* parent = nullptr);
+            Entity(std::shared_ptr<Entity> parent = nullptr);
             ~Entity();
 
-            unsigned int GetID() const;
+            uint32_t GetID() const;
 
-            Entity* GetParent() const;
-            void SetParent(Entity* parent);
+            std::shared_ptr<Entity> GetParent() const;
+            void SetParent(std::shared_ptr<Entity> parent);
 
-            const std::vector<Entity*>& GetChildren() const;
+            const std::vector<std::shared_ptr<Entity>>& GetChildren() const;
 
-            const std::string& GetName() const;
-            void SetName(const std::string& layer);
+            std::string_view GetName() const;
+            void SetName(std::string_view layer);
 
             bool IsEnabled() const;
             void SetEnabled(bool enabled);
 
+            EntityBitset& GetLayers();
             const EntityBitset& GetLayers() const;
-            void SetLayers(const EntityBitset& layer);
 
+            std::vector<std::string>& GetTags();
             const std::vector<std::string>& GetTags() const;
-            void SetTags(const std::vector<std::string>& tags);
+
+            Math::Transform& GetLocalTransform();
+            const Math::Transform& GetLocalTransform() const;
 
             Math::Transform GetWorldTransform() const;
             void SetWorldTransform(const Math::Transform& transform);
 
-            const Math::Transform& GetLocalTransform() const;
-            void SetLocalTransform(const Math::Transform& transform);
-
             void SwapID(Entity& e);
+            std::vector<std::shared_ptr<Entity>> ToVector() const;
 
-            static unsigned int GetEntityCount();
+            static uint32_t GetEntityCount();
             static void RegisterComponentManager(const ComponentManagerData& componentManager);
 
             template<class T>
@@ -141,23 +134,28 @@ namespace Core
             void RemoveComponentOfTypeInner(size_t typeToRemove);
             void RemoveComponentsOfTypeInner(size_t typeToRemove);
 
-            bool m_enabled;
-            unsigned int m_id;
-            std::string m_name;
+            bool m_isDeleted = false;
+            bool m_isEnabled = false;
+            uint32_t m_id  = 0;
+            std::string m_name = "";
             EntityBitset m_layers;
+            Math::Transform m_localTransform;
             std::vector<std::string> m_tags;
 
-            Entity* m_parent;
-            std::vector<Entity*> m_children;
+            std::weak_ptr<Entity> m_parent;
+            std::vector<std::shared_ptr<Entity>> m_children;
 
-            Math::Transform m_localTransform;
+            struct ComponentData
+            {
+                size_t ComponentTypeHash = 0;
+                std::shared_ptr<Component> Component;
+            };
             std::vector<ComponentData> m_components;
-
             static std::vector<ComponentManagerData> s_componentManagers;
 
-            static unsigned int s_numEntities;
-            static unsigned int s_maxDiscardedEntityIDs;
-            static std::list<unsigned int> s_reusableEntityIDs;
+            static uint32_t s_numEntities;
+            static uint32_t s_maxDiscardedEntityIDs;
+            static std::list<uint32_t> s_reusableEntityIDs;
         };
 
         inline bool operator== (const Entity& left, const Entity& right)

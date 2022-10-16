@@ -18,11 +18,15 @@
 #include "AssetManagers/MaterialManager.h"
 #include "AssetManagers/ModelManager.h"
 
+#include <Thread/Thread.h>
+#include <Thread/LockQueue.h>
+
+using namespace Core::Log;
 using namespace Core::ECS;
 using namespace Core::Math;
 using namespace Core::Time;
 using namespace Core::Input;
-using namespace Core::Logging;
+using namespace Core::Thread;
 using namespace Core::Interface;
 
 using namespace Graphics;
@@ -38,15 +42,29 @@ Engine::Engine(int argc, char** argv) :
     m_argCount(argc),
     m_argValue(argv)
 {
+    //struct TestThread : public Thread
+    //{
+    //    void Run() override
+    //    {
+    //        while (IsRunning())
+    //        {
+    //            std::cout << "TestThread" << std::endl;
+    //        }
+    //    }
+    //};
+    //auto t = TestThread();
+    //t.Start();
+
+    m_rootEntity = std::make_shared<Entity>(nullptr);
     m_managerFactory = new ManagerFactory();
 
-    m_managerFactory->CreateComponentManagerForType<RenderInstance>();
-    m_managerFactory->CreateComponentManagerForType<PointLight>();
-    m_managerFactory->CreateComponentManagerForType<Camera>();
+    m_managerFactory->CreateComponentManager<RenderInstance>();
+    m_managerFactory->CreateComponentManager<PointLight>();
+    m_managerFactory->CreateComponentManager<Camera>();
 
     Entity* camera = new Entity(nullptr);
     m_camera = camera->AddComponentOfType<Camera>();
-    m_camera->SetView(vec3(0, 0, 0), UnitForward, UnitUp);
+    m_camera->SetView(vec3(0.0), UnitForward, UnitUp);
     m_camera->GetPerspective().SetPerspective(54.0f, 1.25f, 1.0f, 1000.0f);
 
     m_window = std::make_shared<GLWindow>(m_camera.get(), "Caerulus", 1280, 1024, 32, false);
@@ -54,23 +72,21 @@ Engine::Engine(int argc, char** argv) :
     m_keyboardInputSystem = std::make_shared<KeyboardInputSystem>(*m_window);
     m_mouseInputSystem = std::make_shared<MouseInputSystem>(*m_window);
 
-    m_shaderSrcManager = std::make_shared<ShaderSourceManager>();
-    m_shaderManager = std::make_shared<ShaderManager>(*m_shaderSrcManager);
-    m_textureManager = std::make_shared<TextureManager>();
-    m_materialManager = std::make_shared<MaterialManager>(*m_textureManager);
-    m_modelManager = std::make_shared<ModelManager>(*m_materialManager, m_renderer.get());
+    auto shaderSrcManager = std::make_shared<ShaderSourceManager>();
+    auto shaderManager = std::make_shared<ShaderManager>(*shaderSrcManager);
+    auto textureManager = std::make_shared<TextureManager>();
+    auto materialManager = std::make_shared<MaterialManager>(*textureManager);
+    auto modelManager = std::make_shared<ModelManager>(*materialManager, m_renderer.get());
 
-    m_managerFactory->AddAssetManagerForType(m_shaderSrcManager);
-    m_managerFactory->AddAssetManagerForType(m_shaderSrcManager);
-    m_managerFactory->AddAssetManagerForType(m_textureManager);
-    m_managerFactory->AddAssetManagerForType(m_materialManager);
-    m_managerFactory->AddAssetManagerForType(m_modelManager);
+    m_managerFactory->AddAssetManager(shaderSrcManager);
+    m_managerFactory->AddAssetManager(shaderManager);
+    m_managerFactory->AddAssetManager(textureManager);
+    m_managerFactory->AddAssetManager(materialManager);
+    m_managerFactory->AddAssetManager(modelManager);
 
     m_graphicsEngine = std::make_shared<GraphicsEngine>(*m_managerFactory);
     m_graphicsEngine->SetWindow(m_window.get());
     m_graphicsEngine->SetRenderer(m_renderer.get());
-
-    m_rootEntity = std::make_shared<Entity>(nullptr);
 
     m_tickable.push_back(m_keyboardInputSystem.get());
     m_tickable.push_back(m_mouseInputSystem.get());
@@ -89,8 +105,6 @@ void Engine::Run()
     {
         while (m_running)
         {
-            m_deltaTime = m_fpsLimiter.Delta(m_fpsLimit);
-            m_fixedTime = m_fixedTimer.Fixed(m_fpsLimit);
             Tick();
         }
     }
@@ -108,10 +122,12 @@ void Engine::Run()
 
 void Engine::Tick()
 {
-    using namespace Core::Interface;
+    m_deltaTime = m_fpsLimiter.Delta(m_fpsLimit);
+    m_fixedTime = m_fixedTimer.Fixed(m_fpsLimit);
 
     LogInDebug("DeltaTime: " + std::to_string(m_deltaTime));
     LogInDebug("FixedTime: " + std::to_string(m_fixedTime));
+    LogMessage("FPS: " + std::to_string(m_fpsLimiter.GetFPS()));
 
     if (m_reset)
     {
@@ -172,27 +188,30 @@ void Engine::InitInput()
 
 void Engine::InitGLRenderer()
 {
-    m_shaderManager->Load("pbr",        "assets/shaders/pbr.vert",          "assets/shaders/pbr.frag");
-    m_shaderManager->Load("cubemap",    "assets/shaders/cubemap.vert",      "assets/shaders/equirectangular_to_cubemap.frag");
-    m_shaderManager->Load("irradiance", "assets/shaders/cubemap.vert",      "assets/shaders/irradiance_convolution.frag");
-    m_shaderManager->Load("prefilter",  "assets/shaders/cubemap.vert",      "assets/shaders/prefilter.frag");
-    m_shaderManager->Load("brdf",       "assets/shaders/brdf.vert",         "assets/shaders/brdf.frag");
-    m_shaderManager->Load("background", "assets/shaders/background.vert",   "assets/shaders/background.frag");
+    auto shaderManager = m_managerFactory->GetAssetManagerAsType<Shader, ShaderManager>();
+    auto textureManager = m_managerFactory->GetAssetManagerAsType<Texture, TextureManager>();;
+
+    shaderManager->Load("pbr",        "assets/shaders/pbr.vert",          "assets/shaders/pbr.frag");
+    shaderManager->Load("cubemap",    "assets/shaders/cubemap.vert",      "assets/shaders/equirectangular_to_cubemap.frag");
+    shaderManager->Load("irradiance", "assets/shaders/cubemap.vert",      "assets/shaders/irradiance_convolution.frag");
+    shaderManager->Load("prefilter",  "assets/shaders/cubemap.vert",      "assets/shaders/prefilter.frag");
+    shaderManager->Load("brdf",       "assets/shaders/brdf.vert",         "assets/shaders/brdf.frag");
+    shaderManager->Load("background", "assets/shaders/background.vert",   "assets/shaders/background.frag");
 
     IBLShaders iblShaders = { "pbr", "cubemap", "irradiance", "prefilter", "brdf", "background" };
 
-    m_textureManager->Load("city", "assets/textures/city_ref.hdr");
-    IBL* ibl = new IBL(*m_shaderManager.get(), *m_textureManager.get(),
+    textureManager->Load("city", "assets/textures/city_ref.hdr");
+    IBL* ibl = new IBL(*shaderManager, *textureManager,
         iblShaders, "city", m_renderer.get(), m_window.get(), m_camera.get(), &m_graphicsEngine->GetFrameBuffer());
 
-    ibl->AddUniformCallback(*m_shaderManager->Get("background"), [&](ShaderUniformCallback& shaderUniformCallback, Shader& shader)
+    ibl->AddUniformCallback(*shaderManager->Get("background"), [&](ShaderUniformCallback& shaderUniformCallback, Shader& shader)
     {
         shader.SetMat4fv("projection", m_camera->GetPerspective().GetMatrix());
         shader.SetMat4fv("view",       m_camera->GetView());
 
         m_graphicsEngine->GetIBL()->Draw();
     });
-    ibl->AddUniformCallback(*m_shaderManager->Get("brdf"), [&](ShaderUniformCallback& shaderUniformCallback, Shader& shader)
+    ibl->AddUniformCallback(*shaderManager->Get("brdf"), [&](ShaderUniformCallback& shaderUniformCallback, Shader& shader)
     {
         m_window->Update();
     });
@@ -202,30 +221,22 @@ void Engine::InitGLRenderer()
 
 void Engine::InitLighting()
 {
-    Entity* redEntity = new Entity(m_rootEntity.get());
-    Entity* blueEntity = new Entity(m_rootEntity.get());
-    Entity* greenEntity = new Entity(m_rootEntity.get());
-    Entity* whiteEntity = new Entity(m_rootEntity.get());
+    auto shaderManager = m_managerFactory->GetAssetManagerAsType<Shader, ShaderManager>();
+    auto textureManager = m_managerFactory->GetAssetManagerAsType<Texture, TextureManager>();
 
-    Transform redTransform;
-    redTransform.Translate(vec3(-150, 15., 0));
-    redEntity->SetLocalTransform(redTransform);
+    Entity* redEntity = new Entity(m_rootEntity);
+    Entity* blueEntity = new Entity(m_rootEntity);
+    Entity* greenEntity = new Entity(m_rootEntity);
+    Entity* whiteEntity = new Entity(m_rootEntity);
 
-    Transform blueTransform;
-    blueTransform.Translate(vec3(0, 15., 0));
-    blueEntity->SetLocalTransform(blueTransform);
-
-    Transform greenTransform;
-    greenTransform.Translate(vec3(150, 15., 0));
-    greenEntity->SetLocalTransform(greenTransform);
-
-    Transform whiteTransform;
-    whiteTransform.Translate(vec3(0., 30., 0));
-    whiteEntity->SetLocalTransform(whiteTransform);
+    redEntity->GetLocalTransform().Translate(vec3(-150, 15., 0));
+    blueEntity->GetLocalTransform().Translate(vec3(0, 15., 0));
+    greenEntity->GetLocalTransform().Translate(vec3(150, 15., 0));
+    whiteEntity->GetLocalTransform().Translate(vec3(0., 30., 0));
 
     std::shared_ptr<PointLight> redLight = redEntity->AddComponentOfType<PointLight>();
     redLight->SetColour(vec3(255, 0, 0));
-    redLight->AddUniformCallback(*m_shaderManager->Get("pbr"),
+    redLight->AddUniformCallback(*shaderManager->Get("pbr"),
     [](ShaderUniformCallback& shaderUniformCallback, Shader& shader)
     {
         auto light = static_cast<const PointLight*>(&shaderUniformCallback);
@@ -235,7 +246,7 @@ void Engine::InitLighting()
 
     std::shared_ptr<PointLight> blueLight = blueEntity->AddComponentOfType<PointLight>();
     blueLight->SetColour(vec3(0, 255, 0));
-    blueLight->AddUniformCallback(*m_shaderManager->Get("pbr"),
+    blueLight->AddUniformCallback(*shaderManager->Get("pbr"),
     [](ShaderUniformCallback& shaderUniformCallback, Shader& shader)
     {
         auto light = static_cast<const PointLight*>(&shaderUniformCallback);
@@ -245,7 +256,7 @@ void Engine::InitLighting()
 
     std::shared_ptr<PointLight> greenLight = greenEntity->AddComponentOfType<PointLight>();
     greenLight->SetColour(vec3(0, 0, 255));
-    greenLight->AddUniformCallback(*m_shaderManager->Get("pbr"),
+    greenLight->AddUniformCallback(*shaderManager->Get("pbr"),
     [](ShaderUniformCallback& shaderUniformCallback, Shader& shader)
     {
         auto light = static_cast<const PointLight*>(&shaderUniformCallback);
@@ -255,7 +266,7 @@ void Engine::InitLighting()
 
     std::shared_ptr<PointLight> whiteLight = whiteEntity->AddComponentOfType<PointLight>();
     whiteLight->SetColour(vec3(255, 255, 255));
-    whiteLight->AddUniformCallback(*m_shaderManager->Get("pbr"),
+    whiteLight->AddUniformCallback(*shaderManager->Get("pbr"),
     [](ShaderUniformCallback& shaderUniformCallback, Shader& shader)
     {
         auto light = static_cast<const PointLight*>(&shaderUniformCallback);
@@ -271,24 +282,28 @@ void Engine::InitLighting()
 
 void Engine::InitScene()
 {
+    auto textureManager = m_managerFactory->GetAssetManagerAsType<Texture, TextureManager>();
+    auto modelManager = m_managerFactory->GetAssetManagerAsType<Model, ModelManager>();
+    auto shaderManager = m_managerFactory->GetAssetManagerAsType<Shader, ShaderManager>();
+    auto materialManager = m_managerFactory->GetAssetManagerAsType<Material, MaterialManager>();
+
     // Sponza model doesn't have AO textures, add default AO texture
     // Use completely black texture to disable IBL lighting
-    m_textureManager->Load("defaultAO", "assets/textures/defaultAO.png");
-    m_textureManager->Load("white", "assets/textures/white.png");
-    m_textureManager->Load("black", "assets/textures/black.png");
+    textureManager->Load("defaultAO", "assets/textures/defaultAO.png");
+    textureManager->Load("white", "assets/textures/white.png");
+    textureManager->Load("black", "assets/textures/black.png");
 
-    Entity* sponzaEntity = new Entity(m_rootEntity.get());
+    Entity* sponzaEntity = new Entity(m_rootEntity);
     sponzaEntity->SetName("sponza");
-    Transform sponzaTransform;
+    auto& sponzaTransform = sponzaEntity->GetLocalTransform();
     sponzaTransform.Translate(vec3(0.f, -10.f, 0.f));
     sponzaTransform.Scale(vec3(0.25f, 0.25f, 0.25f));
-    sponzaEntity->SetLocalTransform(sponzaTransform);
 
     std::shared_ptr<RenderInstance> sponza = sponzaEntity->AddComponentOfType<RenderInstance>();
-    m_modelManager->Load("sponza", "assets/models/sponza/sponza.obj");
-    sponza->Model = m_modelManager->Get("sponza");
+    modelManager->Load("sponza", "assets/models/sponza/sponza.obj");
+    sponza->Model = modelManager->Get("sponza");
 
-    sponza->AddUniformCallback(*m_shaderManager->Get("pbr"), [capturedCamera = m_camera](ShaderUniformCallback& shaderUniformCallback, Shader& shader)
+    sponza->AddUniformCallback(*shaderManager->Get("pbr"), [capturedCamera = m_camera](ShaderUniformCallback& shaderUniformCallback, Shader& shader)
     {
         shader.SetMat4fv("projection",  capturedCamera->GetPerspective().GetMatrix());
         shader.SetMat4fv("view",        capturedCamera->GetView());
@@ -306,12 +321,12 @@ void Engine::InitScene()
         auto materialFileName = mesh->GetFileMaterialName();
         if (materialFileName != "")
         {
-            if (std::shared_ptr<Material> material = m_materialManager->Get(materialFileName))
+            if (std::shared_ptr<Material> material = materialManager->Get(materialFileName.data()))
             {
                 material->SetTexture("defaultAO", TextureType::Bump);
             }
 
-            m_materialManager->Get(materialFileName)->AddUniformCallback(*m_shaderManager->Get("pbr"), [](ShaderUniformCallback& shaderUniformCallback, Shader& shader)
+            materialManager->Get(materialFileName.data())->AddUniformCallback(*shaderManager->Get("pbr"), [](ShaderUniformCallback& shaderUniformCallback, Shader& shader)
             {
                 // Sponza asset has material properties set in the wrong channels
                 shader.Set1i("albedoMap",       Material::GetTextureSlotForTextureType(TextureType::Diffuse));

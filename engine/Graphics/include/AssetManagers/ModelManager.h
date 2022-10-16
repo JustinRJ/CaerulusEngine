@@ -12,7 +12,7 @@ namespace Graphics
         public:
             ModelManager(MaterialManager& materialManager, Rendering::IRenderer* renderer);
 
-            void Load(const std::string& name, const std::string& path, const std::string& materialPath = "");
+            void Load(std::string_view name, std::string_view path, std::string_view materialPath = "");
 
         private:
             MaterialManager& m_materialManager;

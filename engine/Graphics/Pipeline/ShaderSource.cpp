@@ -6,15 +6,15 @@
 #include <fstream>
 #include <sstream>
 
-#include "Logging/Log.h"
+#include "Log/Log.h"
 
-using namespace Core::Logging;
+using namespace Core::Log;
 
 namespace Graphics
 {
     namespace Pipeline
     {
-        ShaderSource::ShaderSource(ShaderType type, const std::string& path) :
+        ShaderSource::ShaderSource(ShaderType type, std::string_view path) :
             m_type(type),
             m_isCompiled(false),
             m_path(path)
@@ -53,10 +53,10 @@ namespace Graphics
             }
         }
 
-        void ShaderSource::Compile(const std::string& source)
+        void ShaderSource::Compile(std::string_view source)
         {
-            const unsigned int logSize = 512;
-            const GLchar* shaderCode = source.c_str();
+            const uint32_t logSize = 512;
+            const GLchar* shaderCode = source.data();
             // Shaders compilation
             GLchar infoLog[logSize];
             GLint isCompileSuccess;
@@ -77,7 +77,7 @@ namespace Graphics
             }
         }
 
-        unsigned int ShaderSource::GetHandle() const
+        uint32_t ShaderSource::GetHandle() const
         {
             return m_handle;
         }

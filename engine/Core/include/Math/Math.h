@@ -85,7 +85,7 @@ namespace Core
 
         inline bool IsIntersecting2D(const std::vector<vec2>& corners1, const std::vector<vec2>& corners2)
         {
-            for (unsigned int i = 0u; i < corners1.size(); ++i)
+            for (uint32_t i = 0u; i < corners1.size(); ++i)
             {
                 vec2 current = corners1[i];
                 vec2 next = corners1[i == corners1.size() - 1 ? 0 : i + 1];
@@ -121,7 +121,7 @@ namespace Core
 
         inline bool IsIntersecting3D(const std::vector<vec3> corners1, const std::vector<vec3> corners2)
         {
-            for (unsigned int i = 0u; i < corners1.size(); ++i)
+            for (uint32_t i = 0u; i < corners1.size(); ++i)
             {
                 vec3 current = corners1[i];
                 vec3 next = corners1[i == corners1.size() - 1 ? 0 : i + 1];

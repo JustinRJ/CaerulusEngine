@@ -3,6 +3,7 @@
 #define CAERULUS_GRAPHICS __declspec(dllexport)
 
 #include <glew.h>
+#include <cstdint>
 
 #include "Interface/NonCopyable.h"
 
@@ -13,7 +14,7 @@ namespace Graphics
         class CAERULUS_GRAPHICS IndexBuffer : Core::Interface::NonCopyable
         {
         public:
-            IndexBuffer(const unsigned int* data, size_t count);
+            IndexBuffer(const uint32_t* data, size_t count);
             ~IndexBuffer();
 
             void Bind();

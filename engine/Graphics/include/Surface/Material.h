@@ -9,7 +9,7 @@ namespace Graphics
     {
         class Texture;
 
-        enum class TextureType : unsigned int
+        enum class TextureType : uint32_t
         {
             Ambient,
             Diffuse,
@@ -28,19 +28,19 @@ namespace Graphics
         class CAERULUS_GRAPHICS Material : public Pipeline::ShaderUniformCallback
         {
         public:
-            Material(const AssetManagers::TextureManager& textureManager, const std::string& path);
+            Material(const AssetManagers::TextureManager& textureManager, std::string_view path);
 
             void Bind();
             void Bind(TextureType type);
             static void Unbind();
 
-            const std::string& GetPath() const;
+            std::string_view GetPath() const;
 
-            const std::string& GetTexture(TextureType type) const;
-            void SetTexture(const std::string& textureName, TextureType type);
+            std::string_view GetTexture(TextureType type) const;
+            void SetTexture(std::string_view textureName, TextureType type);
 
             static GLint GetTextureSlotForTextureType(TextureType type);
-            static void SetMaterialTextureSlotOffset(unsigned int slotOffset);
+            static void SetMaterialTextureSlotOffset(uint32_t slotOffset);
 
             static std::vector<std::string> GetTextureNamesFromFile(std::istream& is, TextureType type);
             static std::vector<std::string> GetMaterialNamesFromFile(std::istream& is);
@@ -52,7 +52,7 @@ namespace Graphics
 
             // Lighting techniques require different texture slots for pre and post processing
             // so all textures that are bound must be offset by the graphics engines requirements
-            inline static unsigned int s_materialTextureSlotOffset = 0;
+            inline static uint32_t s_materialTextureSlotOffset = 0;
         };
     }
 }

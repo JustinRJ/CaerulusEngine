@@ -9,9 +9,7 @@ namespace Core
         class CAERULUS_CORE IManager : Interface::NonCopyable
         {
         public:
-            IManager() = default;
             virtual ~IManager() = default;
-
             virtual size_t GetManagedTypeHash() const = 0;
         };
     }
