@@ -151,8 +151,11 @@ namespace Core
                 std::shared_ptr<Component> Component;
             };
             std::vector<ComponentData> m_components;
+
+            // This approach needs to be re-thought
             static std::vector<ComponentManagerData> s_componentManagers;
 
+            // TODO - move this to a scene class
             static uint32_t s_numEntities;
             static uint32_t s_maxDiscardedEntityIDs;
             static std::list<uint32_t> s_reusableEntityIDs;

@@ -39,9 +39,9 @@ namespace Core
         {
         public:
             MouseInputSystem(Graphics::Window::GLWindow& window) :
-                m_window(&window)
+                m_window(window)
             {
-                glfwSetInputMode(m_window->GetGLFWWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+                glfwSetInputMode(m_window.GetGLFWWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
             };
 
             void EarlyTick() override
@@ -58,32 +58,23 @@ namespace Core
                 m_dragBindingMap.push_back(dragBinding);
             }
 
-            const DragData& GetDragData() const
-            {
-                return m_dragData;
-            }
-
         private:
             void UpdateMouseDrag()
             {
-                if (m_window)
-                {
-                    double xpos, ypos;
-                    glfwGetCursorPos(m_window->GetGLFWWindow(), &xpos, &ypos);
-                    const auto& activeState = m_window->GetActiveState();
-                    double deltaX = xpos - (activeState.Width * 0.5);
-                    double deltaY = ypos - (activeState.Height * 0.5);
+                double xpos, ypos;
+                glfwGetCursorPos(m_window.GetGLFWWindow(), &xpos, &ypos);
+                const auto& activeState = m_window.GetActiveState();
+                double deltaX = xpos - (activeState.Width * 0.5);
+                double deltaY = ypos - (activeState.Height * 0.5);
 
-                    for (const DragBinding& dragBinding : m_dragBindingMap)
-                    {
-                        dragBinding.Callback({ xpos, ypos, deltaX, deltaY });
-                    }
+                for (const DragBinding& dragBinding : m_dragBindingMap)
+                {
+                    dragBinding.Callback({ xpos, ypos, deltaX, deltaY });
                 }
             }
 
-            DragData m_dragData;
             std::vector<DragBinding> m_dragBindingMap;
-            Graphics::Window::GLWindow* m_window;
+            Graphics::Window::GLWindow& m_window;
         };
     }
 }

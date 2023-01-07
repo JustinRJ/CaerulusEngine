@@ -30,8 +30,9 @@ namespace Core
                     m_frameTime < frameLimit)
                 {
                     // Sleep for time left for frame
-                    Sleep(static_cast<time_t>(static_cast<double>(frameLimit) - static_cast<double>(m_frameTime)));
+                    // Sleep(static_cast<time_t>(static_cast<double>(frameLimit) - static_cast<double>(m_frameTime)));
                     // Get time taken when sleeping
+                    // TODO - glfw handles sleeping, use their timer instead
                     m_frameTime += Timer::Delta();
                 }
                 return m_frameTime;

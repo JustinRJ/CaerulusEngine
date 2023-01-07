@@ -250,11 +250,10 @@
     <ClInclude Include="include\Template\NonAssignable.h" />
     <ClInclude Include="include\Template\Observer.h" />
     <ClInclude Include="include\Template\Producer.h" />
-    <ClInclude Include="include\Thread\LockQueue.h" />
+    <ClInclude Include="include\Thread\LockT.h" />
     <ClInclude Include="include\Thread\Thread.h" />
     <ClInclude Include="include\Time\FixedTimer.h" />
     <ClInclude Include="include\Time\FPSLimiter.h" />
-    <ClInclude Include="include\Time\Time.h" />
     <ClInclude Include="include\Time\Timer.h" />
     <ClInclude Include="stdafx.h" />
   </ItemGroup>
@@ -267,7 +266,6 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="Time\Time.cpp" />
     <ClCompile Include="Time\Timer.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

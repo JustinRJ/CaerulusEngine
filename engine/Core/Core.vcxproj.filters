@@ -41,9 +41,6 @@
   <ItemGroup>
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="stdafx.cpp" />
-    <ClCompile Include="Time\Time.cpp">
-      <Filter>Time</Filter>
-    </ClCompile>
     <ClCompile Include="Time\Timer.cpp">
       <Filter>Time</Filter>
     </ClCompile>
@@ -134,9 +131,6 @@
     <ClInclude Include="include\Time\FPSLimiter.h">
       <Filter>include\Time</Filter>
     </ClInclude>
-    <ClInclude Include="include\Time\Time.h">
-      <Filter>include\Time</Filter>
-    </ClInclude>
     <ClInclude Include="include\Time\Timer.h">
       <Filter>include\Time</Filter>
     </ClInclude>
@@ -173,7 +167,7 @@
     <ClInclude Include="include\Thread\Thread.h">
       <Filter>include\Thread</Filter>
     </ClInclude>
-    <ClInclude Include="include\Thread\LockQueue.h">
+    <ClInclude Include="include\Thread\LockT.h">
       <Filter>include\Thread</Filter>
     </ClInclude>
   </ItemGroup>

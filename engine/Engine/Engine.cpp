@@ -19,7 +19,7 @@
 #include "AssetManagers/ModelManager.h"
 
 #include <Thread/Thread.h>
-#include <Thread/LockQueue.h>
+#include <Thread/LockT.h>
 
 using namespace Core::Log;
 using namespace Core::ECS;
@@ -54,6 +54,11 @@ Engine::Engine(int argc, char** argv) :
     //};
     //auto t = TestThread();
     //t.Start();
+
+    //LockT<std::vector<int>> lock;
+    //auto[vec, l] = lock.GetT();
+    //vec.push_back(1);
+    //l.~scoped_lock();
 
     m_rootEntity = std::make_shared<Entity>(nullptr);
     m_managerFactory = new ManagerFactory();
@@ -127,7 +132,7 @@ void Engine::Tick()
 
     LogInDebug("DeltaTime: " + std::to_string(m_deltaTime));
     LogInDebug("FixedTime: " + std::to_string(m_fixedTime));
-    LogMessage("FPS: " + std::to_string(m_fpsLimiter.GetFPS()));
+    LogInDebug("FPS: " + std::to_string(m_fpsLimiter.GetFPS()));
 
     if (m_reset)
     {

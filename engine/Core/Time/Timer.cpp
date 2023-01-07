@@ -2,12 +2,10 @@
 
 #include "Time/Timer.h"
 
-#include "Time/Time.h"
+using namespace std::chrono;
 
 namespace Core
 {
-    using namespace std::chrono;
-
     namespace Time
     {
         Timer::Timer(bool start) :
@@ -33,7 +31,7 @@ namespace Core
             float deltaTime = 0.f;
             if (m_running)
             {
-                high_resolution_clock::time_point now = high_resolution_clock::now();
+                auto now = high_resolution_clock::now();
                 deltaTime = duration_cast<duration<float>>(now - m_lastTimePoint).count();
                 m_lastTimePoint = now;
             }
@@ -56,11 +54,6 @@ namespace Core
         void Timer::Sleep(time_t sec)
         {
             ::Sleep(static_cast<DWORD>(sec * 1000.0));
-        }
-
-        void Timer::Sleep(const Time& time)
-        {
-            ::Sleep(static_cast<DWORD>(time.GetTime() * 1000.0));
         }
     }
 }

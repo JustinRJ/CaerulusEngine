@@ -8,8 +8,6 @@ namespace Core
 {
     namespace Time
     {
-        class Time;
-
         class CAERULUS_CORE Timer
         {
         public:
@@ -22,7 +20,6 @@ namespace Core
             float Delta();
 
             static void Sleep(time_t sec);
-            static void Sleep(const Time& time);
 
         private:
             bool m_running = false;
