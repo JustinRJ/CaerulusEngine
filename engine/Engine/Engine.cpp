@@ -72,7 +72,7 @@ Engine::Engine(int argc, char** argv) :
     m_camera->SetView(vec3(0.0), UnitForward, UnitUp);
     m_camera->GetPerspective().SetPerspective(54.0f, 1.25f, 1.0f, 1000.0f);
 
-    m_window = std::make_shared<GLWindow>(m_camera.get(), "Caerulus", 1280, 1024, 32, false);
+    m_window = std::make_shared<GLWindow>(m_camera, "Caerulus", 1280, 1024, 32, false);
     m_renderer = std::make_shared<GLRenderer>();
     m_keyboardInputSystem = std::make_shared<KeyboardInputSystem>(*m_window);
     m_mouseInputSystem = std::make_shared<MouseInputSystem>(*m_window);
@@ -127,12 +127,12 @@ void Engine::Run()
 
 void Engine::Tick()
 {
-    m_deltaTime = m_fpsLimiter.Delta(m_fpsLimit);
+    m_deltaTime = m_deltaTimer.Delta(m_fpsLimit);
     m_fixedTime = m_fixedTimer.Fixed(m_fpsLimit);
 
     LogInDebug("DeltaTime: " + std::to_string(m_deltaTime));
     LogInDebug("FixedTime: " + std::to_string(m_fixedTime));
-    LogInDebug("FPS: " + std::to_string(m_fpsLimiter.GetFPS()));
+    LogMessage("FPS: " + std::to_string(m_deltaTimer.GetFPS()));
 
     if (m_reset)
     {
@@ -207,7 +207,7 @@ void Engine::InitGLRenderer()
 
     textureManager->Load("city", "assets/textures/city_ref.hdr");
     IBL* ibl = new IBL(*shaderManager, *textureManager,
-        iblShaders, "city", m_renderer.get(), m_window.get(), m_camera.get(), &m_graphicsEngine->GetFrameBuffer());
+        iblShaders, "city", m_renderer.get(), m_window.get(), m_camera, &m_graphicsEngine->GetFrameBuffer());
 
     ibl->AddUniformCallback(*shaderManager->Get("background"), [&](ShaderUniformCallback& shaderUniformCallback, Shader& shader)
     {
@@ -239,7 +239,7 @@ void Engine::InitLighting()
     greenEntity->GetLocalTransform().Translate(vec3(150, 15., 0));
     whiteEntity->GetLocalTransform().Translate(vec3(0., 30., 0));
 
-    std::shared_ptr<PointLight> redLight = redEntity->AddComponentOfType<PointLight>();
+    PointLight* redLight = redEntity->AddComponentOfType<PointLight>();
     redLight->SetColour(vec3(255, 0, 0));
     redLight->AddUniformCallback(*shaderManager->Get("pbr"),
     [](ShaderUniformCallback& shaderUniformCallback, Shader& shader)
@@ -249,7 +249,7 @@ void Engine::InitLighting()
         shader.Set3f("lightColours[0]", light->GetColour());
     });
 
-    std::shared_ptr<PointLight> blueLight = blueEntity->AddComponentOfType<PointLight>();
+    PointLight* blueLight = blueEntity->AddComponentOfType<PointLight>();
     blueLight->SetColour(vec3(0, 255, 0));
     blueLight->AddUniformCallback(*shaderManager->Get("pbr"),
     [](ShaderUniformCallback& shaderUniformCallback, Shader& shader)
@@ -259,7 +259,7 @@ void Engine::InitLighting()
         shader.Set3f("lightColours[1]", light->GetColour());
     });
 
-    std::shared_ptr<PointLight> greenLight = greenEntity->AddComponentOfType<PointLight>();
+    PointLight* greenLight = greenEntity->AddComponentOfType<PointLight>();
     greenLight->SetColour(vec3(0, 0, 255));
     greenLight->AddUniformCallback(*shaderManager->Get("pbr"),
     [](ShaderUniformCallback& shaderUniformCallback, Shader& shader)
@@ -269,7 +269,7 @@ void Engine::InitLighting()
         shader.Set3f("lightColours[2]", light->GetColour());
     });
 
-    std::shared_ptr<PointLight> whiteLight = whiteEntity->AddComponentOfType<PointLight>();
+    PointLight* whiteLight = whiteEntity->AddComponentOfType<PointLight>();
     whiteLight->SetColour(vec3(255, 255, 255));
     whiteLight->AddUniformCallback(*shaderManager->Get("pbr"),
     [](ShaderUniformCallback& shaderUniformCallback, Shader& shader)
@@ -304,7 +304,7 @@ void Engine::InitScene()
     sponzaTransform.Translate(vec3(0.f, -10.f, 0.f));
     sponzaTransform.Scale(vec3(0.25f, 0.25f, 0.25f));
 
-    std::shared_ptr<RenderInstance> sponza = sponzaEntity->AddComponentOfType<RenderInstance>();
+    RenderInstance* sponza = sponzaEntity->AddComponentOfType<RenderInstance>();
     modelManager->Load("sponza", "assets/models/sponza/sponza.obj");
     sponza->Model = modelManager->Get("sponza");
 

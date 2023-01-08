@@ -20,7 +20,7 @@ namespace Core
         struct ComponentManagerData
         {
             size_t ManagerTypeHash = 0;
-            std::function<std::shared_ptr<Component>(Entity&)> AddComponent = {};
+            std::function<Component*(Entity&)> AddComponent = {};
             std::function<void(Entity&)> RemoveComponent = {};
         };
 
@@ -68,26 +68,26 @@ namespace Core
             static void RegisterComponentManager(const ComponentManagerData& componentManager);
 
             template<class T>
-            std::shared_ptr<T> AddComponentOfType()
+            T* AddComponentOfType()
             {
                 StaticAssertComponentIsBase<T>();
-                return std::static_pointer_cast<T>(AddComponentOfTypeInner(typeid(T).hash_code()));
+                return static_cast<T*>(AddComponentOfTypeInner(typeid(T).hash_code()));
             }
 
             template<class T>
-            std::shared_ptr<T> GetComponentOfType() const
+            T* GetComponentOfType() const
             {
                 StaticAssertComponentIsBase<T>();
-                return std::static_pointer_cast<T>(GetComponentOfTypeInner(typeid(T).hash_code()));
+                return static_cast<T*>(GetComponentOfTypeInner(typeid(T).hash_code()));
             }
 
             template<class T>
-            std::vector<std::shared_ptr<T>> AddComponentsOfType()
+            std::vector<T*> AddComponentsOfType()
             {
                 StaticAssertComponentIsBase<T>();
 
-                std::vector<Component> components = AddComponentsOfTypeInner(typeid(T).hash_code());
-                std::vector<T> componentsAsT(components.size());
+                std::vector<Component*> components = AddComponentsOfTypeInner(typeid(T).hash_code());
+                std::vector<T*> componentsAsT(components.size());
                 std::transform(std::begin(components), std::end(components), std::begin(componentsAsT), [](const Component& component)
                 {
                     return std::static_pointer_cast<T>(component);
@@ -96,12 +96,12 @@ namespace Core
             }
 
             template<class T>
-            std::vector<std::shared_ptr<T>> GetComponentsOfType() const
+            std::vector<T*> GetComponentsOfType() const
             {
                 StaticAssertComponentIsBase<T>();
 
-                std::vector<Component> components = GetComponentsOfTypeInner(typeid(T).hash_code());
-                std::vector<T> componentsAsT(components.size());
+                std::vector<Component*> components = GetComponentsOfTypeInner(typeid(T).hash_code());
+                std::vector<T*> componentsAsT(components.size());
                 std::transform(std::begin(components), std::end(components), std::begin(componentsAsT), [](const Component& component)
                 {
                     return std::static_pointer_cast<T>(component);
@@ -125,11 +125,11 @@ namespace Core
 
         private:
 
-            std::shared_ptr<Component> AddComponentOfTypeInner(size_t typeToAdd);
-            std::vector<std::shared_ptr<Component>> AddComponentsOfTypeInner(size_t typeToAdd);
+            Component* AddComponentOfTypeInner(size_t typeToAdd);
+            std::vector<Component*> AddComponentsOfTypeInner(size_t typeToAdd);
 
-            std::shared_ptr<Component> GetComponentOfTypeInner(size_t typeToFind) const;
-            std::vector<std::shared_ptr<Component>> GetComponentsOfTypeInner(size_t typeToFind) const;
+            Component* GetComponentOfTypeInner(size_t typeToFind) const;
+            std::vector<Component*> GetComponentsOfTypeInner(size_t typeToFind) const;
 
             void RemoveComponentOfTypeInner(size_t typeToRemove);
             void RemoveComponentsOfTypeInner(size_t typeToRemove);
@@ -148,7 +148,7 @@ namespace Core
             struct ComponentData
             {
                 size_t ComponentTypeHash = 0;
-                std::shared_ptr<Component> Component;
+                Component* Component = nullptr;
             };
             std::vector<ComponentData> m_components;
 

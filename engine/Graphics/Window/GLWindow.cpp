@@ -66,7 +66,7 @@ namespace Graphics
                 glfwMakeContextCurrent(m_window);
 
                 // disables vsync - fps / refresh-rate not syncd
-                // glfwSwapInterval(0);
+                glfwSwapInterval(0);
 
                 int width, height;
                 glfwGetFramebufferSize(m_window, &width, &height);

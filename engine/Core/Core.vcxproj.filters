@@ -128,7 +128,7 @@
     <ClInclude Include="include\Time\FixedTimer.h">
       <Filter>include\Time</Filter>
     </ClInclude>
-    <ClInclude Include="include\Time\FPSLimiter.h">
+    <ClInclude Include="include\Time\DeltaTimer.h">
       <Filter>include\Time</Filter>
     </ClInclude>
     <ClInclude Include="include\Time\Timer.h">
@@ -169,6 +169,9 @@
     </ClInclude>
     <ClInclude Include="include\Thread\LockT.h">
       <Filter>include\Thread</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ECS\Scene.h">
+      <Filter>include\ECS</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

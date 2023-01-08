@@ -12,6 +12,8 @@ namespace Graphics
     {
     public:
         std::shared_ptr<Geometry::Model> Model = nullptr;
+        // TODO - when this is set, override the materials used within the Models
+        // material this easily allows variations of models without wasting resources
         std::vector<std::shared_ptr<Surface::Material>> MeshOverrideMaterial;
 
         RenderInstance(Core::ECS::Entity& e) :

@@ -6,7 +6,7 @@ namespace Core
 {
     namespace Time
     {
-        class FPSLimiter : public Timer
+        class DeltaTimer : public Timer
         {
         public:
             float Delta(float frameLimit)
@@ -20,21 +20,11 @@ namespace Core
                 auto dif = duration_cast<duration<float>>(now - m_fpsTimer).count();
                 if (dif > 1)
                 {
-                    m_fps = m_counter / dif;
+                    m_fps = static_cast<uint32_t>(m_counter / dif);
                     m_counter = 0;
                     m_fpsTimer = now;
                 }
 
-                if (frameLimit > 0.0f &&
-                    m_frameTime > 0.0f &&
-                    m_frameTime < frameLimit)
-                {
-                    // Sleep for time left for frame
-                    // Sleep(static_cast<time_t>(static_cast<double>(frameLimit) - static_cast<double>(m_frameTime)));
-                    // Get time taken when sleeping
-                    // TODO - glfw handles sleeping, use their timer instead
-                    m_frameTime += Timer::Delta();
-                }
                 return m_frameTime;
             }
 

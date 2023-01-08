@@ -10,7 +10,7 @@ namespace Core
         {
         public:
             virtual ~IManager() = default;
-            virtual size_t GetManagedTypeHash() const = 0;
+            virtual constexpr size_t GetManagedTypeHash() const = 0;
         };
     }
 }

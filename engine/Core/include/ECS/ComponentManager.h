@@ -1,5 +1,7 @@
 #pragma once
 
+#include <optional>
+
 #include "ECS/IManager.h"
 #include "ECS/Component.h"
 
@@ -7,43 +9,38 @@ namespace Core
 {
     namespace ECS
     {
+        constexpr uint32_t MaxComponents = 1000;
+
         template <class R>
         class ComponentManager : public IManager
         {
         public:
-            ComponentManager() :
-                m_typeHash(typeid(R).hash_code())
+            ComponentManager()
             {
                 StaticAssertComponentIsBase<R>();
 
+                m_buffer = malloc(sizeof(R) * MaxComponents);
+                m_components.resize(MaxComponents, ComponentChunk());
+
                 ComponentManagerData data;
                 data.ManagerTypeHash = GetManagedTypeHash();
-                data.AddComponent = [&](Entity& key)
-                {
-                    const auto& newComponent = std::make_shared<R>(key);
-                    Insert(key, newComponent);
-                    return newComponent;
-                };
-                data.RemoveComponent = [&](Entity& key)
-                {
-                    Remove(key);
-                };
-
+                data.AddComponent = [&](Entity& key) { return Insert(key); };
+                data.RemoveComponent = [&](Entity& key) { Remove(key); };
                 Entity::RegisterComponentManager(data);
             }
 
             virtual ~ComponentManager() = default;
 
-            size_t GetManagedTypeHash() const override
+            constexpr size_t GetManagedTypeHash() const override
             {
-                return m_typeHash;
+                return typeid(R).hash_code();
             }
 
             void EarlyUpdate()
             {
-                for (auto& [entity, component] : m_components)
+                for (auto& [available, component] : m_components)
                 {
-                    if (component->IsEnabled())
+                    if (component && component->IsEnabled())
                     {
                         component->EarlyUpdate();
                     }
@@ -52,9 +49,9 @@ namespace Core
 
             void Update(float deltaTime)
             {
-                for (auto& [entity, component] : m_components)
+                for (auto& [available, component] : m_components)
                 {
-                    if (component->IsEnabled())
+                    if (component && component->IsEnabled())
                     {
                         component->Update(deltaTime);
                     }
@@ -63,9 +60,9 @@ namespace Core
 
             void FixedUpdate(float fixedTime)
             {
-                for (auto& [entity, component] : m_components)
+                for (auto& [available, component] : m_components)
                 {
-                    if (component->IsEnabled())
+                    if (component && component->IsEnabled())
                     {
                         component->FixedUpdate(fixedTime);
                     }
@@ -74,9 +71,9 @@ namespace Core
 
             void LateUpdate()
             {
-                for (auto& [entity, component] : m_components)
+                for (auto& [available, component] : m_components)
                 {
-                    if (component->IsEnabled())
+                    if (component && component->IsEnabled())
                     {
                         component->LateUpdate();
                     }
@@ -85,32 +82,55 @@ namespace Core
 
             void Reset()
             {
-                for (auto& [entity, component] : m_components)
+                for (auto& [available, component] : m_components)
                 {
                     component->Reset();
                 }
             }
 
         private:
-            void Insert(Entity& key, const std::shared_ptr<R>& value)
+            R* Insert(Entity& key)
             {
-                if (value)
+                for (uint32_t i = 0; i < m_components.size(); ++i)
                 {
-                    m_components.insert({ &key, value });
+                    if (m_components[i].Available)
+                    {
+                        m_components[i].Available = false;
+
+                        void* chunk = static_cast<uint8_t*>(m_buffer) + (i * sizeof(R));
+                        /// Because this is placement-new allocated, it's actually
+                        /// on the stack and thus doesn't need the delete keyword
+                        R* location = new(chunk) R(key);
+                        m_components[i].Component = location;
+                        return location;
+                    }
                 }
+
+                return nullptr;
             }
 
             void Remove(Entity& key)
             {
-                auto it = m_components.find(&key);
+                auto it = std::find_if(std::begin(m_components), std::end(m_components), [&key](const ComponentChunk& componentIndex)
+                {
+                    return componentIndex.Component && componentIndex.Component->GetEntity() == key;
+                });
+
                 if (it != std::end(m_components))
                 {
-                    m_components.erase(it);
+                    it->Available = true;
+                    it->Component = nullptr;
                 }
             }
 
-            size_t m_typeHash;
-            std::map<Entity*, std::shared_ptr<R>> m_components;
+            void* m_buffer = nullptr;
+            struct ComponentChunk
+            {
+                bool Available = true;
+                R* Component = nullptr;
+            };
+
+            std::vector<ComponentChunk> m_components;
         };
     }
 }

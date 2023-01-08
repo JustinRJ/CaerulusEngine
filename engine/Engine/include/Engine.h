@@ -7,7 +7,7 @@
 
 #include "Interface/NonCopyable.h"
 
-#include "Time/FPSLimiter.h"
+#include "Time/DeltaTimer.h"
 #include "Time/FixedTimer.h"
 
 namespace Core
@@ -76,10 +76,10 @@ private:
     float m_sprintSpeed = 100.0f;
     float m_mouseSensitivity = 50.0f;
 
-    Core::Time::FPSLimiter m_fpsLimiter;
+    Core::Time::DeltaTimer m_deltaTimer;
     Core::Time::FixedTimer m_fixedTimer;
 
-    std::shared_ptr<Core::Math::Camera> m_camera;
+    Core::Math::Camera* m_camera;
     std::shared_ptr<Core::ECS::Entity> m_rootEntity;
     std::shared_ptr<Graphics::Window::GLWindow> m_window;
     std::shared_ptr<Graphics::Rendering::GLRenderer> m_renderer;

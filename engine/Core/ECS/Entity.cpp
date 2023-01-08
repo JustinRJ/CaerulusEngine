@@ -136,9 +136,9 @@ namespace Core
             }
         }
 
-        std::shared_ptr<Component> Entity::AddComponentOfTypeInner(size_t typeToAdd)
+        Component* Entity::AddComponentOfTypeInner(size_t typeToAdd)
         {
-            std::shared_ptr<Component> component = GetComponentOfTypeInner(typeToAdd);
+            Component* component = GetComponentOfTypeInner(typeToAdd);
             if (!component)
             {
                 bool addedComponent = false;
@@ -160,9 +160,9 @@ namespace Core
             return component;
         }
 
-        std::vector<std::shared_ptr<Component>> Entity::AddComponentsOfTypeInner(size_t typeToAdd)
+        std::vector<Component*> Entity::AddComponentsOfTypeInner(size_t typeToAdd)
         {
-            std::vector<std::shared_ptr<Component>> addedComponents;
+            std::vector<Component*> addedComponents;
             addedComponents.push_back(AddComponentOfTypeInner(typeToAdd));
             for (std::shared_ptr<Entity>& child : m_children)
             {
@@ -243,9 +243,9 @@ namespace Core
             return m_tags;
         }
 
-        std::shared_ptr<Component> Entity::GetComponentOfTypeInner(size_t typeToFind) const
+        Component* Entity::GetComponentOfTypeInner(size_t typeToFind) const
         {
-            std::shared_ptr<Component> foundType = nullptr;
+            Component* foundType = nullptr;
             auto it = std::begin(m_components);
             while (!foundType && it != std::end(m_components))
             {
@@ -258,9 +258,9 @@ namespace Core
             return foundType;
         }
 
-        std::vector<std::shared_ptr<Component>> Entity::GetComponentsOfTypeInner(size_t typeToFind = 0) const
+        std::vector<Component*> Entity::GetComponentsOfTypeInner(size_t typeToFind = 0) const
         {
-            std::vector<std::shared_ptr<Component>> foundTypes;
+            std::vector<Component*> foundTypes;
             foundTypes.push_back(GetComponentOfTypeInner(typeToFind));
             for (const std::shared_ptr<Entity>& child : m_children)
             {

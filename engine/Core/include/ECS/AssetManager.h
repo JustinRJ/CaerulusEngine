@@ -18,15 +18,14 @@ namespace Core
         class AssetManager : public IManager
         {
         public:
-            AssetManager() :
-                m_typeHash(typeid(R).hash_code())
+            AssetManager()
             {}
 
             virtual ~AssetManager() = default;
 
-            size_t GetManagedTypeHash() const override
+            constexpr size_t GetManagedTypeHash() const override
             {
-                return m_typeHash;
+                return typeid(R).hash_code();
             }
 
             virtual void Insert(std::string_view key, const std::shared_ptr<R>& value)
@@ -64,8 +63,6 @@ namespace Core
             }
 
             std::map<const std::string, std::shared_ptr<R>> m_managedMap;
-        private:
-            size_t m_typeHash;
         };
     }
 }
