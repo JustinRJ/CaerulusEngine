@@ -1,7 +1,7 @@
 # CaerulusEngine
 Entity Component System Game Engine
 
-A game engine I have been developing in my spare time to practise C++.
+The code for a game engine I have been developing in my spare time to practise C++.
 
 One of the design decisions was not to document any of the code and instead rely upon concise, self-documenting code.
 
@@ -17,7 +17,6 @@ The Entity class is used to represent a scene as a tree hierarchy; each entity i
 Components can be created and attached to Entities at any given time, the Components will always be created sequentially on the heap.
 
 Physically Based Rendering techniques are utilized.
-The engine is designed to allow any 
 
 # Improvements
 
