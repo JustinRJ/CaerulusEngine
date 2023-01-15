@@ -32,3 +32,5 @@ The engine is designed to allow any
     * Split Engine.cpp into a new .sln called Game (larger divide between Engine and Game)
 
     * AssetManagers can make use of varadiac templates to have a consistent Load(...) interface
+
+    * Create JSON de/serializer for ECS to save/load game state
