@@ -53,10 +53,16 @@ namespace Core
             if (p && !p->m_isDeleted)
             {
                 auto& pChildren = p->m_children;
-                pChildren.erase(std::find_if(pChildren.begin(), pChildren.end(), [&](const std::shared_ptr<Entity>& e)
+
+                auto it = std::find_if(pChildren.begin(), pChildren.end(), [&](const std::shared_ptr<Entity>& e)
                 {
-                    return e->GetID() == GetID();
-                }));
+                    return e && e->GetID() == GetID();
+                });
+
+                if (it != std::end(pChildren))
+                {
+                    pChildren.erase(it);
+                }
             }
         }
 
@@ -97,6 +103,20 @@ namespace Core
         const std::vector<std::shared_ptr<Entity>>& Entity::GetChildren() const
         {
             return m_children;
+        }
+
+        void Entity::RemoveChild(const Entity& e)
+        {
+            auto it = std::find_if(std::begin(m_children), std::end(m_children),
+                [&e](const std::shared_ptr<Entity>& child)
+                {
+                    return *child == e;
+                });
+
+            if (it != std::end(m_children))
+            {
+                m_children.erase(it);
+            }
         }
 
         Math::Transform& Entity::GetLocalTransform()

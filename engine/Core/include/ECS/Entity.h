@@ -43,6 +43,8 @@ namespace Core
 
             const std::vector<std::shared_ptr<Entity>>& GetChildren() const;
 
+            void RemoveChild(const Entity& e);
+
             std::string_view GetName() const;
             void SetName(std::string_view layer);
 
@@ -88,9 +90,9 @@ namespace Core
 
                 std::vector<Component*> components = AddComponentsOfTypeInner(typeid(T).hash_code());
                 std::vector<T*> componentsAsT(components.size());
-                std::transform(std::begin(components), std::end(components), std::begin(componentsAsT), [](const Component& component)
+                std::transform(std::begin(components), std::end(components), std::begin(componentsAsT), [](Component* component)
                 {
-                    return std::static_pointer_cast<T>(component);
+                    return static_cast<T*>(component);
                 });
                 return componentsAsT;
             }
@@ -102,9 +104,9 @@ namespace Core
 
                 std::vector<Component*> components = GetComponentsOfTypeInner(typeid(T).hash_code());
                 std::vector<T*> componentsAsT(components.size());
-                std::transform(std::begin(components), std::end(components), std::begin(componentsAsT), [](const Component& component)
+                std::transform(std::begin(components), std::end(components), std::begin(componentsAsT), [](Component* component)
                 {
-                    return std::static_pointer_cast<T>(component);
+                    return static_cast<T*>(component);
                 });
                 return componentsAsT;
             }

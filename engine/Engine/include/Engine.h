@@ -3,7 +3,6 @@
 #define CAERULUS_ENGINE __declspec(dllexport)
 
 #include <memory>
-#include <vector>
 
 #include "Interface/NonCopyable.h"
 
@@ -14,17 +13,9 @@ namespace Core
 {
     namespace ECS
     {
+        class Scene;
         class Entity;
         class ManagerFactory;
-    }
-    namespace Input
-    {
-        class MouseInputSystem;
-        class KeyboardInputSystem;
-    }
-    namespace Interface
-    {
-        class ITickable;
     }
     namespace Math
     {
@@ -80,15 +71,8 @@ private:
     Core::Time::FixedTimer m_fixedTimer;
 
     Core::Math::Camera* m_camera;
-    std::shared_ptr<Core::ECS::Entity> m_rootEntity;
     std::shared_ptr<Graphics::Window::GLWindow> m_window;
     std::shared_ptr<Graphics::Rendering::GLRenderer> m_renderer;
-
-    std::shared_ptr<Graphics::GraphicsEngine> m_graphicsEngine;
-    std::shared_ptr<Core::Input::MouseInputSystem> m_mouseInputSystem;
-    std::shared_ptr<Core::Input::KeyboardInputSystem> m_keyboardInputSystem;
-
-    Core::ECS::ManagerFactory* m_managerFactory;
-
-    std::vector<Core::Interface::ITickable*> m_tickable;
+    std::shared_ptr<Core::ECS::Scene> m_scene;
+    std::shared_ptr<Core::ECS::ManagerFactory> m_managerFactory;
 };

@@ -2,6 +2,7 @@
 
 #include "Engine.h"
 
+#include "ECS/Scene.h"
 #include "ECS/ManagerFactory.h"
 
 #include "GraphicsEngine.h"
@@ -60,9 +61,7 @@ Engine::Engine(int argc, char** argv) :
     //vec.push_back(1);
     //l.~scoped_lock();
 
-    m_rootEntity = std::make_shared<Entity>(nullptr);
-    m_managerFactory = new ManagerFactory();
-
+    m_managerFactory = std::make_shared<ManagerFactory>();
     m_managerFactory->CreateComponentManager<RenderInstance>();
     m_managerFactory->CreateComponentManager<PointLight>();
     m_managerFactory->CreateComponentManager<Camera>();
@@ -74,8 +73,11 @@ Engine::Engine(int argc, char** argv) :
 
     m_window = std::make_shared<GLWindow>(m_camera, "Caerulus", 1280, 1024, 32, false);
     m_renderer = std::make_shared<GLRenderer>();
-    m_keyboardInputSystem = std::make_shared<KeyboardInputSystem>(*m_window);
-    m_mouseInputSystem = std::make_shared<MouseInputSystem>(*m_window);
+
+    m_scene = std::make_shared<Scene>();
+    m_scene->SetRootEntity(std::make_shared<Entity>());
+    m_scene->RegisterTickable(std::make_shared<KeyboardInputSystem>(*m_window));
+    m_scene->RegisterTickable(std::make_shared<MouseInputSystem>(*m_window));
 
     auto shaderSrcManager = std::make_shared<ShaderSourceManager>();
     auto shaderManager = std::make_shared<ShaderManager>(*shaderSrcManager);
@@ -89,13 +91,11 @@ Engine::Engine(int argc, char** argv) :
     m_managerFactory->AddAssetManager(materialManager);
     m_managerFactory->AddAssetManager(modelManager);
 
-    m_graphicsEngine = std::make_shared<GraphicsEngine>(*m_managerFactory);
-    m_graphicsEngine->SetWindow(m_window.get());
-    m_graphicsEngine->SetRenderer(m_renderer.get());
+    m_scene->RegisterTickable(std::make_shared<GraphicsEngine>(*m_managerFactory));
+    auto graphicsEngine = m_scene->GetTickableOfType<GraphicsEngine>();
 
-    m_tickable.push_back(m_keyboardInputSystem.get());
-    m_tickable.push_back(m_mouseInputSystem.get());
-    m_tickable.push_back(m_graphicsEngine.get());
+    graphicsEngine->SetWindow(m_window.get());
+    graphicsEngine->SetRenderer(m_renderer.get());
 
     InitInput();
     InitGLRenderer();
@@ -134,32 +134,34 @@ void Engine::Tick()
     LogInDebug("FixedTime: " + std::to_string(m_fixedTime));
     LogMessage("FPS: " + std::to_string(m_deltaTimer.GetFPS()));
 
+    auto tickables = m_scene->GetTickables();
+
     if (m_reset)
     {
         LogMessage("Resetting...");
-        for (ITickable* tickable : m_tickable)
+        for (std::shared_ptr<ITickable> tickable : tickables)
         {
             tickable->Reset();
         }
         m_reset = false;
     }
 
-    for (ITickable* tickable : m_tickable)
+    for (std::shared_ptr<ITickable> tickable : tickables)
     {
         tickable->EarlyTick();
     }
 
-    for (ITickable* tickable : m_tickable)
+    for (std::shared_ptr<ITickable> tickable : tickables)
     {
         tickable->Tick(m_deltaTime);
     }
 
-    for (ITickable* tickable : m_tickable)
+    for (std::shared_ptr<ITickable> tickable : tickables)
     {
         tickable->FixedTick(m_fixedTime);
     }
 
-    for (ITickable* tickable : m_tickable)
+    for (std::shared_ptr<ITickable> tickable : tickables)
     {
         tickable->LateTick();
     }
@@ -169,19 +171,22 @@ void Engine::Tick()
 
 void Engine::InitInput()
 {
-    m_keyboardInputSystem->AddWindowKeyCallback(*m_window, GLFW_KEY_ESCAPE, Action::Release, [&](Modifier) { m_running = false; });
-    m_keyboardInputSystem->AddWindowKeyCallback(*m_window, GLFW_KEY_X, Action::Release, [&](Modifier)   { m_window->ToggleLockedCursor(); });
-    m_keyboardInputSystem->AddWindowKeyCallback(*m_window, GLFW_KEY_R, Action::Release, [&](Modifier)   { if (m_window->IsCursorLocked()) { m_reset = true; }});
-    m_keyboardInputSystem->AddWindowKeyCallback(*m_window, GLFW_KEY_C, Action::Release, [&](Modifier)   { if (m_window->IsCursorLocked()) { m_renderer->SetWireframeActive(!m_renderer->IsWireframeActive()); }});
+    auto keyboardInputSystem = m_scene->GetTickableOfType<KeyboardInputSystem>();
+    auto mouseInputSystem = m_scene->GetTickableOfType<MouseInputSystem>();
 
-    m_keyboardInputSystem->AddWindowKeyCallback(*m_window, GLFW_KEY_A, Action::Hold, [&](Modifier m) { if (m_window->IsCursorLocked()) { m_camera->Translate(UnitRight   * -m_deltaTime * (m == Modifier::Shift ? m_sprintSpeed : m_normalSpeed), false); }});
-    m_keyboardInputSystem->AddWindowKeyCallback(*m_window, GLFW_KEY_D, Action::Hold, [&](Modifier m) { if (m_window->IsCursorLocked()) { m_camera->Translate(UnitRight   *  m_deltaTime * (m == Modifier::Shift ? m_sprintSpeed : m_normalSpeed), false); }});
-    m_keyboardInputSystem->AddWindowKeyCallback(*m_window, GLFW_KEY_W, Action::Hold, [&](Modifier m) { if (m_window->IsCursorLocked()) { m_camera->Translate(UnitForward *  m_deltaTime * (m == Modifier::Shift ? m_sprintSpeed : m_normalSpeed)); }});
-    m_keyboardInputSystem->AddWindowKeyCallback(*m_window, GLFW_KEY_S, Action::Hold, [&](Modifier m) { if (m_window->IsCursorLocked()) { m_camera->Translate(UnitForward * -m_deltaTime * (m == Modifier::Shift ? m_sprintSpeed : m_normalSpeed)); }});
-    m_keyboardInputSystem->AddWindowKeyCallback(*m_window, GLFW_KEY_Q, Action::Hold, [&](Modifier m) { if (m_window->IsCursorLocked()) { m_camera->Translate(UnitUp      * -m_deltaTime * (m == Modifier::Shift ? m_sprintSpeed : m_normalSpeed)); }});
-    m_keyboardInputSystem->AddWindowKeyCallback(*m_window, GLFW_KEY_E, Action::Hold, [&](Modifier m) { if (m_window->IsCursorLocked()) { m_camera->Translate(UnitUp      *  m_deltaTime * (m == Modifier::Shift ? m_sprintSpeed : m_normalSpeed)); }});
+    keyboardInputSystem->AddWindowKeyCallback(*m_window, GLFW_KEY_ESCAPE, Action::Release, [&](Modifier) { m_running = false; });
+    keyboardInputSystem->AddWindowKeyCallback(*m_window, GLFW_KEY_X, Action::Release, [&](Modifier)   { m_window->ToggleLockedCursor(); });
+    keyboardInputSystem->AddWindowKeyCallback(*m_window, GLFW_KEY_R, Action::Release, [&](Modifier)   { if (m_window->IsCursorLocked()) { m_reset = true; }});
+    keyboardInputSystem->AddWindowKeyCallback(*m_window, GLFW_KEY_C, Action::Release, [&](Modifier)   { if (m_window->IsCursorLocked()) { m_renderer->SetWireframeActive(!m_renderer->IsWireframeActive()); }});
 
-    m_mouseInputSystem->AddDragMouseCallback([&](const DragData& dd)
+    keyboardInputSystem->AddWindowKeyCallback(*m_window, GLFW_KEY_A, Action::Hold, [&](Modifier m) { if (m_window->IsCursorLocked()) { m_camera->Translate(UnitRight   * -m_deltaTime * (m == Modifier::Shift ? m_sprintSpeed : m_normalSpeed), false); }});
+    keyboardInputSystem->AddWindowKeyCallback(*m_window, GLFW_KEY_D, Action::Hold, [&](Modifier m) { if (m_window->IsCursorLocked()) { m_camera->Translate(UnitRight   *  m_deltaTime * (m == Modifier::Shift ? m_sprintSpeed : m_normalSpeed), false); }});
+    keyboardInputSystem->AddWindowKeyCallback(*m_window, GLFW_KEY_W, Action::Hold, [&](Modifier m) { if (m_window->IsCursorLocked()) { m_camera->Translate(UnitForward *  m_deltaTime * (m == Modifier::Shift ? m_sprintSpeed : m_normalSpeed)); }});
+    keyboardInputSystem->AddWindowKeyCallback(*m_window, GLFW_KEY_S, Action::Hold, [&](Modifier m) { if (m_window->IsCursorLocked()) { m_camera->Translate(UnitForward * -m_deltaTime * (m == Modifier::Shift ? m_sprintSpeed : m_normalSpeed)); }});
+    keyboardInputSystem->AddWindowKeyCallback(*m_window, GLFW_KEY_Q, Action::Hold, [&](Modifier m) { if (m_window->IsCursorLocked()) { m_camera->Translate(UnitUp      * -m_deltaTime * (m == Modifier::Shift ? m_sprintSpeed : m_normalSpeed)); }});
+    keyboardInputSystem->AddWindowKeyCallback(*m_window, GLFW_KEY_E, Action::Hold, [&](Modifier m) { if (m_window->IsCursorLocked()) { m_camera->Translate(UnitUp      *  m_deltaTime * (m == Modifier::Shift ? m_sprintSpeed : m_normalSpeed)); }});
+
+    mouseInputSystem->AddDragMouseCallback([&](const DragData& dd)
     {
         if (m_window->IsCursorLocked())
         {
@@ -205,23 +210,24 @@ void Engine::InitGLRenderer()
 
     IBLShaders iblShaders = { "pbr", "cubemap", "irradiance", "prefilter", "brdf", "background" };
 
+    auto graphicsEngine = m_scene->GetTickableOfType<GraphicsEngine>();
+
     textureManager->Load("city", "assets/textures/city_ref.hdr");
     IBL* ibl = new IBL(*shaderManager, *textureManager,
-        iblShaders, "city", m_renderer.get(), m_window.get(), m_camera, &m_graphicsEngine->GetFrameBuffer());
+        iblShaders, "city", m_renderer.get(), m_window.get(), m_camera, &graphicsEngine->GetFrameBuffer());
 
     ibl->AddUniformCallback(*shaderManager->Get("background"), [&](ShaderUniformCallback& shaderUniformCallback, Shader& shader)
     {
         shader.SetMat4fv("projection", m_camera->GetPerspective().GetMatrix());
         shader.SetMat4fv("view",       m_camera->GetView());
-
-        m_graphicsEngine->GetIBL()->Draw();
+        m_scene->GetTickableOfType<GraphicsEngine>()->GetIBL()->Draw();
     });
     ibl->AddUniformCallback(*shaderManager->Get("brdf"), [&](ShaderUniformCallback& shaderUniformCallback, Shader& shader)
     {
         m_window->Update();
     });
 
-    m_graphicsEngine->SetIBL(ibl);
+    graphicsEngine->SetIBL(ibl);
 }
 
 void Engine::InitLighting()
@@ -229,10 +235,13 @@ void Engine::InitLighting()
     auto shaderManager = m_managerFactory->GetAssetManagerAsType<Shader, ShaderManager>();
     auto textureManager = m_managerFactory->GetAssetManagerAsType<Texture, TextureManager>();
 
-    Entity* redEntity = new Entity(m_rootEntity);
-    Entity* blueEntity = new Entity(m_rootEntity);
-    Entity* greenEntity = new Entity(m_rootEntity);
-    Entity* whiteEntity = new Entity(m_rootEntity);
+    auto rootEntity = m_scene->GetRootEntity();
+
+    // TODO - fix Entity memory management, this is a raw ptr to a smart ptr
+    Entity* redEntity = new Entity(rootEntity);
+    Entity* blueEntity = new Entity(rootEntity);
+    Entity* greenEntity = new Entity(rootEntity);
+    Entity* whiteEntity = new Entity(rootEntity);
 
     redEntity->GetLocalTransform().Translate(vec3(-150, 15., 0));
     blueEntity->GetLocalTransform().Translate(vec3(0, 15., 0));
@@ -280,9 +289,9 @@ void Engine::InitLighting()
     });
 
     // Tests all recursive templated functions
-    // m_rootEntity->RemoveComponentsOfType<Lighting::PointLight>();
+    // m_scene->GetRootEntity()->RemoveComponentsOfType<Lighting::PointLight>();
     // Tests node deletion behaviour
-    // delete redEntity;
+    // rootEntity->RemoveChild(*redEntity);
 }
 
 void Engine::InitScene()
@@ -298,7 +307,8 @@ void Engine::InitScene()
     textureManager->Load("white", "assets/textures/white.png");
     textureManager->Load("black", "assets/textures/black.png");
 
-    Entity* sponzaEntity = new Entity(m_rootEntity);
+    auto rootEntity = m_scene->GetRootEntity();
+    Entity* sponzaEntity = new Entity(rootEntity);
     sponzaEntity->SetName("sponza");
     auto& sponzaTransform = sponzaEntity->GetLocalTransform();
     sponzaTransform.Translate(vec3(0.f, -10.f, 0.f));
@@ -321,7 +331,7 @@ void Engine::InitScene()
     for (auto& mesh : sponza->Model->GetMeshes())
     {
         // Can set uniform callback for meshes if required
-        // mesh->AddUniformCallback(*m_shaderManager->GetMutable("example"), [](const Pipeline::ShaderUniformCallback& shaderUniformCallback, const Pipeline::Shader& shader) {});
+        // mesh->AddUniformCallback(*shaderManager->Get("pbr"), [](const Pipeline::ShaderUniformCallback& shaderUniformCallback, const Pipeline::Shader& shader) {});
 
         auto materialFileName = mesh->GetFileMaterialName();
         if (materialFileName != "")

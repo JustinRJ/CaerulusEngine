@@ -17,6 +17,7 @@ The Entity class is used to represent a scene as a tree hierarchy; each entity i
 Components can be created and attached to Entities at any given time, the Components will always be created sequentially on the heap.
 
 Physically Based Rendering techniques are utilized.
+The engine is designed to allow any 
 
 # Improvements
 
