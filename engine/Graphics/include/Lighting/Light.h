@@ -7,12 +7,11 @@ namespace Graphics
 {
     namespace Lighting
     {
-        class Light : public Core::ECS::Component, public Pipeline::ShaderUniformCallback
+        class Light : public Pipeline::ShaderUniformCallback
         {
         public:
 
-            Light(Core::ECS::Entity& entity) :
-                Core::ECS::Component(entity)
+            Light(Core::ECS::Entity& entity)
             {}
 
             virtual ~Light() = default;

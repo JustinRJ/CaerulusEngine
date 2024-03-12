@@ -62,9 +62,9 @@ Engine::Engine(int argc, char** argv) :
     //l.~scoped_lock();
 
     m_managerFactory = std::make_shared<ManagerFactory>();
-    m_managerFactory->CreateComponentManager<RenderInstance>();
-    m_managerFactory->CreateComponentManager<PointLight>();
-    m_managerFactory->CreateComponentManager<Camera>();
+    m_managerFactory->CreateComponentManager<RenderInstance>(1000);
+    m_managerFactory->CreateComponentManager<PointLight>(10);
+    m_managerFactory->CreateComponentManager<Camera>(10);
 
     Entity* camera = new Entity(nullptr);
     m_camera = camera->AddComponentOfType<Camera>();

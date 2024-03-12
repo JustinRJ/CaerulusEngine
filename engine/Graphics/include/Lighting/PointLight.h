@@ -10,10 +10,16 @@ namespace Graphics
         {
         public:
             PointLight(Core::ECS::Entity& entity) :
-                Light(entity)
+                Light(entity),
+                m_entity(entity)
             {}
 
-            void Update(float deltaTime) override
+            CAERULUS_COMPONENT_INIT
+
+            void OnEnable() {};
+            void OnDisable() {};
+
+            void Update(float deltaTime)
             {
                 InvokeUniformCallbacks();
             }

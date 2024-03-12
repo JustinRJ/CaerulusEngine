@@ -4,7 +4,6 @@
 
 #include <thread>
 #include <atomic>
-#include <chrono>
 
 namespace Core
 {
@@ -26,9 +25,6 @@ namespace Core
                 Stop();
             }
 
-            // Run() override must call while(IsRunning()) to loop
-            virtual void Run() = 0;
-
             bool IsRunning() const
             {
                 return m_running;
@@ -39,7 +35,7 @@ namespace Core
                 if (!m_running)
                 {
                     m_running = true;
-                    m_thread = std::thread(&Thread::Run, this);
+                    m_thread = std::thread(&Thread::RunCatch, this);
                 }
             }
 
@@ -56,12 +52,35 @@ namespace Core
             }
 
             template <class T>
-            static void YieldMainThread(const T& time)
+            static void YieldFor(const T& time)
             {
                 std::this_thread::sleep_for(time);
             }
 
+            template <class T>
+            static void YieldUntil(const T& time)
+            {
+                std::this_thread::sleep_until(time);
+            }
+
         private:
+            // Run() override must call while(IsRunning()) to loop
+            virtual void Run() = 0;
+
+            void RunCatch()
+            {
+                try
+                {
+                    Run();
+                }
+                catch (...)
+                {
+                    Stop();
+                    std::rethrow_exception(std::current_exception());
+                }
+            }
+
+            // bools are already atomic
             std::atomic<bool> m_running = false;
             std::thread m_thread;
         };

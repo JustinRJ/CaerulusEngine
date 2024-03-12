@@ -1,6 +1,7 @@
 #include "stdafx.h"
 
 #include "ECS/Entity.h"
+#include "ECS/IManager.h"
 #include "ECS/Component.h"
 
 namespace Core
@@ -10,7 +11,7 @@ namespace Core
         uint32_t Entity::s_numEntities = 0;
         uint32_t Entity::s_maxDiscardedEntityIDs = 1000;
         std::list<uint32_t> Entity::s_reusableEntityIDs;
-        std::vector<ComponentManagerData> Entity::s_componentManagers;
+        std::vector<IComponentManager*> Entity::s_componentManagers;
 
         Entity::Entity(std::shared_ptr<Entity> parent) :
             m_parent(parent)
@@ -44,9 +45,9 @@ namespace Core
             m_isDeleted = true;
             m_children.clear();
 
-            for (auto& componentData : s_componentManagers)
+            for (auto& cm : s_componentManagers)
             {
-                componentData.RemoveComponent(*this);
+                cm->Remove(*this);
             }
 
             auto p = m_parent.lock();
@@ -139,50 +140,45 @@ namespace Core
             m_localTransform = GetWorldTransform() * transform;
         }
 
-        void Entity::RegisterComponentManager(const ComponentManagerData& componentManagerData)
+        void Entity::RegisterComponentManager(IComponentManager* componentManagerData)
         {
-            bool componentManagerFound = false;
-
-            auto it = std::begin(s_componentManagers);
-            while (!componentManagerFound && it != std::end(s_componentManagers))
+            s_componentManagers.push_back(componentManagerData);
+        }
+        void Entity::DeregisterComponentManager(IComponentManager* componentManagerData)
+        {
+            auto it = std::find_if(s_componentManagers.begin(), s_componentManagers.end(), [&](IComponentManager* componentManager)
             {
-                componentManagerFound = it->ManagerTypeHash == componentManagerData.ManagerTypeHash;
-                it++;
-            }
-
-            if (!componentManagerFound)
+                return componentManager->GetHashCode() == componentManagerData->GetHashCode();
+            });
+            if (it != s_componentManagers.end())
             {
-                s_componentManagers.push_back(componentManagerData);
+                s_componentManagers.erase(it);
             }
         }
 
-        Component* Entity::AddComponentOfTypeInner(size_t typeToAdd)
+        void* Entity::AddComponentOfTypeInner(size_t typeToAdd)
         {
-            Component* component = GetComponentOfTypeInner(typeToAdd);
+            void* component = GetComponentOfTypeInner(typeToAdd);
             if (!component)
             {
                 bool addedComponent = false;
                 auto componentManagerIt = std::begin(s_componentManagers);
                 while (!addedComponent && componentManagerIt != std::end(s_componentManagers))
                 {
-                    if (componentManagerIt->ManagerTypeHash == typeToAdd)
+                    if ((*componentManagerIt)->GetHashCode() == typeToAdd)
                     {
-                        ComponentData data;
-                        data.Component = componentManagerIt->AddComponent(*this);
-                        data.ComponentTypeHash = typeToAdd;
-                        m_components.push_back(data);
-                        addedComponent = true;
-                        component = data.Component;
+                        component = (*componentManagerIt)->InsertV(*this);
                     }
+
                     componentManagerIt++;
                 }
             }
             return component;
         }
 
-        std::vector<Component*> Entity::AddComponentsOfTypeInner(size_t typeToAdd)
+        std::vector<void*> Entity::AddComponentsOfTypeInner(size_t typeToAdd)
         {
-            std::vector<Component*> addedComponents;
+            std::vector<void*> addedComponents;
             addedComponents.push_back(AddComponentOfTypeInner(typeToAdd));
             for (std::shared_ptr<Entity>& child : m_children)
             {
@@ -197,10 +193,9 @@ namespace Core
             if (m_isEnabled != enabled)
             {
                 m_isEnabled = enabled;
-
-                for (ComponentData& componentData : m_components)
+                for (auto& cm : s_componentManagers)
                 {
-                    componentData.Component->SetEnabled(enabled);
+                    cm->SetEnabled(*this, enabled);
                 }
             }
 
@@ -263,24 +258,24 @@ namespace Core
             return m_tags;
         }
 
-        Component* Entity::GetComponentOfTypeInner(size_t typeToFind) const
+        void* Entity::GetComponentOfTypeInner(size_t typeToFind)
         {
-            Component* foundType = nullptr;
-            auto it = std::begin(m_components);
-            while (!foundType && it != std::end(m_components))
+            void* foundType = nullptr;
+            auto it = std::begin(s_componentManagers);
+            while (!foundType && it != std::end(s_componentManagers))
             {
-                if (typeToFind == it->ComponentTypeHash)
+                if (typeToFind == (*it)->GetHashCode())
                 {
-                    foundType = it->Component;
+                    foundType = (*it)->GetV(*this);
                 }
                 it++;
             }
             return foundType;
         }
 
-        std::vector<Component*> Entity::GetComponentsOfTypeInner(size_t typeToFind = 0) const
+        std::vector<void*> Entity::GetComponentsOfTypeInner(size_t typeToFind = 0)
         {
-            std::vector<Component*> foundTypes;
+            std::vector<void*> foundTypes;
             foundTypes.push_back(GetComponentOfTypeInner(typeToFind));
             for (const std::shared_ptr<Entity>& child : m_children)
             {
@@ -296,21 +291,10 @@ namespace Core
             auto managerIt = std::begin(s_componentManagers);
             while (!componentManagerFound && managerIt != std::end(s_componentManagers))
             {
-                if (managerIt->ManagerTypeHash == typeToFind)
+                if ((*managerIt)->GetHashCode() == typeToFind)
                 {
                     componentManagerFound = true;
-
-                    auto it = std::find_if(std::begin(m_components), std::end(m_components),
-                        [typeToFind](const ComponentData& componentData)
-                    {
-                        return componentData.ComponentTypeHash == typeToFind;
-                    });
-
-                    if (it != std::end(m_components))
-                    {
-                        m_components.erase(it);
-                        managerIt->RemoveComponent(*this);
-                    }
+                    (*managerIt)->Remove(*this);
                 }
                 managerIt++;
             }

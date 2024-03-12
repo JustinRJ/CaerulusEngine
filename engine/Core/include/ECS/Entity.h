@@ -13,22 +13,8 @@ namespace Core
 {
     namespace ECS
     {
-        class Entity;
-        class Component;
+        class IComponentManager;
         typedef std::bitset<32> EntityBitset;
-
-        struct ComponentManagerData
-        {
-            size_t ManagerTypeHash = 0;
-            std::function<Component*(Entity&)> AddComponent = {};
-            std::function<void(Entity&)> RemoveComponent = {};
-        };
-
-        template<class T>
-        inline void StaticAssertComponentIsBase()
-        {
-            static_assert(std::is_base_of<Component, T>::value, "T must be a child of Component");
-        }
 
         class CAERULUS_CORE Entity final : Interface::NonCopyable
         {
@@ -67,30 +53,27 @@ namespace Core
             std::vector<std::shared_ptr<Entity>> ToVector() const;
 
             static uint32_t GetEntityCount();
-            static void RegisterComponentManager(const ComponentManagerData& componentManager);
+            static void RegisterComponentManager(IComponentManager* componentManagerData);
+            static void DeregisterComponentManager(IComponentManager* componentManagerData);
 
             template<class T>
             T* AddComponentOfType()
             {
-                StaticAssertComponentIsBase<T>();
                 return static_cast<T*>(AddComponentOfTypeInner(typeid(T).hash_code()));
             }
 
             template<class T>
             T* GetComponentOfType() const
             {
-                StaticAssertComponentIsBase<T>();
                 return static_cast<T*>(GetComponentOfTypeInner(typeid(T).hash_code()));
             }
 
             template<class T>
             std::vector<T*> AddComponentsOfType()
             {
-                StaticAssertComponentIsBase<T>();
-
-                std::vector<Component*> components = AddComponentsOfTypeInner(typeid(T).hash_code());
+                std::vector<void*> components = AddComponentsOfTypeInner(typeid(T).hash_code());
                 std::vector<T*> componentsAsT(components.size());
-                std::transform(std::begin(components), std::end(components), std::begin(componentsAsT), [](Component* component)
+                std::transform(std::begin(components), std::end(components), std::begin(componentsAsT), [](void* component)
                 {
                     return static_cast<T*>(component);
                 });
@@ -100,11 +83,9 @@ namespace Core
             template<class T>
             std::vector<T*> GetComponentsOfType() const
             {
-                StaticAssertComponentIsBase<T>();
-
-                std::vector<Component*> components = GetComponentsOfTypeInner(typeid(T).hash_code());
+                std::vector<void*> components = GetComponentsOfTypeInner(typeid(T).hash_code());
                 std::vector<T*> componentsAsT(components.size());
-                std::transform(std::begin(components), std::end(components), std::begin(componentsAsT), [](Component* component)
+                std::transform(std::begin(components), std::end(components), std::begin(componentsAsT), [](void* component)
                 {
                     return static_cast<T*>(component);
                 });
@@ -114,32 +95,30 @@ namespace Core
             template<class T>
             void RemoveComponentOfType()
             {
-                StaticAssertComponentIsBase<T>();
                 RemoveComponentOfTypeInner(typeid(T).hash_code());
             }
 
             template<class T>
             void RemoveComponentsOfType()
             {
-                StaticAssertComponentIsBase<T>();
                 RemoveComponentsOfTypeInner(typeid(T).hash_code());
             }
 
         private:
 
-            Component* AddComponentOfTypeInner(size_t typeToAdd);
-            std::vector<Component*> AddComponentsOfTypeInner(size_t typeToAdd);
+            void* AddComponentOfTypeInner(size_t typeToAdd);
+            std::vector<void*> AddComponentsOfTypeInner(size_t typeToAdd);
 
-            Component* GetComponentOfTypeInner(size_t typeToFind) const;
-            std::vector<Component*> GetComponentsOfTypeInner(size_t typeToFind) const;
+            void* GetComponentOfTypeInner(size_t typeToFind);
+            std::vector<void*> GetComponentsOfTypeInner(size_t typeToFind);
 
             void RemoveComponentOfTypeInner(size_t typeToRemove);
             void RemoveComponentsOfTypeInner(size_t typeToRemove);
 
             bool m_isDeleted = false;
             bool m_isEnabled = false;
-            uint32_t m_id  = 0;
-            std::string m_name = "";
+            uint32_t m_id;
+            std::string m_name;
             EntityBitset m_layers;
             Math::Transform m_localTransform;
             std::vector<std::string> m_tags;
@@ -147,17 +126,8 @@ namespace Core
             std::weak_ptr<Entity> m_parent;
             std::vector<std::shared_ptr<Entity>> m_children;
 
-            struct ComponentData
-            {
-                size_t ComponentTypeHash = 0;
-                Component* Component = nullptr;
-            };
-            std::vector<ComponentData> m_components;
-
-            // This approach needs to be re-thought
-            static std::vector<ComponentManagerData> s_componentManagers;
-
-            // TODO - move this to a scene class
+            // TODO - move this to a EntityManager class
+            static std::vector<IComponentManager*> s_componentManagers;
             static uint32_t s_numEntities;
             static uint32_t s_maxDiscardedEntityIDs;
             static std::list<uint32_t> s_reusableEntityIDs;

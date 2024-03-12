@@ -15,7 +15,7 @@ namespace Core
     {
         // TODO - clean this class up
         template <class R>
-        class AssetManager : public IManager
+        class AssetManager : public IHashable
         {
         public:
             AssetManager()
@@ -23,7 +23,7 @@ namespace Core
 
             virtual ~AssetManager() = default;
 
-            constexpr size_t GetManagedTypeHash() const override
+            constexpr size_t GetHashCode() const override
             {
                 return typeid(R).hash_code();
             }

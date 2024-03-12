@@ -9,14 +9,19 @@ namespace Core
 {
     namespace Math
     {
-        class Camera : public Core::ECS::Component
+        class Camera
         {
         public:
             Camera(Core::ECS::Entity& entity) :
-                Core::ECS::Component(entity),
+                m_entity(entity),
                 m_view(1),
                 m_perspective()
             {}
+
+            CAERULUS_COMPONENT_INIT
+
+            void OnEnable() {};
+            void OnDisable() {};
 
             void Translate(const vec3& translation, bool translateY = true)
             {

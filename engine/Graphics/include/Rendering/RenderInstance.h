@@ -8,7 +8,7 @@
 
 namespace Graphics
 {
-    class RenderInstance : public Core::ECS::Component, public Pipeline::ShaderUniformCallback
+    class RenderInstance : public Pipeline::ShaderUniformCallback
     {
     public:
         std::shared_ptr<Geometry::Model> Model = nullptr;
@@ -17,10 +17,15 @@ namespace Graphics
         std::vector<std::shared_ptr<Surface::Material>> MeshOverrideMaterial;
 
         RenderInstance(Core::ECS::Entity& e) :
-            Core::ECS::Component(e)
+            m_entity(e)
         {}
 
-        void Update(float deltaTime) override
+        CAERULUS_COMPONENT_INIT
+
+        void OnEnable() {};
+        void OnDisable() {};
+
+        void Update(float deltaTime)
         {
             if (Model)
             {

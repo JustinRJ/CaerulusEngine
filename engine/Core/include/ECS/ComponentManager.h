@@ -9,29 +9,25 @@ namespace Core
 {
     namespace ECS
     {
-        constexpr uint32_t MaxComponents = 1000;
-
         template <class R>
-        class ComponentManager : public IManager
+        class ComponentManager : public IComponentManager
         {
         public:
-            ComponentManager()
+            ComponentManager(uint32_t maxComponents) :
+                m_maxComponents(maxComponents)
             {
-                StaticAssertComponentIsBase<R>();
+                m_buffer = malloc(sizeof(R) * m_maxComponents);
+                m_components.resize(m_maxComponents, ComponentChunk());
 
-                m_buffer = malloc(sizeof(R) * MaxComponents);
-                m_components.resize(MaxComponents, ComponentChunk());
-
-                ComponentManagerData data;
-                data.ManagerTypeHash = GetManagedTypeHash();
-                data.AddComponent = [&](Entity& key) { return Insert(key); };
-                data.RemoveComponent = [&](Entity& key) { Remove(key); };
-                Entity::RegisterComponentManager(data);
+                Entity::RegisterComponentManager(this);
             }
 
-            virtual ~ComponentManager() = default;
+            virtual ~ComponentManager()
+            {
+                Entity::DeregisterComponentManager(this);
+            }
 
-            constexpr size_t GetManagedTypeHash() const override
+            constexpr size_t GetHashCode() const override
             {
                 return typeid(R).hash_code();
             }
@@ -40,9 +36,12 @@ namespace Core
             {
                 for (auto& [available, component] : m_components)
                 {
-                    if (component && component->IsEnabled())
+                    if constexpr (requires { component->EarlyUpdate(); })
                     {
-                        component->EarlyUpdate();
+                        if (component && component->IsEnabled())
+                        {
+                            component->EarlyUpdate();
+                        }
                     }
                 }
             }
@@ -51,9 +50,12 @@ namespace Core
             {
                 for (auto& [available, component] : m_components)
                 {
-                    if (component && component->IsEnabled())
+                    if constexpr (requires { component->Update(deltaTime); })
                     {
-                        component->Update(deltaTime);
+                        if (component && component->IsEnabled())
+                        {
+                            component->Update(deltaTime);
+                        }
                     }
                 }
             }
@@ -62,9 +64,12 @@ namespace Core
             {
                 for (auto& [available, component] : m_components)
                 {
-                    if (component && component->IsEnabled())
+                    if constexpr (requires { component->FixedUpdate(fixedTime); })
                     {
-                        component->FixedUpdate(fixedTime);
+                        if (component && component->IsEnabled())
+                        {
+                            component->FixedUpdate(fixedTime);
+                        }
                     }
                 }
             }
@@ -73,9 +78,12 @@ namespace Core
             {
                 for (auto& [available, component] : m_components)
                 {
-                    if (component && component->IsEnabled())
+                    if constexpr (requires { component->LateUpdate(); })
                     {
-                        component->LateUpdate();
+                        if (component && component->IsEnabled())
+                        {
+                            component->LateUpdate();
+                        }
                     }
                 }
             }
@@ -88,7 +96,38 @@ namespace Core
                 }
             }
 
+            R* Get(Entity& key) const
+            {
+                auto it = std::find_if(std::begin(m_components), std::end(m_components), [&key](const ComponentChunk& componentIndex)
+                {
+                    return componentIndex.Component && componentIndex.Component->GetEntity() == key;
+                });
+                return it != std::end(m_components) ? it->Component : nullptr;
+            }
+
+            void SetEnabled(Entity& key, bool enabled) override
+            {
+                auto it = std::find_if(std::begin(m_components), std::end(m_components), [&key](const ComponentChunk& componentIndex)
+                {
+                    return componentIndex.Component && componentIndex.Component->GetEntity() == key;
+                });
+                if (it != std::end(m_components))
+                {
+                    it->Component->SetEnabled(enabled);
+                }
+            }
+
         private:
+            void* InsertV(Entity& key) override
+            {
+                return Insert(key);
+            }
+
+            void* GetV(Entity& key) const override
+            {
+                return Get(key);
+            }
+
             R* Insert(Entity& key)
             {
                 for (uint32_t i = 0; i < m_components.size(); ++i)
@@ -109,7 +148,7 @@ namespace Core
                 return nullptr;
             }
 
-            void Remove(Entity& key)
+            void Remove(Entity& key) override
             {
                 auto it = std::find_if(std::begin(m_components), std::end(m_components), [&key](const ComponentChunk& componentIndex)
                 {
@@ -123,6 +162,7 @@ namespace Core
                 }
             }
 
+            uint32_t m_maxComponents;
             void* m_buffer = nullptr;
             struct ComponentChunk
             {
