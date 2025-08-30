@@ -46,7 +46,7 @@
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
-    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
@@ -215,7 +215,9 @@
     <ClInclude Include="include\ECS\Component.h" />
     <ClInclude Include="include\ECS\ComponentManager.h" />
     <ClInclude Include="include\ECS\Entity.h" />
-    <ClInclude Include="include\ECS\IManager.h" />
+    <ClInclude Include="include\ECS\IAssetManager.h" />
+    <ClInclude Include="include\ECS\IComponentManager.h" />
+    <ClInclude Include="include\ECS\IHashable.h" />
     <ClInclude Include="include\ECS\ManagerFactory.h" />
     <ClInclude Include="include\ECS\Scene.h" />
     <ClInclude Include="include\File\FileUtility.h" />
@@ -256,14 +258,12 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp" />
-    <ClCompile Include="ECS\Entity.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="Time\Timer.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

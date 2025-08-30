@@ -9,32 +9,20 @@
 #include "Time/DeltaTimer.h"
 #include "Time/FixedTimer.h"
 
+#include "ECS/Scene.h"
+#include "ECS/ManagerFactory.h"
+#include "Window/GLWindow.h"
+#include "Rendering/GLRenderer.h"
+
 namespace Core
 {
-    namespace ECS
-    {
-        class Scene;
-        class Entity;
-        class ManagerFactory;
-    }
     namespace Math
     {
         class Camera;
     }
-}
-
-namespace Graphics
-{
-    class GraphicsEngine;
-
-    namespace Window
+    namespace ECS
     {
-        class GLWindow;
-    }
-
-    namespace Rendering
-    {
-        class GLRenderer;
+        class EntityManager;
     }
 }
 
@@ -71,8 +59,9 @@ private:
     Core::Time::FixedTimer m_fixedTimer;
 
     Core::Math::Camera* m_camera;
-    std::shared_ptr<Graphics::Window::GLWindow> m_window;
-    std::shared_ptr<Graphics::Rendering::GLRenderer> m_renderer;
-    std::shared_ptr<Core::ECS::Scene> m_scene;
-    std::shared_ptr<Core::ECS::ManagerFactory> m_managerFactory;
+    Core::ECS::EntityManager* m_em;
+    std::unique_ptr<Core::ECS::Scene> m_scene;
+    std::unique_ptr<Graphics::Window::GLWindow> m_window;
+    std::unique_ptr<Graphics::Rendering::GLRenderer> m_renderer;
+    std::unique_ptr<Core::ECS::ManagerFactory> m_managerFactory;
 };

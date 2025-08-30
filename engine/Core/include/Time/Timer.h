@@ -1,25 +1,57 @@
 #pragma once
 
-#define CAERULUS_CORE __declspec(dllexport)
-
 #include <chrono>
 
 namespace Core
 {
     namespace Time
     {
-        class CAERULUS_CORE Timer
+        class Timer
         {
         public:
-            Timer(bool start = false);
+            Timer(bool start = false) :
+                m_running(false)
+            {
+                if (start)
+                {
+                    Start();
+                }
+            }
+
             virtual ~Timer() = default;
 
-            void Start();
-            void Stop();
+            void Start()
+            {
+                if (!m_running)
+                {
+                    m_running = true;
+                    m_lastTimePoint = std::chrono::high_resolution_clock::now();
+                }
+            }
 
-            float Delta();
+            float Delta()
+            {
+                float deltaTime = 0.f;
+                if (m_running)
+                {
+                    auto now = std::chrono::high_resolution_clock::now();
+                    deltaTime = duration_cast<std::chrono::duration<float>>(now - m_lastTimePoint).count();
+                    m_lastTimePoint = now;
+                }
+                else
+                {
+                    Start();
+                }
+                return deltaTime;
+            }
 
-            static void Sleep(time_t sec);
+            void Stop()
+            {
+                if (m_running)
+                {
+                    m_running = false;
+                }
+            }
 
         private:
             bool m_running = false;

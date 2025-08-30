@@ -1,21 +1,20 @@
 #pragma once
 
-#include <map>
 #include <vector>
 #include <memory>
 #include <string>
 #include <algorithm>
+#include <unordered_map>
 
-#include "ECS/IManager.h"
 #include "Log/Log.h"
+#include "ECS/IAssetManager.h"
 
 namespace Core
 {
     namespace ECS
     {
-        // TODO - clean this class up
         template <class R>
-        class AssetManager : public IHashable
+        class AssetManager : public IAssetManager
         {
         public:
             AssetManager()
@@ -56,13 +55,8 @@ namespace Core
                 return found;
             }
 
-        protected:
-            std::map<const std::string, std::shared_ptr<R>>& GetMap()
-            {
-                return m_managedMap;
-            }
-
-            std::map<const std::string, std::shared_ptr<R>> m_managedMap;
+        private:
+            std::unordered_map<std::string, std::shared_ptr<R>> m_managedMap;
         };
     }
 }

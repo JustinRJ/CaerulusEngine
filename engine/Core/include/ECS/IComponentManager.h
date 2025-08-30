@@ -1,20 +1,14 @@
 #pragma once
 
+#include "ECS/IHashable.h"
 #include "Interface/NonCopyable.h"
 
 namespace Core
 {
     namespace ECS
     {
-        class CAERULUS_CORE IHashable : Interface::NonCopyable
-        {
-        public:
-            virtual ~IHashable() = default;
-            virtual size_t GetHashCode() const = 0;
-        };
-
         class Entity;
-        class CAERULUS_CORE IComponentManager : public IHashable
+        class CAERULUS_CORE IComponentManager : public IHashable, Interface::NonCopyable
         {
         public:
             virtual ~IComponentManager() = default;

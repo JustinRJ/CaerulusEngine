@@ -22,9 +22,6 @@ namespace Graphics
 
         CAERULUS_COMPONENT_INIT
 
-        void OnEnable() {};
-        void OnDisable() {};
-
         void Update(float deltaTime)
         {
             if (Model)

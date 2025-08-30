@@ -12,12 +12,12 @@ namespace Core
         {
         public:
 
-            void SetRootEntity(const std::shared_ptr<Entity>& entity)
+            void SetRootEntity(Entity* entity)
             {
                 m_rootEntity = entity;
             }
 
-            std::shared_ptr<Entity> GetRootEntity() const
+            Entity* GetRootEntity() const
             {
                 return m_rootEntity;
             }
@@ -50,7 +50,7 @@ namespace Core
                 return m_tickables;
             }
 
-            std::shared_ptr<Entity> m_rootEntity = nullptr;
+            Entity* m_rootEntity = nullptr;
             std::vector<std::shared_ptr<Interface::ITickable>> m_tickables;
         };
     }

@@ -23,6 +23,11 @@ namespace Core
                 return fixed * count;
             }
 
+            float GetInterpolant(float fixed) const
+            {
+                return m_accumulatedTime / fixed;
+            }
+
         private:
             float m_accumulatedTime = 0.0f;
         };

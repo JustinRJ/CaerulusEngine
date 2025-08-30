@@ -20,9 +20,6 @@ namespace Core
 
             CAERULUS_COMPONENT_INIT
 
-            void OnEnable() {};
-            void OnDisable() {};
-
             void Translate(const vec3& translation, bool translateY = true)
             {
                 vec3 temp(m_view[0][3], m_view[1][3], m_view[2][3]);

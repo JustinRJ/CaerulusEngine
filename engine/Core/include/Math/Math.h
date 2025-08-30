@@ -1,6 +1,7 @@
 #pragma once
 
 #define GLM_ENABLE_EXPERIMENTAL
+
 #include <glm.hpp>
 #include <gtx/hash.hpp>
 #include <gtc/type_ptr.hpp>
@@ -22,7 +23,7 @@ namespace Core
 
         constexpr vec3 UnitUp = vec3(0.f, 1.f, 0.f);
         constexpr vec3 UnitRight = vec3(1.f, 0.f, 0.f);
-        constexpr vec3 UnitForward = vec3(0.f, 0.0, -1.f);
+        constexpr vec3 UnitForward = vec3(0.f, 0.f, -1.f);
 
         inline vec3 UpVector(const quat& q)
         {
@@ -85,7 +86,7 @@ namespace Core
 
         inline bool IsIntersecting2D(const std::vector<vec2>& corners1, const std::vector<vec2>& corners2)
         {
-            for (uint32_t i = 0u; i < corners1.size(); ++i)
+            for (size_t i = 0u; i < corners1.size(); ++i)
             {
                 vec2 current = corners1[i];
                 vec2 next = corners1[i == corners1.size() - 1 ? 0 : i + 1];
@@ -94,8 +95,8 @@ namespace Core
 
                 float aMinProj = std::numeric_limits<float>::max();
                 float bMinProj = std::numeric_limits<float>::max();
-                float aMaxProj = std::numeric_limits<float>::min();
-                float bMaxProj = std::numeric_limits<float>::min();
+                float aMaxProj = std::numeric_limits<float>::lowest();
+                float bMaxProj = std::numeric_limits<float>::lowest();
 
                 for (const vec2& v : corners1)
                 {
@@ -121,7 +122,7 @@ namespace Core
 
         inline bool IsIntersecting3D(const std::vector<vec3> corners1, const std::vector<vec3> corners2)
         {
-            for (uint32_t i = 0u; i < corners1.size(); ++i)
+            for (size_t i = 0u; i < corners1.size(); ++i)
             {
                 vec3 current = corners1[i];
                 vec3 next = corners1[i == corners1.size() - 1 ? 0 : i + 1];
@@ -132,8 +133,8 @@ namespace Core
 
                 float aMinProj = std::numeric_limits<float>::max();
                 float bMinProj = std::numeric_limits<float>::max();
-                float aMaxProj = std::numeric_limits<float>::min();
-                float bMaxProj = std::numeric_limits<float>::min();
+                float aMaxProj = std::numeric_limits<float>::lowest();
+                float bMaxProj = std::numeric_limits<float>::lowest();
 
                 for (const vec3& v : corners1)
                 {

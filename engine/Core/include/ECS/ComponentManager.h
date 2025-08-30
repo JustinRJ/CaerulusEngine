@@ -1,9 +1,11 @@
 #pragma once
 
-#include <optional>
+#include <vector>
+#include <unordered_map>
+#include <memory>
 
-#include "ECS/IManager.h"
 #include "ECS/Component.h"
+#include "ECS/IComponentManager.h"
 
 namespace Core
 {
@@ -13,18 +15,15 @@ namespace Core
         class ComponentManager : public IComponentManager
         {
         public:
-            ComponentManager(uint32_t maxComponents) :
-                m_maxComponents(maxComponents)
+            ComponentManager(EntityManager& em) :
+                m_em(em)
             {
-                m_buffer = malloc(sizeof(R) * m_maxComponents);
-                m_components.resize(m_maxComponents, ComponentChunk());
-
-                Entity::RegisterComponentManager(this);
+                m_em.RegisterComponentManager<R>(this);
             }
 
             virtual ~ComponentManager()
             {
-                Entity::DeregisterComponentManager(this);
+                m_em.DeregisterComponentManager<R>();
             }
 
             constexpr size_t GetHashCode() const override
@@ -34,13 +33,13 @@ namespace Core
 
             void EarlyUpdate()
             {
-                for (auto& [available, component] : m_components)
+                for (auto& comp : m_components)
                 {
-                    if constexpr (requires { component->EarlyUpdate(); })
+                    if constexpr (requires { comp->EarlyUpdate(); })
                     {
-                        if (component && component->IsEnabled())
+                        if (comp && comp->IsEnabled())
                         {
-                            component->EarlyUpdate();
+                            comp->EarlyUpdate();
                         }
                     }
                 }
@@ -48,13 +47,13 @@ namespace Core
 
             void Update(float deltaTime)
             {
-                for (auto& [available, component] : m_components)
+                for (auto& comp : m_components)
                 {
-                    if constexpr (requires { component->Update(deltaTime); })
+                    if constexpr (requires { comp->Update(deltaTime); })
                     {
-                        if (component && component->IsEnabled())
+                        if (comp && comp->IsEnabled())
                         {
-                            component->Update(deltaTime);
+                            comp->Update(deltaTime);
                         }
                     }
                 }
@@ -62,13 +61,13 @@ namespace Core
 
             void FixedUpdate(float fixedTime)
             {
-                for (auto& [available, component] : m_components)
+                for (auto& comp : m_components)
                 {
-                    if constexpr (requires { component->FixedUpdate(fixedTime); })
+                    if constexpr (requires { comp->FixedUpdate(fixedTime); })
                     {
-                        if (component && component->IsEnabled())
+                        if (comp && comp->IsEnabled())
                         {
-                            component->FixedUpdate(fixedTime);
+                            comp->FixedUpdate(fixedTime);
                         }
                     }
                 }
@@ -76,13 +75,13 @@ namespace Core
 
             void LateUpdate()
             {
-                for (auto& [available, component] : m_components)
+                for (auto& comp : m_components)
                 {
-                    if constexpr (requires { component->LateUpdate(); })
+                    if constexpr (requires { comp->LateUpdate(); })
                     {
-                        if (component && component->IsEnabled())
+                        if (comp && comp->IsEnabled())
                         {
-                            component->LateUpdate();
+                            comp->LateUpdate();
                         }
                     }
                 }
@@ -90,30 +89,28 @@ namespace Core
 
             void Reset()
             {
-                for (auto& [available, component] : m_components)
+                for (auto& comp : m_components)
                 {
-                    component->Reset();
+                    if (comp)
+                    {
+                        comp->Reset();
+                    }
                 }
             }
 
             R* Get(Entity& key) const
             {
-                auto it = std::find_if(std::begin(m_components), std::end(m_components), [&key](const ComponentChunk& componentIndex)
-                {
-                    return componentIndex.Component && componentIndex.Component->GetEntity() == key;
-                });
-                return it != std::end(m_components) ? it->Component : nullptr;
+                auto it = m_entityToIndex.find(&key);
+                if (it != m_entityToIndex.end())
+                    return m_components[it->second].get();
+                return nullptr;
             }
 
             void SetEnabled(Entity& key, bool enabled) override
             {
-                auto it = std::find_if(std::begin(m_components), std::end(m_components), [&key](const ComponentChunk& componentIndex)
+                if (auto comp = Get(key))
                 {
-                    return componentIndex.Component && componentIndex.Component->GetEntity() == key;
-                });
-                if (it != std::end(m_components))
-                {
-                    it->Component->SetEnabled(enabled);
+                    comp->SetEnabled(enabled);
                 }
             }
 
@@ -130,47 +127,43 @@ namespace Core
 
             R* Insert(Entity& key)
             {
-                for (uint32_t i = 0; i < m_components.size(); ++i)
+                if (auto existing = Get(key))
                 {
-                    if (m_components[i].Available)
-                    {
-                        m_components[i].Available = false;
-
-                        void* chunk = static_cast<uint8_t*>(m_buffer) + (i * sizeof(R));
-                        /// Because this is placement-new allocated, it's actually
-                        /// on the stack and thus doesn't need the delete keyword
-                        R* location = new(chunk) R(key);
-                        m_components[i].Component = location;
-                        return location;
-                    }
+                    return existing;
                 }
 
-                return nullptr;
+                auto comp = std::make_unique<R>(key);
+                m_components.push_back(std::move(comp));
+                m_entityToIndex[&key] = m_components.size() - 1;
+                return m_components.back().get();
             }
 
             void Remove(Entity& key) override
             {
-                auto it = std::find_if(std::begin(m_components), std::end(m_components), [&key](const ComponentChunk& componentIndex)
+                auto it = m_entityToIndex.find(&key);
+                if (it == m_entityToIndex.end())
                 {
-                    return componentIndex.Component && componentIndex.Component->GetEntity() == key;
-                });
+                    return;
+                }
 
-                if (it != std::end(m_components))
+                size_t index = it->second;
+
+                // erase from vector while preserving order
+                m_components.erase(m_components.begin() + index);
+
+                // remove from map
+                m_entityToIndex.erase(it);
+
+                // update indices for all elements after the removed one
+                for (size_t i = index; i < m_components.size(); ++i)
                 {
-                    it->Available = true;
-                    it->Component = nullptr;
+                    m_entityToIndex[&(m_components[i]->GetEntity())] = i;
                 }
             }
 
-            uint32_t m_maxComponents;
-            void* m_buffer = nullptr;
-            struct ComponentChunk
-            {
-                bool Available = true;
-                R* Component = nullptr;
-            };
-
-            std::vector<ComponentChunk> m_components;
+            EntityManager& m_em;
+            std::vector<std::unique_ptr<R>> m_components;
+            std::unordered_map<Entity*, size_t> m_entityToIndex;
         };
     }
 }

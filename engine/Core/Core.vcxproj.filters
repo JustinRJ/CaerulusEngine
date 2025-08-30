@@ -1,9 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Time">
-      <UniqueIdentifier>{b239773a-3c68-4dcc-b557-c23f31324b2b}</UniqueIdentifier>
-    </Filter>
     <Filter Include="include">
       <UniqueIdentifier>{3db9cb99-4682-4124-be74-43780f8f91bc}</UniqueIdentifier>
     </Filter>
@@ -28,9 +25,6 @@
     <Filter Include="include\ECS">
       <UniqueIdentifier>{5606dffc-9f9d-41db-ab92-3a8bfabd660d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ECS">
-      <UniqueIdentifier>{0ce5a568-d535-4192-abf7-d5cc83aafbcb}</UniqueIdentifier>
-    </Filter>
     <Filter Include="include\Thread">
       <UniqueIdentifier>{bba6d440-784f-478f-af28-1bca92b08db1}</UniqueIdentifier>
     </Filter>
@@ -41,12 +35,6 @@
   <ItemGroup>
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="stdafx.cpp" />
-    <ClCompile Include="Time\Timer.cpp">
-      <Filter>Time</Filter>
-    </ClCompile>
-    <ClCompile Include="ECS\Entity.cpp">
-      <Filter>ECS</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -152,7 +140,7 @@
     <ClInclude Include="include\ECS\ComponentManager.h">
       <Filter>include\ECS</Filter>
     </ClInclude>
-    <ClInclude Include="include\ECS\IManager.h">
+    <ClInclude Include="include\ECS\IComponentManager.h">
       <Filter>include\ECS</Filter>
     </ClInclude>
     <ClInclude Include="include\ECS\ManagerFactory.h">
@@ -171,6 +159,12 @@
       <Filter>include\Thread</Filter>
     </ClInclude>
     <ClInclude Include="include\ECS\Scene.h">
+      <Filter>include\ECS</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ECS\IAssetManager.h">
+      <Filter>include\ECS</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ECS\IHashable.h">
       <Filter>include\ECS</Filter>
     </ClInclude>
   </ItemGroup>

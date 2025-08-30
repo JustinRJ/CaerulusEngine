@@ -18,7 +18,7 @@ namespace Core
                 m_translation(translation)
             {}
 
-            mat4 GetMatrix() const
+            const mat4& GetMatrix() const
             {
                 if (m_isDirty)
                 {

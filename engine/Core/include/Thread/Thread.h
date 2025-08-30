@@ -52,13 +52,13 @@ namespace Core
             }
 
             template <class T>
-            static void YieldFor(const T& time)
+            static void Sleep(const T& time)
             {
                 std::this_thread::sleep_for(time);
             }
 
             template <class T>
-            static void YieldUntil(const T& time)
+            static void SleepUntil(const T& time)
             {
                 std::this_thread::sleep_until(time);
             }
@@ -80,7 +80,6 @@ namespace Core
                 }
             }
 
-            // bools are already atomic
             std::atomic<bool> m_running = false;
             std::thread m_thread;
         };

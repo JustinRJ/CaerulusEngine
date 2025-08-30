@@ -61,21 +61,26 @@ Engine::Engine(int argc, char** argv) :
     //vec.push_back(1);
     //l.~scoped_lock();
 
-    m_managerFactory = std::make_shared<ManagerFactory>();
-    m_managerFactory->CreateComponentManager<RenderInstance>(1000);
-    m_managerFactory->CreateComponentManager<PointLight>(10);
-    m_managerFactory->CreateComponentManager<Camera>(10);
+    m_em = new EntityManager();
+    m_scene = std::make_unique<Scene>();
 
-    Entity* camera = new Entity(nullptr);
-    m_camera = camera->AddComponentOfType<Camera>();
+    
+
+    m_scene->SetRootEntity(&m_em->CreateEntity());
+
+    m_managerFactory = std::make_unique<ManagerFactory>();
+    m_managerFactory->CreateComponentManager<RenderInstance>(*m_em);
+    m_managerFactory->CreateComponentManager<PointLight>(*m_em);
+    m_managerFactory->CreateComponentManager<Camera>(*m_em);
+
+    Entity& camera = m_em->CreateChild(*m_scene->GetRootEntity());
+    m_camera = camera.AddComponentOfType<Camera>();
     m_camera->SetView(vec3(0.0), UnitForward, UnitUp);
     m_camera->GetPerspective().SetPerspective(54.0f, 1.25f, 1.0f, 1000.0f);
 
-    m_window = std::make_shared<GLWindow>(m_camera, "Caerulus", 1280, 1024, 32, false);
-    m_renderer = std::make_shared<GLRenderer>();
+    m_window = std::make_unique<GLWindow>(m_camera, "Caerulus", 1280, 1024, 32, false);
+    m_renderer = std::make_unique<GLRenderer>();
 
-    m_scene = std::make_shared<Scene>();
-    m_scene->SetRootEntity(std::make_shared<Entity>());
     m_scene->RegisterTickable(std::make_shared<KeyboardInputSystem>(*m_window));
     m_scene->RegisterTickable(std::make_shared<MouseInputSystem>(*m_window));
 
@@ -130,8 +135,8 @@ void Engine::Tick()
     m_deltaTime = m_deltaTimer.Delta(m_fpsLimit);
     m_fixedTime = m_fixedTimer.Fixed(m_fpsLimit);
 
-    LogInDebug("DeltaTime: " + std::to_string(m_deltaTime));
-    LogInDebug("FixedTime: " + std::to_string(m_fixedTime));
+    LogMessage("DeltaTime: " + std::to_string(m_deltaTime));
+    LogMessage("FixedTime: " + std::to_string(m_fixedTime));
     LogMessage("FPS: " + std::to_string(m_deltaTimer.GetFPS()));
 
     auto tickables = m_scene->GetTickables();
@@ -198,8 +203,8 @@ void Engine::InitInput()
 
 void Engine::InitGLRenderer()
 {
-    auto shaderManager = m_managerFactory->GetAssetManagerAsType<Shader, ShaderManager>();
-    auto textureManager = m_managerFactory->GetAssetManagerAsType<Texture, TextureManager>();;
+    auto shaderManager = std::static_pointer_cast<ShaderManager>(m_managerFactory->GetAssetManager<Shader>());
+    auto textureManager = std::static_pointer_cast<TextureManager>(m_managerFactory->GetAssetManager<Texture>());
 
     shaderManager->Load("pbr",        "assets/shaders/pbr.vert",          "assets/shaders/pbr.frag");
     shaderManager->Load("cubemap",    "assets/shaders/cubemap.vert",      "assets/shaders/equirectangular_to_cubemap.frag");
@@ -232,23 +237,25 @@ void Engine::InitGLRenderer()
 
 void Engine::InitLighting()
 {
-    auto shaderManager = m_managerFactory->GetAssetManagerAsType<Shader, ShaderManager>();
-    auto textureManager = m_managerFactory->GetAssetManagerAsType<Texture, TextureManager>();
+    auto shaderManager = std::static_pointer_cast<ShaderManager>(m_managerFactory->GetAssetManager<Shader>());
+    auto textureManager = std::static_pointer_cast<TextureManager>(m_managerFactory->GetAssetManager<Texture>());
 
     auto rootEntity = m_scene->GetRootEntity();
 
+    
+
     // TODO - fix Entity memory management, this is a raw ptr to a smart ptr
-    Entity* redEntity = new Entity(rootEntity);
-    Entity* blueEntity = new Entity(rootEntity);
-    Entity* greenEntity = new Entity(rootEntity);
-    Entity* whiteEntity = new Entity(rootEntity);
+    Entity& redEntity = m_em->CreateChild(*rootEntity);
+    Entity& blueEntity = m_em->CreateChild(*rootEntity);
+    Entity& greenEntity = m_em->CreateChild(*rootEntity);
+    Entity& whiteEntity = m_em->CreateChild(*rootEntity);
 
-    redEntity->GetLocalTransform().Translate(vec3(-150, 15., 0));
-    blueEntity->GetLocalTransform().Translate(vec3(0, 15., 0));
-    greenEntity->GetLocalTransform().Translate(vec3(150, 15., 0));
-    whiteEntity->GetLocalTransform().Translate(vec3(0., 30., 0));
+    redEntity.GetLocalTransform().Translate(vec3(-150, 15., 0));
+    blueEntity.GetLocalTransform().Translate(vec3(0, 15., 0));
+    greenEntity.GetLocalTransform().Translate(vec3(150, 15., 0));
+    whiteEntity.GetLocalTransform().Translate(vec3(0., 30., 0));
 
-    PointLight* redLight = redEntity->AddComponentOfType<PointLight>();
+    PointLight* redLight = redEntity.AddComponentOfType<PointLight>();
     redLight->SetColour(vec3(255, 0, 0));
     redLight->AddUniformCallback(*shaderManager->Get("pbr"),
     [](ShaderUniformCallback& shaderUniformCallback, Shader& shader)
@@ -258,7 +265,7 @@ void Engine::InitLighting()
         shader.Set3f("lightColours[0]", light->GetColour());
     });
 
-    PointLight* blueLight = blueEntity->AddComponentOfType<PointLight>();
+    PointLight* blueLight = blueEntity.AddComponentOfType<PointLight>();
     blueLight->SetColour(vec3(0, 255, 0));
     blueLight->AddUniformCallback(*shaderManager->Get("pbr"),
     [](ShaderUniformCallback& shaderUniformCallback, Shader& shader)
@@ -268,7 +275,7 @@ void Engine::InitLighting()
         shader.Set3f("lightColours[1]", light->GetColour());
     });
 
-    PointLight* greenLight = greenEntity->AddComponentOfType<PointLight>();
+    PointLight* greenLight = greenEntity.AddComponentOfType<PointLight>();
     greenLight->SetColour(vec3(0, 0, 255));
     greenLight->AddUniformCallback(*shaderManager->Get("pbr"),
     [](ShaderUniformCallback& shaderUniformCallback, Shader& shader)
@@ -278,7 +285,7 @@ void Engine::InitLighting()
         shader.Set3f("lightColours[2]", light->GetColour());
     });
 
-    PointLight* whiteLight = whiteEntity->AddComponentOfType<PointLight>();
+    PointLight* whiteLight = whiteEntity.AddComponentOfType<PointLight>();
     whiteLight->SetColour(vec3(255, 255, 255));
     whiteLight->AddUniformCallback(*shaderManager->Get("pbr"),
     [](ShaderUniformCallback& shaderUniformCallback, Shader& shader)
@@ -291,15 +298,16 @@ void Engine::InitLighting()
     // Tests all recursive templated functions
     // m_scene->GetRootEntity()->RemoveComponentsOfType<Lighting::PointLight>();
     // Tests node deletion behaviour
-    // rootEntity->RemoveChild(*redEntity);
+    // rootEntity->RemoveChild(redEntity);
 }
 
 void Engine::InitScene()
 {
-    auto textureManager = m_managerFactory->GetAssetManagerAsType<Texture, TextureManager>();
-    auto modelManager = m_managerFactory->GetAssetManagerAsType<Model, ModelManager>();
-    auto shaderManager = m_managerFactory->GetAssetManagerAsType<Shader, ShaderManager>();
-    auto materialManager = m_managerFactory->GetAssetManagerAsType<Material, MaterialManager>();
+
+    auto textureManager = std::static_pointer_cast<TextureManager>(m_managerFactory->GetAssetManager<Texture>());
+    auto modelManager = std::static_pointer_cast<ModelManager>(m_managerFactory->GetAssetManager<Model>());
+    auto shaderManager = std::static_pointer_cast<ShaderManager>(m_managerFactory->GetAssetManager<Shader>());
+    auto materialManager = std::static_pointer_cast<MaterialManager>(m_managerFactory->GetAssetManager<Material>());
 
     // Sponza model doesn't have AO textures, add default AO texture
     // Use completely black texture to disable IBL lighting
@@ -308,13 +316,13 @@ void Engine::InitScene()
     textureManager->Load("black", "assets/textures/black.png");
 
     auto rootEntity = m_scene->GetRootEntity();
-    Entity* sponzaEntity = new Entity(rootEntity);
-    sponzaEntity->SetName("sponza");
-    auto& sponzaTransform = sponzaEntity->GetLocalTransform();
+    Entity& sponzaEntity = m_em->CreateChild(*rootEntity);
+    sponzaEntity.SetName("sponza");
+    auto& sponzaTransform = sponzaEntity.GetLocalTransform();
     sponzaTransform.Translate(vec3(0.f, -10.f, 0.f));
     sponzaTransform.Scale(vec3(0.25f, 0.25f, 0.25f));
 
-    RenderInstance* sponza = sponzaEntity->AddComponentOfType<RenderInstance>();
+    RenderInstance* sponza = sponzaEntity.AddComponentOfType<RenderInstance>();
     modelManager->Load("sponza", "assets/models/sponza/sponza.obj");
     sponza->Model = modelManager->Get("sponza");
 
