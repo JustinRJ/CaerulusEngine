@@ -19,8 +19,8 @@
 #include "AssetManagers/MaterialManager.h"
 #include "AssetManagers/ModelManager.h"
 
-#include <Thread/Thread.h>
-#include <Thread/LockT.h>
+#include "Thread/Thread.h"
+#include "Thread/LockT.h"
 
 using namespace Core::Log;
 using namespace Core::ECS;
@@ -61,19 +61,15 @@ Engine::Engine(int argc, char** argv) :
     //vec.push_back(1);
     //l.~scoped_lock();
 
-    m_em = new EntityManager();
     m_scene = std::make_unique<Scene>();
-
-    
-
-    m_scene->SetRootEntity(&m_em->CreateEntity());
+    auto em = m_scene->GetEntityManager();
 
     m_managerFactory = std::make_unique<ManagerFactory>();
-    m_managerFactory->CreateComponentManager<RenderInstance>(*m_em);
-    m_managerFactory->CreateComponentManager<PointLight>(*m_em);
-    m_managerFactory->CreateComponentManager<Camera>(*m_em);
+    m_managerFactory->CreateComponentManager<RenderInstance>(*em);
+    m_managerFactory->CreateComponentManager<PointLight>(*em);
+    m_managerFactory->CreateComponentManager<Camera>(*em);
 
-    Entity& camera = m_em->CreateChild(*m_scene->GetRootEntity());
+    Entity& camera = em->CreateEntity(*m_scene->GetRootEntity());
     m_camera = camera.AddComponentOfType<Camera>();
     m_camera->SetView(vec3(0.0), UnitForward, UnitUp);
     m_camera->GetPerspective().SetPerspective(54.0f, 1.25f, 1.0f, 1000.0f);
@@ -81,22 +77,22 @@ Engine::Engine(int argc, char** argv) :
     m_window = std::make_unique<GLWindow>(m_camera, "Caerulus", 1280, 1024, 32, false);
     m_renderer = std::make_unique<GLRenderer>();
 
-    m_scene->RegisterTickable(std::make_shared<KeyboardInputSystem>(*m_window));
-    m_scene->RegisterTickable(std::make_shared<MouseInputSystem>(*m_window));
+    m_scene->RegisterTickable(std::make_unique<KeyboardInputSystem>(*m_window));
+    m_scene->RegisterTickable(std::make_unique<MouseInputSystem>(*m_window));
 
-    auto shaderSrcManager = std::make_shared<ShaderSourceManager>();
-    auto shaderManager = std::make_shared<ShaderManager>(*shaderSrcManager);
-    auto textureManager = std::make_shared<TextureManager>();
-    auto materialManager = std::make_shared<MaterialManager>(*textureManager);
-    auto modelManager = std::make_shared<ModelManager>(*materialManager, m_renderer.get());
+    auto shaderSrcManager = std::make_unique<ShaderSourceManager>();
+    auto shaderManager = std::make_unique<ShaderManager>(*shaderSrcManager);
+    auto textureManager = std::make_unique<TextureManager>();
+    auto materialManager = std::make_unique<MaterialManager>(*textureManager);
+    auto modelManager = std::make_unique<ModelManager>(*materialManager, m_renderer.get());
 
-    m_managerFactory->AddAssetManager(shaderSrcManager);
-    m_managerFactory->AddAssetManager(shaderManager);
-    m_managerFactory->AddAssetManager(textureManager);
-    m_managerFactory->AddAssetManager(materialManager);
-    m_managerFactory->AddAssetManager(modelManager);
+    m_managerFactory->AddAssetManager(std::move(shaderSrcManager));
+    m_managerFactory->AddAssetManager(std::move(shaderManager));
+    m_managerFactory->AddAssetManager(std::move(textureManager));
+    m_managerFactory->AddAssetManager(std::move(materialManager));
+    m_managerFactory->AddAssetManager(std::move(modelManager));
 
-    m_scene->RegisterTickable(std::make_shared<GraphicsEngine>(*m_managerFactory));
+    m_scene->RegisterTickable(std::make_unique<GraphicsEngine>(*m_managerFactory));
     auto graphicsEngine = m_scene->GetTickableOfType<GraphicsEngine>();
 
     graphicsEngine->SetWindow(m_window.get());
@@ -106,6 +102,8 @@ Engine::Engine(int argc, char** argv) :
     InitGLRenderer();
     InitScene();
     InitLighting();
+
+    m_tickables = m_scene->GetTickables();
 }
 
 void Engine::Run()
@@ -139,34 +137,32 @@ void Engine::Tick()
     LogMessage("FixedTime: " + std::to_string(m_fixedTime));
     LogMessage("FPS: " + std::to_string(m_deltaTimer.GetFPS()));
 
-    auto tickables = m_scene->GetTickables();
-
     if (m_reset)
     {
         LogMessage("Resetting...");
-        for (std::shared_ptr<ITickable> tickable : tickables)
+        for (ITickable* tickable : m_tickables)
         {
             tickable->Reset();
         }
         m_reset = false;
     }
 
-    for (std::shared_ptr<ITickable> tickable : tickables)
+    for (ITickable* tickable : m_tickables)
     {
         tickable->EarlyTick();
     }
 
-    for (std::shared_ptr<ITickable> tickable : tickables)
+    for (ITickable* tickable : m_tickables)
     {
         tickable->Tick(m_deltaTime);
     }
 
-    for (std::shared_ptr<ITickable> tickable : tickables)
+    for (ITickable* tickable : m_tickables)
     {
         tickable->FixedTick(m_fixedTime);
     }
 
-    for (std::shared_ptr<ITickable> tickable : tickables)
+    for (ITickable* tickable : m_tickables)
     {
         tickable->LateTick();
     }
@@ -203,8 +199,8 @@ void Engine::InitInput()
 
 void Engine::InitGLRenderer()
 {
-    auto shaderManager = std::static_pointer_cast<ShaderManager>(m_managerFactory->GetAssetManager<Shader>());
-    auto textureManager = std::static_pointer_cast<TextureManager>(m_managerFactory->GetAssetManager<Texture>());
+    auto shaderManager = static_cast<ShaderManager*>(m_managerFactory->GetAssetManager<Shader>());
+    auto textureManager = static_cast<TextureManager*>(m_managerFactory->GetAssetManager<Texture>());
 
     shaderManager->Load("pbr",        "assets/shaders/pbr.vert",          "assets/shaders/pbr.frag");
     shaderManager->Load("cubemap",    "assets/shaders/cubemap.vert",      "assets/shaders/equirectangular_to_cubemap.frag");
@@ -237,18 +233,16 @@ void Engine::InitGLRenderer()
 
 void Engine::InitLighting()
 {
-    auto shaderManager = std::static_pointer_cast<ShaderManager>(m_managerFactory->GetAssetManager<Shader>());
-    auto textureManager = std::static_pointer_cast<TextureManager>(m_managerFactory->GetAssetManager<Texture>());
+    auto shaderManager = static_cast<ShaderManager*>(m_managerFactory->GetAssetManager<Shader>());
+    auto textureManager = static_cast<TextureManager*>(m_managerFactory->GetAssetManager<Texture>());
 
+    auto em = m_scene->GetEntityManager();
     auto rootEntity = m_scene->GetRootEntity();
 
-    
-
-    // TODO - fix Entity memory management, this is a raw ptr to a smart ptr
-    Entity& redEntity = m_em->CreateChild(*rootEntity);
-    Entity& blueEntity = m_em->CreateChild(*rootEntity);
-    Entity& greenEntity = m_em->CreateChild(*rootEntity);
-    Entity& whiteEntity = m_em->CreateChild(*rootEntity);
+    Entity& redEntity = em->CreateEntity(*rootEntity);
+    Entity& blueEntity = em->CreateEntity(*rootEntity);
+    Entity& greenEntity = em->CreateEntity(*rootEntity);
+    Entity& whiteEntity = em->CreateEntity(*rootEntity);
 
     redEntity.GetLocalTransform().Translate(vec3(-150, 15., 0));
     blueEntity.GetLocalTransform().Translate(vec3(0, 15., 0));
@@ -303,11 +297,10 @@ void Engine::InitLighting()
 
 void Engine::InitScene()
 {
-
-    auto textureManager = std::static_pointer_cast<TextureManager>(m_managerFactory->GetAssetManager<Texture>());
-    auto modelManager = std::static_pointer_cast<ModelManager>(m_managerFactory->GetAssetManager<Model>());
-    auto shaderManager = std::static_pointer_cast<ShaderManager>(m_managerFactory->GetAssetManager<Shader>());
-    auto materialManager = std::static_pointer_cast<MaterialManager>(m_managerFactory->GetAssetManager<Material>());
+    auto textureManager = static_cast<TextureManager*>(m_managerFactory->GetAssetManager<Texture>());
+    auto modelManager = static_cast<ModelManager*>(m_managerFactory->GetAssetManager<Model>());
+    auto shaderManager = static_cast<ShaderManager*>(m_managerFactory->GetAssetManager<Shader>());
+    auto materialManager = static_cast<MaterialManager*>(m_managerFactory->GetAssetManager<Material>());
 
     // Sponza model doesn't have AO textures, add default AO texture
     // Use completely black texture to disable IBL lighting
@@ -315,8 +308,9 @@ void Engine::InitScene()
     textureManager->Load("white", "assets/textures/white.png");
     textureManager->Load("black", "assets/textures/black.png");
 
+    auto em = m_scene->GetEntityManager();
     auto rootEntity = m_scene->GetRootEntity();
-    Entity& sponzaEntity = m_em->CreateChild(*rootEntity);
+    Entity& sponzaEntity = em->CreateEntity(*rootEntity);
     sponzaEntity.SetName("sponza");
     auto& sponzaTransform = sponzaEntity.GetLocalTransform();
     sponzaTransform.Translate(vec3(0.f, -10.f, 0.f));
@@ -344,7 +338,7 @@ void Engine::InitScene()
         auto materialFileName = mesh->GetFileMaterialName();
         if (materialFileName != "")
         {
-            if (std::shared_ptr<Material> material = materialManager->Get(materialFileName.data()))
+            if (Material* material = materialManager->Get(materialFileName.data()))
             {
                 material->SetTexture("defaultAO", TextureType::Bump);
             }

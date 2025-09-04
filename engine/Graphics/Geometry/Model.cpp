@@ -45,7 +45,7 @@ namespace Graphics
 
             for (uint32_t i = 0; i < vertices.size(); ++i)
             {
-                std::shared_ptr<Mesh> newMesh =
+                std::unique_ptr<Mesh> newMesh =
                     std::make_unique<Mesh>(vertices.at(i), indices.at(i), materialNames.at(i));
                 m_meshes.push_back(std::move(newMesh));
             }
@@ -195,7 +195,7 @@ namespace Graphics
             }
         }
 
-        const std::vector<std::shared_ptr<Mesh>>& Model::GetMeshes() const
+        const std::vector<std::unique_ptr<Mesh>>& Model::GetMeshes() const
         {
             return m_meshes;
         }

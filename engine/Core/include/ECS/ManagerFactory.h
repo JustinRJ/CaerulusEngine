@@ -14,72 +14,72 @@ namespace Core
             virtual ~ManagerFactory() = default;
 
             template<class T>
-            std::shared_ptr<AssetManager<T>> GetAssetManager()
+            AssetManager<T>* GetAssetManager()
             {
                 size_t hash = typeid(T).hash_code();
                 auto it = m_assetManagers.find(hash);
                 if (it != m_assetManagers.end())
                 {
-                    return std::static_pointer_cast<AssetManager<T>>(it->second);
+                    return static_cast<AssetManager<T>*>(it->second.get());
                 }
                 return nullptr;
             }
 
             template<class T>
-            std::shared_ptr<AssetManager<T>> CreateAssetManager()
+            AssetManager<T>* CreateAssetManager()
             {
                 auto manager = GetAssetManager<T>();
                 if (!manager)
                 {
-                    auto newManager = std::make_shared<AssetManager<T>>();
-                    m_assetManagers[typeid(T).hash_code()] = newManager;
-                    manager = newManager;
+                    auto newManager = std::make_unique<AssetManager<T>>();
+                    manager = newManager.get();
+                    m_assetManagers[typeid(T).hash_code()] = std::move(newManager);
                 }
                 return manager;
             }
 
-            bool AddAssetManager(const std::shared_ptr<IAssetManager>& manager)
+            bool AddAssetManager(std::unique_ptr<IAssetManager>&& manager)
             {
                 size_t hash = manager->GetHashCode();
-                auto [it, inserted] = m_assetManagers.emplace(hash, manager);
+                auto [it, inserted] = m_assetManagers.emplace(hash, std::move(manager));
                 return inserted;
             }
 
             template<class T>
-            std::shared_ptr<ComponentManager<T>> GetComponentManager()
+            ComponentManager<T>* GetComponentManager()
             {
                 size_t hash = typeid(T).hash_code();
                 auto it = m_componentManagers.find(hash);
                 if (it != m_componentManagers.end())
                 {
-                    return std::static_pointer_cast<ComponentManager<T>>(it->second);
+                    return static_cast<ComponentManager<T>*>(it->second.get());
                 }
                 return nullptr;
             }
 
             template<class T>
-            std::shared_ptr<ComponentManager<T>> CreateComponentManager(EntityManager& em)
+            ComponentManager<T>* CreateComponentManager(EntityManager& em)
             {
                 auto manager = GetComponentManager<T>();
                 if (!manager)
                 {
-                    auto newManager = std::make_shared<ComponentManager<T>>(em);
-                    m_componentManagers[typeid(T).hash_code()] = newManager;
-                    manager = newManager;
+                    auto newManager = std::make_unique<ComponentManager<T>>(em);
+                    manager = newManager.get();
+                    m_componentManagers[typeid(T).hash_code()] = std::move(newManager);
                 }
                 return manager;
             }
 
-            bool AddComponentManager(const std::shared_ptr<IComponentManager>& manager)
+            bool AddComponentManager(std::unique_ptr<IComponentManager>&& manager)
             {
                 size_t hash = manager->GetHashCode();
-                auto [it, inserted] = m_componentManagers.emplace(hash, manager);
+                auto [it, inserted] = m_componentManagers.emplace(hash, std::move(manager));
                 return inserted;
             }
 
         private:
-            std::unordered_map<size_t, std::shared_ptr<IAssetManager>> m_assetManagers;
-            std::unordered_map<size_t, std::shared_ptr<IComponentManager>> m_componentManagers;
+            std::unordered_map<size_t, std::unique_ptr<IAssetManager>> m_assetManagers;
+            std::unordered_map<size_t, std::unique_ptr<IComponentManager>> m_componentManagers;
         };
 
     }

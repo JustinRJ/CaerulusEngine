@@ -20,10 +20,6 @@ namespace Core
     {
         class Camera;
     }
-    namespace ECS
-    {
-        class EntityManager;
-    }
 }
 
 class CAERULUS_ENGINE Engine : Core::Interface::NonCopyable
@@ -59,9 +55,10 @@ private:
     Core::Time::FixedTimer m_fixedTimer;
 
     Core::Math::Camera* m_camera;
-    Core::ECS::EntityManager* m_em;
     std::unique_ptr<Core::ECS::Scene> m_scene;
+    std::unique_ptr<Core::ECS::ManagerFactory> m_managerFactory;
     std::unique_ptr<Graphics::Window::GLWindow> m_window;
     std::unique_ptr<Graphics::Rendering::GLRenderer> m_renderer;
-    std::unique_ptr<Core::ECS::ManagerFactory> m_managerFactory;
+
+    std::vector<Core::Interface::ITickable*> m_tickables;
 };

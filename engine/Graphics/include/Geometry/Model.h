@@ -27,7 +27,7 @@ namespace Graphics
     {
         class Mesh;
 
-        class CAERULUS_GRAPHICS Model
+        class CAERULUS_GRAPHICS Model : Core::Interface::NonCopyable
         {
         public:
             Model();
@@ -36,7 +36,7 @@ namespace Graphics
 
             bool IsLoaded() const;
 
-            const std::vector<std::shared_ptr<Mesh>>& GetMeshes() const;
+            const std::vector<std::unique_ptr<Mesh>>& GetMeshes() const;
 
         private:
             void LoadModel(std::vector<std::vector<Geometry::Vertex>>& verticesOut, std::vector<std::vector<GLuint>>& indicesOut, std::vector<std::string>& materialNamesOut);
@@ -44,7 +44,7 @@ namespace Graphics
 
             bool m_isLoaded;
             std::string m_path;
-            std::vector<std::shared_ptr<Mesh>> m_meshes;
+            std::vector<std::unique_ptr<Mesh>> m_meshes;
         };
     }
 }

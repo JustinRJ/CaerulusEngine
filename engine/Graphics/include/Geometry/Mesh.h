@@ -37,12 +37,12 @@ namespace Graphics
                 GetVertexArray().AddBuffer(GetVertexBuffer(), layout);
             }
 
-            std::shared_ptr<Surface::Material> GetFileMaterial()
+            Surface::Material* GetFileMaterial()
             {
                 return m_fileMaterial;
             }
 
-            void SetFileMaterial(std::shared_ptr<Surface::Material> material)
+            void SetFileMaterial(Surface::Material* material)
             {
                 m_fileMaterial = material;
             }
@@ -58,7 +58,7 @@ namespace Graphics
             const std::string m_fileMaterialName;
 
             // Original material loaded by Meshes
-            std::shared_ptr<Surface::Material> m_fileMaterial;
+            Surface::Material* m_fileMaterial;
         };
     }
 }

@@ -31,7 +31,7 @@ namespace Core
                 return ref;
             }
 
-            Entity& CreateChild(Entity& parent)
+            Entity& CreateEntity(Entity& parent)
             {
                 uint32_t id = NextID();
                 auto entity = std::make_unique<Entity>(*this, id, parent);
@@ -45,7 +45,7 @@ namespace Core
                 auto it = m_entities.find(id);
                 if (it != m_entities.end())
                 {
-                    m_entities.erase(it);  // unique_ptr cleanup
+                    m_entities.erase(it);
                     m_reusableEntityIDs.push_back(id);
                 }
             }
@@ -91,12 +91,10 @@ namespace Core
         class CAERULUS_CORE Entity final : Interface::NonCopyable
         {
         public:
-            // Root entity
             Entity(EntityManager& em, uint32_t id) :
                 m_em(em), m_id(id), m_isEnabled(true)
             {}
 
-            // Child entity, attaches itself to parent
             Entity(EntityManager& em, uint32_t id, Entity& parent) :
                 m_em(em), m_id(id), m_parent(&parent),
                 m_isEnabled(parent.IsEnabled())
@@ -108,20 +106,17 @@ namespace Core
             {
                 m_isDeleted = true;
 
-                // Detach from parent
                 if (m_parent && !m_parent->m_isDeleted)
                 {
                     auto& siblings = m_parent->m_children;
                     siblings.erase(std::remove(siblings.begin(), siblings.end(), this), siblings.end());
                 }
 
-                // Remove components
                 for (auto& [hash, cm] : m_em.m_componentManagerMap)
                 {
                     cm->Remove(*this);
                 }
 
-                // Destroy children (EntityManager owns them)
                 for (Entity* child : m_children)
                 {
                     m_em.DestroyEntity(child->GetID());
@@ -144,10 +139,8 @@ namespace Core
                 if (m_parent)
                 {
                     auto& pChildren = m_parent->m_children;
-                    pChildren.erase(std::find_if(pChildren.begin(), pChildren.end(), [&](Entity* e)
-                        {
-                            return e->GetID() == GetID();
-                        }));
+                    pChildren.erase(std::find_if(pChildren.begin(), pChildren.end(),
+                        [this](Entity* e) { return e->GetID() == GetID(); }));
                 }
                 m_parent = parent;
 
@@ -168,8 +161,8 @@ namespace Core
                 auto it = std::find(m_children.begin(), m_children.end(), &e);
                 if (it != m_children.end())
                 {
-                    m_em.DestroyEntity(e.GetID());
                     m_children.erase(it);
+                    m_em.DestroyEntity(e.GetID());
                 }
             }
 
@@ -204,7 +197,7 @@ namespace Core
                     }
                 }
 
-                for (Entity*& child : m_children)
+                for (Entity* child : m_children)
                 {
                     child->SetEnabled(enabled);
                 }
@@ -273,7 +266,9 @@ namespace Core
             {
                 auto* mgr = m_em.GetComponentManager<T>();
                 if (!mgr)
+                {
                     return nullptr;
+                }
                 return static_cast<T*>(mgr->InsertV(*this));
             }
 
@@ -282,7 +277,9 @@ namespace Core
             {
                 auto* mgr = m_em.GetComponentManager<T>();
                 if (!mgr)
+                {
                     return nullptr;
+                }
                 return mgr->Get(*this);
             }
 
@@ -317,7 +314,9 @@ namespace Core
             {
                 auto* mgr = m_em.GetComponentManager<T>();
                 if (mgr)
+                {
                     mgr->Remove(*this);
+                }
             }
 
             template<class T>

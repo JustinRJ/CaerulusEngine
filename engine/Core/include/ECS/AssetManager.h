@@ -27,11 +27,11 @@ namespace Core
                 return typeid(R).hash_code();
             }
 
-            virtual void Insert(std::string_view key, const std::shared_ptr<R>& value)
+            virtual void Insert(std::string_view key, std::unique_ptr<R>&& value)
             {
                 if (value)
                 {
-                    m_managedMap.emplace(key.data(), value);
+                    m_managedMap.emplace(key.data(), std::move(value));
                 }
             }
 
@@ -44,19 +44,19 @@ namespace Core
                 }
             }
 
-            std::shared_ptr<R> Get(std::string_view key) const
+            R* Get(std::string_view key) const
             {
-                std::shared_ptr<R> found;
+                R* found = nullptr;
                 auto it = m_managedMap.find(key.data());
                 if (it != m_managedMap.end())
                 {
-                    found = it->second;
+                    found = it->second.get();
                 }
                 return found;
             }
 
         private:
-            std::unordered_map<std::string, std::shared_ptr<R>> m_managedMap;
+            std::unordered_map<std::string, std::unique_ptr<R>> m_managedMap;
         };
     }
 }

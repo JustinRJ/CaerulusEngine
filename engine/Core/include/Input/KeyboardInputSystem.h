@@ -36,6 +36,11 @@ namespace Core
                 glfwSetWindowUserPointer(window.GetGLFWWindow(), this);
             };
 
+            size_t GetHashCode() const override
+            {
+                return typeid(KeyboardInputSystem).hash_code();
+            }
+
             void EarlyTick() override
             {
                 InvokeCallbacks();

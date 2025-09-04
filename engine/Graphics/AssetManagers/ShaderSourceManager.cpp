@@ -18,12 +18,12 @@ namespace Graphics
             else
             {
                 LogMessage("\tLoading shader stage with path: " + std::string(path));
-                std::shared_ptr<ShaderSource> shaderSource = std::make_unique<ShaderSource>(type, path);
+                std::unique_ptr<ShaderSource> shaderSource = std::make_unique<ShaderSource>(type, path);
                 shaderSource->Load();
 
                 if (shaderSource->IsCompiled())
                 {
-                    Insert(path.data(), shaderSource);
+                    Insert(path.data(), std::move(shaderSource));
                 }
                 else
                 {

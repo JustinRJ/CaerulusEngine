@@ -24,14 +24,14 @@ namespace Graphics
             else
             {
                 LogMessage("Creating material " + std::string(name));
-                std::shared_ptr<Material> material = std::make_unique<Material>(m_textureManager, "");
+                std::unique_ptr<Material> material = std::make_unique<Material>(m_textureManager, "");
 
                 for (uint32_t i = 0; i < textureNames.size(); ++i)
                 {
                     material->SetTexture(textureNames[i], static_cast<TextureType>(i));
                 }
 
-                Insert(name.data(), material);
+                Insert(name.data(), std::move(material));
             }
         }
 
@@ -55,7 +55,7 @@ namespace Graphics
                     {
                         LogMessage("Loading material " + name + " with path: " + std::string(path));
 
-                        std::shared_ptr<Material> newMaterial = std::make_unique<Material>(m_textureManager, path);
+                        std::unique_ptr<Material> newMaterial = std::make_unique<Material>(m_textureManager, path);
 
                         std::vector<std::string> textures;
                         for (std::string_view textureName : Material::GetTextureNamesFromFile(is, static_cast<TextureType>(i)))
@@ -78,7 +78,7 @@ namespace Graphics
                             newMaterial->SetTexture(textures[j], static_cast<TextureType>(j));
                         }
 
-                        Insert(name, newMaterial);
+                        Insert(name, std::move(newMaterial));
                     }
                 }
                 fb.close();

@@ -44,6 +44,11 @@ namespace Core
                 glfwSetInputMode(m_window.GetGLFWWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
             };
 
+            size_t GetHashCode() const override
+            {
+                return typeid(MouseInputSystem).hash_code();
+            }
+
             void EarlyTick() override
             {
                 UpdateMouseDrag();

@@ -12,9 +12,14 @@ namespace Core
         {
         public:
 
-            void SetRootEntity(Entity* entity)
+            Scene() :
+                m_em(std::make_unique<EntityManager>()),
+                m_rootEntity(&m_em->CreateEntity())
+            {}
+
+            ~Scene()
             {
-                m_rootEntity = entity;
+                m_em->DestroyEntity(m_rootEntity->GetID());
             }
 
             Entity* GetRootEntity() const
@@ -22,36 +27,51 @@ namespace Core
                 return m_rootEntity;
             }
 
-            void RegisterTickable(std::shared_ptr<Interface::ITickable> tickable)
+            EntityManager* GetEntityManager() const
             {
-                m_tickables.push_back(tickable);
+                return m_em.get();
             }
 
-            void UnregisterTickable(std::shared_ptr<Interface::ITickable> tickable)
+            void RegisterTickable(std::unique_ptr<Interface::ITickable>&& tickable)
             {
-                m_tickables.erase(std::find(std::begin(m_tickables), std::end(m_tickables), tickable));
+                m_tickables.insert({ tickable->GetHashCode(), std::move(tickable) });
             }
 
             template <typename T>
-            std::shared_ptr<T> GetTickableOfType() const
+            void UnregisterTickable(Interface::ITickable* tickable)
             {
-                for (auto& interface : m_tickables)
+                auto it = std::find(std::begin(m_tickables), std::end(m_tickables), typeid(T).hash_code());
+                if (it != std::end(m_tickables))
                 {
-                    if (auto t = dynamic_cast<T*>(interface.get()))
-                    {
-                        return std::static_pointer_cast<T>(interface);
-                    }
+                    m_tickables.erase(it);
+                }
+            }
+
+            template <typename T>
+            T* GetTickableOfType() const
+            {
+                size_t hashToFind = typeid(T).hash_code();
+                auto it = m_tickables.find(hashToFind);
+                if (it != std::end(m_tickables))
+                {
+                    return static_cast<T*>(it->second.get());
                 }
                 return nullptr;
             }
 
-            const std::vector<std::shared_ptr<Interface::ITickable>>& GetTickables() const
+            std::vector<Interface::ITickable*> GetTickables() const
             {
-                return m_tickables;
+                std::vector<Interface::ITickable*> tickables;
+                for (const auto& [hash, tickable] : m_tickables)
+                {
+                    tickables.push_back(tickable.get());
+                }
+                return tickables;
             }
 
+            std::unique_ptr<EntityManager> m_em;
             Entity* m_rootEntity = nullptr;
-            std::vector<std::shared_ptr<Interface::ITickable>> m_tickables;
+            std::unordered_map<size_t, std::unique_ptr<Interface::ITickable>> m_tickables;
         };
     }
 }

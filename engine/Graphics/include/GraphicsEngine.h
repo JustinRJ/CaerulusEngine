@@ -60,6 +60,11 @@ namespace Graphics
     public:
         GraphicsEngine(Core::ECS::ManagerFactory& componentManagers);
 
+        size_t GetHashCode() const override
+        {
+            return typeid(GraphicsEngine).hash_code();
+        }
+
         void EarlyTick() override;
         void Tick(float deltaTime) override;
         void FixedTick(float fixedTime) override;
