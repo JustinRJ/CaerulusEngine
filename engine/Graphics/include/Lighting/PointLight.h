@@ -9,14 +9,7 @@ namespace Graphics
         class PointLight : public Light
         {
         public:
-            PointLight(Core::ECS::Entity& entity) :
-                Light(entity),
-                m_entity(entity)
-            {}
-
-            CAERULUS_COMPONENT_INIT
-
-            void Update(float deltaTime)
+            void Tick(float deltaTime)
             {
                 InvokeUniformCallbacks();
             }

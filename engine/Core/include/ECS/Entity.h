@@ -8,19 +8,35 @@
 #include <algorithm>
 
 #include "Math/Transform.h"
+#include "Interface/ITickable.h"
 #include "Interface/NonCopyable.h"
-#include "ECS/IComponentManager.h"
 
 namespace Core
 {
     namespace ECS
     {
         class Entity;
+        template<class T>
+        class ComponentManager;
 
-        class EntityManager
+        class IComponentManager : public Interface::ITickable
+        {
+        public:
+            virtual ~IComponentManager() = default;
+
+            virtual void SetEnabled(const Entity& key, bool enabled) = 0;
+            virtual void Remove(const Entity& key) = 0;
+        };
+
+        class EntityManager : public Interface::ITickable
         {
         public:
             friend class Entity;
+
+            size_t GetHashCode() const override
+            {
+                return typeid(EntityManager).hash_code();
+            }
 
             Entity& CreateEntity()
             {
@@ -50,23 +66,21 @@ namespace Core
                 }
             }
 
-            template <typename T>
-            IComponentManager* GetComponentManager() const
+            template<class T>
+            ComponentManager<T>* GetComponentManager()
             {
-                auto it = m_componentManagerMap.find(typeid(T).hash_code());
-                return it != m_componentManagerMap.end() ? it->second : nullptr;
-            }
+                size_t hash = typeid(T).hash_code();
+                auto it = m_componentManagersMap.find(hash);
+                if (it != m_componentManagersMap.end())
+                {
+                    return static_cast<ComponentManager<T>*>(it->second.get());
+                }
 
-            template <typename T>
-            void RegisterComponentManager(IComponentManager* mgr)
-            {
-                m_componentManagerMap[typeid(T).hash_code()] = mgr;
-            }
-
-            template <typename T>
-            void DeregisterComponentManager()
-            {
-                m_componentManagerMap.erase(typeid(T).hash_code());
+                auto newManager = std::make_unique<ComponentManager<T>>();
+                auto manager = newManager.get();
+                m_componentManagersVec.push_back(manager);
+                m_componentManagersMap[hash] = std::move(newManager);
+                return manager;
             }
 
         private:
@@ -81,13 +95,70 @@ namespace Core
                 return m_numEntities++;
             }
 
+            void Remove(Entity& e)
+            {
+                for (auto cm : m_componentManagersVec)
+                {
+                    cm->Remove(e);
+                }
+            }
+
+            void SetEnabled(Entity& e, bool enabled)
+            {
+                for (auto cm : m_componentManagersVec)
+                {
+                    cm->SetEnabled(e, enabled);
+                }
+            }
+
+            void EarlyTick() override
+            {
+                for (auto cm : m_componentManagersVec)
+                {
+                    cm->EarlyTick();
+                }
+            }
+
+            void Tick(float deltaTime) override
+            {
+                for (auto cm : m_componentManagersVec)
+                {
+                    cm->Tick(deltaTime);
+                }
+            }
+
+            void FixedTick(float fixedTime) override
+            {
+                for (auto cm : m_componentManagersVec)
+                {
+                    cm->FixedTick(fixedTime);
+                }
+            }
+
+            void LateTick() override
+            {
+                for (auto cm : m_componentManagersVec)
+                {
+                    cm->LateTick();
+                }
+            }
+
+            void Reset() override
+            {
+                for (auto cm : m_componentManagersVec)
+                {
+                    cm->Reset();
+                }
+            }
+
             uint32_t m_numEntities = 0;
             std::list<uint32_t> m_reusableEntityIDs;
             std::unordered_map<uint32_t, std::unique_ptr<Entity>> m_entities;
-            std::unordered_map<size_t, IComponentManager*> m_componentManagerMap;
+
+            std::vector<IComponentManager*> m_componentManagersVec;
+            std::unordered_map<size_t, std::unique_ptr<IComponentManager>> m_componentManagersMap;
         };
 
-        typedef std::bitset<32> EntityBitset;
         class CAERULUS_CORE Entity final : Interface::NonCopyable
         {
         public:
@@ -112,10 +183,7 @@ namespace Core
                     siblings.erase(std::remove(siblings.begin(), siblings.end(), this), siblings.end());
                 }
 
-                for (auto& [hash, cm] : m_em.m_componentManagerMap)
-                {
-                    cm->Remove(*this);
-                }
+                m_em.Remove(*this);
 
                 for (Entity* child : m_children)
                 {
@@ -171,16 +239,6 @@ namespace Core
                 m_em.DestroyEntity(m_id);
             }
 
-            std::string_view GetName() const
-            {
-                return m_name;
-            }
-
-            void SetName(std::string_view name)
-            {
-                m_name = name;
-            }
-
             bool IsEnabled() const
             {
                 return m_isEnabled;
@@ -191,10 +249,7 @@ namespace Core
                 if (m_isEnabled != enabled)
                 {
                     m_isEnabled = enabled;
-                    for (auto& [hash, cm] : m_em.m_componentManagerMap)
-                    {
-                        cm->SetEnabled(*this, enabled);
-                    }
+                    m_em.SetEnabled(*this, enabled);
                 }
 
                 for (Entity* child : m_children)
@@ -203,44 +258,14 @@ namespace Core
                 }
             }
 
-            EntityBitset& GetLayers()
-            {
-                return m_layers;
-            }
-
-            const EntityBitset& GetLayers() const
-            {
-                return m_layers;
-            }
-
-            std::vector<std::string>& GetTags()
-            {
-                return m_tags;
-            }
-
-            const std::vector<std::string>& GetTags() const
-            {
-                return m_tags;
-            }
-
-            Math::Transform& GetLocalTransform()
-            {
-                return m_localTransform;
-            }
-
-            const Math::Transform& GetLocalTransform() const
-            {
-                return m_localTransform;
-            }
-
+            // TODO - re-create a transform component for entities, don't rely on GetComponent
             Math::Transform GetWorldTransform() const
             {
-                return m_parent ? m_parent->GetWorldTransform() * m_localTransform : m_localTransform;
-            }
-
-            void SetWorldTransform(const Math::Transform& transform)
-            {
-                m_localTransform = GetWorldTransform() * transform;
+                if (auto local = GetComponentOfType<Math::Transform>())
+                {
+                    return m_parent ? m_parent->GetWorldTransform() * *local : *local;
+                }
+                return Math::Transform();
             }
 
             void SwapID(Entity& e)
@@ -269,7 +294,7 @@ namespace Core
                 {
                     return nullptr;
                 }
-                return static_cast<T*>(mgr->InsertV(*this));
+                return static_cast<T*>(mgr->Insert(*this));
             }
 
             template<class T>
@@ -333,11 +358,6 @@ namespace Core
             bool m_isDeleted = false;
             bool m_isEnabled = false;
             uint32_t m_id;
-            std::string m_name;
-            EntityBitset m_layers;
-            Math::Transform m_localTransform;
-            std::vector<std::string> m_tags;
-
             EntityManager& m_em;
             Entity* m_parent = nullptr;
             std::vector<Entity*> m_children;
@@ -367,5 +387,206 @@ namespace Core
         {
             return !(left < right);
         }
+
+        template <class R>
+        class ComponentManager : public IComponentManager
+        {
+        public:
+            friend Entity;
+
+            virtual ~ComponentManager() = default;
+
+            constexpr size_t GetHashCode() const override
+            {
+                return typeid(R).hash_code();
+            }
+
+            void EarlyTick()
+            {
+                for (auto& entry : m_components)
+                {
+                    auto& comp = entry.Component;
+                    if constexpr (requires { comp->EarlyTick(); })
+                    {
+                        if (comp && entry.Enabled)
+                        {
+                            comp->EarlyTick();
+                        }
+                    }
+                }
+            }
+
+            void Tick(float deltaTime)
+            {
+                for (auto& entry : m_components)
+                {
+                    auto& comp = entry.Component;
+                    if constexpr (requires { comp->Tick(deltaTime); })
+                    {
+                        if (comp && entry.Enabled)
+                        {
+                            comp->Tick(deltaTime);
+                        }
+                    }
+                }
+            }
+
+            void FixedTick(float fixedTime)
+            {
+                for (auto& entry : m_components)
+                {
+                    auto& comp = entry.Component;
+                    if constexpr (requires { comp->FixedTick(fixedTime); })
+                    {
+                        if (comp && entry.Enabled)
+                        {
+                            comp->FixedTick(fixedTime);
+                        }
+                    }
+                }
+            }
+
+            void LateTick()
+            {
+                for (auto& entry : m_components)
+                {
+                    auto& comp = entry.Component;
+                    if constexpr (requires { comp->LateTick(); })
+                    {
+                        if (comp && entry.Enabled)
+                        {
+                            comp->LateTick();
+                        }
+                    }
+                }
+            }
+
+            void Reset()
+            {
+                for (auto& entry : m_components)
+                {
+                    auto& comp = entry.Component;
+                    if constexpr (requires { comp->Reset(); })
+                    {
+                        if (comp)
+                        {
+                            comp->Reset();
+                        }
+                    }
+                }
+            }
+
+            R* Get(const Entity& key) const
+            {
+                auto it = m_entityToIndex.find(&key);
+                if (it != m_entityToIndex.end())
+                {
+                    return m_components[it->second].Component.get();
+                }
+                return nullptr;
+            }
+
+        private:
+
+            struct ComponentEntry
+            {
+                bool Enabled = false;
+                const Entity* Entity = nullptr;
+                std::unique_ptr<R> Component = nullptr;
+            };
+
+            void SetEnabled(const Entity& key, bool enabled) override
+            {
+                auto it = m_entityToIndex.find(&key);
+                if (it != m_entityToIndex.end())
+                {
+                    auto comp = Get(key);
+                    bool& e = m_components[it->second].Enabled;
+
+                    if (key.IsEnabled())
+                    {
+                        if (e != enabled)
+                        {
+                            e = enabled;
+                            if (enabled)
+                            {
+                                if constexpr (requires { comp->OnEnable(); })
+                                {
+                                    comp->OnEnable();
+                                }
+                            }
+                            else
+                            {
+                                if constexpr (requires { comp->OnDisable(); })
+                                {
+                                    comp->OnDisable();
+                                }
+                            }
+                        }
+                    }
+                    else if (e != false)
+                    {
+                        e = false;
+                        if constexpr (requires { comp->OnDisable(); })
+                        {
+                            comp->OnDisable();
+                        }
+                    }
+                }
+            }
+
+            bool IsEnabled(const Entity& key, bool enabled) const
+            {
+                if (!key.IsEnabled())
+                {
+                    return false;
+                }
+                auto it = m_entityToIndex.find(&key);
+                if (it != m_entityToIndex.end())
+                {
+                    return m_components[it->second].Enabled;
+                }
+                return false;
+            }
+
+            R* Insert(const Entity& key)
+            {
+                if (auto existing = Get(key))
+                {
+                    return existing;
+                }
+
+                auto comp = std::make_unique<R>();
+                m_components.push_back(ComponentEntry{ key.IsEnabled(), &key, std::move(comp) });
+                m_entityToIndex[&key] = m_components.size() - 1;
+                return m_components.back().Component.get();
+            }
+
+            void Remove(const Entity& key) override
+            {
+                auto it = m_entityToIndex.find(&key);
+                if (it == m_entityToIndex.end())
+                {
+                    return;
+                }
+
+                size_t index = it->second;
+
+                // erase from vector while preserving order
+                m_components.erase(m_components.begin() + index);
+
+                // remove from map
+                m_entityToIndex.erase(it);
+
+                // update indices for all elements after the removed one
+                for (size_t i = index; i < m_components.size(); ++i)
+                {
+                    m_entityToIndex[m_components[i].Entity] = i;
+                }
+            }
+
+            std::vector<ComponentEntry> m_components;
+            std::unordered_map<const Entity*, size_t> m_entityToIndex;
+        };
     }
 }

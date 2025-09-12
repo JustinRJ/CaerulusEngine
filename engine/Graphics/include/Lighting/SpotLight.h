@@ -9,10 +9,6 @@ namespace Graphics
         class SpotLight : public Light
         {
         public:
-            SpotLight(Core::ECS::Entity& entity) :
-                Light(entity),
-                m_angle(0)
-            {}
 
             void GetAngle(float angle)
             {
@@ -25,7 +21,7 @@ namespace Graphics
             }
 
         private:
-            float m_angle;
+            float m_angle = 0.0f;
         };
     }
 }

@@ -3,6 +3,7 @@
 #include <string>
 #include <fstream>
 
+#include "Log/Log.h"
 #include "Interface/NonCopyable.h"
 
 namespace Core
@@ -15,7 +16,7 @@ namespace Core
             LogToFile() = delete;
 
             explicit LogToFile(std::string_view path) :
-                log_file(path)
+                log_file(path.data())
             {
                 if (!log_file.is_open())
                 {

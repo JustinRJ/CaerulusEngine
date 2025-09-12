@@ -212,18 +212,14 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="include\ECS\AssetManager.h" />
-    <ClInclude Include="include\ECS\Component.h" />
-    <ClInclude Include="include\ECS\ComponentManager.h" />
     <ClInclude Include="include\ECS\Entity.h" />
-    <ClInclude Include="include\ECS\IAssetManager.h" />
-    <ClInclude Include="include\ECS\IComponentManager.h" />
-    <ClInclude Include="include\ECS\IHashable.h" />
-    <ClInclude Include="include\ECS\ManagerFactory.h" />
+    <ClInclude Include="include\ECS\AssetManagerFactory.h" />
     <ClInclude Include="include\ECS\Scene.h" />
     <ClInclude Include="include\File\FileUtility.h" />
     <ClInclude Include="include\Input\InputDefines.h" />
     <ClInclude Include="include\Input\KeyboardInputSystem.h" />
     <ClInclude Include="include\Input\MouseInputSystem.h" />
+    <ClInclude Include="include\Interface\IHashable.h" />
     <ClInclude Include="include\Interface\ITickable.h" />
     <ClInclude Include="include\Interface\NonCopyable.h" />
     <ClInclude Include="include\Interface\NonMovable.h" />

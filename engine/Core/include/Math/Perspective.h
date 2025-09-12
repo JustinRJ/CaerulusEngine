@@ -75,11 +75,11 @@ namespace Core
             }
 
         private:
-            float m_degFOV;
-            float m_aspect;
-            float m_near;
-            float m_far;
-            mat4 m_perspective;
+            float m_degFOV = 60.0f;
+            float m_aspect = 16.0f / 9.0f;
+            float m_near = 0.1f;
+            float m_far = 1000.0f;
+            mat4 m_perspective = perspective(radians(m_degFOV), m_aspect, m_near, m_far);
         };
     }
 }

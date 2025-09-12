@@ -58,7 +58,7 @@ namespace Graphics
             const std::string m_fileMaterialName;
 
             // Original material loaded by Meshes
-            Surface::Material* m_fileMaterial;
+            Surface::Material* m_fileMaterial = nullptr;
         };
     }
 }

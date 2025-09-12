@@ -9,10 +9,6 @@ namespace Graphics
         class DirectionalLight : public Light
         {
         public:
-            DirectionalLight(Core::ECS::Entity& entity) :
-                Light(entity),
-                m_direction(0,0,0)
-            {}
 
             const Core::Math::vec3& GetDirection() const
             {
@@ -25,7 +21,7 @@ namespace Graphics
             }
 
         private:
-            Core::Math::vec3 m_direction;
+            Core::Math::vec3 m_direction = Core::Math::vec3(0.f, 0.f, 0.f);
         };
     }
 }

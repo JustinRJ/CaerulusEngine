@@ -3,7 +3,7 @@
 #include "Engine.h"
 
 #include "ECS/Scene.h"
-#include "ECS/ManagerFactory.h"
+#include "ECS/AssetManagerFactory.h"
 
 #include "GraphicsEngine.h"
 #include "Window/GLWindow.h"
@@ -41,7 +41,8 @@ using namespace Graphics::AssetManagers;
 
 Engine::Engine(int argc, char** argv) :
     m_argCount(argc),
-    m_argValue(argv)
+    m_argValue(argv),
+    m_timer(m_stepLimit1Over, m_fpsLimit)
 {
     //struct TestThread : public Thread
     //{
@@ -64,15 +65,11 @@ Engine::Engine(int argc, char** argv) :
     m_scene = std::make_unique<Scene>();
     auto em = m_scene->GetEntityManager();
 
-    m_managerFactory = std::make_unique<ManagerFactory>();
-    m_managerFactory->CreateComponentManager<RenderInstance>(*em);
-    m_managerFactory->CreateComponentManager<PointLight>(*em);
-    m_managerFactory->CreateComponentManager<Camera>(*em);
+    m_assetManagerFactory = std::make_unique<AssetManagerFactory>();
 
     Entity& camera = em->CreateEntity(*m_scene->GetRootEntity());
     m_camera = camera.AddComponentOfType<Camera>();
     m_camera->SetView(vec3(0.0), UnitForward, UnitUp);
-    m_camera->GetPerspective().SetPerspective(54.0f, 1.25f, 1.0f, 1000.0f);
 
     m_window = std::make_unique<GLWindow>(m_camera, "Caerulus", 1280, 1024, 32, false);
     m_renderer = std::make_unique<GLRenderer>();
@@ -86,13 +83,13 @@ Engine::Engine(int argc, char** argv) :
     auto materialManager = std::make_unique<MaterialManager>(*textureManager);
     auto modelManager = std::make_unique<ModelManager>(*materialManager, m_renderer.get());
 
-    m_managerFactory->AddAssetManager(std::move(shaderSrcManager));
-    m_managerFactory->AddAssetManager(std::move(shaderManager));
-    m_managerFactory->AddAssetManager(std::move(textureManager));
-    m_managerFactory->AddAssetManager(std::move(materialManager));
-    m_managerFactory->AddAssetManager(std::move(modelManager));
+    m_assetManagerFactory->AddAssetManager(std::move(shaderSrcManager));
+    m_assetManagerFactory->AddAssetManager(std::move(shaderManager));
+    m_assetManagerFactory->AddAssetManager(std::move(textureManager));
+    m_assetManagerFactory->AddAssetManager(std::move(materialManager));
+    m_assetManagerFactory->AddAssetManager(std::move(modelManager));
 
-    m_scene->RegisterTickable(std::make_unique<GraphicsEngine>(*m_managerFactory));
+    m_scene->RegisterTickable(std::make_unique<GraphicsEngine>());
     auto graphicsEngine = m_scene->GetTickableOfType<GraphicsEngine>();
 
     graphicsEngine->SetWindow(m_window.get());
@@ -130,16 +127,19 @@ void Engine::Run()
 
 void Engine::Tick()
 {
-    m_deltaTime = m_deltaTimer.Delta(m_fpsLimit);
-    m_fixedTime = m_fixedTimer.Fixed(m_fpsLimit);
+    m_timer.Tick();
+
+    m_deltaTime = static_cast<float>(m_timer.GetDelta());
+    uint32_t steps = m_timer.GetFixedSteps();
+    double alpha = m_timer.GetAlpha();
 
     LogMessage("DeltaTime: " + std::to_string(m_deltaTime));
-    LogMessage("FixedTime: " + std::to_string(m_fixedTime));
-    LogMessage("FPS: " + std::to_string(m_deltaTimer.GetFPS()));
+    LogMessage("Physics Steps: " + std::to_string(steps));
+    LogMessage("FPS: " + std::to_string(m_timer.GetFPS()));
+    LogMessage("Alpha: " + std::to_string(alpha));
 
     if (m_reset)
     {
-        LogMessage("Resetting...");
         for (ITickable* tickable : m_tickables)
         {
             tickable->Reset();
@@ -157,9 +157,12 @@ void Engine::Tick()
         tickable->Tick(m_deltaTime);
     }
 
-    for (ITickable* tickable : m_tickables)
+    for (uint32_t i = 0; i < steps; ++i)
     {
-        tickable->FixedTick(m_fixedTime);
+        for (ITickable* tickable : m_tickables)
+        {
+            tickable->FixedTick(static_cast<float>(m_stepLimit1Over));
+        }
     }
 
     for (ITickable* tickable : m_tickables)
@@ -175,19 +178,19 @@ void Engine::InitInput()
     auto keyboardInputSystem = m_scene->GetTickableOfType<KeyboardInputSystem>();
     auto mouseInputSystem = m_scene->GetTickableOfType<MouseInputSystem>();
 
-    keyboardInputSystem->AddWindowKeyCallback(*m_window, GLFW_KEY_ESCAPE, Action::Release, [&](Modifier) { m_running = false; });
-    keyboardInputSystem->AddWindowKeyCallback(*m_window, GLFW_KEY_X, Action::Release, [&](Modifier)   { m_window->ToggleLockedCursor(); });
-    keyboardInputSystem->AddWindowKeyCallback(*m_window, GLFW_KEY_R, Action::Release, [&](Modifier)   { if (m_window->IsCursorLocked()) { m_reset = true; }});
-    keyboardInputSystem->AddWindowKeyCallback(*m_window, GLFW_KEY_C, Action::Release, [&](Modifier)   { if (m_window->IsCursorLocked()) { m_renderer->SetWireframeActive(!m_renderer->IsWireframeActive()); }});
+    keyboardInputSystem->AddWindowKeyCallback(*m_window, GLFW_KEY_ESCAPE, Action::Release, [this](Modifier) { m_running = false; });
+    keyboardInputSystem->AddWindowKeyCallback(*m_window, GLFW_KEY_X, Action::Release, [this](Modifier)   { m_window->ToggleLockedCursor(); });
+    keyboardInputSystem->AddWindowKeyCallback(*m_window, GLFW_KEY_R, Action::Release, [this](Modifier)   { if (m_window->IsCursorLocked()) { m_reset = true; }});
+    keyboardInputSystem->AddWindowKeyCallback(*m_window, GLFW_KEY_C, Action::Release, [this](Modifier)   { if (m_window->IsCursorLocked()) { m_renderer->SetWireframeActive(!m_renderer->IsWireframeActive()); }});
 
-    keyboardInputSystem->AddWindowKeyCallback(*m_window, GLFW_KEY_A, Action::Hold, [&](Modifier m) { if (m_window->IsCursorLocked()) { m_camera->Translate(UnitRight   * -m_deltaTime * (m == Modifier::Shift ? m_sprintSpeed : m_normalSpeed), false); }});
-    keyboardInputSystem->AddWindowKeyCallback(*m_window, GLFW_KEY_D, Action::Hold, [&](Modifier m) { if (m_window->IsCursorLocked()) { m_camera->Translate(UnitRight   *  m_deltaTime * (m == Modifier::Shift ? m_sprintSpeed : m_normalSpeed), false); }});
-    keyboardInputSystem->AddWindowKeyCallback(*m_window, GLFW_KEY_W, Action::Hold, [&](Modifier m) { if (m_window->IsCursorLocked()) { m_camera->Translate(UnitForward *  m_deltaTime * (m == Modifier::Shift ? m_sprintSpeed : m_normalSpeed)); }});
-    keyboardInputSystem->AddWindowKeyCallback(*m_window, GLFW_KEY_S, Action::Hold, [&](Modifier m) { if (m_window->IsCursorLocked()) { m_camera->Translate(UnitForward * -m_deltaTime * (m == Modifier::Shift ? m_sprintSpeed : m_normalSpeed)); }});
-    keyboardInputSystem->AddWindowKeyCallback(*m_window, GLFW_KEY_Q, Action::Hold, [&](Modifier m) { if (m_window->IsCursorLocked()) { m_camera->Translate(UnitUp      * -m_deltaTime * (m == Modifier::Shift ? m_sprintSpeed : m_normalSpeed)); }});
-    keyboardInputSystem->AddWindowKeyCallback(*m_window, GLFW_KEY_E, Action::Hold, [&](Modifier m) { if (m_window->IsCursorLocked()) { m_camera->Translate(UnitUp      *  m_deltaTime * (m == Modifier::Shift ? m_sprintSpeed : m_normalSpeed)); }});
+    keyboardInputSystem->AddWindowKeyCallback(*m_window, GLFW_KEY_A, Action::Hold, [this](Modifier m) { if (m_window->IsCursorLocked()) { m_camera->Translate(UnitRight   * -m_deltaTime * (m == Modifier::Shift ? m_sprintSpeed : m_normalSpeed), false); }});
+    keyboardInputSystem->AddWindowKeyCallback(*m_window, GLFW_KEY_D, Action::Hold, [this](Modifier m) { if (m_window->IsCursorLocked()) { m_camera->Translate(UnitRight   *  m_deltaTime * (m == Modifier::Shift ? m_sprintSpeed : m_normalSpeed), false); }});
+    keyboardInputSystem->AddWindowKeyCallback(*m_window, GLFW_KEY_W, Action::Hold, [this](Modifier m) { if (m_window->IsCursorLocked()) { m_camera->Translate(UnitForward *  m_deltaTime * (m == Modifier::Shift ? m_sprintSpeed : m_normalSpeed)); }});
+    keyboardInputSystem->AddWindowKeyCallback(*m_window, GLFW_KEY_S, Action::Hold, [this](Modifier m) { if (m_window->IsCursorLocked()) { m_camera->Translate(UnitForward * -m_deltaTime * (m == Modifier::Shift ? m_sprintSpeed : m_normalSpeed)); }});
+    keyboardInputSystem->AddWindowKeyCallback(*m_window, GLFW_KEY_Q, Action::Hold, [this](Modifier m) { if (m_window->IsCursorLocked()) { m_camera->Translate(UnitUp      * -m_deltaTime * (m == Modifier::Shift ? m_sprintSpeed : m_normalSpeed)); }});
+    keyboardInputSystem->AddWindowKeyCallback(*m_window, GLFW_KEY_E, Action::Hold, [this](Modifier m) { if (m_window->IsCursorLocked()) { m_camera->Translate(UnitUp      *  m_deltaTime * (m == Modifier::Shift ? m_sprintSpeed : m_normalSpeed)); }});
 
-    mouseInputSystem->AddDragMouseCallback([&](const DragData& dd)
+    mouseInputSystem->AddDragMouseCallback([this](const DragData& dd)
     {
         if (m_window->IsCursorLocked())
         {
@@ -199,8 +202,8 @@ void Engine::InitInput()
 
 void Engine::InitGLRenderer()
 {
-    auto shaderManager = static_cast<ShaderManager*>(m_managerFactory->GetAssetManager<Shader>());
-    auto textureManager = static_cast<TextureManager*>(m_managerFactory->GetAssetManager<Texture>());
+    auto shaderManager = static_cast<ShaderManager*>(m_assetManagerFactory->GetAssetManager<Shader>());
+    auto textureManager = static_cast<TextureManager*>(m_assetManagerFactory->GetAssetManager<Texture>());
 
     shaderManager->Load("pbr",        "assets/shaders/pbr.vert",          "assets/shaders/pbr.frag");
     shaderManager->Load("cubemap",    "assets/shaders/cubemap.vert",      "assets/shaders/equirectangular_to_cubemap.frag");
@@ -217,13 +220,13 @@ void Engine::InitGLRenderer()
     IBL* ibl = new IBL(*shaderManager, *textureManager,
         iblShaders, "city", m_renderer.get(), m_window.get(), m_camera, &graphicsEngine->GetFrameBuffer());
 
-    ibl->AddUniformCallback(*shaderManager->Get("background"), [&](ShaderUniformCallback& shaderUniformCallback, Shader& shader)
+    ibl->AddUniformCallback(*shaderManager->Get("background"), [this](ShaderUniformCallback& shaderUniformCallback, Shader& shader)
     {
         shader.SetMat4fv("projection", m_camera->GetPerspective().GetMatrix());
         shader.SetMat4fv("view",       m_camera->GetView());
         m_scene->GetTickableOfType<GraphicsEngine>()->GetIBL()->Draw();
     });
-    ibl->AddUniformCallback(*shaderManager->Get("brdf"), [&](ShaderUniformCallback& shaderUniformCallback, Shader& shader)
+    ibl->AddUniformCallback(*shaderManager->Get("brdf"), [this](ShaderUniformCallback& shaderUniformCallback, Shader& shader)
     {
         m_window->Update();
     });
@@ -233,59 +236,59 @@ void Engine::InitGLRenderer()
 
 void Engine::InitLighting()
 {
-    auto shaderManager = static_cast<ShaderManager*>(m_managerFactory->GetAssetManager<Shader>());
-    auto textureManager = static_cast<TextureManager*>(m_managerFactory->GetAssetManager<Texture>());
+    auto shaderManager = static_cast<ShaderManager*>(m_assetManagerFactory->GetAssetManager<Shader>());
+    auto textureManager = static_cast<TextureManager*>(m_assetManagerFactory->GetAssetManager<Texture>());
 
     auto em = m_scene->GetEntityManager();
-    auto rootEntity = m_scene->GetRootEntity();
-
+    Entity* rootEntity = m_scene->GetRootEntity();
     Entity& redEntity = em->CreateEntity(*rootEntity);
     Entity& blueEntity = em->CreateEntity(*rootEntity);
     Entity& greenEntity = em->CreateEntity(*rootEntity);
     Entity& whiteEntity = em->CreateEntity(*rootEntity);
 
-    redEntity.GetLocalTransform().Translate(vec3(-150, 15., 0));
-    blueEntity.GetLocalTransform().Translate(vec3(0, 15., 0));
-    greenEntity.GetLocalTransform().Translate(vec3(150, 15., 0));
-    whiteEntity.GetLocalTransform().Translate(vec3(0., 30., 0));
+    rootEntity->AddComponentOfType<Transform>();
+    redEntity.AddComponentOfType<Transform>()->Translate(vec3(-150, 15., 0));
+    blueEntity.AddComponentOfType<Transform>()->Translate(vec3(0, 15., 0));
+    greenEntity.AddComponentOfType<Transform>()->Translate(vec3(150, 15., 0));
+    whiteEntity.AddComponentOfType<Transform>()->Translate(vec3(0., 30., 0));
 
     PointLight* redLight = redEntity.AddComponentOfType<PointLight>();
     redLight->SetColour(vec3(255, 0, 0));
     redLight->AddUniformCallback(*shaderManager->Get("pbr"),
-    [](ShaderUniformCallback& shaderUniformCallback, Shader& shader)
+    [&e = redEntity](ShaderUniformCallback& shaderUniformCallback, Shader& shader)
     {
         auto light = static_cast<const PointLight*>(&shaderUniformCallback);
-        shader.Set3f("lightPositions[0]", light->GetEntity().GetLocalTransform().GetTranslation());
+        shader.Set3f("lightPositions[0]", e.GetComponentOfType<Transform>()->GetTranslation());
         shader.Set3f("lightColours[0]", light->GetColour());
     });
 
     PointLight* blueLight = blueEntity.AddComponentOfType<PointLight>();
     blueLight->SetColour(vec3(0, 255, 0));
     blueLight->AddUniformCallback(*shaderManager->Get("pbr"),
-    [](ShaderUniformCallback& shaderUniformCallback, Shader& shader)
+    [&e = blueEntity](ShaderUniformCallback& shaderUniformCallback, Shader& shader)
     {
         auto light = static_cast<const PointLight*>(&shaderUniformCallback);
-        shader.Set3f("lightPositions[1]", light->GetEntity().GetLocalTransform().GetTranslation());
+        shader.Set3f("lightPositions[1]", e.GetComponentOfType<Transform>()->GetTranslation());
         shader.Set3f("lightColours[1]", light->GetColour());
     });
 
     PointLight* greenLight = greenEntity.AddComponentOfType<PointLight>();
     greenLight->SetColour(vec3(0, 0, 255));
     greenLight->AddUniformCallback(*shaderManager->Get("pbr"),
-    [](ShaderUniformCallback& shaderUniformCallback, Shader& shader)
+    [&e = greenEntity](ShaderUniformCallback& shaderUniformCallback, Shader& shader)
     {
         auto light = static_cast<const PointLight*>(&shaderUniformCallback);
-        shader.Set3f("lightPositions[2]", light->GetEntity().GetLocalTransform().GetTranslation());
+        shader.Set3f("lightPositions[2]", e.GetComponentOfType<Transform>()->GetTranslation());
         shader.Set3f("lightColours[2]", light->GetColour());
     });
 
     PointLight* whiteLight = whiteEntity.AddComponentOfType<PointLight>();
     whiteLight->SetColour(vec3(255, 255, 255));
     whiteLight->AddUniformCallback(*shaderManager->Get("pbr"),
-    [](ShaderUniformCallback& shaderUniformCallback, Shader& shader)
+    [&e = whiteEntity](ShaderUniformCallback& shaderUniformCallback, Shader& shader)
     {
         auto light = static_cast<const PointLight*>(&shaderUniformCallback);
-        shader.Set3f("lightPositions[3]", light->GetEntity().GetLocalTransform().GetTranslation());
+        shader.Set3f("lightPositions[3]", e.GetComponentOfType<Transform>()->GetTranslation());
         shader.Set3f("lightColours[3]", light->GetColour());
     });
 
@@ -297,10 +300,10 @@ void Engine::InitLighting()
 
 void Engine::InitScene()
 {
-    auto textureManager = static_cast<TextureManager*>(m_managerFactory->GetAssetManager<Texture>());
-    auto modelManager = static_cast<ModelManager*>(m_managerFactory->GetAssetManager<Model>());
-    auto shaderManager = static_cast<ShaderManager*>(m_managerFactory->GetAssetManager<Shader>());
-    auto materialManager = static_cast<MaterialManager*>(m_managerFactory->GetAssetManager<Material>());
+    auto textureManager = static_cast<TextureManager*>(m_assetManagerFactory->GetAssetManager<Texture>());
+    auto modelManager = static_cast<ModelManager*>(m_assetManagerFactory->GetAssetManager<Model>());
+    auto shaderManager = static_cast<ShaderManager*>(m_assetManagerFactory->GetAssetManager<Shader>());
+    auto materialManager = static_cast<MaterialManager*>(m_assetManagerFactory->GetAssetManager<Material>());
 
     // Sponza model doesn't have AO textures, add default AO texture
     // Use completely black texture to disable IBL lighting
@@ -311,23 +314,25 @@ void Engine::InitScene()
     auto em = m_scene->GetEntityManager();
     auto rootEntity = m_scene->GetRootEntity();
     Entity& sponzaEntity = em->CreateEntity(*rootEntity);
-    sponzaEntity.SetName("sponza");
-    auto& sponzaTransform = sponzaEntity.GetLocalTransform();
-    sponzaTransform.Translate(vec3(0.f, -10.f, 0.f));
-    sponzaTransform.Scale(vec3(0.25f, 0.25f, 0.25f));
+    auto sponzaTransform = sponzaEntity.AddComponentOfType<Transform>();
+    sponzaTransform->Translate(vec3(0.f, -20.f, 0.f));
+    sponzaTransform->Scale(vec3(0.25f, 0.25f, 0.25f));
+
+    // TODO - why can't I rotate this, want to check IBL effects on sponza
+    // Multiply it into your transform's rotation
+    quat rot90 = angleAxis(90.0f, vec3(0, 1, 0));
+    sponzaTransform->SetRotation(rot90 * sponzaTransform->GetRotation());
 
     RenderInstance* sponza = sponzaEntity.AddComponentOfType<RenderInstance>();
     modelManager->Load("sponza", "assets/models/sponza/sponza.obj");
     sponza->Model = modelManager->Get("sponza");
 
-    sponza->AddUniformCallback(*shaderManager->Get("pbr"), [capturedCamera = m_camera](ShaderUniformCallback& shaderUniformCallback, Shader& shader)
+    sponza->AddUniformCallback(*shaderManager->Get("pbr"), [capturedCamera = m_camera, &e = sponzaEntity](ShaderUniformCallback& shaderUniformCallback, Shader& shader)
     {
         shader.SetMat4fv("projection",  capturedCamera->GetPerspective().GetMatrix());
         shader.SetMat4fv("view",        capturedCamera->GetView());
         shader.Set3f("viewPos",         capturedCamera->GetTranslation());
-
-        auto instance = static_cast<const RenderInstance*>(&shaderUniformCallback);
-        shader.SetMat4fv("model", instance->GetEntity().GetWorldTransform().GetMatrix());
+        shader.SetMat4fv("model", e.GetWorldTransform().GetMatrix());
     });
 
     for (auto& mesh : sponza->Model->GetMeshes())

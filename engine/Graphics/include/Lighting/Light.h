@@ -1,6 +1,5 @@
 #pragma once
 
-#include "ECS/Component.h"
 #include "Pipeline/ShaderUniformCallback.h"
 
 namespace Graphics
@@ -10,9 +9,6 @@ namespace Graphics
         class Light : public Pipeline::ShaderUniformCallback
         {
         public:
-
-            Light(Core::ECS::Entity& entity)
-            {}
 
             virtual ~Light() = default;
 

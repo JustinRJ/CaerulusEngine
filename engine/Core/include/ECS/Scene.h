@@ -12,10 +12,14 @@ namespace Core
         {
         public:
 
-            Scene() :
-                m_em(std::make_unique<EntityManager>()),
-                m_rootEntity(&m_em->CreateEntity())
-            {}
+            Scene()
+            {
+                auto em = std::make_unique<EntityManager>();
+                size_t hash = em->GetHashCode();
+                m_em = em.get();
+                m_tickables.insert({ hash, std::move(em) });
+                m_rootEntity = &m_em->CreateEntity();
+            }
 
             ~Scene()
             {
@@ -29,7 +33,7 @@ namespace Core
 
             EntityManager* GetEntityManager() const
             {
-                return m_em.get();
+                return m_em;
             }
 
             void RegisterTickable(std::unique_ptr<Interface::ITickable>&& tickable)
@@ -38,7 +42,7 @@ namespace Core
             }
 
             template <typename T>
-            void UnregisterTickable(Interface::ITickable* tickable)
+            void UnregisterTickable()
             {
                 auto it = std::find(std::begin(m_tickables), std::end(m_tickables), typeid(T).hash_code());
                 if (it != std::end(m_tickables))
@@ -69,7 +73,7 @@ namespace Core
                 return tickables;
             }
 
-            std::unique_ptr<EntityManager> m_em;
+            EntityManager* m_em = nullptr;
             Entity* m_rootEntity = nullptr;
             std::unordered_map<size_t, std::unique_ptr<Interface::ITickable>> m_tickables;
         };

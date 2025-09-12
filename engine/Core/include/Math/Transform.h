@@ -11,7 +11,7 @@ namespace Core
         public:
             Transform() = default;
 
-            Transform(const vec3& scale, const vec3& rotation, const vec3& translation) :
+            Transform(const vec3& scale, const quat& rotation, const vec3& translation) :
                 m_isDirty(true),
                 m_scale(scale),
                 m_rotation(rotation),
@@ -23,9 +23,9 @@ namespace Core
                 if (m_isDirty)
                 {
                     m_isDirty = false;
-                    m_matrix = scale(mat4(1.f), m_scale);
-                    m_matrix = m_matrix * toMat4(quat(m_rotation));
-                    m_matrix = translate(m_matrix, m_translation);
+                    m_matrix = translate(mat4(1.f), m_translation);
+                    m_matrix = m_matrix * toMat4(m_rotation);
+                    m_matrix = m_matrix * glm::scale(mat4(1.f), m_scale);
                 }
                 return m_matrix;
             }
@@ -47,21 +47,21 @@ namespace Core
                 m_scale *= scale;
             }
 
-            const vec3& GetRotation() const
+            const quat& GetRotation() const
             {
                 return m_rotation;
             }
 
-            void SetRotation(const vec3& rotation)
+            void SetRotation(const quat& rotation)
             {
                 m_isDirty = true;
                 m_rotation = rotation;
             }
 
-            void Rotate(const vec3& rotation)
+            void Rotate(const quat& rotation)
             {
                 m_isDirty = true;
-                m_rotation += rotation;
+                m_rotation = glm::normalize(m_rotation * rotation);
             }
 
             const vec3& GetTranslation() const
@@ -81,21 +81,44 @@ namespace Core
                 m_translation += translation;
             }
 
+            static Transform Compose(const Transform& parent, const Transform& child)
+            {
+                Transform result;
+                // Scale: component-wise multiplication
+                result.SetScale(parent.GetScale() * child.GetScale());
+                // Rotation: parent rotation applied before child rotation
+                result.SetRotation(glm::normalize(parent.GetRotation() * child.GetRotation()));
+                // Translation: parent translation + parent rotation applied to scaled child translation
+                result.SetTranslation(parent.GetTranslation() + parent.GetRotation() * (parent.GetScale() * child.GetTranslation()));
+                return result;
+            }
+
+            static Transform InverseCompose(const Transform& parent, const Transform& world)
+            {
+                Transform local;
+                // Scale: divide component-wise
+                glm::vec3 parentScale = parent.GetScale();
+                glm::vec3 worldScale = world.GetScale();
+                local.SetScale(worldScale / parentScale);
+                // Rotation: remove parent rotation
+                local.SetRotation(glm::normalize(glm::inverse(parent.GetRotation()) * world.GetRotation()));
+                // Translation: remove parent translation and rotation, account for scale
+                local.SetTranslation(glm::inverse(parent.GetRotation()) * (world.GetTranslation() - parent.GetTranslation()) / parentScale);
+                return local;
+            }
+
         private:
+
             mutable bool m_isDirty = false;
             vec3 m_scale = vec3(1.0);
-            // Stored in euler radians
-            vec3 m_rotation = vec3(0.0);
+            quat m_rotation = quat();
             vec3 m_translation = vec3(0.0);
             mutable mat4 m_matrix = mat4(1.f);
         };
 
         inline Transform operator*(const Transform& lhs, const Transform& rhs)
         {
-            return Transform(
-                lhs.GetScale() * rhs.GetScale(),
-                lhs.GetRotation() + rhs.GetRotation(),
-                lhs.GetTranslation() + rhs.GetTranslation());
+            return Transform::Compose(lhs, rhs);
         }
     }
 }

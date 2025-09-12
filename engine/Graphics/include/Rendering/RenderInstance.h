@@ -1,6 +1,5 @@
 #pragma once
 
-#include "ECS/Component.h"
 #include "Pipeline/ShaderUniformCallback.h"
 
 #include "Geometry/Model.h"
@@ -16,13 +15,7 @@ namespace Graphics
         // material this easily allows variations of models without wasting resources
         std::vector<Surface::Material*> MeshOverrideMaterial;
 
-        RenderInstance(Core::ECS::Entity& e) :
-            m_entity(e)
-        {}
-
-        CAERULUS_COMPONENT_INIT
-
-        void Update(float deltaTime)
+        void Tick(float deltaTime)
         {
             if (Model)
             {

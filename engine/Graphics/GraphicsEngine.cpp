@@ -25,7 +25,7 @@
 #include "Lighting/PointLight.h"
 #include "Lighting/DirectionalLight.h"
 
-#include "ECS/ManagerFactory.h"
+#include "ECS/Entity.h"
 
 namespace Graphics
 {
@@ -36,82 +36,25 @@ namespace Graphics
     using namespace Lighting;
     using namespace Rendering;
 
-    GraphicsEngine::GraphicsEngine(Core::ECS::ManagerFactory& managerFactory) :
-        m_IBL(nullptr),
-        m_window(nullptr),
-        m_renderer(nullptr),
-        m_framebuffer(*new Pipeline::FrameBuffer()),
-        m_instanceManager(managerFactory.GetComponentManager<RenderInstance>()),
-        m_pointLightManager(managerFactory.GetComponentManager<PointLight>())
-    {}
-    
     void GraphicsEngine::EarlyTick()
     {
         if (m_renderer)
         {
             m_renderer->Clear(m_clearColour);
         }
-
-        if (m_instanceManager)
-        {
-            m_instanceManager->EarlyUpdate();
-        }
-        if (m_pointLightManager)
-        {
-            m_pointLightManager->EarlyUpdate();
-        }
-    }
-
-    void GraphicsEngine::Tick(float deltaTime)
-    {
         if (m_window)
         {
             m_window->Update();
-
-            if (m_IBL)
-            {
-                m_IBL->Bind();
-            }
-
-            if (m_instanceManager)
-            {
-                m_instanceManager->Update(deltaTime);
-            }
-            if (m_pointLightManager)
-            {
-                m_pointLightManager->Update(deltaTime);
-            }
-
-            if (m_IBL)
-            {
-                m_IBL->InvokeUniformCallbacks();
-            }
         }
-    }
-
-    void GraphicsEngine::FixedTick(float fixedTime)
-    {
-        if (m_instanceManager)
+        if (m_IBL)
         {
-            m_instanceManager->FixedUpdate(fixedTime);
-        }
-        if (m_pointLightManager)
-        {
-            m_pointLightManager->FixedUpdate(fixedTime);
+            m_IBL->Bind();
+            m_IBL->InvokeUniformCallbacks();
         }
     }
 
     void GraphicsEngine::LateTick()
     {
-        if (m_instanceManager)
-        {
-            m_instanceManager->LateUpdate();
-        }
-        if (m_pointLightManager)
-        {
-            m_pointLightManager->LateUpdate();
-        }
-
         if (m_window)
         {
             m_window->SwapBuffer();

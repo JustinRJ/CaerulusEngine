@@ -3,8 +3,6 @@
 #include "Transform.h"
 #include "Perspective.h"
 
-#include "ECS/Component.h"
-
 namespace Core
 {
     namespace Math
@@ -12,13 +10,10 @@ namespace Core
         class Camera
         {
         public:
-            Camera(Core::ECS::Entity& entity) :
-                m_entity(entity),
+            Camera() :
                 m_view(1),
                 m_perspective()
             {}
-
-            CAERULUS_COMPONENT_INIT
 
             void Translate(const vec3& translation, bool translateY = true)
             {

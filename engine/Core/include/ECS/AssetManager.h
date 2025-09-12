@@ -1,20 +1,20 @@
 #pragma once
 
-#include <vector>
 #include <memory>
 #include <string>
 #include <algorithm>
 #include <unordered_map>
 
 #include "Log/Log.h"
-#include "ECS/IAssetManager.h"
+#include "Interface/IHashable.h"
+#include "Interface/NonCopyable.h"
 
 namespace Core
 {
     namespace ECS
     {
         template <class R>
-        class AssetManager : public IAssetManager
+        class AssetManager : public Interface::IHashable, Interface::NonCopyable
         {
         public:
             AssetManager()

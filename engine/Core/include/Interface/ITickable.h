@@ -1,13 +1,13 @@
 #pragma once
 
-#include "ECS/IHashable.h"
+#include "Interface/IHashable.h"
 #include "Interface/NonCopyable.h"
 
 namespace Core
 {
     namespace Interface
     {
-        class CAERULUS_CORE ITickable : public ECS::IHashable, Interface::NonCopyable
+        class CAERULUS_CORE ITickable : public IHashable, NonCopyable
         {
         public:
             virtual ~ITickable() = default;

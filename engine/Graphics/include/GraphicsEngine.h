@@ -7,12 +7,13 @@
 
 #include "Math/Math.h"
 #include "Interface/ITickable.h"
+#include "Pipeline/FrameBuffer.h"
 
 namespace Core
 {
     namespace ECS
     {
-        class ManagerFactory;
+        class EntityManager;
 
         template<class RenderInstance>
         class ComponentManager;
@@ -39,7 +40,6 @@ namespace Graphics
     namespace Pipeline
     {
         class Shader;
-        class FrameBuffer;
         class ShaderUniformCallback;
     }
 
@@ -58,16 +58,12 @@ namespace Graphics
     class CAERULUS_GRAPHICS GraphicsEngine : public Core::Interface::ITickable
     {
     public:
-        GraphicsEngine(Core::ECS::ManagerFactory& componentManagers);
-
         size_t GetHashCode() const override
         {
             return typeid(GraphicsEngine).hash_code();
         }
 
         void EarlyTick() override;
-        void Tick(float deltaTime) override;
-        void FixedTick(float fixedTime) override;
         void LateTick() override;
 
         Pipeline::FrameBuffer& GetFrameBuffer();
@@ -87,13 +83,9 @@ namespace Graphics
     private:
         Core::Math::vec4 m_clearColour = Core::Math::vec4(0.2f, 0.3f, 0.3f, 1.0f);
 
-        Lighting::IBL* m_IBL;
-        Window::GLWindow* m_window;
-        Rendering::IRenderer* m_renderer;
-
-        Pipeline::FrameBuffer& m_framebuffer;
-
-        Core::ECS::ComponentManager<RenderInstance>* m_instanceManager;
-        Core::ECS::ComponentManager<Lighting::PointLight>* m_pointLightManager;
+        Lighting::IBL* m_IBL = nullptr;
+        Window::GLWindow* m_window = nullptr;
+        Rendering::IRenderer* m_renderer = nullptr;
+        Pipeline::FrameBuffer m_framebuffer;
     };
 }

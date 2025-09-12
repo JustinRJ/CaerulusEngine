@@ -4,7 +4,7 @@
 
 namespace Core
 {
-    namespace ECS
+    namespace Interface
     {
         class CAERULUS_CORE IHashable
         {

@@ -16,9 +16,9 @@ namespace Graphics
             void AddUniformCallback(Shader& shader, const std::function<void(ShaderUniformCallback&, Shader& shader)>& uniformCallback)
             {
                 bool shaderFound = false;
-                for (const auto& pair : m_shaderCallbacks)
+                for (const auto& [shader, uniformCallback] : m_shaderCallbacks)
                 {
-                    if (pair.first == &shader)
+                    if (shader == shader)
                     {
                         shaderFound = true;
                     }
@@ -32,10 +32,10 @@ namespace Graphics
 
             void InvokeUniformCallbacks()
             {
-                for (const auto& pair : m_shaderCallbacks)
+                for (const auto& [shader, uniformCallback] : m_shaderCallbacks)
                 {
-                    pair.first->Bind();
-                    pair.second(*this, *pair.first);
+                    shader->Bind();
+                    uniformCallback(*this, *shader);
                 }
             }
 

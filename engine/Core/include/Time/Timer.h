@@ -25,7 +25,7 @@ namespace Core
                 if (!m_running)
                 {
                     m_running = true;
-                    m_lastTimePoint = std::chrono::high_resolution_clock::now();
+                    m_lastTimePoint = Clock::now();
                 }
             }
 
@@ -34,7 +34,7 @@ namespace Core
                 float deltaTime = 0.f;
                 if (m_running)
                 {
-                    auto now = std::chrono::high_resolution_clock::now();
+                    auto now = Clock::now();
                     deltaTime = duration_cast<std::chrono::duration<float>>(now - m_lastTimePoint).count();
                     m_lastTimePoint = now;
                 }
@@ -47,13 +47,12 @@ namespace Core
 
             void Stop()
             {
-                if (m_running)
-                {
-                    m_running = false;
-                }
+                m_running = false;
             }
 
         private:
+            using Clock = std::chrono::high_resolution_clock;
+
             bool m_running = false;
             std::chrono::high_resolution_clock::time_point m_lastTimePoint;
         };

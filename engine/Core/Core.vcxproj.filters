@@ -128,22 +128,7 @@
     <ClInclude Include="include\Math\Mesh.h">
       <Filter>include\Math</Filter>
     </ClInclude>
-    <ClInclude Include="include\ECS\Component.h">
-      <Filter>include\ECS</Filter>
-    </ClInclude>
     <ClInclude Include="include\ECS\Entity.h">
-      <Filter>include\ECS</Filter>
-    </ClInclude>
-    <ClInclude Include="include\ECS\AssetManager.h">
-      <Filter>include\ECS</Filter>
-    </ClInclude>
-    <ClInclude Include="include\ECS\ComponentManager.h">
-      <Filter>include\ECS</Filter>
-    </ClInclude>
-    <ClInclude Include="include\ECS\IComponentManager.h">
-      <Filter>include\ECS</Filter>
-    </ClInclude>
-    <ClInclude Include="include\ECS\ManagerFactory.h">
       <Filter>include\ECS</Filter>
     </ClInclude>
     <ClInclude Include="include\Log\Log.h">
@@ -161,10 +146,13 @@
     <ClInclude Include="include\ECS\Scene.h">
       <Filter>include\ECS</Filter>
     </ClInclude>
-    <ClInclude Include="include\ECS\IAssetManager.h">
+    <ClInclude Include="include\ECS\AssetManager.h">
       <Filter>include\ECS</Filter>
     </ClInclude>
-    <ClInclude Include="include\ECS\IHashable.h">
+    <ClInclude Include="include\Interface\IHashable.h">
+      <Filter>include\Interface</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ECS\AssetManagerFactory.h">
       <Filter>include\ECS</Filter>
     </ClInclude>
   </ItemGroup>
